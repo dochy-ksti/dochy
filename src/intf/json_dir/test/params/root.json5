@@ -1,0 +1,12 @@
+{
+	b : false,
+	"bhatena?" : ["Bool", null],
+	"bbikkuri!" : false,
+	"bbh!?" : true,
+	int : 10,
+	float : 12.0,
+	s : "sutoringu",
+	"shatena?" : "esuhatena",
+	"sbikkuri!" : ["Str", undefined],
+	"sbh!?" : "bikkurihatena",
+}
