@@ -1,6 +1,6 @@
 Dochy is like a binary diff format of static JSON, and the surrounding file system and tools.
 
-It's intended to be used for the replacement of ordinary data files, 
+It's intended to replace the ordinary data file, 
 especially for game/cloud apps which employs auto-save 
 and undoable apps.
 
