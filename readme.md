@@ -1,10 +1,10 @@
 Dochy is like a binary diff format of static JSON, and the surrounding file system and tools.
 
-It's intended to replace the ordinary data file, 
+It's intended to replace ordinary data files, 
 especially for game/cloud apps which employs auto-save 
 and undoable apps.
 
-There are three goals we want to achieve from this project.
+There are three goals we want to achieve.
 
 1. [Efficiency](src/sample_test/sample_code/efficiency.md)
 2. Version Awareness
