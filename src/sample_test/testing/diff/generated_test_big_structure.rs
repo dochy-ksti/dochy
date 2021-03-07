@@ -1,6 +1,6 @@
 #[cfg(test)] pub mod test{
-	use nougami_core::intf::*;
-	use nougami_core::structs::*;
+	use crate::core::intf::*;
+	use crate::core::structs::*;
 	unsafe impl Send for RootIntf{}
 	#[derive(Debug, PartialEq)]
 	pub struct RootIntf{

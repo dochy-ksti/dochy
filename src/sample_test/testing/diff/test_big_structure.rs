@@ -30,11 +30,11 @@
 //         let moto = get_root_obj(json_dir_path)?;
 //
 //         //zero
-//         //let diff = nougami_diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         //let diff = crate::diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
 //         //println!("{:?}", diff);
 //
-//         let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-//         let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
+//         let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         let applied = crate::diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
 //         //let intf = RootIntf::new(applied);
 //
 //         let moto = get_root_obj(json_dir_path)?;
@@ -53,8 +53,8 @@
 //
 //         let moto = get_root_obj(json_dir_path)?;
 //
-//         let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-//         let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
+//         let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         let applied = crate::diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
 //         let intf = RootIntf::new(applied);
 //
 //         assert_eq!(intf.mem1(), 1);
@@ -73,10 +73,10 @@
 //         let moto = get_root_obj(json_dir_path)?;
 //
 //         //bits
-//         //let diff = nougami_diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         //let diff = crate::diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
 //         //println!("{:?}", diff);
-//         let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-//         let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
+//         let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         let applied = crate::diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
 //         let intf = RootIntf::new(applied);
 //
 //         assert_eq!(intf.mem63(), 1);
@@ -97,10 +97,10 @@
 //         let moto = get_root_obj(json_dir_path)?;
 //
 //         //store ids はnumbers
-//         // let diff = nougami_diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         // let diff = crate::diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
 //         //println!("{:?}", diff);
-//         let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-//         let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
+//         let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         let applied = crate::diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
 //         let intf = RootIntf::new(applied);
 //
 //         assert_eq!(intf.mem64(), 1);
@@ -123,10 +123,10 @@
 //         let moto = get_root_obj(json_dir_path)?;
 //
 //         //numbers
-//         //let diff = nougami_diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         //let diff = crate::diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
 //         //println!("{:?}", diff);
-//         let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-//         let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
+//         let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         let applied = crate::diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
 //         let intf = RootIntf::new(applied);
 //         assert_eq!(intf.mem58(), 1);
 //         assert_eq!(intf.mem59(), 1);
@@ -154,10 +154,10 @@
 //         let moto = get_root_obj(json_dir_path)?;
 //
 //         //u64
-//         //let diff = nougami_diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         //let diff = crate::diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
 //         //println!("{:?}", diff);
-//         let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-//         let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
+//         let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
+//         let applied = crate::diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
 //         let intf = RootIntf::new(applied);
 //         assert_eq!(intf.mem58(), 1);
 //         assert_eq!(intf.mem59(), 1);

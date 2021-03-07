@@ -2,21 +2,22 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::testing::diff::util::get_root_obj::get_root_obj;
-    use nougami_core::structs::{RootObject};
-    use crate::testing::diff::generated_test_list::test::{RootIntf,  Refed1TableID};
+    use crate::core::structs::{RootObject};
+    use crate::sample_test::testing::diff::generated_test_list::test::{RootIntf, Refed1TableID};
+    use crate::sample_test::testing::diff::util::get_root_obj::get_root_obj;
+    use crate::sample_test::error::DpResult;
 
-    fn apply(current : &RootObject, path : &str) -> Result<RootIntf, String>{
-        let moto = get_root_obj(path)?;
+    fn apply(current : &RootObject, path : &str) -> DpResult<RootIntf>{
+        let mut moto = get_root_obj(path)?;
 
-        let diff = nougami_diff::get_diff(&moto, current).or_else(|e| Err(e.message))?;
-        let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
-        Ok(RootIntf::new(applied))
+        let diff = crate::diff::get_diff(&moto, current)?;
+        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        Ok(RootIntf::new(moto))
     }
 
     #[test]
-    fn test_modify() -> Result<(), String>{
-        let json_dir_path = "src/testing/diff/diff_list/";
+    fn test_modify() -> DpResult<()>{
+        let json_dir_path = "src/sample_test/testing/diff/diff_list/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);
@@ -31,8 +32,8 @@ mod tests {
     }
 
     #[test]
-    fn test_add_add_remove() -> Result<(), String>{
-        let json_dir_path = "src/testing/diff/diff_list/";
+    fn test_add_add_remove() -> DpResult<()>{
+        let json_dir_path = "src/sample_test/testing/diff/diff_list/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);
@@ -60,8 +61,8 @@ mod tests {
         }
     }
 
-    fn test_remove_add_add_add_remove() -> Result<(), String>{
-        let json_dir_path = "src/testing/diff/diff_list/";
+    fn test_remove_add_add_add_remove() -> DpResult<()>{
+        let json_dir_path = "src/sample_test/testing/diff/diff_list/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);
@@ -106,8 +107,8 @@ mod tests {
         }
     }
 
-    fn test_in_add_add_add_add_remove() -> Result<(), String>{
-        let json_dir_path = "src/testing/diff/diff_list/";
+    fn test_in_add_add_add_add_remove() -> DpResult<()>{
+        let json_dir_path = "src/sample_test/testing/diff/diff_list/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);

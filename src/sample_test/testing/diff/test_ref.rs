@@ -2,14 +2,15 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::testing::diff::util::get_root_obj::get_root_obj;
-    use nougami_core::intf::null_or::{NullOr, UndefOr};
-    use nougami_core::structs::Qv;
-    use crate::testing::diff::generated_test_ref::test::{RootIntf, Refed1TableID, Refed2TableID, Refed3TableID, Refed4TableID};
+    use crate::core::intf::null_or::{NullOr, UndefOr};
+    use crate::core::structs::Qv;
+    use crate::sample_test::testing::diff::util::get_root_obj::get_root_obj;
+    use crate::sample_test::testing::diff::generated_test_ref::test::{RootIntf, Refed1TableID, Refed2TableID, Refed3TableID, Refed4TableID};
+    use crate::sample_test::error::DpResult;
 
     #[test]
-    fn test_diff2() -> Result<(), String>{
-        let json_dir_path = "src/testing/diff/diff_ref/";
+    fn test_diff2() -> DpResult<()>{
+        let json_dir_path = "src/sample_test/testing/diff/diff_ref/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);
@@ -21,11 +22,11 @@ mod tests {
         f.set_ref_refed4(Qv::Val(Refed4TableID::D2));
 
 
-        let moto = get_root_obj(json_dir_path)?;
+        let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-        let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
-        let mut intf = RootIntf::new(applied);
+        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.to_string()))?;
+        crate::diff::apply_diff(&mut moto, &mut diff.as_slice()).or_else(|e| Err(e.to_string()))?;
+        let mut intf = RootIntf::new(moto);
         let f = intf.list1().first().unwrap();
 
 
@@ -40,11 +41,11 @@ mod tests {
         f.set_ref_refed3(UndefOr::Val(Refed3TableID::C1));
         f.set_ref_refed4(Qv::Val(Refed4TableID::D1));
 
-        let moto = get_root_obj(json_dir_path)?;
+        let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-        let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
-        let mut intf = RootIntf::new(applied);
+        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let mut intf = RootIntf::new(moto);
         let f = intf.list1().last().unwrap();
 
         assert_eq!(f.ref_id_refed1(), "a1".to_string());
@@ -59,11 +60,11 @@ mod tests {
         f.set_ref_refed4(Qv::Val(Refed4TableID::D2));
 
 
-        let moto = get_root_obj(json_dir_path)?;
+        let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-        let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
-        let mut intf = RootIntf::new(applied);
+        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let mut intf = RootIntf::new(moto);
         let f = intf.list2().first().unwrap();
 
         assert_eq!(f.ref_id_refed1(), "a2".to_string());
@@ -77,11 +78,11 @@ mod tests {
         f.set_ref_refed3(UndefOr::Undefined);
         f.set_ref_refed4(Qv::Null);
 
-        let moto = get_root_obj(json_dir_path)?;
+        let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-        let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
-        let mut intf = RootIntf::new(applied);
+        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let mut intf = RootIntf::new(moto);
         let f = intf.list2().last().unwrap();
 
         //assert_eq!(f.ref_id_refed1(), "a1".to_string());
@@ -97,11 +98,11 @@ mod tests {
         f.set_ref_refed4(Qv::Undefined);
 
 
-        let moto = get_root_obj(json_dir_path)?;
+        let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-        let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
-        let mut intf = RootIntf::new(applied);
+        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let mut intf = RootIntf::new(moto);
         let f = intf.list3().first().unwrap();
 
         //assert_eq!(f.ref_id_refed1(), "a2".to_string());
@@ -115,11 +116,11 @@ mod tests {
         f.set_ref_refed3(UndefOr::Undefined);
         f.set_ref_refed4(Qv::Undefined);
 
-        let moto = get_root_obj(json_dir_path)?;
+        let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = nougami_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
-        let applied = nougami_diff::apply_diff(moto, diff).or_else(|e| Err(e.message))?;
-        let mut intf = RootIntf::new(applied);
+        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let mut intf = RootIntf::new(moto);
         let f = intf.list3().last().unwrap();
 
         //assert_eq!(f.ref_id_refed1(), "a1".to_string());
