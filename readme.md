@@ -13,4 +13,8 @@ There are three goals we want to achieve.
 ### What does Dochy stand for?
 
 DOnnani CHoushiga Yokutemo kakisugiteha ikenai
-(どんなに調子が良くても書きすぎてはいけない, Don't overwork when you're really feeling good,) which is an epigram I created.  
+(どんなに調子が良くても書きすぎてはいけない, Don't overwork when you're really feeling good,) which is an epigram I created.
+
+### Contribution
+
+I'm Japanese and I desperately need proofreading of my English writing for this project. 
