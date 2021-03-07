@@ -1,4 +1,4 @@
-Dochy is like a binary diff format of static JSON, and the surrounding file system and tools.
+Dochy is like a binary diff format of static JSON, and its surrounding file system and tools.
 
 It's intended to replace ordinary data files, 
 especially for game/cloud apps which employs auto-save 
@@ -17,4 +17,5 @@ DOnnani CHoushiga Yokutemo kakisugiteha ikenai
 
 ### Contribution
 
-I'm Japanese and I desperately need proofreading of my English writing for this project. 
+I'm Japanese and I desperately need proofreading of my English writing for this project,
+and any other contribution is welcome.
