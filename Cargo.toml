@@ -1,6 +1,6 @@
 [package]
 name = "dochy"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["juzu <dochy.ksti@gmail.com>"]
 edition = "2018"
 
@@ -9,6 +9,7 @@ description = "Static data format based on JSON5 to create diff binary and imple
 repository = "https://github.com/dochy-ksti/dochy"
 readme = "readme.md"
 keywords = ["json5","diff","binary","undo","autosave"]
+categories = ["filesystem","compression","data-structures"]
 
 [dependencies]
 pest = "2.0"
