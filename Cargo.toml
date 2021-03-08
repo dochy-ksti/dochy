@@ -5,10 +5,10 @@ authors = ["juzu <dochy.ksti@gmail.com>"]
 edition = "2018"
 
 license = "MIT"
-description = "static data format based on JSON5 to create diff binary and implement undo, autosave"
+description = "Static data format based on JSON5 to create diff binary and implement undo, autosave."
 repository = "https://github.com/dochy-ksti/dochy"
 readme = "readme.md"
-keywords = ["json5","diff","binary"]
+keywords = ["json5","diff","binary","undo","autosave"]
 
 [dependencies]
 pest = "2.0"
