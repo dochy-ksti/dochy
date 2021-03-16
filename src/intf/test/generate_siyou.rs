@@ -9,12 +9,12 @@ mod tests {
 
     #[test]
     fn it_works() {
-        match json_dir_to_rust("src/json_dir/test/siyou", true) {
+        match json_dir_to_rust("src/intf/json_dir/test/siyou", true) {
             Ok(mut a) => {
                 //println!("{:?}", a);
                 let ans = generate_interface(&mut a);
                 let source = ans.to_string();
-                write_file("src/test_generated/siyou.rs", &source);
+                write_file("src/intf/test_generated/siyou.rs", &source);
             },
             Err(e) => { println!("val 1 {}", e.to_string()) }
         }

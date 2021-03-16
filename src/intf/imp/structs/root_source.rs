@@ -20,18 +20,18 @@ use crate::core::intf::*;
 use crate::core::structs::*;
 unsafe impl Send for RootIntf{}
 #[derive(Debug, PartialEq)]
-pub(crate ) struct RootIntf{
+pub struct RootIntf{
     root : Box<RootObject>,
     ptr : RootObjectPtr,
 }
 impl RootIntf{
-    pub(crate ) fn new(obj : RootObject) -> RootIntf{
+    pub fn new(obj : RootObject) -> RootIntf{
 		let mut root = Box::new(obj);
 		let ptr = RootObjectPtr::new(root.as_mut());
 		RootIntf { root, ptr }
 	}
-    pub(crate ) unsafe fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
-    pub(crate ) unsafe fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+    pub unsafe fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
+    pub unsafe fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 ");
         for mem in self.members() {
             match mem{
@@ -76,7 +76,7 @@ impl RootIntf{
 
     pub fn to_string_with_cfg_test(&self) -> String{
         let mut sb = SourceBuilder::new();
-        sb.push(0, &format!("#[cfg(test)] pub(crate ) mod test{{"));
+        sb.push(0, &format!("#[cfg(test)] pub mod test{{"));
         sb.push(1, &self.to_string());
         sb.push(0, "}");
         sb.to_string()
