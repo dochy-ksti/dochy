@@ -14,7 +14,7 @@ impl VeraAccessorWrapper{
                 match int.old_value(){
                     NullOr::Null => unreachable!(),
                     NullOr::Val(v) =>{
-                        int.set_new_value(UndefOr::Val(v * 10))
+                        int.set_new_value(UndefOr::Val(v * 10));
                         v * 10
                     }
                 }
