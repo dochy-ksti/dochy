@@ -60,7 +60,7 @@ impl RefsSource{
 
         let enum_type_name = to_enum_type_name(stem);
 
-        sb.append(&format!("pub(crate ) enum {}{{ ", &enum_type_name));
+        sb.append(&format!("pub enum {}{{ ", &enum_type_name));
         for r in &self.refs{
             let item_type = to_citem_type_name(r.name());
             sb.append(&format!("{}({}), ", &to_type_name(r.name()), &item_type));

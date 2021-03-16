@@ -13,7 +13,7 @@ pub(crate) struct ParamSource{
     is_old : bool,
 }
 impl ParamSource{
-    pub(crate ) fn new(name : String, var_type : VarType, param_type : ParamType, is_old : bool) -> ParamSource{
+    pub(crate) fn new(name : String, var_type : VarType, param_type : ParamType, is_old : bool) -> ParamSource{
         ParamSource{
             name, var_type, param_type, is_old
         }
@@ -58,7 +58,7 @@ impl ParamSource{
         sb.push(0,"}");
         sb.to_string()
     }
-    pub(crate ) fn set(&self, mod_name : &str) -> String {
+    pub fn set(&self, mod_name : &str) -> String {
         let mut sb = SourceBuilder::new();
 
         let id = self.name();

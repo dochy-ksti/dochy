@@ -63,7 +63,7 @@ impl RefSource{
         sb.push(0, "}");
         sb.to_string()
     }
-    pub(crate ) fn set(&self) -> String {
+    pub fn set(&self) -> String {
         let mut sb = SourceBuilder::new();
         let id = self.name();
         let snake_name = to_snake_name(id);

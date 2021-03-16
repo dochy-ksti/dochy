@@ -1,11 +1,11 @@
 
 #[cfg(test)]
-pub(crate ) mod test {
+pub(crate) mod test {
     use std::fs::File;
     use std::io::prelude::*;
     use std::path::Path;
 
-    pub(crate ) fn write_file(file_path: &str, contents: &str) {
+    pub(crate) fn write_file(file_path: &str, contents: &str) {
         // Create a path to the desired file
         let path = Path::new(file_path);
         let display = path.display();
