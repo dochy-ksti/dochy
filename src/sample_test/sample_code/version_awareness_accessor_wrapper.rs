@@ -22,6 +22,7 @@ impl VeraAccessorWrapper{
             },
             UndefOr::Val(v) =>{
                 v
+
             }
         }
     }
