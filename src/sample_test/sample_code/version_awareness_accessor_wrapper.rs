@@ -1,13 +1,14 @@
 use crate::sample_test::sample_code::version_awareness_accessor::RootIntf;
 use crate::core::structs::{UndefOr, NullOr};
+use std::cell::UnsafeCell;
 
 struct VeraAccessorWrapper{
-    int : RootIntf
+    int : UnsafeCell<RootIntf>
 }
 
 impl VeraAccessorWrapper{
-    pub fn new_value(&mut self) -> i64{
-        let int = &mut self.int;
+    pub fn new_value(&self) -> i64{
+        let int = unsafe{ &mut *self.int.get() };
 
         match int.new_value(){
             UndefOr::Undefined =>{
