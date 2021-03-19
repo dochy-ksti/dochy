@@ -12,7 +12,7 @@ pub struct MetadataItem{
 
 impl MetadataItem{
     pub(crate) fn new(relative_path : String, modified : SystemTime, len : u64) -> Self{ Self{ relative_path, modified, len }}
-    //pub(crate) fn json5_ext() -> &'static str{ "json5" }
+    //pub(crate) fn json5_ext() -> &'static str{ "json5_back" }
 
     pub(crate) fn from_file_item(file_item : &FileItem, root_path : &Path) -> ArcResult<MetadataItem>{
         let path = file_item.file_path();

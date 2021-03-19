@@ -1,0 +1,18 @@
+[package]
+name = "dochy_json5"
+version = "0.2.0"
+authors = ["juzu <dochy.ksti@gmail.com>"]
+edition = "2018"
+
+license = "MIT"
+description = "Handles customized json5 format for my project"
+repository = "https://github.com/dochy-ksti/dochy_json5"
+readme = "readme.md"
+keywords = ["json5"]
+
+[dependencies]
+pest = "2.0"
+pest_derive = "2.0"
+linked-hash-map = "0.5.2"
+fnv = "1.0.7"
+anyhow = "1.0.34"

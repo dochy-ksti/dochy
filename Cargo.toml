@@ -11,9 +11,13 @@ readme = "readme.md"
 keywords = ["json5","diff","binary","undo","autosave"]
 categories = ["filesystem","compression","data-structures"]
 
+[workspace]
+members = [
+    "dochy_json5",
+]
+
 [dependencies]
-pest = "2.0"
-pest_derive = "2.0"
+dochy_json5 = { path="dochy_json5" }
 linked-hash-map = "0.5.2"
 fnv = "1.0.7"
 anyhow = "1.0.34"

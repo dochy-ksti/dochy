@@ -11,7 +11,7 @@ use anyhow::anyhow;
 
 
 #[derive(Parser)]
-#[grammar = "json5/json5.pest"]
+#[grammar = "json5_back/json5_back.pest"]
 pub(crate) struct Parser;
 
 pub fn from_str(s: &str) -> Result<JVal>

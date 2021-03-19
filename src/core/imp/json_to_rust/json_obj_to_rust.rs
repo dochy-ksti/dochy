@@ -1,4 +1,4 @@
-use crate::json5::JVal;
+use dochy_json5::jval::JVal;
 use super::names::Names;
 use super::json_name::{json_name, NameType, SystemNames};
 use super::json_item_to_rust::json_item_to_rust;
@@ -8,7 +8,7 @@ use crate::core::imp::json_to_rust::tmp::tmp_obj::TmpObj;
 use crate::core::imp::json_to_rust::get_old::get_old;
 use crate::core::imp::json_to_rust::get_id::get_id;
 use crate::core::imp::json_to_rust::get_refs::get_ref;
-use crate::json5::Span;
+use dochy_json5::jval::Span;
 use crate::core::imp::json_to_rust::json_item_to_rust::json_item_to_rust_ref;
 use linked_hash_map::LinkedHashMap;
 //use linked_hash_map::LinkedHashMap;

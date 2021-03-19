@@ -1,12 +1,12 @@
-use crate::json5::error::Result;
-use crate::json5::jval::JVal;
-use crate::json5::de::{deserialize_any, Seq, Map};
+use crate::error::Result;
+use crate::jval::JVal;
+use crate::de::{deserialize_any, Seq, Map};
 use pest::Span;
-use crate::json5::de::Rule;
+use crate::de::Rule;
 use std::rc::Rc;
 use linked_hash_map::{LinkedHashMap, Entry};
-use crate::json5::MyError;
-//use crate::json5::MyError;
+use crate::error::MyError;
+//use crate::json5_back::MyError;
 //use linked_hash_map::LinkedHashMap;
 
 pub(crate) fn get_unit(span : Span, rc : Rc<String>) -> JVal { JVal::Null(s(span, rc)) }
@@ -78,8 +78,8 @@ pub(crate) fn get_map(m: Map, span : Span, rc : Rc<String>) -> Result<JVal> {
     Ok(JVal::Map(result, s(span, rc)))
 }
 
-fn s(span : Span, rc : Rc<String>) -> crate::json5::jval::Span{
-    crate::json5::jval::Span{ start : span.start(), end : span.end(), text : rc }
+fn s(span : Span, rc : Rc<String>) -> crate::jval::Span{
+    crate::jval::Span{ start : span.start(), end : span.end(), text : rc }
 }
 
 

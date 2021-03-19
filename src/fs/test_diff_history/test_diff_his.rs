@@ -44,7 +44,7 @@ fn test_diff_his() -> FsResult<()> {
         assert_eq!(root, loaded);
     }
 
-    std::fs::copy("src/json_dir/simple_mod1/root.json5", &src_dir_path.join("root.json5"))?;
+    std::fs::copy("src/json_dir/simple_mod1/root.json5_back", &src_dir_path.join("root.json5_back"))?;
     let histories = list_histories(proj_dir_path)?;
     let newest = histories.get_newest_file_data()?;
 

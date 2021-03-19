@@ -22,7 +22,7 @@ pub fn json_dir_to_rust<P : AsRef<Path>>(dir_path : P, validation : bool) -> Cor
         match dir{
             Ok(de) =>{
                 let path = de.path();
-                if path.extension() == Some(&OsStr::new("json5")){
+                if path.extension() == Some(&OsStr::new("json5_back")){
                     let oss: &OsStr = path.file_stem().ok_or_else(|| format!("file stem couldn't be read {:?}", &de))?;
                     let file_stem_ref = oss.to_str().ok_or_else(|| format!("os_string couldn't be converted to a rust string {:?}", oss))?;
                     let file_stem = file_stem_ref.to_string();
@@ -58,7 +58,7 @@ pub fn json_files_to_rust<T : JsonFile>(ite : impl Iterator<Item = T>, validatio
             if root.is_none() {
                 root = Some(json_root_to_rust(file.json())?);
             } else{
-                Err("There's two 'root.json5's in the directory")? //unreachableだけど一応
+                Err("There's two 'root.json5_back's in the directory")? //unreachableだけど一応
             }
         } else{
             match json_item_str_to_rust(file.json(), name){
@@ -69,7 +69,7 @@ pub fn json_files_to_rust<T : JsonFile>(ite : impl Iterator<Item = T>, validatio
     }
 
     if root.is_none(){
-        Err("root.json5 is needed")?
+        Err("root.json5_back is needed")?
     }
 
     return construct_root(root.unwrap(), map, validation);

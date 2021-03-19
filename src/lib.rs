@@ -3,8 +3,8 @@
 #![feature(test)]
 extern crate test;
 
-#[cfg(test)]
-mod sample_test;
+//#[cfg(test)]
+//mod sample_test;
 
 pub mod archiver;
 pub mod compaction;
