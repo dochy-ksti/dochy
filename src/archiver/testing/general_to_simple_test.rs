@@ -9,7 +9,7 @@ fn general_to_simple_test() -> ArcResult<()>{
     crate::archiver::imp::create_archive_from_directory::create_archive_from_directory(
         "./src/json/general", &mut buf, |_| false, &ArchiveOptions::from(ArchiveOptionsBuilder{
             archive_subfolders : false,
-            extensions_archived : vec!["json5_back"],
+            extensions_archived : vec!["json5"],
         })?)?{
 
         let archive = read_archive_data(&mut buf.as_slice())?;

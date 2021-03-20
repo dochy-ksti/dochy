@@ -34,7 +34,7 @@ fn save_test() -> FsResult<()> {
         let b = get_bool(p, "b")?;
         assert_eq!(b.value().unwrap(), &true);
     }
-    std::fs::copy("src/json_dir/simple_mod1/root.json5_back", &src_dir_path.join("root.json5_back"))?;
+    std::fs::copy("src/json_dir/simple_mod1/root.json5", &src_dir_path.join("root.json5"))?;
 
     {
         let mut root = json_dir_to_rust(&src_dir_path, false)?;
