@@ -1,12 +1,12 @@
 [package]
 name = "dochy_json5"
-version = "0.2.0"
+version = "0.4.0"
 authors = ["juzu <dochy.ksti@gmail.com>"]
 edition = "2018"
 
 license = "MIT"
-description = "Handles customized json5 format for my project"
-repository = "https://github.com/dochy-ksti/dochy_json5"
+description = "Handles customized json5 for my project"
+repository = "https://github.com/dochy-ksti/dochy"
 readme = "readme.md"
 keywords = ["json5"]
 

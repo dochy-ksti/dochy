@@ -1,5 +1,5 @@
 use crate::sample_test::sample_code::version_awareness_accessor::RootIntf;
-use crate::core::structs::{UndefOr, NullOr};
+use dochy_core::structs::{UndefOr, NullOr};
 use std::cell::UnsafeCell;
 
 struct VeraAccessorWrapper{

@@ -2,7 +2,7 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::core::structs::{RootObject};
+    use dochy_core::structs::{RootObject};
     use crate::sample_test::testing::diff::generated_test_list::test::{RootIntf, Refed1TableID};
     use crate::sample_test::testing::diff::util::get_root_obj::get_root_obj;
     use crate::sample_test::error::DpResult;
@@ -10,8 +10,8 @@ mod tests {
     fn apply(current : &RootObject, path : &str) -> DpResult<RootIntf>{
         let mut moto = get_root_obj(path)?;
 
-        let diff = crate::diff::get_diff(&moto, current)?;
-        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, current)?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         Ok(RootIntf::new(moto))
     }
 

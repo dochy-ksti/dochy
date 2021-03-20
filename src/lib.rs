@@ -6,10 +6,10 @@ extern crate test;
 #[cfg(test)]
 mod sample_test;
 
-pub mod archiver;
+pub mod json5;
 pub mod compaction;
+pub mod intf;
+pub mod archiver;
 pub mod core;
 pub mod diff;
 pub mod fs;
-pub mod intf;
-pub mod json5;

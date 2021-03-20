@@ -1,19 +1,19 @@
-use crate::core::intf::{RootObjectPtr, MListPtr, MItemPtr};
-use crate::core::intf::{mitem};
-use crate::core::structs::Qv;
-use crate::core::rust_to_json_new_default;
-use crate::diff::apply_diff;
+use dochy_core::intf::{RootObjectPtr, MListPtr, MItemPtr};
+use dochy_core::intf::{mitem};
+use dochy_core::structs::Qv;
+use dochy_core::rust_to_json_new_default;
+use dochy_diff::apply_diff;
 use crate::sample_test::error::DpResult;
 
 
 //#[test]
 fn sample_employee() -> DpResult<()>{
     let ini_path= "sample_code_json/sample_employee_dochy_initial";
-    let mut r = crate::core::json_dir_to_rust(ini_path, false)?;
+    let mut r = dochy_core::json_dir_to_rust(ini_path, false)?;
 
     let rp = RootObjectPtr::new(&mut r);
 
-    let mut ml : MListPtr<MItemPtr> = crate::core::intf::root::get_mlist(
+    let mut ml : MListPtr<MItemPtr> = dochy_core::intf::root::get_mlist(
         rp, "@Employees")?;
     ml.insert();
     let item = ml.insert();
@@ -37,9 +37,9 @@ fn sample_employee() -> DpResult<()>{
     //let hoge = rust_to_json_new_default(&r)?;
     //println!("{}", hoge.to_string_pretty());
 
-    let mut from = crate::core::json_dir_to_rust(
+    let mut from = dochy_core::json_dir_to_rust(
         ini_path, false)?;
-    let vec = crate::diff::get_diff(&from, &r)?;
+    let vec = dochy_diff::get_diff(&from, &r)?;
     println!("{}", vec.len());
     apply_diff(&mut from, &mut vec.as_slice())?;
 

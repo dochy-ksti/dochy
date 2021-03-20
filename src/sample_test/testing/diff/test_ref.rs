@@ -2,8 +2,8 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::core::intf::null_or::{NullOr, UndefOr};
-    use crate::core::structs::Qv;
+    use dochy_core::intf::null_or::{NullOr, UndefOr};
+    use dochy_core::structs::Qv;
     use crate::sample_test::testing::diff::util::get_root_obj::get_root_obj;
     use crate::sample_test::testing::diff::generated_test_ref::test::{RootIntf, Refed1TableID, Refed2TableID, Refed3TableID, Refed4TableID};
     use crate::sample_test::error::DpResult;
@@ -24,8 +24,8 @@ mod tests {
 
         let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.to_string()))?;
-        crate::diff::apply_diff(&mut moto, &mut diff.as_slice()).or_else(|e| Err(e.to_string()))?;
+        let diff = dochy_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.to_string()))?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice()).or_else(|e| Err(e.to_string()))?;
         let mut intf = RootIntf::new(moto);
         let f = intf.list1().first().unwrap();
 
@@ -43,8 +43,8 @@ mod tests {
 
         let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
-        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let f = intf.list1().last().unwrap();
 
@@ -62,8 +62,8 @@ mod tests {
 
         let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
-        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let f = intf.list2().first().unwrap();
 
@@ -80,8 +80,8 @@ mod tests {
 
         let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
-        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let f = intf.list2().last().unwrap();
 
@@ -100,8 +100,8 @@ mod tests {
 
         let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
-        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let f = intf.list3().first().unwrap();
 
@@ -118,8 +118,8 @@ mod tests {
 
         let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = crate::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
-        crate::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, unsafe{ intf.root_obj_ref() })?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let f = intf.list3().last().unwrap();
 

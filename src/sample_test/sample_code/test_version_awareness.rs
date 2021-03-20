@@ -1,6 +1,6 @@
 
-    use crate::core::json_dir_to_rust;
-    use crate::intf::generate_interface;
+    use dochy_core::json_dir_to_rust;
+    use dochy_intf::generate_interface;
 
     #[test]
     fn generate_version_awareness() {

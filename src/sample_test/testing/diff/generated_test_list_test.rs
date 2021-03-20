@@ -1,5 +1,5 @@
-// use crate::core::intf::*;
-// use crate::core::structs::*;
+// use dochy_core::intf::*;
+// use dochy_core::structs::*;
 // unsafe impl Send for RootIntf{}
 // #[derive(Debug, PartialEq)]
 // pub struct RootIntf{

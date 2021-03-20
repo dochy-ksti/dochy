@@ -1,0 +1,18 @@
+[package]
+name = "dochy_diff"
+version = "0.4.0"
+authors = ["juzu <dochy.ksti@gmail.com>"]
+edition = "2018"
+
+license = "MIT"
+description = "Calculates Dochy Diff."
+repository = "https://github.com/dochy-ksti/dochy"
+readme = "readme.md"
+keywords = ["data","diff"]
+
+[dependencies]
+dochy_core = { path="../dochy_core", version="0.4.0" }
+dochy_compaction = {path="../dochy_compaction", version="0.4.0"}
+bit-vec = "0.6.1"
+anyhow = "1.0.34"
+with_capacity_safe = "0.3.0"

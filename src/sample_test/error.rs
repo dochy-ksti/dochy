@@ -52,16 +52,16 @@ impl From<std::io::Error> for DpError {
     fn from(e : std::io::Error) -> Self { Self::new(e) }
 }
 
-impl From<crate::archiver::error::NouArcError> for DpError{
-    fn from(e : crate::archiver::error::NouArcError) -> Self{ Self::new(e) }
+impl From<dochy_archiver::error::NouArcError> for DpError{
+    fn from(e : dochy_archiver::error::NouArcError) -> Self{ Self::new(e) }
 }
 
-impl From<crate::core::error::CoreError> for DpError{
-    fn from(e : crate::core::error::CoreError) -> Self{ Self::new(e) }
+impl From<dochy_core::error::CoreError> for DpError{
+    fn from(e : dochy_core::error::CoreError) -> Self{ Self::new(e) }
 }
 
-impl From<crate::diff::diff_error::DiffError> for DpError{
-    fn from(e : crate::diff::diff_error::DiffError) -> Self{ Self::new(e) }
+impl From<dochy_diff::diff_error::DiffError> for DpError{
+    fn from(e : dochy_diff::diff_error::DiffError) -> Self{ Self::new(e) }
 }
 
 

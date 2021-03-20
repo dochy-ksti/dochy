@@ -1,0 +1,14 @@
+[package]
+name = "dochy_intf"
+version = "0.4.0"
+authors = ["juzu <dochy.ksti@gmail.com>"]
+edition = "2018"
+
+license = "MIT"
+description = "Generates the source code to access Dochy Data"
+repository = "https://github.com/dochy-ksti/dochy"
+readme = "readme.md"
+keywords = ["data", "management"]
+
+[dependencies]
+dochy_core = {path="../dochy_core", version="0.4.0"}

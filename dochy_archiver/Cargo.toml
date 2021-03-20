@@ -1,0 +1,18 @@
+[package]
+name = "dochy_archiver"
+version = "0.4.0"
+authors = ["juzu <dochy.ksti@gmail.com>"]
+edition = "2018"
+
+license = "MIT"
+description = "A serializer which compresses integers"
+repository = "https://github.com/dochy-ksti/dochy"
+readme = "readme.md"
+keywords = ["archiver", "Snappy", "MetroHash"]
+
+[dependencies]
+dochy_compaction = { path="../dochy_compaction", version="0.4.0" }
+metrohash = "1.0.6"
+snap = "1.0.1"
+anyhow = "1.0.34"
+with_capacity_safe = "0.3.0"
