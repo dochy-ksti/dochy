@@ -1,4 +1,4 @@
-A serializer which has static types and compresses integers, bits, 
+A serializer which serializes values with dynamic types and compresses integers, bits, 
 and strings which represents decimals. 
 
 Even if a variable's size is 8 byte, when the actual value is 0 or 1, 
