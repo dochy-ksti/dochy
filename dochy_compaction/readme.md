@@ -1,7 +1,7 @@
 A serializer which has static types and compresses integers, bits, 
 and strings which represents decimals. 
 
-Even if a variable's size is 8 Byte, when the actual value is 0 or 1, 
+Even if a variable's size is 8 byte, when the actual value is 0 or 1, 
 this library can compress it to two bits.
 
 This is a base component of the Dochy File System.
@@ -64,3 +64,10 @@ impl SomeItem{
     }
 }
 ```
+
+### changelog
+#### 0.4.0 
+
+change encode of the values "undefined".
+
+add Binary, Binary8, Binary4, and Binary2 types.

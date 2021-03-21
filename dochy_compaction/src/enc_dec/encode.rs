@@ -68,14 +68,49 @@ pub fn encode<W : Write>(vec : &[KVal], write : &mut W) -> Result<usize>{
             KVal::BigStr(s)=>{
                 tag.append(0b0010_001, 7);
                 let vec = super::var_int::encode(s.len() as i64);
-                if 9 <= vec.len(){ panic!("BigStr is too large"); }
+                //if 9 <= vec.len(){ panic!("BigStr is too large"); }
                 tag.append((vec.len() - 1) as u64, 3);
                 data.extend_from_slice(&vec);
                 data.extend_from_slice(s.as_bytes());
             },
+            KVal::Binary(v) =>{
+                tag.append(0b0001_1, 5);
+                //ここは本当はu64でencodeすべき。気が向いたら直したい
+                let vec = super::var_int::encode(v.len() as i64);
+                tag.append((vec.len() - 1) as u64, 3);
+                data.extend_from_slice(&vec);
+                data.extend_from_slice(v);
+            },
+            KVal::Binary8(v) =>{
+                tag.append(0b0001_01, 6);
+                let vec = super::var_int::encode(v.len() as i64);
+                tag.append((vec.len() - 1) as u64, 3);
+                data.extend_from_slice(&vec);
+                for i in v{
+                    data.write_all(&i.to_le_bytes())?;
+                }
+            },
+            KVal::Binary4(v) =>{
+                tag.append(0b0001_001, 7);
+                let vec = super::var_int::encode(v.len() as i64);
+                tag.append((vec.len() - 1) as u64, 3);
+                data.extend_from_slice(&vec);
+                for i in v{
+                    data.write_all(&i.to_le_bytes())?;
+                }
+            },
+            KVal::Binary2(v) =>{
+                tag.append(0b0001_0001, 8);
+                let vec = super::var_int::encode(v.len() as i64);
+                tag.append((vec.len() - 1) as u64, 3);
+                data.extend_from_slice(&vec);
+                for i in v{
+                    data.write_all(&i.to_le_bytes())?;
+                }
+            },
             KVal::Undefined(i)=>{
                 if 8 <= *i{ panic!("Undefined must be 0..=7") }
-                tag.append(0b0001, 4);
+                tag.append(0b0000_1, 5);
                 tag.append(0, *i as usize);
                 tag.append(1, 1);
             },

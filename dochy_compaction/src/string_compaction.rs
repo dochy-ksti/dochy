@@ -43,6 +43,10 @@ pub fn to_string(k : &KVal) -> String{
         KVal::Double(d) => d.to_string(),
         KVal::Decimal(d) => d.to_string(),
         KVal::BigStr(s) => s.to_string(),
+        KVal::Binary(v) => format!("{:?}", v),
+        KVal::Binary8(v) => format!("{:?}", v),
+        KVal::Binary4(v) => format!("{:?}", v),
+        KVal::Binary2(v) => format!("{:?}", v),
         KVal::Undefined(u) => format!("undefined{}", u),
     }
 }

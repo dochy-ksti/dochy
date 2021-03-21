@@ -11,5 +11,9 @@ pub(crate) enum KihonFromTag{
     Double,
     Decimal(u8),
     BigStr(u8),
+    Binary(u8),
+    Binary8(u8),
+    Binary4(u8),
+    Binary2(u8),
     Undefined(u8),
 }

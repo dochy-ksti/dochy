@@ -62,6 +62,30 @@ pub fn decode<R : Read>(read : &mut R) -> Result<(Vec<KVal>, usize)>{
                 let s = reader.read_string(len as usize)?;
                 KVal::BigStr(s)
             },
+            KihonFromTag::Binary(size) =>{
+                let v = reader.read(size as usize)?;
+                let len = super::var_int::decode(v) as usize;
+                let v = reader.read_binary(len)?;
+                KVal::Binary(v)
+            },
+            KihonFromTag::Binary8(size) =>{
+                let v = reader.read(size as usize)?;
+                let len = super::var_int::decode(v) as usize;
+                let v = reader.read_binary8(len)?;
+                KVal::Binary8(v)
+            },
+            KihonFromTag::Binary4(size) =>{
+                let v = reader.read(size as usize)?;
+                let len = super::var_int::decode(v) as usize;
+                let v = reader.read_binary4(len)?;
+                KVal::Binary4(v)
+            },
+            KihonFromTag::Binary2(size) =>{
+                let v = reader.read(size as usize)?;
+                let len = super::var_int::decode(v) as usize;
+                let v = reader.read_binary2(len)?;
+                KVal::Binary2(v)
+            },
             KihonFromTag::Undefined(i) => KVal::Undefined(i),
         };
         result.push(kihon);

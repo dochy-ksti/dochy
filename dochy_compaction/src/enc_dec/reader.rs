@@ -29,6 +29,43 @@ impl<'a, T : Read> Reader<'a, T>{
         self.len += buf.len();
         Ok(String::from_utf8(buf)?)
     }
+    pub fn read_binary(&mut self, bytes : usize) -> Result<Vec<u8>>{
+        let mut buf : Vec<u8> = vec_with_capacity_safe(bytes)?;
+        unsafe{ buf.set_len(bytes); }
+        self.read.read_exact(&mut buf)?;
+        self.len += buf.len();
+        Ok(buf)
+    }
+    pub fn read_binary8(&mut self, len : usize) -> Result<Vec<u64>>{
+        let mut buf : Vec<u64> = vec_with_capacity_safe(len)?;
+        let mut temp = [0u8; 8];
+        for _ in 0..len{
+            self.read.read_exact(&mut temp)?;
+            self.len += 8;
+            buf.push(u64::from_le_bytes(temp));
+        }
+        Ok(buf)
+    }
+    pub fn read_binary4(&mut self, len : usize) -> Result<Vec<u32>>{
+        let mut buf : Vec<u32> = vec_with_capacity_safe(len)?;
+        let mut temp = [0u8; 4];
+        for _ in 0..len{
+            self.read.read_exact(&mut temp)?;
+            self.len += 4;
+            buf.push(u32::from_le_bytes(temp));
+        }
+        Ok(buf)
+    }
+    pub fn read_binary2(&mut self, len : usize) -> Result<Vec<u16>>{
+        let mut buf : Vec<u16> = vec_with_capacity_safe(len)?;
+        let mut temp = [0u8; 2];
+        for _ in 0..len{
+            self.read.read_exact(&mut temp)?;
+            self.len += 2;
+            buf.push(u16::from_le_bytes(temp));
+        }
+        Ok(buf)
+    }
 
     pub fn bytes_read(&self) -> usize{ self.len }
 

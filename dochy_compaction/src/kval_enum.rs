@@ -13,6 +13,10 @@ pub enum KVal {
     Double(f64),
     Decimal(Decimal),
     BigStr(String),
+    Binary(Vec<u8>),
+    Binary8(Vec<u64>),
+    Binary4(Vec<u32>),
+    Binary2(Vec<u16>),
     Undefined(u8),
 }
 

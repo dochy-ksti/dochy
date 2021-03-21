@@ -77,9 +77,31 @@ impl TagReader{
             },
             3 =>{
                 let count = self.read_next_1()?;
+                match count{
+                    0 => {
+                        let bytes = self.read_bits(3)?;
+                        return Ok(KihonFromTag::Binary((bytes + 1) as u8));
+                    },
+                    1 => {
+                        let bytes = self.read_bits(3)?;
+                        return Ok(KihonFromTag::Binary8((bytes + 1) as u8));
+                    },
+                    2 => {
+                        let bytes = self.read_bits(3)?;
+                        return Ok(KihonFromTag::Binary4((bytes + 1) as u8));
+                    },
+                    3 => {
+                        let bytes = self.read_bits(3)?;
+                        return Ok(KihonFromTag::Binary2((bytes + 1) as u8));
+                    },
+                    _ => bail!("undefined tag 0001 count {}", count),
+                }
+            }
+            4 =>{
+                let count = self.read_next_1()?;
                 return Ok(KihonFromTag::Undefined(count as u8));
             },
-            _ =>{ bail!("undefined_tag 0000") } //panic!("Tag's zeroes must be within 3") }
+            _ =>{ bail!("undefined_tag 00000") } //panic!("Tag's zeroes must be within 3") }
         }
     }
 

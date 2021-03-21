@@ -14,7 +14,7 @@ pub mod core;
 pub mod diff;
 pub mod fs;
 
-//TODO: compactionにBinaryを追加
+
 //TODO: coreに新配列 Binaryを追加
 //TODO: IntArrayとFloatArrayのエンコードをcompaction::Binaryにする
 //TODO: intf に obj::hoge_default_value() を追加
