@@ -100,6 +100,7 @@ fn get_array_type(a : &Vec<JVal>) -> GatResult{
                 return match s.as_str(){
                     "IntArray" =>{ AT(ArrayType::Int) },
                     "FloatArray" =>{ AT(ArrayType::Float) },
+                    "Binary" =>{ AT(ArrayType::Binary) },
                     "Int" =>{ Int },
                     "Float" =>{ Float },
                     "Str" =>{ Str },
@@ -137,7 +138,7 @@ pub(crate ) fn get_array(a : &[JVal], array_type : &ArrayType, names : &Names) -
             },
             JVal::Int(i, _) => {
                 match array_type {
-                    ArrayType::Int => RustParam::Int(Qv::Val(*i)),
+                    ArrayType::Int | ArrayType::Binary => RustParam::Int(Qv::Val(*i)),
                     ArrayType::Float => RustParam::Float(Qv::Val(*i as f64)),
                     //_ => Err(format!(r#"{} {} int is not valid in this array {}"#, item.line_str(), item.slice(), names))?,
                 }

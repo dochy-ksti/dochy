@@ -22,6 +22,9 @@ pub(crate) fn rust_array_to_json(array : &RustArray, at : &ArrayType) -> Value{
         ArrayType::Float => {
             result.push(Value::String("FloatArray".to_string()))
         },
+        ArrayType::Binary =>{
+            result.push(Value::String("Binary".to_string()))
+        }
         //ArrayType::Num2 =>{ result.push(Value::String("Num2Array".to_string())) }
     }
     match array.qv(){

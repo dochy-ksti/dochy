@@ -20,6 +20,10 @@ impl RustArray{
         RustArray::new(qv.map(|a| a.to_params()))
     }
 
+    pub(crate) fn from_binary(qv : &Qv<RustBinary>) -> RustArray{
+        RustArray::new(qv.map(|a| a.to_params()))
+    }
+
     pub(crate) fn qv(&self) -> &Qv<Vec<RustParam>>{ self.array.as_ref() }
 
     pub(crate) fn to_float_array(&self) -> Option<Qv<RustFloatArray>>{
@@ -30,10 +34,15 @@ impl RustArray{
         self.qv().opt_map(|a| RustIntArray::from_params(a))
     }
 
+    pub(crate) fn to_binary(&self) -> Option<Qv<RustBinary>>{
+        self.qv().opt_map(|a| RustBinary::from_params(a))
+    }
+
     pub(crate) fn to_param(&self, at : &ArrayType) -> Option<RustParam>{
         Some(match at{
             ArrayType::Float =>{ RustParam::FloatArray(self.to_float_array()?) },
             ArrayType::Int =>{ RustParam::IntArray(self.to_int_array()?) },
+            ArrayType::Binary =>{ RustParam::Binary(self.to_binary()?) },
             //ArrayType::String =>{ RustParam::StrArray(self.to_str_array()?)}
             //ArrayType::Num2 =>{ RustParam::Num2Array(self.to_num2_array()?)}
         })
@@ -76,4 +85,19 @@ impl RustIntArray{
     pub fn vec(&self) -> &Vec<i64>{ self.b.as_ref() }
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub struct RustBinary{
+    b : Box<Vec<u8>>,
+}
 
+impl RustBinary{
+    pub fn new(b : Vec<u8>) -> RustBinary{ RustBinary{ b : Box::new(b) }}
+    pub(crate) fn to_params(&self) -> Vec<RustParam>{
+        self.b.iter().map(|a| RustParam::Int(Qv::Val(*a as i64))).collect()
+    }
+    pub(crate) fn from_params(v : &Vec<RustParam>) -> Option<RustBinary>{
+        let op  = v.iter().map(|p| p.to_u8()).collect::<Option<Vec<u8>>>();
+        Some(RustBinary::new(op?))
+    }
+    pub fn vec(&self) -> &Vec<u8>{ self.b.as_ref() }
+}

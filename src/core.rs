@@ -24,6 +24,7 @@ pub mod structs{
     pub use dochy_core::structs::RustString;
     pub use dochy_core::structs::RustIntArray;
     pub use dochy_core::structs::RustFloatArray;
+    pub use dochy_core::structs::RustBinary;
     pub use dochy_core::structs::MutList;
     pub use dochy_core::structs::MutInnerList;
     pub use dochy_core::structs::MutItem;

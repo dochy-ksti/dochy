@@ -3,19 +3,18 @@ use crate::diff_error::DiffError;
 use with_capacity_safe::vec_with_capacity_safe;
 
 pub(crate) struct Reader{
-    vec : Vec<KVal>,
-    ind : usize,
+    vec : std::vec::IntoIter<KVal>,
 }
 
 impl Reader{
     pub(crate) fn new(vec : Vec<KVal>) -> Reader{
-        Reader{ vec, ind : 0 }
+        Reader{ vec : vec.into_iter()}
     }
 
-    pub(crate) fn read(&mut self) -> Result<&KVal, DiffError>{
-        let index = self.ind;
+    pub(crate) fn read(&mut self) -> Result<KVal, DiffError>{
+        //let index = self.ind;
 
-        self.ind += 1;
+        //self.ind += 1;
         Ok(self.vec.get(index).ok_or("reached the end of the data")?)
     }
 

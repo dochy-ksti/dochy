@@ -1,4 +1,4 @@
-use dochy_core::structs::{RustParam, MetaParam, VarType, QvType, RustIntArray, RustFloatArray};
+use dochy_core::structs::{RustParam, MetaParam, VarType, QvType, RustIntArray, RustFloatArray, RustBinary};
 use dochy_compaction::kval_enum::KVal;
 use dochy_compaction::basic_compaction::{comp_int, comp_double, comp_str};
 use crate::diff_error::DiffError;
@@ -73,22 +73,19 @@ fn write_param2(param : &RustParam, r : &mut Vec<KVal>) -> Result<(), DiffError>
         RustParam::String(s) => r.push( comp_str(s.value()?.to_string())),
         RustParam::IntArray(s) => write_int_array(s.value()?, r),
         RustParam::FloatArray(s) => write_float_array(s.value()?, r),
+        RustParam::Binary(s) => write_binary(s.value()?, r),
     }
     Ok(())
 }
 
 fn write_int_array(a : &RustIntArray, r : &mut Vec<KVal>){
-    let vec = a.vec();
-    r.push(comp_int(vec.len() as i64));
-    for i in vec{
-        r.push(comp_int(*i));
-    }
+    r.push(KVal::Binary8(a.vec().iter().map(|i| *i as u64).collect()))
 }
 
 fn write_float_array(a : &RustFloatArray, r : &mut Vec<KVal>){
-    let vec = a.vec();
-    r.push(comp_int(vec.len() as i64));
-    for f in vec{
-        r.push(comp_double(*f));
-    }
+    r.push(KVal::Binary8(a.vec().iter().map(|i| i.to_bits()).collect()))
+}
+
+fn write_binary(a : &RustBinary, r : &mut Vec<KVal>){
+    r.push(KVal::Binary(a.vec().clone()))
 }

@@ -7,6 +7,7 @@ pub use crate::imp::structs::rust_value::RustValue;
 pub use crate::imp::structs::rust_string::RustString;
 pub use crate::imp::structs::rust_array::RustIntArray;
 pub use crate::imp::structs::rust_array::RustFloatArray;
+pub use crate::imp::structs::rust_array::RustBinary;
 pub use crate::imp::structs::rust_list::MutList;
 pub use crate::imp::structs::rust_list::MutInnerList;
 pub use crate::imp::structs::rust_list::MutItem;

@@ -47,6 +47,7 @@ fn read_param2(meta : &MetaParam, r : &mut Reader) -> Result<RustParam, DiffErro
         }
         ParamType::IntArray => { RustParam::IntArray(Qv::Val(read_int_array(r)?)) }
         ParamType::FloatArray => { RustParam::FloatArray(Qv::Val(read_float_array(r)?)) }
+        ParamType::Binary => { RustParam::Binary(Qv::Val(read_bi))}
     };
     Ok(p)
 }
@@ -67,4 +68,8 @@ fn read_float_array(r : &mut Reader) -> Result<RustFloatArray, DiffError>{
         vec.push(r.read()?.as_f64()?)
     }
     Ok(RustFloatArray::new(vec))
+}
+
+fn read_binary(r : &mut Reader) -> Result<RustBinary, DiffError>{
+    r.read()
 }

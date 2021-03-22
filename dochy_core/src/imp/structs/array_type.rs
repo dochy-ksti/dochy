@@ -3,6 +3,7 @@
 pub(crate) enum ArrayType{
     Float,
     Int,
+    Binary,
 }
 
 impl ArrayType{

@@ -24,7 +24,7 @@ pub enum RustValue{
 #[repr(u64)]
 #[derive(Debug, PartialEq, Clone)]
 pub enum RustMemberType {
-    Bool, Float, Int, Str, IntArray, FloatArray,
+    Bool, Float, Int, Str, IntArray, FloatArray, Binary,
     Table, CList, MList, Cil, Mil
 }
 
