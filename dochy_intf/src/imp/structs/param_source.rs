@@ -41,6 +41,7 @@ impl ParamSource{
 
         sb.push(0,&format!("pub fn {}(&self) -> {}{{", with_old(&snake_name, is_old), with_var(pt.typename(), var_type)));
         sb.push(1,&format!("let qv = {}::get_{}(self.ptr, \"{}\").unwrap();", mod_name, pt.nickname(), id));
+        
         match &var_type {
             VarType::Normal => {
                 sb.push(1,&format!("qv.into_value().unwrap()"));
