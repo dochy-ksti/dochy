@@ -1,5 +1,6 @@
 use crate::imp::structs::source_builder::SourceBuilder;
 use crate::imp::to_member_source::MemberSource;
+use dochy_core::structs::ParamType;
 
 pub struct RootSource{
     members : Vec<MemberSource>,
@@ -36,8 +37,19 @@ impl RootIntf{
         for mem in self.members() {
             match mem{
                 MemberSource::Param(param) =>{
-                    sb.push_without_newline(1, &param.get("root"));
-                    sb.push_without_newline(1, &param.set("root"));
+                    match param.param_type() {
+                        ParamType::Binary => {
+                            sb.push_without_newline(1, &param.get("root"));
+                            sb.push_without_newline(1, &param.get_immutable("root"));
+                            sb.push_without_newline(1, &param.get_mutable("root"));
+                            sb.push_without_newline(1, &param.set("root"));
+                        }
+                        _ => {
+                            sb.push_without_newline(1, &param.get("root"));
+                            sb.push_without_newline(1, &param.set("root"));
+                        }
+                    }
+
                 },
                 MemberSource::Table(data) =>{
                     sb.push_without_newline(1, &data.get());

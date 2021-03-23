@@ -5,6 +5,7 @@ use dochy_core::intf::member_desc::MemberDesc;
 use dochy_core::intf::ref_desc::RefDescs;
 use crate::imp::util::to_type_name::to_mitem_type_name;
 use crate::imp::structs::refs_source::RefsSource;
+use dochy_core::structs::ParamType;
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct MItemSource {
@@ -46,8 +47,19 @@ impl MItemSource {
         for mem in self.members() {
             match mem{
                 MemberSource::Param(param) =>{
-                    sb.push_without_newline(1, &param.get("mitem"));
-                    sb.push_without_newline(1, &param.set("mitem"));
+
+                    match param.param_type() {
+                        ParamType::Binary =>{
+                            sb.push_without_newline(1, &param.get("mitem"));
+                            sb.push_without_newline(1, &param.get_immutable("mitem"));
+                            sb.push_without_newline(1, &param.get_mutable("mitem"));
+                            sb.push_without_newline(1, &param.set("mitem"));
+                        }
+                        _ => {
+                            sb.push_without_newline(1, &param.get("mitem"));
+                            sb.push_without_newline(1, &param.set("mitem"));
+                        }
+                    }
                 },
                 MemberSource::Table(_) =>{},
                 MemberSource::CList(_) =>{},

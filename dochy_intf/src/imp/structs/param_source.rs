@@ -69,7 +69,7 @@ impl ParamSource{
         let var_type = self.var_type();
         let pt = self.param_type();
 
-        sb.push(0,&format!("pub fn {}_slice(&self) -> {}{{", with_old(&snake_name, is_old), with_var(&format!("&{}", pt.typename()), var_type)));
+        sb.push(0,&format!("pub fn {}_immutable(&self) -> {}{{", with_old(&snake_name, is_old), with_var(&format!("&{}", pt.typename()), var_type)));
         sb.push(1,&format!("let qv = {}::get_immutable_{}(self.ptr, \"{}\").unwrap();", mod_name, pt.nickname(), id));
 
 
