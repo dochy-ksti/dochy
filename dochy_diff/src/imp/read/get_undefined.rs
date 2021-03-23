@@ -8,5 +8,6 @@ pub(crate) fn get_undefined(pt : ParamType) -> RustParam{
         ParamType::String => { RustParam::String(Qv::Undefined) }
         ParamType::IntArray => { RustParam::IntArray(Qv::Undefined) }
         ParamType::FloatArray => { RustParam::FloatArray(Qv::Undefined) }
+        ParamType::Binary =>{ RustParam::Binary(Qv::Undefined) }
     }
 }

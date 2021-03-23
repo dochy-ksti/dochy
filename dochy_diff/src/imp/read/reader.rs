@@ -15,7 +15,7 @@ impl Reader{
         //let index = self.ind;
 
         //self.ind += 1;
-        Ok(self.vec.get(index).ok_or("reached the end of the data")?)
+        Ok(self.vec.next().ok_or("reached the end of the data")?)
     }
 
     pub(crate) fn read_u64_array(&mut self) -> Result<Vec<u64>, DiffError>{

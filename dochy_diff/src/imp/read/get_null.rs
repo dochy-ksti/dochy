@@ -8,5 +8,6 @@ pub(crate) fn get_null(pt : ParamType) -> RustParam{
         ParamType::String => { RustParam::String(Qv::Null) }
         ParamType::IntArray => { RustParam::IntArray(Qv::Null) }
         ParamType::FloatArray => { RustParam::FloatArray(Qv::Null) }
+        ParamType::Binary => { RustParam::Binary(Qv::Null)}
     }
 }

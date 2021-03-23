@@ -67,6 +67,14 @@ pub(crate) fn to_member_source(mem : &MemberDesc) -> MemberSource{
                 mem.is_old(),
             ))
         },
+        RustMemberType::Binary =>{
+            MemberSource::Param(ParamSource::new(
+                mem.name().to_string(),
+                mem.var_type(),
+                ParamType::Binary,
+                mem.is_old(),
+            ))
+        },
         RustMemberType::Table =>{
             MemberSource::Table(TableSource::from(mem))
         }
