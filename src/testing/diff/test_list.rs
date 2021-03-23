@@ -3,8 +3,8 @@
 #[cfg(test)]
 mod tests {
     use dochy_core::structs::{RootObject};
-    use crate::sample_test::testing::diff::generated_test_list::test::{RootIntf, Refed1TableID};
-    use crate::sample_test::testing::diff::util::get_root_obj::get_root_obj;
+    use crate::testing::diff::generated_test_list::test::{RootIntf, Refed1TableID};
+    use crate::testing::diff::util::get_root_obj::get_root_obj;
     use crate::sample_test::error::DpResult;
 
     fn apply(current : &RootObject, path : &str) -> DpResult<RootIntf>{
@@ -17,7 +17,7 @@ mod tests {
 
     #[test]
     fn test_modify() -> DpResult<()>{
-        let json_dir_path = "src/sample_test/testing/diff/diff_list/";
+        let json_dir_path = "src/testing/diff/diff_list/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);
@@ -33,7 +33,7 @@ mod tests {
 
     #[test]
     fn test_add_add_remove() -> DpResult<()>{
-        let json_dir_path = "src/sample_test/testing/diff/diff_list/";
+        let json_dir_path = "src/testing/diff/diff_list/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);
@@ -62,7 +62,7 @@ mod tests {
     }
 
     fn test_remove_add_add_add_remove() -> DpResult<()>{
-        let json_dir_path = "src/sample_test/testing/diff/diff_list/";
+        let json_dir_path = "src/testing/diff/diff_list/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);
@@ -108,7 +108,7 @@ mod tests {
     }
 
     fn test_in_add_add_add_add_remove() -> DpResult<()>{
-        let json_dir_path = "src/sample_test/testing/diff/diff_list/";
+        let json_dir_path = "src/testing/diff/diff_list/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);

@@ -94,8 +94,8 @@ pub fn get_immutable_binary(root : RootObjectPtr, name : &str) -> Option<Qv<&Vec
         None
     }
 }
-pub unsafe fn get_mutable_binary<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
-    let item =  &mut *ps.ptr;
+pub fn get_mutable_binary<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
+    let item =  unsafe{ &mut *ps.ptr };
     if let Some(RustParam::Binary(b)) = get_param_mut(item.sabun_mut(), name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),

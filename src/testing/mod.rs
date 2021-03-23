@@ -1,7 +1,7 @@
 
 
 //コード生成したりしてたいへんなので普段はやらないtest
-//mod diff;
+mod diff;
 
 //ベンチマークテスト
 //mod vector_btree_construction_performance;

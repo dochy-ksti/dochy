@@ -5,6 +5,7 @@
   hogeBool : true,
   hogeIntArray : [10, 20, 30],
   hogeFloatArray : ["FloatArray", 2.0, 3, 4.0],
+  hogeBinary : ["Binary", 1,2,3],
   "hogeIntHatena?" : 12,
   "hogeIntHatenaToNull?" : 120,
   "hogeIntHatenaNull?" : ["Int", null],

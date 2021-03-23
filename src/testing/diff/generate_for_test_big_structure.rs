@@ -2,7 +2,7 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::sample_test::testing::diff::util::generate_intf_src::generate_intf_src;
+    use crate::testing::diff::util::generate_intf_src::generate_intf_src;
     use crate::sample_test::error::DpResult;
 
     #[test]

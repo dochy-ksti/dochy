@@ -2,11 +2,11 @@
 	"Table",
 	["Default", { s : "", n : 0.0, Ref : { unkoList : ""}}],
 	{
-		ID : "1ban",
+		ID : "a1ban",
 		Ref : { unkoList : "first" },
 	},
 	{
-		ID: "2ban",
+		ID: "a2ban",
 		s: "hugahuga",
 		n: 30.08,
 		Ref: {

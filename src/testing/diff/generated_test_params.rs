@@ -44,6 +44,21 @@
 		pub fn set_hoge_bool(&mut self, hoge_bool : bool){
 			root::set_bool(self.ptr, "hogeBool", Qv::Val(hoge_bool));
 		}
+		pub fn hoge_binary(&self) -> Vec<u8>{
+			let qv = root::get_binary(self.ptr, "hogeBinary").unwrap();
+			qv.into_value().unwrap()
+		}
+		pub fn hoge_binary_immutable(&self) -> &Vec<u8>{
+			let qv = root::get_immutable_binary(self.ptr, "hogeBinary").unwrap();
+			qv.into_value().unwrap()
+		}
+		pub fn hoge_binary_mutable(&self) -> &mut Vec<u8>{
+			let qv = root::get_mutable_binary(self.ptr, "hogeBinary").unwrap();
+			qv.into_value().unwrap()
+		}
+		pub fn set_hoge_binary(&mut self, hoge_binary : Vec<u8>){
+			root::set_binary(self.ptr, "hogeBinary", Qv::Val(hoge_binary));
+		}
 		pub fn hoge_undef_null_undef(&self) -> Qv<i64>{
 			let qv = root::get_int(self.ptr, "hogeUndefNullUndef").unwrap();
 			qv

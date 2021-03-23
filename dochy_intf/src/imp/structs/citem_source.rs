@@ -45,7 +45,6 @@ impl CItemSource {
         for mem in self.members() {
             match mem{
                 MemberSource::Param(param) =>{
-
                     match param.param_type() {
                         ParamType::Binary =>{
                             sb.push_without_newline(1, &param.get("citem"));

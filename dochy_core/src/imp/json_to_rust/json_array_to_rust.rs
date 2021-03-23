@@ -17,7 +17,9 @@ pub(crate) fn json_array_to_rust(array : &Vec<JVal>, value_type : VarType, span 
     return match gat{
         AT(array_type) => {
             let array = get_array(&array[1..], &array_type, names)?;
-            Ok(RustValue::Param(array.to_param(&array_type)?, value_type))
+            Ok(RustValue::Param(array.to_param(&array_type).or_else(|e| {
+                Err(format!(r#"{} {}: {}"#, span.line_str(), names, e.to_string()))
+            })?, value_type))
         },
         NoTagInt =>{
             let array = get_array(&array, &ArrayType::Int, names)?;

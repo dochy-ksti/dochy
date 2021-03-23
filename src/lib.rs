@@ -6,6 +6,10 @@ extern crate test;
 #[cfg(test)]
 mod sample_test;
 
+#[allow(dead_code)]
+#[cfg(test)]
+mod testing;
+
 pub mod json5;
 pub mod compaction;
 pub mod intf;

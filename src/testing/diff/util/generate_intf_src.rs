@@ -1,5 +1,5 @@
 use dochy_intf::generate_interface;
-use crate::sample_test::testing::diff::util::get_root_obj::get_root_obj;
+use crate::testing::diff::util::get_root_obj::get_root_obj;
 use dochy_core::structs::RootObject;
 use crate::sample_test::error::DpResult;
 

@@ -12,6 +12,7 @@ use crate::imp::intf::citem::{get_enum_impl, get_ref_id_imol};
 use crate::imp::structs::util::set_sabun::SetSabunError;
 use crate::imp::structs::rust_string::RustString;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
+use crate::structs::RustBinary;
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -101,8 +102,8 @@ pub fn get_binary(ps : MItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
     }
 }
 
-pub unsafe fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
-    let (item,list_def) =  (&*ps.item, &*ps.list_def) ;
+pub fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
+    let (item,list_def) =  unsafe{ (&*ps.item, &*ps.list_def) };
     if let Some(RustParam::Binary(b)) = get_param(item, list_def, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec())),
@@ -114,8 +115,8 @@ pub unsafe fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Opt
     }
 }
 
-pub unsafe fn get_mutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
-    let item =  &mut *ps.item;
+pub fn get_mutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
+    let item =  unsafe{ &mut *ps.item };
     if let Some(RustParam::Binary(b)) = get_param_mut(item, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
@@ -181,6 +182,17 @@ pub fn set_int_array(ps : MItemPtr, name : &str, val : Qv<Vec<i64>>) -> bool{
 pub fn set_float_array(ps : MItemPtr, name : &str, val : Qv<Vec<f64>>) -> bool{
     let (item, def) = unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
     match item.set_sabun(def,name.to_string(), RustParam::FloatArray(val.into_map(|s| RustFloatArray::new(s)))){
+        Ok(_) =>{ true },
+        Err(e) => match e{
+            SetSabunError::ParamNotFound =>{ false },
+            SetSabunError::ParamTypeMismatch =>{ false },
+            SetSabunError::QvTypeMismatch =>{ false },
+        },
+    }
+}
+pub fn set_binary(ps : MItemPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
+    let (item, def) = unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
+    match item.set_sabun(def,name.to_string(), RustParam::Binary(val.into_map(|s| RustBinary::new(s)))){
         Ok(_) =>{ true },
         Err(e) => match e{
             SetSabunError::ParamNotFound =>{ false },

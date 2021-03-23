@@ -4,13 +4,13 @@
 mod tests {
     use dochy_core::intf::null_or::{NullOr, UndefOr};
     use dochy_core::structs::Qv;
-    use crate::sample_test::testing::diff::util::get_root_obj::get_root_obj;
-    use crate::sample_test::testing::diff::generated_test_ref::test::{RootIntf, Refed1TableID, Refed2TableID, Refed3TableID, Refed4TableID};
+    use crate::testing::diff::util::get_root_obj::get_root_obj;
+    use crate::testing::diff::generated_test_ref::test::{RootIntf, Refed1TableID, Refed2TableID, Refed3TableID, Refed4TableID};
     use crate::sample_test::error::DpResult;
 
     #[test]
     fn test_diff2() -> DpResult<()>{
-        let json_dir_path = "src/sample_test/testing/diff/diff_ref/";
+        let json_dir_path = "src/testing/diff/diff_ref/";
         let root_obj = get_root_obj(json_dir_path)?;
 
         let mut intf = RootIntf::new(root_obj);

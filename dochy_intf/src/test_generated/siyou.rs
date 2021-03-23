@@ -46,6 +46,13 @@ impl RootIntf{
 	pub fn set_int_array(&mut self, int_array : Vec<i64>){
 		root::set_int_array(self.ptr, "intArray", Qv::Val(int_array));
 	}
+	pub fn some_str(&self) -> String{
+		let qv = root::get_str(self.ptr, "someStr").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn set_some_str(&mut self, some_str : String){
+		root::set_str(self.ptr, "someStr", Qv::Val(some_str));
+	}
 	pub fn hego_float(&self) -> NullOr<f64>{
 		let qv = root::get_float(self.ptr, "hegoFloat").unwrap();
 		NullOr::from_qv(qv).unwrap()
@@ -74,6 +81,21 @@ impl RootIntf{
 	pub fn set_hoge_float(&mut self, hoge_float : f64){
 		root::set_float(self.ptr, "hogeFloat", Qv::Val(hoge_float));
 	}
+	pub fn binary(&self) -> Vec<u8>{
+		let qv = root::get_binary(self.ptr, "binary").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn binary_immutable(&self) -> &Vec<u8>{
+		let qv = root::get_immutable_binary(self.ptr, "binary").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn binary_mutable(&self) -> &mut Vec<u8>{
+		let qv = root::get_mutable_binary(self.ptr, "binary").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn set_binary(&mut self, binary : Vec<u8>){
+		root::set_binary(self.ptr, "binary", Qv::Val(binary));
+	}
 	pub fn weapon(&self) -> WeaponTable{
 		let ans = root::get_table(self.ptr, "weapon").unwrap();
 		WeaponTable::new(ans)
@@ -95,6 +117,10 @@ impl RootIntf{
 	pub fn hoge_list(&self) -> HogeListTable{
 		let ans = root::get_table(self.ptr, "hogeList").unwrap();
 		HogeListTable::new(ans)
+	}
+	pub fn some_data(&self) -> SomeDataTable{
+		let ans = root::get_table(self.ptr, "someData").unwrap();
+		SomeDataTable::new(ans)
 	}
 	pub fn hoge_int(&self) -> i64{
 		let qv = root::get_int(self.ptr, "hogeInt").unwrap();
@@ -322,6 +348,83 @@ impl HogeListCItem {
 		qv.into_value().unwrap()
 	}
 	
+}
+
+#[derive(Debug, PartialEq)]
+pub struct SomeDataTable {
+	ptr : TablePtr,
+}
+impl SomeDataTable {
+	pub fn new(ptr : TablePtr) -> SomeDataTable{ SomeDataTable{ ptr } } 
+	pub fn a2ban(&self) -> SomeDataCItem {
+		let ptr = table::get_value(self.ptr, "a2ban").unwrap();
+		SomeDataCItem::from(ptr)
+	}
+	pub fn a1ban(&self) -> SomeDataCItem {
+		let ptr = table::get_value(self.ptr, "a1ban").unwrap();
+		SomeDataCItem::from(ptr)
+	}
+	pub fn from_id(&self, id : SomeDataTableID) -> SomeDataCItem{
+		match id{
+			SomeDataTableID::A2ban => self.a2ban(),
+			SomeDataTableID::A1ban => self.a1ban(),
+		}
+	}
+}
+#[repr(u64)] pub enum SomeDataTableID{ A2ban, A1ban, }
+impl SomeDataTableID{
+	pub fn from_str(id : &str) -> Option<Self>{
+		match id{
+			"a2ban" => Some(Self::A2ban),
+			"a1ban" => Some(Self::A1ban),
+			_ =>{ None }
+		}
+	}
+	pub fn from_num(id : usize) -> Self{
+		match id{
+			0 => Self::A2ban,
+			1 => Self::A1ban,
+			_ => panic!("invalid ID num {} SomeDataTableID", id),
+		}
+	}
+	pub fn len() -> usize{ 2 }
+	pub fn to_num(&self) -> usize{
+		match self{
+			SomeDataTableID::A2ban => 0,
+			SomeDataTableID::A1ban => 1,
+		}
+	}
+	pub fn metadata() -> &'static [&'static str]{
+		&["a2ban", "a1ban", ]
+	}
+	pub fn to_str(&self) -> &'static str{
+		Self::metadata()[self.to_num()]
+	}
+}
+#[derive(Debug, PartialEq)]
+pub struct SomeDataCItem {
+	ptr : CItemPtr,
+}
+impl From<CItemPtr> for SomeDataCItem {
+	fn from(ptr : CItemPtr) -> Self { Self{ ptr } }
+}
+impl SomeDataCItem {
+	pub fn n(&self) -> f64{
+		let qv = citem::get_float(self.ptr, "n").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn s(&self) -> String{
+		let qv = citem::get_str(self.ptr, "s").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn ref_unko_list(&self) -> UnkoListCItem{
+		let qv = citem::get_ref(self.ptr, "unkoList").unwrap();
+		UnkoListCItem::from(qv.into_value().unwrap())
+	}
+	pub fn ref_id_unko_list(&self) -> String{
+		let qv = citem::get_ref_id(self.ptr, "unkoList").unwrap();
+		qv.into_value().unwrap()
+	}
 }
 
 #[derive(Debug, PartialEq)]
