@@ -81,10 +81,47 @@ pub fn get_int_array(ps : MItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
     }
 }
 
+
 pub fn get_float_array(ps : MItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
     let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
     if let Some(RustParam::FloatArray(b)) = get_param(item, list_def, name){
         Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+
+
+pub fn get_binary(ps : MItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
+    if let Some(RustParam::Binary(b)) = get_param(item, list_def, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+
+pub unsafe fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
+    let (item,list_def) =  (&*ps.item, &*ps.list_def) ;
+    if let Some(RustParam::Binary(b)) = get_param(item, list_def, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+
+pub unsafe fn get_mutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
+    let item =  &mut *ps.item;
+    if let Some(RustParam::Binary(b)) = get_param_mut(item, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
     } else{
         None
     }
@@ -158,6 +195,14 @@ pub fn get_param<'a>(item : &'a MutItem, def : &'a ListDefObj, name : &str) -> O
     if let Some(ListSabValue::Param(p)) = item.values().get(name){
         Some(p)
     } else if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
+        Some(p)
+    } else{
+        None
+    }
+}
+
+pub fn get_param_mut<'a>(item : &'a mut MutItem, name : &str) -> Option<&'a mut RustParam>{
+    if let Some(ListSabValue::Param(p)) = item.values_mut().get_mut(name){
         Some(p)
     } else{
         None

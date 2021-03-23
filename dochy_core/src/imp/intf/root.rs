@@ -10,6 +10,7 @@ use crate::imp::intf::table::TablePtr;
 use crate::imp::intf::mitem::MItemPtr;
 use crate::imp::intf::citem::CItemPtr;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
+use crate::structs::RustBinary;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct RootObjectPtr{
@@ -73,6 +74,38 @@ pub fn get_float_array(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<f64>>
         None
     }
 }
+pub fn get_binary(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+    let root = unsafe{ &*root.ptr };
+    if let Some(RustParam::Binary(b)) = get_param(root.default(), root.sabun(), name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+pub fn get_immutable_binary(root : RootObjectPtr, name : &str) -> Option<Qv<&Vec<u8>>>{
+    let root = unsafe{ &*root.ptr };
+    if let Some(RustParam::Binary(b)) = get_param(root.default(), root.sabun(), name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub unsafe fn get_mutable_binary<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
+    let item =  &mut *ps.ptr;
+    if let Some(RustParam::Binary(b)) = get_param_mut(item.sabun_mut(), name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
 
 pub fn get_table(root_ptr : RootObjectPtr, name : &str) -> Option<TablePtr>{
     let root = unsafe{ &*root_ptr.ptr };
@@ -103,6 +136,11 @@ pub fn get_param<'a>(def : &'a HashM<String, (usize, RootValue)>, sab : &'a Hash
         } else{
             Some(p)
         }
+    } else { None }
+}
+pub fn get_param_mut<'a>(sab : &'a mut HashM<String, RustParam>, name : &str) -> Option<&'a mut RustParam> {
+    if let Some(p) = sab.get_mut(name) {
+        Some(p)
     } else { None }
 }
 
@@ -144,6 +182,13 @@ pub fn set_int_array(root : RootObjectPtr, name : &str, val : Qv<Vec<i64>>) -> b
 pub fn set_float_array(root : RootObjectPtr, name : &str, val : Qv<Vec<f64>>) -> bool{
     let root = unsafe{ &mut *root.ptr };
     match root.set_sabun(name.to_string(), RustParam::FloatArray(val.into_map(|s| RustFloatArray::new(s)))){
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
+pub fn set_binary(root : RootObjectPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
+    let root = unsafe{ &mut *root.ptr };
+    match root.set_sabun(name.to_string(), RustParam::Binary(val.into_map(|s| RustBinary::new(s)))){
         Ok(_) => true,
         Err(_) => false,
     }

@@ -80,6 +80,29 @@ pub fn get_float_array(ps : CItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
     }
 }
 
+pub fn get_binary(ps : CItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
+    if let Some(RustParam::Binary(b)) = get_param(item, list_def, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+
+pub fn get_immutable_binary<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
+    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
+    if let Some(RustParam::Binary(b)) = get_param(item, list_def, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+
+
 pub fn get_param<'a>(item : &'a ConstItem, def : &'a ListDefObj, name : &str) -> Option<&'a RustParam>{
     if let Some(ListSabValue::Param(p)) = item.values().get(name){
         Some(p)
