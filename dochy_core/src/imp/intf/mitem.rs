@@ -115,6 +115,22 @@ pub fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<
     }
 }
 
+/// Vec のメモリは 最低でも8byte境界にalignされているはず(Rustはそれを保証していないが、それをしないallocatorは存在してないはず)
+/// なので、slice::align_to_mut で u64 や i32 のsliceを取得してゴリゴリ書き換えることも可能なはず
+/// vec.len が sizeof の倍数ならば、align_toしてもprefixやsuffixは発生しないだろう
+///
+/// 常にCとの相互運用性を考えているのだが、結局ポインタを渡してしまえばCのノリで何も考えずにゴリゴリ書き換えられるだろうから、
+/// align_toのこととか考えても実際のところ無駄だろう
+///
+/// little endianのマシンから big endianのマシンに移したデータで問題が起きたりとかそういうことはあるだろうが、
+/// 現段階ではそんなこと知ったことではないと思う。十分に無視するに値するコーナーケースと考える。
+///
+/// Boxから取られた参照なので、理論的には、Boxの中のVecが置き換えられても、この参照自体は無効にはならないはずだ。
+/// しかしVecが参照しているSliceは無効になる。Sliceの参照が生きている間に置き換えが発生すればUBだ。
+///
+/// だからVecからSliceを取り出すときには注意したほうが良い・・・。Cインターフェースを作る時に特に注意すべきである
+///
+/// まあRustはBoxの中の値が置き換えられたときBox内への参照が有効であることは保証していないと思うが・・・
 pub fn get_mutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
     let item =  unsafe{ &mut *ps.item };
     if let Some(RustParam::Binary(b)) = get_param_mut(item, name){

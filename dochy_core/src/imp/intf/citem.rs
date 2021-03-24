@@ -41,6 +41,12 @@ pub fn get_bool(ps : CItemPtr, name : &str) -> Option<Qv<bool>>{
     } else{ None }
 }
 
+pub fn get_bool_def(ps : CItemPtr, name : &str) -> Option<Qv<bool>>{
+    if let Some(RustParam::Bool(b)) = get_param_def(ps, name){
+        Some(b.clone())
+    } else{ None }
+}
+
 pub fn get_float(ps : CItemPtr, name : &str) -> Option<Qv<f64>>{
     let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
     if let Some(RustParam::Float(b)) = get_param(item, list_def, name){
@@ -107,6 +113,15 @@ pub fn get_param<'a>(item : &'a ConstItem, def : &'a ListDefObj, name : &str) ->
     if let Some(ListSabValue::Param(p)) = item.values().get(name){
         Some(p)
     } else if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
+        Some(p)
+    } else{
+        None
+    }
+}
+
+pub fn get_param_def<'a, 'b>(def : CItemPtr, name : &'a str) -> Option<&'b RustParam>{
+    let def = unsafe{ &*def.list_def };
+    if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
         Some(p)
     } else{
         None
