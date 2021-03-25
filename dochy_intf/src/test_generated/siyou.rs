@@ -548,6 +548,10 @@ impl Mut1MItem {
 		let qv = mitem::get_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn some_name_def_val(&self) -> String{
+		let qv = mitem::get_str_def(self.ptr, "someName").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_some_name(&mut self, some_name : String){
 		mitem::set_str(self.ptr, "someName", Qv::Val(some_name));
 	}
@@ -566,6 +570,10 @@ impl From<MItemPtr> for InnerMutListMItem {
 impl InnerMutListMItem {
 	pub fn inner_list_mem(&self) -> i64{
 		let qv = mitem::get_int(self.ptr, "innerListMem").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn inner_list_mem_def_val(&self) -> i64{
+		let qv = mitem::get_int_def(self.ptr, "innerListMem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_inner_list_mem(&mut self, inner_list_mem : i64){
@@ -860,6 +868,10 @@ impl From<MItemPtr> for Mut2MItem {
 impl Mut2MItem {
 	pub fn mem(&self) -> String{
 		let qv = mitem::get_str(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn mem_def_val(&self) -> String{
+		let qv = mitem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_mem(&mut self, mem : String){

@@ -48,10 +48,12 @@ impl CItemSource {
                     match param.param_type() {
                         ParamType::Binary =>{
                             sb.push_without_newline(1, &param.get("citem"));
+                            sb.push_without_newline(1, &param.get_def("citem"));
                             sb.push_without_newline(1, &param.get_immutable("citem"));
                         }
                         _ => {
                             sb.push_without_newline(1, &param.get("citem"));
+                            sb.push_without_newline(1, &param.get_def("citem"));
                         }
                     }
                 },

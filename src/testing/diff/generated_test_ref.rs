@@ -273,6 +273,10 @@
 			let qv = citem::get_int(self.ptr, "notImportant").unwrap();
 			qv.into_value().unwrap()
 		}
+		pub fn not_important_def_val(&self) -> i64{
+			let qv = citem::get_int_def(self.ptr, "notImportant").unwrap();
+			qv.into_value().unwrap()
+		}
 		
 	}
 	
@@ -337,6 +341,10 @@
 	impl Refed2CItem {
 		pub fn not_very_important(&self) -> i64{
 			let qv = citem::get_int(self.ptr, "notVeryImportant").unwrap();
+			qv.into_value().unwrap()
+		}
+		pub fn not_very_important_def_val(&self) -> i64{
+			let qv = citem::get_int_def(self.ptr, "notVeryImportant").unwrap();
 			qv.into_value().unwrap()
 		}
 		
@@ -405,6 +413,10 @@
 			let qv = citem::get_int(self.ptr, "notSoImportant").unwrap();
 			qv.into_value().unwrap()
 		}
+		pub fn not_so_important_def_val(&self) -> i64{
+			let qv = citem::get_int_def(self.ptr, "notSoImportant").unwrap();
+			qv.into_value().unwrap()
+		}
 		
 	}
 	
@@ -469,6 +481,10 @@
 	impl Refed4CItem {
 		pub fn not_important(&self) -> i64{
 			let qv = citem::get_int(self.ptr, "notImportant").unwrap();
+			qv.into_value().unwrap()
+		}
+		pub fn not_important_def_val(&self) -> i64{
+			let qv = citem::get_int_def(self.ptr, "notImportant").unwrap();
 			qv.into_value().unwrap()
 		}
 		

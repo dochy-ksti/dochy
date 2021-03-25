@@ -91,6 +91,10 @@
 			let qv = citem::get_int(self.ptr, "notVeryImportant").unwrap();
 			qv.into_value().unwrap()
 		}
+		pub fn not_very_important_def_val(&self) -> i64{
+			let qv = citem::get_int_def(self.ptr, "notVeryImportant").unwrap();
+			qv.into_value().unwrap()
+		}
 		
 	}
 	
@@ -106,6 +110,10 @@
 	impl ListMItem {
 		pub fn mem(&self) -> i64{
 			let qv = mitem::get_int(self.ptr, "mem").unwrap();
+			qv.into_value().unwrap()
+		}
+		pub fn mem_def_val(&self) -> i64{
+			let qv = mitem::get_int_def(self.ptr, "mem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_mem(&mut self, mem : i64){
@@ -140,6 +148,10 @@
 			let qv = mitem::get_int(self.ptr, "inMem").unwrap();
 			qv.into_value().unwrap()
 		}
+		pub fn in_mem_def_val(&self) -> i64{
+			let qv = mitem::get_int_def(self.ptr, "inMem").unwrap();
+			qv.into_value().unwrap()
+		}
 		pub fn set_in_mem(&mut self, in_mem : i64){
 			mitem::set_int(self.ptr, "inMem", Qv::Val(in_mem));
 		}
@@ -170,6 +182,10 @@
 	impl InList2MItem {
 		pub fn in_mem2(&self) -> i64{
 			let qv = mitem::get_int(self.ptr, "inMem2").unwrap();
+			qv.into_value().unwrap()
+		}
+		pub fn in_mem2_def_val(&self) -> i64{
+			let qv = mitem::get_int_def(self.ptr, "inMem2").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_in_mem2(&mut self, in_mem2 : i64){
@@ -240,6 +256,10 @@
 	impl Refed1CItem {
 		pub fn not_important(&self) -> i64{
 			let qv = citem::get_int(self.ptr, "notImportant").unwrap();
+			qv.into_value().unwrap()
+		}
+		pub fn not_important_def_val(&self) -> i64{
+			let qv = citem::get_int_def(self.ptr, "notImportant").unwrap();
 			qv.into_value().unwrap()
 		}
 		

@@ -40,12 +40,14 @@ impl RootIntf{
                     match param.param_type() {
                         ParamType::Binary => {
                             sb.push_without_newline(1, &param.get("root"));
+                            sb.push_without_newline(1, &param.get_def("root"));
                             sb.push_without_newline(1, &param.get_immutable("root"));
                             sb.push_without_newline(1, &param.get_mutable("root"));
                             sb.push_without_newline(1, &param.set("root"));
                         }
                         _ => {
                             sb.push_without_newline(1, &param.get("root"));
+                            sb.push_without_newline(1, &param.get_def("root"));
                             sb.push_without_newline(1, &param.set("root"));
                         }
                     }

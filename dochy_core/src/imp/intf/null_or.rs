@@ -51,6 +51,13 @@ impl<T> NullOr<T>{
             NullOr::Null => Qv::Null,
         }
     }
+
+    pub fn into_value(self) -> Option<T>{
+        match self{
+            NullOr::Val(v) => Some(v),
+            _ => None,
+        }
+    }
 }
 
 
@@ -82,6 +89,13 @@ impl<T> UndefOr<T>{
         match self{
             UndefOr::Val(v) => Qv::Val(v),
             UndefOr::Undefined => Qv::Undefined,
+        }
+    }
+
+    pub fn into_value(self) -> Option<T>{
+        match self{
+            UndefOr::Val(v) => Some(v),
+            _ => None,
         }
     }
 }
