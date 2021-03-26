@@ -1,0 +1,16 @@
+cd dochy_json5
+cargo publish
+cd ../dochy_compaction
+cargo publish
+cd ../dochy_core
+cargo publish
+cd ../dochy_archiver
+cargo publish
+cd ../dochy_diff
+cargo publish
+cd ../dochy_fs
+cargo publish
+cd ../dochy_intf
+cargo publish
+cd ../
+cargo publish
