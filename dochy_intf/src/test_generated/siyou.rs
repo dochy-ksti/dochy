@@ -19,6 +19,10 @@ impl RootIntf{
 		let qv = root::get_int(self.ptr, "pugyaInt").unwrap();
 		UndefOr::from_qv(qv).unwrap()
 	}
+	pub fn pugya_int_def_val(&self) -> UndefOr<i64>{
+		let qv = root::get_int_def(self.ptr, "pugyaInt").unwrap();
+		UndefOr::from_qv(qv).unwrap()
+	}
 	pub fn set_pugya_int(&mut self, pugya_int : UndefOr<i64>){
 		root::set_int(self.ptr, "pugyaInt", pugya_int.into_qv());
 	}
@@ -26,11 +30,19 @@ impl RootIntf{
 		let qv = root::get_bool(self.ptr, "hogeBool").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn hoge_bool_def_val(&self) -> bool{
+		let qv = root::get_bool_def(self.ptr, "hogeBool").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_hoge_bool(&mut self, hoge_bool : bool){
 		root::set_bool(self.ptr, "hogeBool", Qv::Val(hoge_bool));
 	}
 	pub fn at_huga_number(&self) -> i64{
 		let qv = root::get_int(self.ptr, "@HugaNumber").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn at_huga_number_def_val(&self) -> i64{
+		let qv = root::get_int_def(self.ptr, "@HugaNumber").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_at_huga_number(&mut self, at_huga_number : i64){
@@ -43,11 +55,19 @@ impl RootIntf{
 		let qv = root::get_int_array(self.ptr, "intArray").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn int_array_def_val(&self) -> Vec<i64>{
+		let qv = root::get_int_array_def(self.ptr, "intArray").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_int_array(&mut self, int_array : Vec<i64>){
 		root::set_int_array(self.ptr, "intArray", Qv::Val(int_array));
 	}
 	pub fn some_str(&self) -> String{
 		let qv = root::get_str(self.ptr, "someStr").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn some_str_def_val(&self) -> String{
+		let qv = root::get_str_def(self.ptr, "someStr").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_some_str(&mut self, some_str : String){
@@ -57,11 +77,19 @@ impl RootIntf{
 		let qv = root::get_float(self.ptr, "hegoFloat").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
+	pub fn hego_float_def_val(&self) -> NullOr<f64>{
+		let qv = root::get_float_def(self.ptr, "hegoFloat").unwrap();
+		NullOr::from_qv(qv).unwrap()
+	}
 	pub fn set_hego_float(&mut self, hego_float : NullOr<f64>){
 		root::set_float(self.ptr, "hegoFloat", hego_float.into_qv());
 	}
 	pub fn new_name(&self) -> UndefOr<String>{
 		let qv = root::get_str(self.ptr, "newName").unwrap();
+		UndefOr::from_qv(qv).unwrap()
+	}
+	pub fn new_name_def_val(&self) -> UndefOr<String>{
+		let qv = root::get_str_def(self.ptr, "newName").unwrap();
 		UndefOr::from_qv(qv).unwrap()
 	}
 	pub fn set_new_name(&mut self, new_name : UndefOr<String>){
@@ -71,6 +99,10 @@ impl RootIntf{
 		let qv = root::get_int(self.ptr, "newName2").unwrap();
 		UndefOr::from_qv(qv).unwrap()
 	}
+	pub fn new_name2_def_val(&self) -> UndefOr<i64>{
+		let qv = root::get_int_def(self.ptr, "newName2").unwrap();
+		UndefOr::from_qv(qv).unwrap()
+	}
 	pub fn set_new_name2(&mut self, new_name2 : UndefOr<i64>){
 		root::set_int(self.ptr, "newName2", new_name2.into_qv());
 	}
@@ -78,11 +110,19 @@ impl RootIntf{
 		let qv = root::get_float(self.ptr, "hogeFloat").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn hoge_float_def_val(&self) -> f64{
+		let qv = root::get_float_def(self.ptr, "hogeFloat").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_hoge_float(&mut self, hoge_float : f64){
 		root::set_float(self.ptr, "hogeFloat", Qv::Val(hoge_float));
 	}
 	pub fn binary(&self) -> Vec<u8>{
 		let qv = root::get_binary(self.ptr, "binary").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn binary_def_val(&self) -> Vec<u8>{
+		let qv = root::get_binary_def(self.ptr, "binary").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn binary_immutable(&self) -> &Vec<u8>{
@@ -104,11 +144,19 @@ impl RootIntf{
 		let qv = root::get_float_array(self.ptr, "floatArray").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn float_array_def_val(&self) -> Vec<f64>{
+		let qv = root::get_float_array_def(self.ptr, "floatArray").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_float_array(&mut self, float_array : Vec<f64>){
 		root::set_float_array(self.ptr, "floatArray", Qv::Val(float_array));
 	}
 	pub fn nullable_int_array(&self) -> NullOr<Vec<i64>>{
 		let qv = root::get_int_array(self.ptr, "nullableIntArray").unwrap();
+		NullOr::from_qv(qv).unwrap()
+	}
+	pub fn nullable_int_array_def_val(&self) -> NullOr<Vec<i64>>{
+		let qv = root::get_int_array_def(self.ptr, "nullableIntArray").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
 	pub fn set_nullable_int_array(&mut self, nullable_int_array : NullOr<Vec<i64>>){
@@ -126,6 +174,10 @@ impl RootIntf{
 		let qv = root::get_int(self.ptr, "hogeInt").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn hoge_int_def_val(&self) -> i64{
+		let qv = root::get_int_def(self.ptr, "hogeInt").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_hoge_int(&mut self, hoge_int : i64){
 		root::set_int(self.ptr, "hogeInt", Qv::Val(hoge_int));
 	}
@@ -141,6 +193,10 @@ impl RootIntf{
 	}
 	pub fn hego_int(&self) -> NullOr<i64>{
 		let qv = root::get_int(self.ptr, "hegoInt").unwrap();
+		NullOr::from_qv(qv).unwrap()
+	}
+	pub fn hego_int_def_val(&self) -> NullOr<i64>{
+		let qv = root::get_int_def(self.ptr, "hegoInt").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
 	pub fn set_hego_int(&mut self, hego_int : NullOr<i64>){
@@ -162,6 +218,10 @@ impl RootIntf{
 		let qv = root::get_str(self.ptr, "hogeString").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn hoge_string_def_val(&self) -> String{
+		let qv = root::get_str_def(self.ptr, "hogeString").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_hoge_string(&mut self, hoge_string : String){
 		root::set_str(self.ptr, "hogeString", Qv::Val(hoge_string));
 	}
@@ -176,11 +236,19 @@ impl RootIntf{
 		let qv = root::get_int(self.ptr, "oldName2").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
+	pub fn old_name2_old_def_val(&self) -> NullOr<i64>{
+		let qv = root::get_int_def(self.ptr, "oldName2").unwrap();
+		NullOr::from_qv(qv).unwrap()
+	}
 	pub fn set_old_name2_old(&mut self, old_name2 : NullOr<i64>){
 		root::set_int(self.ptr, "oldName2", old_name2.into_qv());
 	}
 	pub fn pugya_int2(&self) -> Qv<i64>{
 		let qv = root::get_int(self.ptr, "pugyaInt2").unwrap();
+		qv
+	}
+	pub fn pugya_int2_def_val(&self) -> Qv<i64>{
+		let qv = root::get_int_def(self.ptr, "pugyaInt2").unwrap();
 		qv
 	}
 	pub fn set_pugya_int2(&mut self, pugya_int2 : Qv<i64>){
@@ -193,11 +261,19 @@ impl RootIntf{
 		let qv = root::get_int_array(self.ptr, "emptyIntArray").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn empty_int_array_def_val(&self) -> Vec<i64>{
+		let qv = root::get_int_array_def(self.ptr, "emptyIntArray").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_empty_int_array(&mut self, empty_int_array : Vec<i64>){
 		root::set_int_array(self.ptr, "emptyIntArray", Qv::Val(empty_int_array));
 	}
 	pub fn old_name_old(&self) -> NullOr<String>{
 		let qv = root::get_str(self.ptr, "oldName").unwrap();
+		NullOr::from_qv(qv).unwrap()
+	}
+	pub fn old_name_old_def_val(&self) -> NullOr<String>{
+		let qv = root::get_str_def(self.ptr, "oldName").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
 	pub fn set_old_name_old(&mut self, old_name : NullOr<String>){
@@ -214,6 +290,10 @@ impl From<CItemPtr> for IniItemListCItem {
 impl IniItemListCItem {
 	pub fn atk(&self) -> NullOr<i64>{
 		let qv = citem::get_int(self.ptr, "atk").unwrap();
+		NullOr::from_qv(qv).unwrap()
+	}
+	pub fn atk_def_val(&self) -> NullOr<i64>{
+		let qv = citem::get_int_def(self.ptr, "atk").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
 	pub fn ref_weapon(&self) -> WeaponCItem{
@@ -240,7 +320,7 @@ impl WeaponTable {
 		let ptr = table::get_value(self.ptr, "doutanuki").unwrap();
 		WeaponCItem::from(ptr)
 	}
-	pub fn from_id(&self, id : WeaponTableID) -> WeaponCItem{
+	pub fn get_by_id(&self, id : WeaponTableID) -> WeaponCItem{
 		match id{
 			WeaponTableID::Katana => self.katana(),
 			WeaponTableID::Doutanuki => self.doutanuki(),
@@ -289,6 +369,10 @@ impl WeaponCItem {
 		let qv = citem::get_int(self.ptr, "atk").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn atk_def_val(&self) -> i64{
+		let qv = citem::get_int_def(self.ptr, "atk").unwrap();
+		qv.into_value().unwrap()
+	}
 	
 }
 
@@ -302,7 +386,7 @@ impl HogeListTable {
 		let ptr = table::get_value(self.ptr, "hogehoge").unwrap();
 		HogeListCItem::from(ptr)
 	}
-	pub fn from_id(&self, id : HogeListTableID) -> HogeListCItem{
+	pub fn get_by_id(&self, id : HogeListTableID) -> HogeListCItem{
 		match id{
 			HogeListTableID::Hogehoge => self.hogehoge(),
 		}
@@ -347,6 +431,10 @@ impl HogeListCItem {
 		let qv = citem::get_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn mem_def_val(&self) -> String{
+		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
 	
 }
 
@@ -364,7 +452,7 @@ impl SomeDataTable {
 		let ptr = table::get_value(self.ptr, "a1ban").unwrap();
 		SomeDataCItem::from(ptr)
 	}
-	pub fn from_id(&self, id : SomeDataTableID) -> SomeDataCItem{
+	pub fn get_by_id(&self, id : SomeDataTableID) -> SomeDataCItem{
 		match id{
 			SomeDataTableID::A2ban => self.a2ban(),
 			SomeDataTableID::A1ban => self.a1ban(),
@@ -413,8 +501,16 @@ impl SomeDataCItem {
 		let qv = citem::get_float(self.ptr, "n").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn n_def_val(&self) -> f64{
+		let qv = citem::get_float_def(self.ptr, "n").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn s(&self) -> String{
 		let qv = citem::get_str(self.ptr, "s").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn s_def_val(&self) -> String{
+		let qv = citem::get_str_def(self.ptr, "s").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn ref_unko_list(&self) -> UnkoListCItem{
@@ -441,7 +537,7 @@ impl UsableTable {
 		let ptr = table::get_value(self.ptr, "dokukesisou").unwrap();
 		UsableCItem::from(ptr)
 	}
-	pub fn from_id(&self, id : UsableTableID) -> UsableCItem{
+	pub fn get_by_id(&self, id : UsableTableID) -> UsableCItem{
 		match id{
 			UsableTableID::Yakusou => self.yakusou(),
 			UsableTableID::Dokukesisou => self.dokukesisou(),
@@ -490,6 +586,10 @@ impl UsableCItem {
 		let qv = citem::get_int(self.ptr, "num").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn num_def_val(&self) -> i64{
+		let qv = citem::get_int_def(self.ptr, "num").unwrap();
+		qv.into_value().unwrap()
+	}
 	
 }
 
@@ -503,6 +603,10 @@ impl From<CItemPtr> for ItemList3CItem {
 impl ItemList3CItem {
 	pub fn mem_override(&self) -> NullOr<String>{
 		let qv = citem::get_str(self.ptr, "memOverride").unwrap();
+		NullOr::from_qv(qv).unwrap()
+	}
+	pub fn mem_override_def_val(&self) -> NullOr<String>{
+		let qv = citem::get_str_def(self.ptr, "memOverride").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
 	pub fn ref_hoge_list(&self) -> HogeListCItem{
@@ -602,7 +706,7 @@ impl HugaListTable {
 		let ptr = table::get_value(self.ptr, "hugahuga").unwrap();
 		HugaListCItem::from(ptr)
 	}
-	pub fn from_id(&self, id : HugaListTableID) -> HugaListCItem{
+	pub fn get_by_id(&self, id : HugaListTableID) -> HugaListCItem{
 		match id{
 			HugaListTableID::Hugahuga => self.hugahuga(),
 		}
@@ -664,7 +768,7 @@ impl Dim2ListTable {
 		let ptr = table::get_value(self.ptr, "item1").unwrap();
 		Dim2ListCItem::from(ptr)
 	}
-	pub fn from_id(&self, id : Dim2ListTableID) -> Dim2ListCItem{
+	pub fn get_by_id(&self, id : Dim2ListTableID) -> Dim2ListCItem{
 		match id{
 			Dim2ListTableID::Item3 => self.item3(),
 			Dim2ListTableID::Item2 => self.item2(),
@@ -717,6 +821,10 @@ impl Dim2ListCItem {
 		let qv = citem::get_int(self.ptr, "dataMem").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn data_mem_def_val(&self) -> i64{
+		let qv = citem::get_int_def(self.ptr, "dataMem").unwrap();
+		qv.into_value().unwrap()
+	}
 	
 }
 
@@ -734,7 +842,7 @@ impl UnkoListTable {
 		let ptr = table::get_value(self.ptr, "second").unwrap();
 		UnkoListCItem::from(ptr)
 	}
-	pub fn from_id(&self, id : UnkoListTableID) -> UnkoListCItem{
+	pub fn get_by_id(&self, id : UnkoListTableID) -> UnkoListCItem{
 		match id{
 			UnkoListTableID::First => self.first(),
 			UnkoListTableID::Second => self.second(),
@@ -783,8 +891,16 @@ impl UnkoListCItem {
 		let qv = citem::get_int(self.ptr, "hogeInt").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn hoge_int_def_val(&self) -> i64{
+		let qv = citem::get_int_def(self.ptr, "hogeInt").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn hoge_string(&self) -> String{
 		let qv = citem::get_str(self.ptr, "hogeString").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn hoge_string_def_val(&self) -> String{
+		let qv = citem::get_str_def(self.ptr, "hogeString").unwrap();
 		qv.into_value().unwrap()
 	}
 	
@@ -804,7 +920,7 @@ impl HegoListTable {
 		let ptr = table::get_value(self.ptr, "hegohego").unwrap();
 		HegoListCItem::from(ptr)
 	}
-	pub fn from_id(&self, id : HegoListTableID) -> HegoListCItem{
+	pub fn get_by_id(&self, id : HegoListTableID) -> HegoListCItem{
 		match id{
 			HegoListTableID::NantokaOld => self.nantoka_old(),
 			HegoListTableID::Hegohego => self.hegohego(),
@@ -851,6 +967,10 @@ impl From<CItemPtr> for HegoListCItem {
 impl HegoListCItem {
 	pub fn mem(&self) -> String{
 		let qv = citem::get_str(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn mem_def_val(&self) -> String{
+		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	
@@ -922,6 +1042,10 @@ impl From<CItemPtr> for EnumListCItem {
 impl EnumListCItem {
 	pub fn mem(&self) -> String{
 		let qv = citem::get_str(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn mem_def_val(&self) -> String{
+		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn get_enum(&self) -> EnumListEnum{

@@ -8,7 +8,7 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::intf::mlist::MListPtr;
 use crate::imp::intf::{CItemPtr, RootObjectPtr};
 use crate::imp::structs::ref_value::RefSabValue;
-use crate::imp::intf::citem::{get_enum_impl, get_ref_id_imol};
+use crate::imp::intf::citem::{get_enum_impl, get_ref_id_impl};
 use crate::imp::structs::rust_string::RustString;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
 use crate::structs::RustBinary;
@@ -252,7 +252,7 @@ pub fn get_ref(ps : MItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
 
 pub fn get_ref_id(ps : MItemPtr, list_name : &str) -> Option<Qv<String>>{
     let (item, list_def) = unsafe{ (ps.item.as_ref().unwrap(), ps.list_def.as_ref().unwrap()) };
-    get_ref_id_imol(item.refs(), list_def, list_name)
+    get_ref_id_impl(item.refs(), list_def, list_name)
 }
 
 pub fn get_enum(ps : MItemPtr) -> Option<(String, String)>{

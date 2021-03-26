@@ -224,7 +224,7 @@
 			let ptr = table::get_value(self.ptr, "a2").unwrap();
 			Refed1CItem::from(ptr)
 		}
-		pub fn from_id(&self, id : Refed1TableID) -> Refed1CItem{
+		pub fn get_by_id(&self, id : Refed1TableID) -> Refed1CItem{
 			match id{
 				Refed1TableID::A1 => self.a1(),
 				Refed1TableID::A2 => self.a2(),
@@ -294,7 +294,7 @@
 			let ptr = table::get_value(self.ptr, "b2").unwrap();
 			Refed2CItem::from(ptr)
 		}
-		pub fn from_id(&self, id : Refed2TableID) -> Refed2CItem{
+		pub fn get_by_id(&self, id : Refed2TableID) -> Refed2CItem{
 			match id{
 				Refed2TableID::B1 => self.b1(),
 				Refed2TableID::B2 => self.b2(),
@@ -364,7 +364,7 @@
 			let ptr = table::get_value(self.ptr, "c1").unwrap();
 			Refed3CItem::from(ptr)
 		}
-		pub fn from_id(&self, id : Refed3TableID) -> Refed3CItem{
+		pub fn get_by_id(&self, id : Refed3TableID) -> Refed3CItem{
 			match id{
 				Refed3TableID::C2 => self.c2(),
 				Refed3TableID::C1 => self.c1(),
@@ -434,7 +434,7 @@
 			let ptr = table::get_value(self.ptr, "d1").unwrap();
 			Refed4CItem::from(ptr)
 		}
-		pub fn from_id(&self, id : Refed4TableID) -> Refed4CItem{
+		pub fn get_by_id(&self, id : Refed4TableID) -> Refed4CItem{
 			match id{
 				Refed4TableID::D2 => self.d2(),
 				Refed4TableID::D1 => self.d1(),

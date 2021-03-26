@@ -167,10 +167,10 @@ pub fn get_ref(ps : CItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
 
 pub fn get_ref_id(ps : CItemPtr, list_name : &str) -> Option<Qv<String>>{
     let (item, list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    get_ref_id_imol(item.refs(), list_def, list_name)
+    get_ref_id_impl(item.refs(), list_def, list_name)
 }
 
-pub fn get_ref_id_imol(refs : &HashM<String, RefSabValue>, list_def : &ListDefObj, list_name : &str) -> Option<Qv<String>>{
+pub fn get_ref_id_impl(refs : &HashM<String, RefSabValue>, list_def : &ListDefObj, list_name : &str) -> Option<Qv<String>>{
     let qv = if let Some(sab) = refs.get(list_name){
         sab.value()
     } else{

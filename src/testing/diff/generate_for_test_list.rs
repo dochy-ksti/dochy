@@ -9,10 +9,8 @@ mod tests {
     fn generate_for_test_ref(){
         match generate_for_test_ref2(){
             Ok(()) =>{},
-            Err(s) => println!("{}", s),
+            Err(s) =>{ dbg!("{}", s); assert!(false) },
         }
-
-
     }
 
     fn generate_for_test_ref2() -> DpResult<()>{
