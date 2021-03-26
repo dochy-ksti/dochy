@@ -7,7 +7,7 @@ and undoable apps.
 There are three goals we want to achieve.
 
 1. [Efficiency](src/sample_test/sample_code/efficiency.md)
-2. Version Awareness
+2. [Version Awareness](src/sample_test/sample_code/version_awareness.md)
 3. Improved Expressiveness By Supporting Reference and Enum
 
 ### What does Dochy stand for?
