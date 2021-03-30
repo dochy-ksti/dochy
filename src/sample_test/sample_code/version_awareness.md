@@ -18,11 +18,11 @@ and it shouldn't cause any problem.
 What about adding a variable?
 
 In Dochy, when we try to get a value from a variable, 
-and a value has not been set to the variable, the default value is returned.
-When a variable is added in the new version, since the object of the old data doesn't have the variable,
-the default value is returned. It's basically safe, but sometimes, it's not.
+and the value hasn't been modified, its default value will be returned.
+When a variable is added in a new version, since the old data doesn't have the variable,
+the default value will be returned. It's basically safe, but sometimes, it's not.
 
-Let's suppose we need a variable which is ten times bigger than an old variable.
+Let's pretend we need a variable which is ten times bigger than an old variable.
 
 How should we implement the conversion. We can write,
 
@@ -30,7 +30,8 @@ How should we implement the conversion. We can write,
 
 But is that the right way? Accumulation of the conversion may cause problems in the future.
 
-In Dochy, when a variable is undefined in an old data, it can set the special value "undefined" to the variable.
+In Dochy, when a variable is undefined in an old data, 
+the system can set the special value "undefined" to the variable in the adjustment process.
 
 ```json5
 {
@@ -39,24 +40,20 @@ In Dochy, when a variable is undefined in an old data, it can set the special va
 ```
  This is the old source file.
 ```
+//Comments can be written in JSON5
 {
  // ? means "nullable". It's not valid syntax in JSON5, but Dochy's parser accepts it
- // like normal JSON, you can quote the member name "oldValue?" and makes the name legal    
+ // Like normal JSON, you can quote the member name "oldValue?" and make the name legal    
  oldValue? : ["Int", null], 
  // every variable must have its static type. and the static type "null" is prohibited (and meaningless)
  // ["Int", null] means the null's type is Int, and the variable's static type is "nullable Int"
  
- newValue! : 100, // ! means "can be undefined". It's also invalid in JSON5 syntax but my parser accepts it.
+ newValue! : 100, // ! means "can be undefined". It's also invalid in JSON5 syntax but Dochy's parser accepts it.
  //newValue's default value is 100, which is 10 times bigger than the old.
 }
  ```
-This is the new version. oldValue's default value has been changed to null, 
-so Dochy returns null when we get the oldValue if it's not updated.
-(and it shouldn't be updated because the oldValue is old).
- 
-In data from the old source, if the oldValue was updated, 
-the updated value remains unchanged. When the oldValue is not updated,
-Dochy returns the new default value(null) even though it's origin is the old source.
+This is the new version. oldValue's default value has been changed into null
+to distinguish if the default value is manually set. 
 
 Since the old data doesn't have the variable "newValue", the content of the variable is 
 changed to "undefined" in the adjustment process.
@@ -108,7 +105,8 @@ impl RootIntf{
  }
 }
 ```
-You can use the generated code directly, but we assume a handmade wrapper will be created.
+You can use the generated code directly, but we suppose 
+a handmade wrapper should be created for more convenience.
 ```Rust
 use crate::sample_test::sample_code::version_awareness_accessor::RootIntf;
 use dochy_core::structs::{UndefOr, NullOr};
@@ -140,12 +138,13 @@ impl VeraAccessorWrapper {
  }
 }
 ```
-The wrapper doesn't allow to access the variable "oldValue", and when new_value is undefined (because the data is old),
+The wrapper doesn't allow to access the variable "oldValue", 
+and when new_value is undefined (because the data is old),
 the wrapper returns the value ten times bigger than the old_value.
 
-If the newValue is undefined, and the oldValue is unmodified, it returns the default value.
+If the newValue is undefined, and the oldValue is unmodified, it returns the default value of the new_value.
 
-Let's suppose we need to define a value again. We name it new_value2. The value is three times bigger than new_value,
+Let's pretend we need to define a value again. We name it new_value2. The value is three times bigger than the new_value,
 and the default value is 280.
 ```
 {
@@ -155,7 +154,7 @@ and the default value is 280.
     newValue2! : 280,
 }
 ```
-The wrapper of it is below.
+The wrapper is below.
 ```Rust
 use crate::sample_test::sample_code::version_awareness_accessor2::RootIntf;
 use dochy_core::structs::{UndefOr, NullOr, Qv};
@@ -204,6 +203,15 @@ impl VeraAccessorWrapper2 {
 When new_value2 is undefined, new_value * 3 is returned if it's defined, and if it's undefined, old_value * 30 is returned,
 but if old_value and new_value haven't been modified, the default value is returned.
 
-You can see this is a sustainable conversion from the source code.
+You may see this is a sustainable conversion by reading the source code.
 
-## Const List and Mutable List
+## CList and MList
+
+Dochy has two types of lists, "CList" and "MList". 
+
+CList is immutable, and if it's changed in a new version, 
+the old CList is completely ignored and replaced by the new CList.
+
+```
+
+```
