@@ -6,7 +6,7 @@ use dochy_diff::apply_diff;
 use flate2::write::ZlibEncoder;
 use flate2::Compression;
 use std::io::prelude::*;
-use crate::sample_test::error::DpResult;
+use crate::error::DpResult;
 
 
 //#[test]

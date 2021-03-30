@@ -3,7 +3,7 @@ use dochy_core::intf::{mitem};
 use dochy_core::structs::Qv;
 use dochy_core::rust_to_json_new_default;
 use dochy_diff::apply_diff;
-use crate::sample_test::error::DpResult;
+use crate::error::DpResult;
 
 
 //#[test]

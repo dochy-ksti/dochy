@@ -213,5 +213,83 @@ CList is immutable, and if it's changed in a new version,
 the old CList is completely ignored and replaced by the new CList.
 
 ```
+{
+ list : [
+  "CList",
+  // every list must have the default object.
+  [{
+   //The variables must be defined in the default object with its initial value
+   foo : 0,
+  }],
+  {
+   foo : 1,
+  },
+  {
+   foo : 2,
+  },
+  {
+   //if a value is not written, logically its value is the default value, 
+   //and this object actually doesn't have the value. 
+   //No memory is used and no storage space is consumed   
+  }
+ ] 
+}
+```
+ And new version
+```
+{
+ list : [
+  "CList",
+  [{
+   foo : -1,
+  }],
+  {
+   foo : 3,
+  },
+  {
+   foo : 4,
+  },
+  {
+   
+  },
+  {
+   foo : 5,      
+  }
+ ] 
+}
 
 ```
+ The Old version is 1,2,0 
+ ```Rust
+ fn clilst_old_test() -> DpResult<()> {
+    let old = json_dir_to_rust("src/sample_test/sample_code_json/clist_old", true)?;
+
+    let r = RootIntf::new(old);
+    let mut iter = r.list().iter();
+
+    assert_eq!(iter.next()?.foo(), 1);
+    assert_eq!(iter.next()?.foo(), 2);
+    assert_eq!(iter.next()?.foo(), 0);
+    Ok(())
+}
+```
+　The adjusted data is 3,4,5,-1
+```Rust
+fn clilst_new_adjust_test() -> DpResult<()> {
+    let old = json_dir_to_rust("src/sample_test/sample_code_json/clist_old", true)?;
+    let new = json_dir_to_rust("src/sample_test/sample_code_json/clist_new", true)?;
+
+    //Adjust old data to be compatible with the new json source
+    let r = adjust_versions(new, old, true)?;
+
+    let r = RootIntf::new(r);
+    let mut iter = r.list().iter();
+
+    assert_eq!(iter.next()?.foo(), 3);
+    assert_eq!(iter.next()?.foo(), 4);
+    assert_eq!(iter.next()?.foo(), -1);
+    assert_eq!(iter.next()?.foo(), 5);
+    Ok(())
+}
+```
+　MList is a mutable list.

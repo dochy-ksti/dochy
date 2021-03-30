@@ -64,6 +64,10 @@ impl From<dochy_diff::diff_error::DiffError> for DpError{
     fn from(e : dochy_diff::diff_error::DiffError) -> Self{ Self::new(e) }
 }
 
+impl From<dochy_fs::error::FsError> for DpError{
+    fn from(e : dochy_fs::error::FsError) -> Self{ Self::new(e) }
+}
+
 
 impl From<&str> for DpError{
     fn from(e : &str) -> Self{ Self::new(anyhow!("{}", e)) }

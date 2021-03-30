@@ -6,7 +6,7 @@ mod tests {
     use dochy_core::structs::Qv;
     use crate::testing::diff::util::get_root_obj::get_root_obj;
     use crate::testing::diff::generated_test_ref::test::{RootIntf, Refed1TableID, Refed2TableID, Refed3TableID, Refed4TableID};
-    use crate::sample_test::error::DpResult;
+    use crate::error::DpResult;
 
     #[test]
     fn test_diff2() -> DpResult<()>{

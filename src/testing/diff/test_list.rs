@@ -5,7 +5,7 @@ mod tests {
     use dochy_core::structs::{RootObject};
     use crate::testing::diff::generated_test_list::test::{RootIntf, Refed1TableID};
     use crate::testing::diff::util::get_root_obj::get_root_obj;
-    use crate::sample_test::error::DpResult;
+    use crate::error::DpResult;
 
     fn apply(current : &RootObject, path : &str) -> DpResult<RootIntf>{
         let mut moto = get_root_obj(path)?;

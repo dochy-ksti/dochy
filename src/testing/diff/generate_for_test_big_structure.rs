@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod tests {
     use crate::testing::diff::util::generate_intf_src::generate_intf_src;
-    use crate::sample_test::error::DpResult;
+    use crate::error::DpResult;
 
     #[test]
     fn generate_for_test_big_structure(){

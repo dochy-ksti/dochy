@@ -10,19 +10,12 @@ mod sample_test;
 #[cfg(test)]
 mod testing;
 
-pub mod json5;
-pub mod compaction;
 pub mod intf;
-pub mod archiver;
 pub mod core;
 pub mod diff;
 pub mod fs;
+pub mod error;
 
-
-//TODO: coreに新配列 Binaryを追加
-//TODO: IntArrayとFloatArrayのエンコードをcompaction::Binaryにする
-//TODO: intf に obj::hoge_default_value() を追加
-//TODO: hoge_default_valueを使ってVersion Awarenessの説明を完成させる
 
 //TODO: 多態性の実装をちゃんとできるようにする。多分coreへの機能追加が必要
 //TODO: 多態性の説明を完成させる
