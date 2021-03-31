@@ -200,7 +200,7 @@ impl VeraAccessorWrapper2 {
     }
 }
 ```
-When new_value2 is undefined, new_value * 3 is returned if it's defined, and if it's undefined, old_value * 30 is returned,
+When new_value2 is undefined, new_value * 3 is returned if it's defined, and if new_value is undefined, old_value * 30 is returned,
 but if old_value and new_value haven't been modified, the default value is returned.
 
 You may see this is a sustainable conversion by reading the source code.
@@ -211,14 +211,13 @@ Dochy has two types of lists, "CList" and "MList".
 
 CList is immutable, and if it's changed in a new version, 
 the old CList is completely ignored and replaced by the new CList.
-
 ```
 {
  list : [
   "CList",
-  // every list must have the default object.
+  // every list must have the default object which is enclosed by "[{" and "}]"
   [{
-   //The variables must be defined in the default object with its initial value
+   //Variables must be defined in the default object with its initial value
    foo : 0,
   }],
   {
@@ -235,7 +234,7 @@ the old CList is completely ignored and replaced by the new CList.
  ] 
 }
 ```
- And new version
+ And the new version
 ```
 {
  list : [
@@ -259,7 +258,7 @@ the old CList is completely ignored and replaced by the new CList.
 }
 
 ```
- The Old version is 1,2,0 
+ The old version's list's foo is 1,2,0 
  ```Rust
  fn clilst_old_test() -> DpResult<()> {
     let old = json_dir_to_rust("src/sample_test/sample_code_json/clist_old", true)?;
@@ -273,13 +272,14 @@ the old CList is completely ignored and replaced by the new CList.
     Ok(())
 }
 ```
-　The adjusted data is 3,4,5,-1
+The adjusted data's foo is 3,4,5,-1. 
+The old list is completely replaced by the new list in the adjustment process. 
 ```Rust
 fn clilst_new_adjust_test() -> DpResult<()> {
     let old = json_dir_to_rust("src/sample_test/sample_code_json/clist_old", true)?;
     let new = json_dir_to_rust("src/sample_test/sample_code_json/clist_new", true)?;
 
-    //Adjust old data to be compatible with the new json source
+    //Adjust the old data to be compatible with the new json source
     let r = adjust_versions(new, old, true)?;
 
     let r = RootIntf::new(r);
@@ -292,4 +292,53 @@ fn clilst_new_adjust_test() -> DpResult<()> {
     Ok(())
 }
 ```
-　MList is a mutable list.
+MList is a mutable list.
+Modifications in the old data must be preserved in the new version,
+so initial objects in the new version's list is completely discarded in the adjustment process,
+and replaced by old data's objects.
+
+The old version is below.
+```
+{
+ mlist : [
+  "MList",
+  [{
+   bar : 0,
+   baz : 1
+  }]
+  {
+   bar : 1,
+   baz : 2
+  }
+  {
+   bar : 2,
+   baz : 3,
+  }
+  {
+   bar : 3,
+   // not set value to baz
+  }
+ ]
+}
+```
+The new version...
+```
+{
+ mlist : [
+ "MList",
+  [{
+   //bar is removed,
+   baz : 100, // baz's default is changed to 100
+   qux : -1, //new value "qux" is defined
+  }],
+  {
+   baz : 1001,
+   qux : 2
+  }
+  {
+   baz : 1002,
+   qux : 3
+  }
+ ]
+}
+```
