@@ -33,7 +33,7 @@ impl CItemSource {
         let id = self.stem();
         let item_type_name = to_citem_type_name(id);
 
-        sb.push(0,&format!("#[derive(Debug, PartialEq)]"));
+        sb.push(0,&format!("#[derive(Debug, PartialEq, Clone, Copy)]"));
         sb.push(0,&format!("pub struct {} {{", &item_type_name));
         sb.push(1,"ptr : CItemPtr,");
         sb.push(0,"}");

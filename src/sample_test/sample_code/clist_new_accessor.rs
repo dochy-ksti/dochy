@@ -19,7 +19,7 @@ impl RootIntf{
 		root::get_clist(self.ptr, "list").unwrap()
 	}
 }
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct ListCItem {
 	ptr : CItemPtr,
 }

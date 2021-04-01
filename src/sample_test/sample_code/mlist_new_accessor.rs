@@ -19,7 +19,7 @@ impl RootIntf{
 		root::get_mlist(self.ptr, "mlist").unwrap()
 	}
 }
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct MlistMItem {
 	ptr : MItemPtr,
 }

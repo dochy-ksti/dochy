@@ -79,7 +79,7 @@
 			Self::metadata()[self.to_num()]
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct Refed2CItem {
 		ptr : CItemPtr,
 	}
@@ -98,7 +98,7 @@
 		
 	}
 	
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct ListMItem {
 		ptr : MItemPtr,
 	}
@@ -134,7 +134,7 @@
 			mitem::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct InListMItem {
 		ptr : MItemPtr,
 	}
@@ -170,7 +170,7 @@
 			mitem::set_ref(self.ptr, "refed2", Qv::Val(id.to_str().to_string()));
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct InList2MItem {
 		ptr : MItemPtr,
 	}
@@ -246,7 +246,7 @@
 			Self::metadata()[self.to_num()]
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct Refed1CItem {
 		ptr : CItemPtr,
 	}

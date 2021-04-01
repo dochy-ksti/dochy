@@ -42,7 +42,7 @@
 			Refed4Table::new(ans)
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct List1MItem {
 		ptr : MItemPtr,
 	}
@@ -98,7 +98,7 @@
 		}
 	}
 	
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct List2MItem {
 		ptr : MItemPtr,
 	}
@@ -154,7 +154,7 @@
 		}
 	}
 	
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct List3MItem {
 		ptr : MItemPtr,
 	}
@@ -261,7 +261,7 @@
 			Self::metadata()[self.to_num()]
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct Refed1CItem {
 		ptr : CItemPtr,
 	}
@@ -331,7 +331,7 @@
 			Self::metadata()[self.to_num()]
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct Refed2CItem {
 		ptr : CItemPtr,
 	}
@@ -401,7 +401,7 @@
 			Self::metadata()[self.to_num()]
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct Refed3CItem {
 		ptr : CItemPtr,
 	}
@@ -471,7 +471,7 @@
 			Self::metadata()[self.to_num()]
 		}
 	}
-	#[derive(Debug, PartialEq)]
+	#[derive(Debug, PartialEq, Clone, Copy)]
 	pub struct Refed4CItem {
 		ptr : CItemPtr,
 	}

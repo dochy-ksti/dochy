@@ -33,7 +33,7 @@ impl MItemSource {
         let id = self.stem();
         let item_type_name = to_mitem_type_name(id);
 
-        sb.push(0,&format!("#[derive(Debug, PartialEq)]"));
+        sb.push(0,&format!("#[derive(Debug, PartialEq, Clone, Copy)]"));
         sb.push(0,&format!("pub struct {} {{", &item_type_name));
         sb.push(1,"ptr : MItemPtr,");
         sb.push(0,"}");
