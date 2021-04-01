@@ -10,12 +10,12 @@
       baz : 2
     },
     {
-      bar : 2,
+      // not set
       baz : 3,
     },
     {
       bar : 3,
-      // not set value to baz
+      // not set
     }
   ]
 }

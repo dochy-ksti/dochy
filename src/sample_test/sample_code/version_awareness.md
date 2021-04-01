@@ -293,6 +293,7 @@ fn clilst_new_adjust_test() -> DpResult<()> {
 }
 ```
 MList is a mutable list.
+
 Modifications in the old data must be preserved in the new version,
 so initial objects in the new version's list is completely discarded in the adjustment process,
 and replaced by old data's objects.
@@ -311,14 +312,38 @@ The old version is below.
    baz : 2
   }
   {
-   bar : 2,
+   // not set
    baz : 3,
   }
   {
    bar : 3,
-   // not set value to baz
+   // not set 
   }
  ]
+}
+```
+The test code
+```Rust
+#[test]
+fn mlilst_old_test() -> DpResult<()> {
+    let old = json_dir_to_rust("src/sample_test/sample_code_json/mlist_old", true)?;
+
+    let mut r = RootIntf::new(old);
+    let mut iter = r.mlist().iter();
+
+    if let Some((_id, item)) = iter.next(){
+        assert_eq!(item.bar(), 1);
+        assert_eq!(item.baz(), 2);
+    }
+    if let Some((_id, item)) = iter.next(){
+        assert_eq!(item.bar(), 0); // default value
+        assert_eq!(item.baz(), 3);
+    }
+    if let Some((_id, item)) = iter.next(){
+        assert_eq!(item.bar(), 3);
+        assert_eq!(item.baz(), 1); // default value
+    }
+    Ok(())
 }
 ```
 The new version...
@@ -342,3 +367,38 @@ The new version...
  ]
 }
 ```
+The new version is completely ignored in the adjustment process.
+```Rust
+#[test]
+fn mlilst_new_adjust_test() -> DpResult<()> {
+    let old = json_dir_to_rust("src/sample_test/sample_code_json/mlist_old", true)?;
+    let new = json_dir_to_rust("src/sample_test/sample_code_json/mlist_new", true)?;
+
+    let r = adjust_versions(new, old, true)?;
+
+    let mut r = RootIntf::new(r);
+    let mut iter = r.mlist().iter();
+
+    if let Some((_id, item)) = iter.next(){
+        //assert_eq!(item.bar(), 1); //bar is removed
+        assert_eq!(item.baz(), 2); //old item's baz is preserved
+        assert_eq!(item.qux(), -1); //qux is undefined, so the default value is returned
+    }
+    if let Some((_id, item)) = iter.next(){
+        //assert_eq!(item.bar(), 0);
+        assert_eq!(item.baz(), 3); //old item's baz is preserved
+        assert_eq!(item.qux(), -1);
+    }
+    if let Some((_id, item)) = iter.next(){
+        //assert_eq!(item.bar(), 0);
+        assert_eq!(item.baz(), 100); // This baz was not set in the old data, so the default value of the new version returned
+        assert_eq!(item.qux(), -1);
+    }
+    Ok(())
+}
+```
+When the new version's type data is applied to the old data, 
+the variable "bar" is removed, and the variable "qux" is added.
+
+All the objects in the initial list of the new version is discarded,
+and replaced by the old version's objects with the new type data. 

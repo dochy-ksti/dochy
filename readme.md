@@ -10,6 +10,10 @@ There are three goals we want to achieve.
 2. [Version Awareness](src/sample_test/sample_code/version_awareness.md)
 3. Improved Expressiveness By Supporting Reference and Enum
 
+These three documents(and [this](src/sample_test/sample_code/history.md))
+will work as a walkthrough of Dochy's peculiar concepts
+when they are completed. 
+
 ### What does Dochy stand for?
 
 DOnnani CHoushiga Yokutemo kakisugiteha ikenai
