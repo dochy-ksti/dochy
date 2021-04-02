@@ -1,0 +1,40 @@
+{
+  list : [
+    "MList",
+    [{
+      Ref : {
+        //Ref's initial value must be a ID, empty string, or null
+        //If it's empty string, you must set ID, otherwise an error will occur.
+        table : "",
+      },
+      bar : -1,
+    }],
+    {
+      Ref : {
+        table : "item2", //reference item2 of the table below
+        //IDs must be exists, otherwise an error will occur.
+      },
+      //bar is not set
+    },
+    {
+      Ref : {
+        table : "item1"
+      },
+      bar : 30,
+    }
+  ],
+  table : [
+    "Table",
+    [{
+      foo : 0
+    }],
+    {
+      ID : "item1",
+      foo : 33,
+    },
+    {
+      ID : "item2",
+      //not set
+    }
+  ]
+}

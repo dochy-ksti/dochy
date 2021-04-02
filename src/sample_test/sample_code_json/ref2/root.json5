@@ -1,0 +1,27 @@
+{
+  list : [
+    "MList",
+    [{
+      Ref : {
+        table : "",
+      },
+      foo? : null,
+    }],
+    {
+      Ref : {
+        table : "item1",
+      },
+      foo : 22,
+    },
+  ],
+  table : [
+    "Table",
+    [{
+      foo : 0
+    }],
+    {
+      ID : "item1",
+      foo : 33,
+    },
+  ]
+}

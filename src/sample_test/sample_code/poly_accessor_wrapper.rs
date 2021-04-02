@@ -58,11 +58,11 @@ impl RefAWrapper{
     }
     pub fn set_vc(&mut self, val : i64){
         //the member "vc" is common for ReferentA and ReferentB
-        //if set_vc is used, and change Enum to ReferentB, since vc is already set,
-        //refB's vc will be the value set here.
+        //When you modify vc, and then modify Enum to ReferentB,
+        //ReferentB's vc will be also the value set here.
 
-        //Maybe it's undesirable, so you may need to make variable-names unique
-        //if you want to change referents
+        //Maybe it's undesirable, so you may want to make variable-names unique
+        //if you want to change Enum
         self.base.set_vc(NullOr::Val(val))
     }
 
