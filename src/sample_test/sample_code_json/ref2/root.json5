@@ -5,12 +5,13 @@
       Ref : {
         table : "",
       },
-      foo? : null,
+      "foo?" : ["Int",null],
     }],
     {
       Ref : {
         table : "item1",
       },
+      // The value is updated here
       foo : 22,
     },
   ],

@@ -27,3 +27,7 @@ mod poly_accessor_wrapper;
 mod ref1_generate;
 mod ref1_accessor;
 mod ref1_test;
+mod ref2_test;
+mod ref2_generate;
+mod ref2_accessor;
+mod ref2_wrapper;
