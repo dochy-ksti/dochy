@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use dochy_core::json_dir_to_rust;
+    use dochy_core::json_dir_to_root;
     use crate::generate_interface;
     use crate::test::write_file::test::write_file;
     //use crate::rust_to_json_new_default;
@@ -11,7 +11,7 @@ mod tests {
     fn it_works() {
 
         // match json_dir_to_rust("src/test/siyou", true) {
-        match json_dir_to_rust("../dochy_core/src/json_dir/json_siyou", true) {
+        match json_dir_to_root("../dochy_core/src/json_dir/json_siyou", true) {
             Ok(mut a) => {
                 //println!("{:?}", a);
                 let ans = generate_interface(&mut a);

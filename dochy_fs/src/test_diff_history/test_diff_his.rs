@@ -6,7 +6,7 @@ use crate::imp::common::current_src::CurrentSrc;
 use crate::history::{next, DochyCache, HistoryOptions, HistoryOptionsBuilder, list_histories, CumulativeOptionsBuilder, load_history_file_data};
 use dochy_core::intf::root::set_int;
 use crate::test_fs::copy_dir_all::copy_dir_all;
-use dochy_core::json_dir_to_rust;
+use dochy_core::json_dir_to_root;
 use crate::test_diff_history::show_dir_contents_diff_history::show_dir_contents_diff_history;
 
 //#[test]
@@ -28,7 +28,7 @@ fn test_diff_his() -> FsResult<()> {
         }),
     })?;
 
-    let mut root = json_dir_to_rust(&src_dir_path, false)?;
+    let mut root = json_dir_to_root(&src_dir_path, false)?;
     for i in 0..2 {
         let p = RootObjectPtr::new(&mut root);
         set_int(p, "int", Qv::Val(i));

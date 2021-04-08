@@ -3,7 +3,7 @@ use crate::error::FsResult;
 use dochy_core::structs::RootObject;
 use std::fs::File;
 use dochy_diff::apply_diff;
-use dochy_core::{adjust_versions, json_dir_to_rust};
+use dochy_core::{adjust_versions, json_dir_to_root};
 use crate::imp::common::current_src::CurrentSrc;
 use crate::imp::common::archive::archive_default_name::ARCHIVE_DEFAULT_NAME;
 use crate::imp::common::archive::load_archive::load_archive;
@@ -32,7 +32,7 @@ fn load_file_separate<P1 : AsRef<Path>, P2 : AsRef<Path>>(
 
     match current_src{
         CurrentSrc::SrcDir(src_dir) =>{
-            let new = json_dir_to_rust(src_dir, validation)?;
+            let new = json_dir_to_root(src_dir, validation)?;
             let adjusted = adjust_versions(new, root, validation)?;
             Ok(adjusted)
         },

@@ -7,7 +7,7 @@ use crate::imp::history::file_name::file_name_props::FileNameProps;
 use std::path::Path;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
 use crate::imp::common::current_src::CurrentSrc;
-use dochy_core::{json_dir_to_rust, adjust_versions};
+use dochy_core::{json_dir_to_root, adjust_versions};
 use crate::imp::common::archive::load_archive::load_archive;
 use crate::imp::history::file_hist::history_file_data::HistoryFileData;
 
@@ -25,7 +25,7 @@ pub fn load_history_file<P : AsRef<Path>>(history_dir : P,
 
     match cache.current_src() {
         CurrentSrc::SrcDir(src_dir) => {
-            let new = json_dir_to_rust(src_dir, validation)?;
+            let new = json_dir_to_root(src_dir, validation)?;
             let adjusted = adjust_versions(new, loaded, validation)?;
             Ok(adjusted)
         },

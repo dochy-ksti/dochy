@@ -1,9 +1,9 @@
-use dochy_core::{json_dir_to_rust};
+use dochy_core::{json_dir_to_root};
 use dochy_intf::generate_interface;
 
 #[test]
 fn generate_version_awareness() {
-    match json_dir_to_rust("src/sample_test/sample_code_json/version_aware/new", true) {
+    match json_dir_to_root("src/sample_test/sample_code_json/version_aware/new", true) {
         Ok(mut a) => {
             let ans = generate_interface(&mut a);
             std::fs::write(
@@ -20,7 +20,7 @@ fn generate_version_awareness() {
 }
 #[test]
 fn generate_version_awareness2() {
-    match json_dir_to_rust("src/sample_test/sample_code_json/version_aware/new2", true) {
+    match json_dir_to_root("src/sample_test/sample_code_json/version_aware/new2", true) {
         Ok(mut a) => {
             let ans = generate_interface(&mut a);
             std::fs::write(

@@ -12,7 +12,7 @@ use crate::error::DpResult;
 //#[test]
 fn users_omitted() -> DpResult<()>{
     let ini_path= "src/sample_code_json/users/users_initial";
-    let mut r = dochy_core::json_dir_to_rust(ini_path, false)?;
+    let mut r = dochy_core::json_dir_to_root(ini_path, false)?;
 
     let rp = RootObjectPtr::new(&mut r);
 

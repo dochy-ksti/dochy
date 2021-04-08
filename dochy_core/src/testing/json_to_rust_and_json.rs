@@ -1,13 +1,13 @@
 #[cfg(test)]
 mod tests {
-    use crate::imp::json_to_rust::json_dir_to_rust::json_dir_to_rust;
+    use crate::imp::json_to_rust::json_dir_to_rust::json_dir_to_root;
     use crate::rust_to_json_new_default;
     use crate::imp::json_to_rust::json_root_to_rust;
     use crate::imp::rust_to_json::root_to_json::root_to_json_new_default;
 
     #[test]
     fn it_works() {
-        match json_dir_to_rust("src/json_dir/json_siyou", true) {
+        match json_dir_to_root("src/json_dir/json_siyou", true) {
             Ok(a) => {
                 match root_to_json_new_default(&a){
                     Ok(_json) =>{
@@ -25,7 +25,7 @@ mod tests {
 
     #[test]
     fn it_works2() {
-        match json_dir_to_rust("src/json_dir/json_siyou", true){
+        match json_dir_to_root("src/json_dir/json_siyou", true){
             Ok(a) => {
                 match rust_to_json_new_default(&a) {
                     Ok(a_v) => {

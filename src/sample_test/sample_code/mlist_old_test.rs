@@ -1,10 +1,10 @@
-use dochy_core::json_dir_to_rust;
+use dochy_core::json_dir_to_root;
 use crate::sample_test::sample_code::mlist_old_accessor::RootIntf;
 use crate::error::DpResult;
 
 #[test]
 fn mlilst_old_test() -> DpResult<()> {
-    let old = json_dir_to_rust("src/sample_test/sample_code_json/mlist_old", true)?;
+    let old = json_dir_to_root("src/sample_test/sample_code_json/mlist_old", true)?;
 
     let mut r = RootIntf::new(old);
     let mut iter = r.mlist().iter();

@@ -9,7 +9,7 @@ use crate::error::DpResult;
 //#[test]
 fn sample_employee_minimum() -> DpResult<()>{
     let ini_path= "sample_code_json/sample_employee_dochy_minimum";
-    let mut r = dochy_core::json_dir_to_rust(ini_path, false)?;
+    let mut r = dochy_core::json_dir_to_root(ini_path, false)?;
 
     let rp = RootObjectPtr::new(&mut r);
 
@@ -49,7 +49,7 @@ fn sample_employee_minimum() -> DpResult<()>{
     //let hoge = rust_to_json_new_default(&r)?;
     //println!("{}", hoge.to_string_pretty());
 
-    let mut from = dochy_core::json_dir_to_rust(
+    let mut from = dochy_core::json_dir_to_root(
         ini_path, false)?;
     let vec = dochy_diff::get_diff(&from, &r)?;
     println!("{}", vec.len());

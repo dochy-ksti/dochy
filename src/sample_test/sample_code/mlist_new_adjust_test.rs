@@ -1,11 +1,11 @@
-use dochy_core::{json_dir_to_rust, adjust_versions};
+use dochy_core::{json_dir_to_root, adjust_versions};
 use crate::sample_test::sample_code::mlist_new_accessor::{RootIntf};
 use crate::error::DpResult;
 
 #[test]
 fn mlilst_new_adjust_test() -> DpResult<()> {
-    let old = json_dir_to_rust("src/sample_test/sample_code_json/mlist_old", true)?;
-    let new = json_dir_to_rust("src/sample_test/sample_code_json/mlist_new", true)?;
+    let old = json_dir_to_root("src/sample_test/sample_code_json/mlist_old", true)?;
+    let new = json_dir_to_root("src/sample_test/sample_code_json/mlist_new", true)?;
 
     let r = adjust_versions(new, old, true)?;
 
