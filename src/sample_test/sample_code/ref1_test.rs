@@ -13,6 +13,6 @@ fn ref1_test() -> DpResult<()> {
     //unless you use find_by_id instead.
     //Linked-hash-map is also hashmap, so you can find items by key(ID) super fast.
     let item = list.last()?;
-    assert_eq!(item.ref_table().foo(), 33);
+    assert_eq!(item.ref_table_a().foo(), 33);
     Ok(())
 }

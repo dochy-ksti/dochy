@@ -15,84 +15,14 @@ impl RootIntf{
     pub unsafe fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub unsafe fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
-	pub fn table(&self) -> TableTable{
-		let ans = root::get_table(self.ptr, "table").unwrap();
-		TableTable::new(ans)
-	}
 	pub fn list(&mut self) -> MListPtr<ListMItem>{
 		root::get_mlist(self.ptr, "list").unwrap()
 	}
-}
-#[derive(Debug, PartialEq)]
-pub struct TableTable {
-	ptr : TablePtr,
-}
-impl TableTable {
-	pub fn new(ptr : TablePtr) -> TableTable{ TableTable{ ptr } } 
-	pub fn item2(&self) -> TableCItem {
-		let ptr = table::get_value(self.ptr, "item2").unwrap();
-		TableCItem::from(ptr)
-	}
-	pub fn item1(&self) -> TableCItem {
-		let ptr = table::get_value(self.ptr, "item1").unwrap();
-		TableCItem::from(ptr)
-	}
-	pub fn get_by_id(&self, id : TableTableID) -> TableCItem{
-		match id{
-			TableTableID::Item2 => self.item2(),
-			TableTableID::Item1 => self.item1(),
-		}
+	pub fn table_a(&self) -> TableATable{
+		let ans = root::get_table(self.ptr, "tableA").unwrap();
+		TableATable::new(ans)
 	}
 }
-#[repr(u64)] pub enum TableTableID{ Item2, Item1, }
-impl TableTableID{
-	pub fn from_str(id : &str) -> Option<Self>{
-		match id{
-			"item2" => Some(Self::Item2),
-			"item1" => Some(Self::Item1),
-			_ =>{ None }
-		}
-	}
-	pub fn from_num(id : usize) -> Self{
-		match id{
-			0 => Self::Item2,
-			1 => Self::Item1,
-			_ => panic!("invalid ID num {} TableTableID", id),
-		}
-	}
-	pub fn len() -> usize{ 2 }
-	pub fn to_num(&self) -> usize{
-		match self{
-			TableTableID::Item2 => 0,
-			TableTableID::Item1 => 1,
-		}
-	}
-	pub fn metadata() -> &'static [&'static str]{
-		&["item2", "item1", ]
-	}
-	pub fn to_str(&self) -> &'static str{
-		Self::metadata()[self.to_num()]
-	}
-}
-#[derive(Debug, PartialEq, Clone, Copy)]
-pub struct TableCItem {
-	ptr : CItemPtr,
-}
-impl From<CItemPtr> for TableCItem {
-	fn from(ptr : CItemPtr) -> Self { Self{ ptr } }
-}
-impl TableCItem {
-	pub fn foo(&self) -> i64{
-		let qv = citem::get_int(self.ptr, "foo").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn foo_def_val(&self) -> i64{
-		let qv = citem::get_int_def(self.ptr, "foo").unwrap();
-		qv.into_value().unwrap()
-	}
-	
-}
-
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct ListMItem {
 	ptr : MItemPtr,
@@ -114,16 +44,86 @@ impl ListMItem {
 	pub fn set_bar(&mut self, bar : i64){
 		mitem::set_int(self.ptr, "bar", Qv::Val(bar));
 	}
-	pub fn ref_table(&self) -> TableCItem{
-		let qv = mitem::get_ref(self.ptr, "table").unwrap();
-		TableCItem::from(qv.into_value().unwrap())
+	pub fn ref_table_a(&self) -> TableACItem{
+		let qv = mitem::get_ref(self.ptr, "tableA").unwrap();
+		TableACItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_table(&self) -> String{
-		let qv = mitem::get_ref_id(self.ptr, "table").unwrap();
+	pub fn ref_id_table_a(&self) -> String{
+		let qv = mitem::get_ref_id(self.ptr, "tableA").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn set_ref_table(&self, id : TableTableID){
-		mitem::set_ref(self.ptr, "table", Qv::Val(id.to_str().to_string()));
+	pub fn set_ref_table_a(&self, id : TableATableID){
+		mitem::set_ref(self.ptr, "tableA", Qv::Val(id.to_str().to_string()));
 	}
+}
+
+#[derive(Debug, PartialEq)]
+pub struct TableATable {
+	ptr : TablePtr,
+}
+impl TableATable {
+	pub fn new(ptr : TablePtr) -> TableATable{ TableATable{ ptr } } 
+	pub fn item2(&self) -> TableACItem {
+		let ptr = table::get_value(self.ptr, "item2").unwrap();
+		TableACItem::from(ptr)
+	}
+	pub fn item1(&self) -> TableACItem {
+		let ptr = table::get_value(self.ptr, "item1").unwrap();
+		TableACItem::from(ptr)
+	}
+	pub fn get_by_id(&self, id : TableATableID) -> TableACItem{
+		match id{
+			TableATableID::Item2 => self.item2(),
+			TableATableID::Item1 => self.item1(),
+		}
+	}
+}
+#[repr(u64)] pub enum TableATableID{ Item2, Item1, }
+impl TableATableID{
+	pub fn from_str(id : &str) -> Option<Self>{
+		match id{
+			"item2" => Some(Self::Item2),
+			"item1" => Some(Self::Item1),
+			_ =>{ None }
+		}
+	}
+	pub fn from_num(id : usize) -> Self{
+		match id{
+			0 => Self::Item2,
+			1 => Self::Item1,
+			_ => panic!("invalid ID num {} TableATableID", id),
+		}
+	}
+	pub fn len() -> usize{ 2 }
+	pub fn to_num(&self) -> usize{
+		match self{
+			TableATableID::Item2 => 0,
+			TableATableID::Item1 => 1,
+		}
+	}
+	pub fn metadata() -> &'static [&'static str]{
+		&["item2", "item1", ]
+	}
+	pub fn to_str(&self) -> &'static str{
+		Self::metadata()[self.to_num()]
+	}
+}
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub struct TableACItem {
+	ptr : CItemPtr,
+}
+impl From<CItemPtr> for TableACItem {
+	fn from(ptr : CItemPtr) -> Self { Self{ ptr } }
+}
+impl TableACItem {
+	pub fn foo(&self) -> i64{
+		let qv = citem::get_int(self.ptr, "foo").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn foo_def_val(&self) -> i64{
+		let qv = citem::get_int_def(self.ptr, "foo").unwrap();
+		qv.into_value().unwrap()
+	}
+	
 }
 

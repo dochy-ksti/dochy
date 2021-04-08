@@ -12,7 +12,7 @@ impl Ref2Wrapper {
         match self.item.foo(){
             NullOr::Null =>{
                 // When it's null, the referenced value is returned
-                self.item.ref_table().foo()
+                self.item.ref_table_a().foo()
             },
             NullOr::Val(v) =>{
                 // If it's updated, the updated value is returned

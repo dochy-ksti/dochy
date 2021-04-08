@@ -41,7 +41,7 @@ mod tests {
         intf.list().insert_last();
         let hoge = intf.list().insert_last();
         hoge.set_ref_refed1(Refed1TableID::A2);
-        intf.list().remove_first();
+        unsafe{ intf.list().remove_first(); }
 
         let mut intf = apply(unsafe{intf.root_obj_ref()}, json_dir_path)?;
         let mut list = intf.list();
@@ -68,13 +68,13 @@ mod tests {
         let mut intf = RootIntf::new(root_obj);
 
         let mut list = intf.list();
-        list.remove_first();
+        unsafe{ list.remove_first(); }
         list.insert_last();
         list.insert_first();
         list.insert_last();
         let id = list.last_id().unwrap();
         list.insert_last();
-        list.remove(id);
+        unsafe{ list.remove(id); }
 
         let mut iter = list.iter();
         let (id, _item) = iter.next().unwrap();
@@ -118,13 +118,13 @@ mod tests {
 
         let mut f = list.first().unwrap().in_list();
         let mut l = list.last().unwrap().in_list();
-        l.remove_first();
+        unsafe{ l.remove_first(); }
 
         f.insert_first();
         f.insert_first();
         f.insert_last();
         f.insert_last();
-        f.remove_last();
+        unsafe{ f.remove_last(); }
         let mut item = f.last().unwrap();
         item.set_in_mem(4);
 

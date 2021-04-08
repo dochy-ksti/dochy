@@ -77,17 +77,19 @@ impl<V : From<MItemPtr>> MListPtr<V>{
         self.get_item(id).unwrap()
     }
 
-    pub fn remove(&mut self, id : u64) -> bool {
-        let map = unsafe{ &mut *self.map };
+    /// Anything can happen when a removed item is accessed, so be careful
+    pub unsafe fn remove(&mut self, id : u64) -> bool {
+        let map = &mut *self.map;
         map.remove(id)
     }
-    pub fn remove_first(&mut self) -> bool{
-        let map = unsafe{ &mut *self.map };
+    /// Anything can happen when a removed item is accessed, so be careful
+    pub unsafe fn remove_first(&mut self) -> bool{
+        let map = &mut *self.map;
         map.remove_first()
     }
-
-    pub fn remove_last(&mut self) -> bool{
-        let map = unsafe{ &mut *self.map };
+    /// Anything can happen when a removed item is accessed, so be careful
+    pub unsafe fn remove_last(&mut self) -> bool{
+        let map =  &mut *self.map;
         map.remove_last()
     }
 

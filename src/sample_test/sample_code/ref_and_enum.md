@@ -1,4 +1,4 @@
-## Reference and Polymorphism
+## Reference
 
 Referencing something is difficult. 
 
@@ -6,9 +6,9 @@ In static programming languages, referents are retrieved by accessing memory add
 and in dynamic programming languages, by name-resolution.
 
 Memory addresses are not serializable. 
-Instead of them, MList automatically implements "ID" member which is auto-increment integers.
+Instead of them, MList automatically implements "ID" member, which is auto-increment integers.
 Since MList is implemented by a linked-hash-map, retrieving items by ID is extremely fast,
-and it also has sequential order.
+and it also remains sequential order.
 
 Referencing items with auto-increment ID is not very intuitive.
 You can create very powerful systems on it with programming languages, 
@@ -26,26 +26,27 @@ Dochy has another option, which is first-class reference based on name-resolutio
    Ref : {
     //Ref's initial value must be a ID, empty string, or null.
     //If it's an empty string, you must set ID, otherwise an error will occur.
-    table_a : "", 
-    // "table_a" is the table's name. The name of the variables must be the same
+    tableA : "", 
+    // "tableA" is the table's name.
    },
    bar : -1,
   }],
   {
    Ref : {
-    table : "item2", //reference item2 of the table below
+    tableA : "item2", //reference item2 of the tableA
     //The ID written here must exist, otherwise an error will occur.
    },
    //bar is not set
   },
   {
    Ref : {
-    table : "item1"
+    tableA : "item1"
    },
    bar : 30,
   }
  ],
- table : [
+ //This is the "tableA" 
+ tableA : [
   // The type of this collection is "Table", whose items can be referenced. 
   "Table",
   [{
@@ -53,7 +54,7 @@ Dochy has another option, which is first-class reference based on name-resolutio
   }],
   {
    // ID is a keyword
-   // All the items of a Table must have string IDs 
+   // All the items of a Table must have a string ID 
    ID : "item1",
    foo : 33,
   },
@@ -69,11 +70,11 @@ and Dochy's objects can have "Ref", which can reference table's items by the ID.
 ```
 {
  Ref : {
-  table : "item1"
+  tableA : "item1"
  },
 }
 ```
-This part is the "Ref". The item references the "item1".
+This part is the "Ref". The item references "item1".
 The "item1" is in the table.
 ```
 {
@@ -83,17 +84,18 @@ The "item1" is in the table.
 ```
 You can get data from references like this.
 ```Rust
+#[test]
 fn ref1_test() -> DpResult<()> {
-    let old = json_dir_to_rust("src/sample_test/sample_code_json/ref1", true)?;
+    let old = json_dir_to_root("src/sample_test/sample_code_json/ref1", true)?;
 
     let mut r = RootIntf::new(old);
     let mut list = r.list();
-    //MList is linked-hash-map, which is a hashtable whose items are doubly-linked-list-node,
-    //so first() and last() can be done instantly, but getting middle items are slow because it is a linked-list,
-    //but it's also a hashtable, so you can find items by key(ID) super fast.
-    //If you know ID of the middle item, you can get the item instantly.
+    //mlist is linked-hash-map, which is hashtable whose items are doubly-linked-list-node.
+    //so first() and last() can be done instantly, but getting middle items are slow,
+    //unless you use find_by_id instead.
+    //Linked-hash-map is also hashmap, so you can find items by key(ID) super fast.
     let item = list.last()?;
-    assert_eq!(item.ref_table().foo(), 33); //the referenced item's "foo" is 33
+    assert_eq!(item.ref_table_a().foo(), 33);
     Ok(())
 }
 ```
@@ -101,31 +103,32 @@ Table's items are immutable, (because I didn't implement "MTable", and I don't k
 If you need to modify the value, you can use "nullable" values and wrappers.
 ```
 {
- list : [
-  "MList",
-  [{
-   Ref : {
-    table : "", 
-   },
-   foo? : null,
-  }],
-  {
-   Ref : {
-    table : "item1", 
-   },
-   foo : 22,
-  },
- ],
- table : [
-  "Table",
-  [{
-   foo : 0
-  }],
-  {
-   ID : "item1",
-   foo : 33,
-  },
- ]
+  list : [
+    "MList",
+    [{
+      Ref : {
+        tableA : "",
+      },
+      "foo?" : ["Int",null],
+    }],
+    {
+      Ref : {
+        tableA : "item1",
+      },
+      // The value is updated here
+      foo : 22,
+    },
+  ],
+  tableA : [
+    "Table",
+    [{
+      foo : 0
+    }],
+    {
+      ID : "item1",
+      foo : 33,
+    },
+  ]
 }
 ```
 
@@ -141,7 +144,7 @@ impl Ref2Wrapper {
         match self.item.foo(){
             NullOr::Null =>{
                 // When it's null, the referenced value is returned
-                self.item.ref_table().foo()
+                self.item.ref_table_a().foo()
             },
             NullOr::Val(v) =>{
                 // If it's updated, the updated value is returned
@@ -151,3 +154,188 @@ impl Ref2Wrapper {
     }
 }
 ```
+If it's null, the referent's value is returned.
+If you need to modify the value, set the item's variable other than null.
+
+### Multiple Reference
+
+Let's make some RPG. In the game, player-characters have two properties, "race" and "class".
+
+We can write it with "multiple reference".
+
+```json5
+{
+  pcList : [
+    "MList",
+    [{
+      Ref : {
+        //two references, "race" and "class"
+        race : "",
+        class : "",
+      },
+      name : "",
+    }],
+    {
+      Ref : {
+        //Elves are smart, so Mage is good for them
+        race : "elf",
+        class : "mage",
+      },
+      name : "Elvis",
+    },
+    {
+      Ref : {
+        //Dwarves are powerful, so Fighter is good for them
+        race : "dwarf",
+        class : "fighter",
+      },
+      name : "George",
+    },
+  ],
+  race : [
+    "Table",
+    [{
+      strength : 0,
+      intelligence : 0,
+    }],
+    {
+      ID : "elf",
+      strength : 35,
+      intelligence : 50,
+    },
+    {
+      ID : "dwarf",
+      strength : 55,
+      intelligence : 30,
+    }
+  ],
+  class : [
+    "Table",
+    [{
+      attack : 0,
+      magic : 0,
+    }],
+    {
+      ID : "fighter",
+      attack : 50,
+      magic : 0,
+    },
+    {
+      ID : "mage",
+      attack : 5,
+      magic : 30,
+    }
+  ]
+}
+```
+You may think the modeling in this example is natural.
+
+### Enum
+
+Let's make the characters have items.
+In this example, there are two kinds of items, swords and herbs.
+```json5
+//root.json5
+{
+  pcList : [
+    "MList",
+    [{
+      name : "",
+      items : [
+        // "Mil" stands for "Mut Inner List"
+        "MilDef",
+        // In a default object, inner list's default object is defined.
+        // The name "MilDef" stresses the fact.
+        [{
+          //"Enum" is a keyword
+          // Enum is basically the programming language Rust's "enum"
+          Enum : {
+            //Enum's variables must be nullable, and the default values must be null
+            "sword?" : null,
+            "herb?" : null,
+          }
+        }]
+      ]
+    }],
+    {
+      name : "Elvis",
+      //Elvis has a bronze sword and a middle healing
+      items : [
+        //Mil stands for "Mut Inner List"
+        "Mil",
+        //In an item, we need to write inner list's items without the default object
+        {
+          Enum : {
+            //You must set only one variable to define Enum,
+            sword : "bronze",
+          }
+        },
+        {
+          Enum : {
+            herb : "middle",
+          }
+        }
+      ]
+    },
+    {
+      name : "George",
+      //George has a low herb and an iron sword
+      items : [
+        "Mil",
+        {
+          Enum : {
+            herb : "low",
+          }
+        },
+        {
+          Enum : {
+            sword : "iron",
+          }
+        },
+      ]
+    },
+  ],
+}
+```
+We also need "sword" and "herb" tables.
+We can write top level items in separate files.
+We need to place these files in the directory "root.json5" exists 
+```json5
+//herb.json5
+[
+  "Table",
+  [{
+    restore : 0,
+  }],
+  {
+    ID : "low",
+    restore : 30,
+  },
+  {
+    ID : "middle",
+    restore : 80,
+  }
+],
+```
+```json5
+//sword.json5
+[
+  "Table",
+  [{
+    attack : 0,
+    price : 0,
+  }],
+  {
+    ID : "bronze",
+    attack : 10,
+    price : 100,
+  },
+  {
+    ID : "iron",
+    attack : 40,
+    restore :500,
+  }
+]
+```
+Only top level tables can be referenced in Dochy,
+and only top level items can be written in separate files.
