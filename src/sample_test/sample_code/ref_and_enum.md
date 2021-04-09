@@ -239,13 +239,13 @@ In this example, there are two kinds of items, swords and herbs.
 {
   pcList : [
     "MList",
+    //MList's default object is defined here
     [{
       name : "",
       items : [
         // "Mil" stands for "Mut Inner List"
+        // "MilDef" means "Mut-Inner-List's Default Object"
         "MilDef",
-        // In a default object, inner list's default object is defined.
-        // The name "MilDef" stresses the fact.
         [{
           //"Enum" is a keyword
           // Enum is basically the programming language Rust's "enum"
@@ -255,15 +255,17 @@ In this example, there are two kinds of items, swords and herbs.
             "herb?" : null,
           }
         }]
+        //No items can be written in a default object's inner list.
       ]
     }],
     {
       name : "Elvis",
-      //Elvis has a bronze sword and a middle healing
+      //Elvis has a bronze sword and a middle herb
       items : [
         //Mil stands for "Mut Inner List"
         "Mil",
-        //In an item, we need to write inner list's items without the default object
+        //We need to write inner list's items without a default object.
+        //(The default object is already written above)
         {
           Enum : {
             //You must set only one variable to define Enum,
@@ -299,7 +301,7 @@ In this example, there are two kinds of items, swords and herbs.
 ```
 We also need "sword" and "herb" tables.
 We can write top level items in separate files.
-We need to place these files in the directory "root.json5" exists 
+We need to place these files in the directory "root.json5" exists.
 ```json5
 //herb.json5
 [
@@ -333,9 +335,8 @@ We need to place these files in the directory "root.json5" exists
   {
     ID : "iron",
     attack : 40,
-    restore :500,
+    price :500,
   }
 ]
 ```
-Only top level tables can be referenced in Dochy,
-and only top level items can be written in separate files.
+Only top level items can be written in separate files.
