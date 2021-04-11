@@ -1,4 +1,4 @@
-## Reference
+## Reference and Enum
 
 Referencing something is difficult. 
 
@@ -15,7 +15,7 @@ You can create very powerful systems on it with programming languages,
 but it's not very suited for handmade JSON5 files to reference items.
 
 Dochy has another option, which is first-class reference based on name-resolution.
-```
+```json5
 {
  list : [
   "MList",
@@ -24,19 +24,18 @@ Dochy has another option, which is first-class reference based on name-resolutio
    // Every keyword in Dochy starts with captal letters,
    // and all the names starts with captal letters are reserved by the system
    Ref : {
-    //Ref's initial value must be a ID, empty string, or null.
+    //Ref's initial value must be a concrete ID, empty string, or null.
     //If it's an empty string, you must set ID, otherwise an error will occur.
-    tableA : "", 
+    tableA : "", //<- empty string
     // "tableA" is the table's name.
    },
    bar : -1,
   }],
   {
    Ref : {
-    tableA : "item2", //reference item2 of the tableA
-    //The ID written here must exist, otherwise an error will occur.
+    tableA : "item2", //referencing "item2" of the tableA
+    //The ID must exist, otherwise an error will occur.
    },
-   //bar is not set
   },
   {
    Ref : {
@@ -60,13 +59,12 @@ Dochy has another option, which is first-class reference based on name-resolutio
   },
   {
    ID : "item2", // "item2" exists here
-   //foo is not set
   }
  ]
 }
 ```
-Tables are basically CList with string ID, 
-and Dochy's objects can have "Ref", which can reference table's items by the ID.
+Tables are basically CList with string IDs. 
+Dochy's objects can reference table's items by IDs.
 ```
 {
  Ref : {
@@ -74,8 +72,6 @@ and Dochy's objects can have "Ref", which can reference table's items by the ID.
  },
 }
 ```
-This part is the "Ref". The item references "item1".
-The "item1" is in the table.
 ```
 {
  ID : "item1",
@@ -86,9 +82,9 @@ You can get data from references like this.
 ```Rust
 #[test]
 fn ref1_test() -> DpResult<()> {
-    let old = json_dir_to_root("src/sample_test/sample_code_json/ref1", true)?;
+    let root = json_dir_to_root("src/sample_test/sample_code_json/ref1", true)?;
 
-    let mut r = RootIntf::new(old);
+    let mut r = RootIntf::new(root);
     let mut list = r.list();
     //mlist is linked-hash-map, which is hashtable whose items are doubly-linked-list-node.
     //so first() and last() can be done instantly, but getting middle items are slow,
@@ -99,7 +95,7 @@ fn ref1_test() -> DpResult<()> {
     Ok(())
 }
 ```
-Table's items are immutable, (because I didn't implement "MTable", and I don't know whether it should exist.)
+Table's items are immutable, (because I didn't implement "MTable", and I don't know whether it should be implemented.)
 If you need to modify the value, you can use "nullable" values and wrappers.
 ```
 {
@@ -109,7 +105,9 @@ If you need to modify the value, you can use "nullable" values and wrappers.
       Ref : {
         tableA : "",
       },
+      // the nullable value.
       "foo?" : ["Int",null],
+      // referent's "foo" is logically modified when this is not null
     }],
     {
       Ref : {
