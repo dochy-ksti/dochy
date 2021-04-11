@@ -12,6 +12,6 @@
   {
     ID : "iron",
     attack : 40,
-    restore :500,
+    price :500,
   }
 ]

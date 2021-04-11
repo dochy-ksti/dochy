@@ -154,8 +154,6 @@ impl Ref2Wrapper {
     }
 }
 ```
-If it's null, the referent's value is returned.
-If you need to modify the value, set the item's variable other than null.
 
 ### Multiple Reference
 
@@ -228,7 +226,6 @@ We can write it with "multiple reference".
   ]
 }
 ```
-You may think the modeling in this example is natural.
 
 ### Enum
 
@@ -270,11 +267,13 @@ In this example, there are two kinds of items, swords and herbs.
           Enum : {
             //You must set only one variable to define Enum,
             sword : "bronze",
+            //this is "bronze sword"
           }
         },
         {
           Enum : {
             herb : "middle",
+            //this is "middle herb"
           }
         }
       ]
@@ -308,14 +307,17 @@ We need to place these files in the directory "root.json5" exists.
   "Table",
   [{
     restore : 0,
+    price : 0,
   }],
   {
     ID : "low",
     restore : 30,
+    price : 10,
   },
   {
     ID : "middle",
     restore : 80,
+    price : 50,
   }
 ],
 ```
@@ -335,8 +337,57 @@ We need to place these files in the directory "root.json5" exists.
   {
     ID : "iron",
     attack : 40,
-    price :500,
+    price : 500,
   }
 ]
 ```
-Only top level items can be written in separate files.
+Only top level items can be written in separate files, 
+and the file names is interpreted as variable names.
+
+The variable "price" is common for the items. 
+Let's make the utility function which can get the price regardless of the type. 
+```Rust
+use crate::sample_test::sample_code::rpg2_accessor::{ItemsMItem, ItemsEnum};
+
+pub trait ItemUtil{
+    fn price(&self) -> i64;
+}
+
+impl ItemUtil for ItemsMItem{
+    fn price(&self) -> i64 {
+        match self.get_enum(){
+            ItemsEnum::Herb(h) =>{ h.price() }
+            ItemsEnum::Sword(s) =>{ s.price() }
+        }
+    }
+}
+```
+```Rust
+use dochy_core::json_dir_to_root;
+use crate::sample_test::sample_code::rpg2_accessor::{RootIntf, ItemsEnum};
+use crate::error::DpResult;
+use crate::sample_test::sample_code::rpg2_accessor_wrapper::ItemUtil;
+
+#[test]
+fn rpg2_test() -> DpResult<()> {
+    let r = json_dir_to_root("src/sample_test/sample_code_json/rpg2", true)?;
+
+    let mut r = RootIntf::new(r);
+
+    for (_id, mut pc) in r.pc_list().iter(){
+        for (_id, item) in pc.items().iter(){
+            println!("the price is {}", item.price());
+            match item.get_enum(){
+                ItemsEnum::Sword(s) =>{
+                    println!("the attack power is {}", s.attack());
+                },
+                ItemsEnum::Herb(h) =>{
+                    println!("the heal power is {}", h.restore());
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
+```

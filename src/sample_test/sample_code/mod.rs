@@ -31,3 +31,7 @@ mod ref2_test;
 mod ref2_generate;
 mod ref2_accessor;
 mod ref2_wrapper;
+mod rpg2_accessor;
+mod rpg2_generate;
+mod rpg2_test;
+mod rpg2_accessor_wrapper;
