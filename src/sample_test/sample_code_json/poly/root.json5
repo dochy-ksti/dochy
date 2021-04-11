@@ -5,10 +5,12 @@
       Enum : {
         "referentA?" : null,
         "referentB?" : null,
+        "name_testing" : null,
       },
       "va?" : ["Int",null],
       "vb?" : ["Int",null],
-      "vc?" : ["Int",null]
+      "vc?" : ["Int",null],
+      name_test : 0,
     }],
     {
       Enum : {
@@ -21,6 +23,14 @@
       }
     },
 
+  ],
+
+  name_testing : [
+    "Table",
+    [{}],
+    {
+      ID : "huga"
+    }
   ],
 
   referentA : [
