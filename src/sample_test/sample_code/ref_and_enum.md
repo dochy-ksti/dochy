@@ -243,7 +243,7 @@ In this example, there are two kinds of items, swords and herbs.
         "MilDef",
         [{
           //"Enum" is a keyword
-          // Enum is basically the programming language Rust's "enum"
+          // Enum is like the programming language Rust's "enum"
           Enum : {
             //Enum's variables must be nullable, and the default values must be null
             "sword?" : null,
@@ -265,13 +265,13 @@ In this example, there are two kinds of items, swords and herbs.
           Enum : {
             //You must set only one variable to define Enum,
             sword : "bronze",
-            //this is "bronze sword"
+            //this is a bronze sword
           }
         },
         {
           Enum : {
             herb : "middle",
-            //this is "middle herb"
+            //this is a middle herb
           }
         }
       ]
@@ -317,7 +317,7 @@ We need to place these files in the directory "root.json5" exists.
     restore : 80,
     price : 50,
   }
-],
+]
 ```
 ```json5
 //sword.json5
@@ -340,7 +340,7 @@ We need to place these files in the directory "root.json5" exists.
 ]
 ```
 Only top level items can be written in separate files, 
-and the file names is interpreted as variable names.
+and the file names are interpreted as variable names.
 
 The variable "price" is common for the items. 
 Let's make the utility function which can get the price regardless of the type. 
