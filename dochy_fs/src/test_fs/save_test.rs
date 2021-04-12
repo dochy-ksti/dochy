@@ -1,4 +1,4 @@
-use dochy_core::json_dir_to_rust;
+use dochy_core::json_dir_to_root;
 use crate::imp::filesys::save_file::save_file;
 use dochy_core::intf::RootObjectPtr;
 use dochy_core::intf::root::{set_bool, get_bool, set_int, get_int};
@@ -21,7 +21,7 @@ fn save_test() -> FsResult<()> {
 
     let first_save_path;
     {
-        let mut root = json_dir_to_rust(&src_dir_path, false)?;
+        let mut root = json_dir_to_root(&src_dir_path, false)?;
         let p = RootObjectPtr::new(&mut root);
         set_bool(p, "b", Qv::Val(true));
 
@@ -37,7 +37,7 @@ fn save_test() -> FsResult<()> {
     std::fs::copy("src/json_dir/simple_mod1/root.json5", &src_dir_path.join("root.json5"))?;
 
     {
-        let mut root = json_dir_to_rust(&src_dir_path, false)?;
+        let mut root = json_dir_to_root(&src_dir_path, false)?;
         let p = RootObjectPtr::new(&mut root);
         set_int(p, "int", Qv::Val(-1));
 

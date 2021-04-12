@@ -1,6 +1,6 @@
 pub use dochy_core::rust_to_json_new_default;
-pub use dochy_core::json_dir_to_rust;
-pub use dochy_core::json_files_to_rust;
+pub use dochy_core::json_dir_to_root;
+pub use dochy_core::json_files_to_root;
 pub use dochy_core::adjust_versions;
 pub use dochy_core::intf;
 

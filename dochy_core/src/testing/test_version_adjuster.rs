@@ -2,14 +2,14 @@
 
 #[cfg(test)]
 mod testion {
-    use crate::{json_dir_to_rust, rust_to_json_new_default};
+    use crate::{json_dir_to_root, rust_to_json_new_default};
     use crate::imp::version_adjuster::version_adjuster::adjust_versions;
     use crate::error::{CoreResult};
     use crate::imp::json_to_rust::json_root_to_rust;
 
     //#[test]
     pub(crate ) fn test_version_adjuster() -> CoreResult<()> {
-        let new = match json_dir_to_rust("src/json_dir/version_adjuster/new", true) {
+        let new = match json_dir_to_root("src/json_dir/version_adjuster/new", true) {
             Ok(j) => j,
             Err(e) => {
                 println!("new {}", e);
@@ -17,7 +17,7 @@ mod testion {
             }
         };
 
-        let old = match json_dir_to_rust("src/json_dir/version_adjuster/old", true) {
+        let old = match json_dir_to_root("src/json_dir/version_adjuster/old", true) {
             Ok(j) =>{
                 match rust_to_json_new_default(&j){
                     Ok(_b) =>{

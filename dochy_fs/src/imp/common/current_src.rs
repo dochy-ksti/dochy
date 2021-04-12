@@ -18,7 +18,7 @@ impl CurrentSrc{
     pub(crate) fn create_root(&self) -> FsResult<RootObject>{
         match self{
             CurrentSrc::SrcDir(dir) =>{
-                Ok(dochy_core::json_dir_to_rust(dir, false)?)
+                Ok(dochy_core::json_dir_to_root(dir, false)?)
             },
             CurrentSrc::ArchiveFile(arc) =>{
                 load_archive(arc, false)

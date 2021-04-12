@@ -1,6 +1,9 @@
-///1文字目を大文字にしたいだけなんだけどやたらと大変やね・・・
+///1文字目を大文字にする
+/// snake_caseを発見したら大文字に変換する
 pub(crate) fn to_type_name(s : &str) -> String{
     let mut r = String::with_capacity(s.len());
+    let mut to_upper_case = false;
+
     for (i,c) in s.chars().enumerate(){
         if i == 0{
             if c == '@'{
@@ -9,7 +12,16 @@ pub(crate) fn to_type_name(s : &str) -> String{
                 r.push(c.to_ascii_uppercase());
             }
         } else{
-            r.push(c)
+            if c == '_'{
+                to_upper_case = true;
+            } else {
+                if to_upper_case{
+                    r.push(c.to_ascii_uppercase());
+                    to_upper_case = false;
+                } else {
+                    r.push(c)
+                }
+            }
         }
     }
     r

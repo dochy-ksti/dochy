@@ -7,8 +7,11 @@ and undoable apps.
 There are three goals we want to achieve.
 
 1. [Efficiency](src/sample_test/sample_code/efficiency.md)
-2. Version Awareness
-3. Improved Expressiveness By Supporting Reference and Enum
+2. [Version Awareness](src/sample_test/sample_code/version_awareness.md)
+3. [Reference and Enum](src/sample_test/sample_code/ref_and_enum.md)
+
+These three documents(and [this](src/sample_test/sample_code/history.md))
+should work as a walkthrough of Dochy's peculiar concepts. 
 
 ### What does Dochy stand for?
 

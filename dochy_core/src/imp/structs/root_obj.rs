@@ -67,6 +67,7 @@ impl RootObject{
         RootObject{ default, sabun, old, meta_table }
     }
     pub fn sabun(&self) -> &HashM<String, RustParam>{ self.sabun.as_ref() }
+    pub fn sabun_mut(&mut self) -> &mut HashM<String, RustParam>{ self.sabun.as_mut() }
     pub(crate) fn old(&self) -> &HashS<String>{ self.old.as_ref() }
     pub fn set_sabun(&mut self, name : String, param : RustParam) -> Result<Option<RustParam>, SetSabunError> {
         let (p, vt) = if let Some((_,RootValue::Param(p, vt))) = self.default().get(&name) { (p, vt) } else {

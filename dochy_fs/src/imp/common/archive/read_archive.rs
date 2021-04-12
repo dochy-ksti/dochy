@@ -1,12 +1,12 @@
 use dochy_archiver::ArchiveData;
 use dochy_core::structs::{RootObject};
-use dochy_core::{json_files_to_rust, JsonFile};
+use dochy_core::{json_files_to_root, JsonFile};
 use crate::error::FsResult;
 use std::str::from_utf8;
 use std::path::Path;
 
 pub fn read_archive(archive : &ArchiveData, validation : bool) -> FsResult<RootObject>{
-    Ok(json_files_to_rust(archive.iter().map(|(path, bytes)| to_json_file(path, bytes)) , validation)?)
+    Ok(json_files_to_root(archive.iter().map(|(path, bytes)| to_json_file(path, bytes)), validation)?)
 }
 
 struct JsonFileImpl<'a>{

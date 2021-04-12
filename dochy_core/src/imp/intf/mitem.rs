@@ -8,10 +8,10 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::intf::mlist::MListPtr;
 use crate::imp::intf::{CItemPtr, RootObjectPtr};
 use crate::imp::structs::ref_value::RefSabValue;
-use crate::imp::intf::citem::{get_enum_impl, get_ref_id_imol};
-use crate::imp::structs::util::set_sabun::SetSabunError;
+use crate::imp::intf::citem::{get_enum_impl, get_ref_id_impl};
 use crate::imp::structs::rust_string::RustString;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
+use crate::structs::RustBinary;
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -45,116 +45,170 @@ pub fn get_mil<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<
 }
 
 pub fn get_bool(ps : MItemPtr, name : &str) -> Option<Qv<bool>>{
-    let (item,list_def) = unsafe{ (ps.item.as_ref().unwrap(), ps.list_def.as_ref().unwrap()) };
-    if let Some(RustParam::Bool(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::Bool(b)) = get_param(ps, name){
+        Some(b.clone())
+    } else{ None }
+}
+
+pub fn get_bool_def(ps : MItemPtr, name : &str) -> Option<Qv<bool>>{
+    if let Some(RustParam::Bool(b)) = get_param_def(ps, name){
         Some(b.clone())
     } else{ None }
 }
 
 pub fn get_int(ps : MItemPtr, name : &str) -> Option<Qv<i64>>{
-    let (item,list_def) = unsafe{ (ps.item.as_ref().unwrap(), ps.list_def.as_ref().unwrap()) };
-    if let Some(RustParam::Int(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::Int(b)) = get_param(ps, name){
+        Some(b.clone())
+    } else{ None }
+}
+
+pub fn get_int_def(ps : MItemPtr, name : &str) -> Option<Qv<i64>>{
+    if let Some(RustParam::Int(b)) = get_param_def(ps, name){
         Some(b.clone())
     } else{ None }
 }
 
 pub fn get_float(ps : MItemPtr, name : &str) -> Option<Qv<f64>>{
-    let (item,list_def) = unsafe{ (ps.item.as_ref().unwrap(), ps.list_def.as_ref().unwrap()) };
-    if let Some(RustParam::Float(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::Float(b)) = get_param(ps, name){
+        Some(b.clone())
+    } else{ None }
+}
+
+pub fn get_float_def(ps : MItemPtr, name : &str) -> Option<Qv<f64>>{
+    if let Some(RustParam::Float(b)) = get_param_def(ps, name){
         Some(b.clone())
     } else{ None }
 }
 
 pub fn get_str(ps : MItemPtr, name : &str) -> Option<Qv<String>>{
-    let (item,list_def) = unsafe{ (ps.item.as_ref().unwrap(), ps.list_def.as_ref().unwrap()) };
-    if let Some(RustParam::String(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::String(b)) = get_param(ps, name){
+        Some(b.map(|s| s.str().to_string()))
+    } else{ None }
+}
+
+pub fn get_str_def(ps : MItemPtr, name : &str) -> Option<Qv<String>>{
+    if let Some(RustParam::String(b)) = get_param_def(ps, name){
         Some(b.map(|s| s.str().to_string()))
     } else{ None }
 }
 
 pub fn get_int_array(ps : MItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
-    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    if let Some(RustParam::IntArray(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::IntArray(b)) = get_param(ps, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
         None
     }
 }
 
-pub fn get_float_array(ps : MItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
-    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    if let Some(RustParam::FloatArray(b)) = get_param(item, list_def, name){
+pub fn get_int_array_def(ps : MItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
+    if let Some(RustParam::IntArray(b)) = get_param_def(ps, name){
         Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+pub fn get_float_array(ps : MItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
+    if let Some(RustParam::FloatArray(b)) = get_param(ps, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+pub fn get_float_array_def(ps : MItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
+    if let Some(RustParam::FloatArray(b)) = get_param_def(ps, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+pub fn get_binary(ps : MItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+    if let Some(RustParam::Binary(b)) = get_param(ps, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+pub fn get_binary_def(ps : MItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+    if let Some(RustParam::Binary(b)) = get_param_def(ps, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+
+pub fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
+    if let Some(RustParam::Binary(b)) = get_param(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+
+/// Vec のメモリは 最低でも8byte境界にalignされているはず(Rustはそれを保証していないが、それをしないallocatorは存在してないはず)
+/// なので、slice::align_to_mut で u64 や i32 のsliceを取得してゴリゴリ書き換えることも可能なはず
+/// vec.len が sizeof の倍数ならば、align_toしてもprefixやsuffixは発生しないだろう
+///
+/// 常にCとの相互運用性を考えているのだが、結局ポインタを渡してしまえばCのノリで何も考えずにキャストされゴリゴリ書き換えられるだろうから、
+/// align_toのこととか考えても無駄だろう
+///
+/// little endianのマシンから big endianのマシンに移したデータで問題が起きたりとかそういうことはあるだろうが、
+/// 現段階ではそんなこと知ったことではないと思う。十分に無視するに値するコーナーケースと考える。
+///
+/// Boxから取られた参照なので、理論的には、Boxの中のVecが置き換えられても、この参照自体は無効にはならないはずだ。
+/// しかしVecが参照しているSliceは無効になる。Sliceの参照が生きている間に置き換えが発生すればUBだ。
+///
+/// だからVecからSliceを取り出すときには注意したほうが良い・・・。Cインターフェースを作る時に特に注意すべきである
+///
+/// まあRustはBoxの中の値が置き換えられたときBox内への参照が有効であることは保証していないと思うが・・・
+pub fn get_mutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
+    if let Some(RustParam::Binary(b)) = get_param_mut(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
     } else{
         None
     }
 }
 
 pub fn set_bool(ps : MItemPtr, name : &str, val : Qv<bool>) -> bool{
-    let (item,def) = unsafe{ (ps.item.as_mut().unwrap(),ps.list_def.as_ref().unwrap()) };
-    match item.set_sabun(def, name.to_string(), RustParam::Bool(val)) {
+    set_sabun(ps, name, RustParam::Bool(val))
+}
+pub fn set_int(ps : MItemPtr, name : &str, val : Qv<i64>) -> bool{
+    set_sabun(ps, name, RustParam::Int(val))
+}
+pub fn set_float(ps : MItemPtr, name : &str, val : Qv<f64>) -> bool{
+    set_sabun(ps, name, RustParam::Float(val))
+}
+pub fn set_str(ps : MItemPtr, name : &str, val : Qv<String>) -> bool{
+    set_sabun(ps, name, RustParam::String(val.into_map(|s| RustString::new(s))))
+}
+pub fn set_int_array(ps : MItemPtr, name : &str, val : Qv<Vec<i64>>) -> bool{
+    set_sabun(ps, name, RustParam::IntArray(val.into_map(|s| RustIntArray::new(s))))
+}
+pub fn set_float_array(ps : MItemPtr, name : &str, val : Qv<Vec<f64>>) -> bool{
+    set_sabun(ps, name, RustParam::FloatArray(val.into_map(|s| RustFloatArray::new(s))))
+}
+pub fn set_binary(ps : MItemPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
+    set_sabun(ps, name, RustParam::Binary(val.into_map(|s| RustBinary::new(s))))
+}
+
+pub fn set_sabun(ps : MItemPtr, name : &str, p : RustParam) -> bool {
+    let (item, def) = unsafe { (&mut *ps.item, &*ps.list_def) };
+    match item.set_sabun(def, name.to_string(), p) {
         Ok(_) => true,
         Err(_) => false,
     }
 }
-pub fn set_int(ps : MItemPtr, name : &str, val : Qv<i64>) -> bool{
-    let (item, def) = unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
-    match item.set_sabun(def,name.to_string(), RustParam::Int(val)){
-        Ok(_) =>{ true },
-        Err(e) => match e{
-            SetSabunError::ParamNotFound =>{ false },
-            SetSabunError::ParamTypeMismatch =>{ false },
-            SetSabunError::QvTypeMismatch =>{ false },
-        },
-    }
-}
-pub fn set_float(ps : MItemPtr, name : &str, val : Qv<f64>) -> bool{
-    let (item, def) = unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
-    match item.set_sabun(def,name.to_string(), RustParam::Float(val)){
-        Ok(_) =>{ true },
-        Err(e) => match e{
-            SetSabunError::ParamNotFound =>{ false },
-            SetSabunError::ParamTypeMismatch =>{ false },
-            SetSabunError::QvTypeMismatch =>{ false },
-        },
-    }
-}
-pub fn set_str(ps : MItemPtr, name : &str, val : Qv<String>) -> bool{
-    let (item, def) = unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
-    match item.set_sabun(def,name.to_string(), RustParam::String(val.into_map(|s| RustString::new(s)))){
-        Ok(_) =>{ true },
-        Err(e) => match e{
-            SetSabunError::ParamNotFound =>{ false },
-            SetSabunError::ParamTypeMismatch =>{ false },
-            SetSabunError::QvTypeMismatch =>{ false },
-        },
-    }
-}
-pub fn set_int_array(ps : MItemPtr, name : &str, val : Qv<Vec<i64>>) -> bool{
-    let (item, def) = unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
-    match item.set_sabun(def,name.to_string(), RustParam::IntArray(val.into_map(|s| RustIntArray::new(s)))){
-        Ok(_) =>{ true },
-        Err(e) => match e{
-            SetSabunError::ParamNotFound =>{ false },
-            SetSabunError::ParamTypeMismatch =>{ false },
-            SetSabunError::QvTypeMismatch =>{ false },
-        },
-    }
-}
-pub fn set_float_array(ps : MItemPtr, name : &str, val : Qv<Vec<f64>>) -> bool{
-    let (item, def) = unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
-    match item.set_sabun(def,name.to_string(), RustParam::FloatArray(val.into_map(|s| RustFloatArray::new(s)))){
-        Ok(_) =>{ true },
-        Err(e) => match e{
-            SetSabunError::ParamNotFound =>{ false },
-            SetSabunError::ParamTypeMismatch =>{ false },
-            SetSabunError::QvTypeMismatch =>{ false },
-        },
-    }
-}
 
 
-pub fn get_param<'a>(item : &'a MutItem, def : &'a ListDefObj, name : &str) -> Option<&'a RustParam>{
+pub fn get_param<'a>(ps : MItemPtr, name : &str) -> Option<&'a RustParam>{
+    let (item, def) = unsafe{ (&*ps.item, &*ps.list_def) };
     if let Some(ListSabValue::Param(p)) = item.values().get(name){
         Some(p)
     } else if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
@@ -164,17 +218,29 @@ pub fn get_param<'a>(item : &'a MutItem, def : &'a ListDefObj, name : &str) -> O
     }
 }
 
+pub fn get_param_def<'a>(ps : MItemPtr, name : &str) -> Option<&'a RustParam>{
+    let def = unsafe{ &*ps.list_def };
+    if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
+        Some(p)
+    } else{
+        None
+    }
+}
 
+pub fn get_param_mut<'a>(ps : MItemPtr, name : &str) -> Option<&'a mut RustParam>{
+    let item = unsafe{ &mut *ps.item };
+    if let Some(ListSabValue::Param(p)) = item.values_mut().get_mut(name){
+        Some(p)
+    } else{
+        None
+    }
+}
 
 pub fn set_ref(ps : MItemPtr, list_name : &str, id : Qv<String>) -> bool{
     let (item, _def)= unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
-
-    //if def.refs().refs().contains_key(list_name) == false{ return false; }
-
     item.refs_mut().insert(list_name.to_string(), RefSabValue::new(id));
     return true;
 }
-
 
 pub fn get_ref(ps : MItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
     let qv = get_ref_id(ps, list_name)?;
@@ -186,7 +252,7 @@ pub fn get_ref(ps : MItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
 
 pub fn get_ref_id(ps : MItemPtr, list_name : &str) -> Option<Qv<String>>{
     let (item, list_def) = unsafe{ (ps.item.as_ref().unwrap(), ps.list_def.as_ref().unwrap()) };
-    get_ref_id_imol(item.refs(), list_def, list_name)
+    get_ref_id_impl(item.refs(), list_def, list_name)
 }
 
 pub fn get_enum(ps : MItemPtr) -> Option<(String, String)>{

@@ -1,6 +1,7 @@
 use crate::imp::structs::qv::Qv;
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::array_type::ArrayType;
+use crate::error::CoreResult;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct RustArray{
@@ -38,11 +39,11 @@ impl RustArray{
         self.qv().opt_map(|a| RustBinary::from_params(a))
     }
 
-    pub(crate) fn to_param(&self, at : &ArrayType) -> Option<RustParam>{
-        Some(match at{
-            ArrayType::Float =>{ RustParam::FloatArray(self.to_float_array()?) },
-            ArrayType::Int =>{ RustParam::IntArray(self.to_int_array()?) },
-            ArrayType::Binary =>{ RustParam::Binary(self.to_binary()?) },
+    pub(crate) fn to_param(&self, at : &ArrayType) -> CoreResult<RustParam>{
+        Ok(match at{
+            ArrayType::Float =>{ RustParam::FloatArray(self.to_float_array().ok_or("FloatArray is not valid")?) },
+            ArrayType::Int =>{ RustParam::IntArray(self.to_int_array().ok_or("IntArray is not valid")?) },
+            ArrayType::Binary =>{ RustParam::Binary(self.to_binary().ok_or("Binary is not valid")?) },
             //ArrayType::String =>{ RustParam::StrArray(self.to_str_array()?)}
             //ArrayType::Num2 =>{ RustParam::Num2Array(self.to_num2_array()?)}
         })
@@ -100,4 +101,5 @@ impl RustBinary{
         Some(RustBinary::new(op?))
     }
     pub fn vec(&self) -> &Vec<u8>{ self.b.as_ref() }
+    pub fn vec_mut(&mut self) -> &mut Vec<u8>{ self.b.as_mut() }
 }

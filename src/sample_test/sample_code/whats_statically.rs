@@ -3,12 +3,12 @@ use dochy_core::intf::{mitem};
 use dochy_core::structs::Qv;
 use dochy_core::rust_to_json_new_default;
 use dochy_diff::apply_diff;
-use crate::sample_test::error::DpResult;
+use crate::error::DpResult;
 
 
 //#[test]
 fn whats_statically() -> DpResult<()>{
-    let mut r = dochy_core::json_dir_to_rust(
+    let mut r = dochy_core::json_dir_to_root(
         "sample_code_json/whats_statically_dochy_first", false)?;
 
     let rp = RootObjectPtr::new(&mut r);
@@ -33,7 +33,7 @@ fn whats_statically() -> DpResult<()>{
     //let hoge = rust_to_json_new_default(&r)?;
     //println!("{}", hoge.to_string_pretty());
 
-    let mut from = dochy_core::json_dir_to_rust(
+    let mut from = dochy_core::json_dir_to_root(
         "sample_code_json/whats_statically_dochy_first", false)?;
     let vec = dochy_diff::get_diff(&from, &r)?;
     println!("{}", vec.len());

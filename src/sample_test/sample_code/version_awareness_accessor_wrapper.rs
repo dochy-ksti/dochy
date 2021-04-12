@@ -1,28 +1,28 @@
 use crate::sample_test::sample_code::version_awareness_accessor::RootIntf;
 use dochy_core::structs::{UndefOr, NullOr};
-use std::cell::UnsafeCell;
 
-struct VeraAccessorWrapper{
-    int : UnsafeCell<RootIntf>
+pub(crate) struct VeraAccessorWrapper{
+    root : RootIntf
 }
 
-impl VeraAccessorWrapper{
-    pub fn new_value(&self) -> i64{
-        let int = unsafe{ &mut *self.int.get() };
+impl VeraAccessorWrapper {
+    pub fn new(root: RootIntf) -> VeraAccessorWrapper { VeraAccessorWrapper { root } }
 
-        match int.new_value(){
-            UndefOr::Undefined =>{
-                match int.old_value(){
-                    NullOr::Null => unreachable!(),
-                    NullOr::Val(v) =>{
-                        int.set_new_value(UndefOr::Val(v * 10));
-                        v * 10
-                    }
+    pub fn new_value(&self) -> i64 {
+        Self::new_value_impl(&self.root)
+    }
+
+    fn new_value_impl(root: &RootIntf) -> i64 {
+        match root.new_value() {
+            //If data is old, the variable "new_value" will be "undefined" because it was not defined at the time.
+            UndefOr::Undefined => {
+                match root.old_value(){
+                    NullOr::Null => root.new_value_def_val().into_value().unwrap(),
+                    NullOr::Val(v) => v * 10, //new_value is ten times bigger than the old value
                 }
             },
-            UndefOr::Val(v) =>{
+            UndefOr::Val(v) => {
                 v
-
             }
         }
     }

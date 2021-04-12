@@ -89,7 +89,7 @@ impl TableSource {
         }
 
         if self.keys.len() != 0 {
-            sb.push(1,&format!("pub fn from_id(&self, id : {}) -> {}{{", &ids_type_name, &item_type_name));
+            sb.push(1,&format!("pub fn get_by_id(&self, id : {}) -> {}{{", &ids_type_name, &item_type_name));
             sb.push(2,"match id{");
 
             for key in &self.keys {

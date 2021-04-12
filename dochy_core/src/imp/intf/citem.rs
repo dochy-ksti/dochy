@@ -35,55 +35,122 @@ pub fn get_cil<T : From<CItemPtr>>(ps : CItemPtr, name : &str) -> Option<CListPt
 }
 
 pub fn get_bool(ps : CItemPtr, name : &str) -> Option<Qv<bool>>{
-    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    if let Some(RustParam::Bool(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::Bool(b)) = get_param(ps, name){
+        Some(b.clone())
+    } else{ None }
+}
+
+pub fn get_bool_def(ps : CItemPtr, name : &str) -> Option<Qv<bool>>{
+    if let Some(RustParam::Bool(b)) = get_param_def(ps, name){
         Some(b.clone())
     } else{ None }
 }
 
 pub fn get_float(ps : CItemPtr, name : &str) -> Option<Qv<f64>>{
-    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    if let Some(RustParam::Float(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::Float(b)) = get_param(ps, name){
+        Some(b.clone())
+    } else{ None }
+}
+
+pub fn get_float_def(ps : CItemPtr, name : &str) -> Option<Qv<f64>>{
+    if let Some(RustParam::Float(b)) = get_param_def(ps, name){
         Some(b.clone())
     } else{ None }
 }
 
 pub fn get_int(ps : CItemPtr, name : &str) -> Option<Qv<i64>>{
-    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    if let Some(RustParam::Int(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::Int(b)) = get_param(ps, name){
+        Some(b.clone())
+    } else{ None }
+}
+
+pub fn get_int_def(ps : CItemPtr, name : &str) -> Option<Qv<i64>>{
+    if let Some(RustParam::Int(b)) = get_param_def(ps, name){
         Some(b.clone())
     } else{ None }
 }
 
 pub fn get_str(ps : CItemPtr, name : &str) -> Option<Qv<String>>{
-    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    if let Some(RustParam::String(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::String(b)) = get_param(ps, name){
+        Some(b.map(|s| s.str().to_string()))
+    } else{ None }
+}
+
+pub fn get_str_def(ps : CItemPtr, name : &str) -> Option<Qv<String>>{
+    if let Some(RustParam::String(b)) = get_param_def(ps, name){
         Some(b.map(|s| s.str().to_string()))
     } else{ None }
 }
 
 pub fn get_int_array(ps : CItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
-    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    if let Some(RustParam::IntArray(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::IntArray(b)) = get_param(ps, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
         None
     }
+}
+
+pub fn get_int_array_def(ps : CItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
+    if let Some(RustParam::IntArray(b)) = get_param_def(ps, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{ None }
 }
 
 pub fn get_float_array(ps : CItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
-    let (item,list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    if let Some(RustParam::FloatArray(b)) = get_param(item, list_def, name){
+    if let Some(RustParam::FloatArray(b)) = get_param(ps, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
         None
     }
 }
 
-pub fn get_param<'a>(item : &'a ConstItem, def : &'a ListDefObj, name : &str) -> Option<&'a RustParam>{
+pub fn get_float_array_def(ps : CItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
+    if let Some(RustParam::FloatArray(b)) = get_param_def(ps, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{ None }
+}
+
+pub fn get_binary(ps : CItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+    if let Some(RustParam::Binary(b)) = get_param(ps, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{
+        None
+    }
+}
+
+pub fn get_binary_def(ps : CItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+    if let Some(RustParam::Binary(b)) = get_param_def(ps, name){
+        Some(b.map(|s| s.vec().clone()))
+    } else{ None }
+}
+
+pub fn get_immutable_binary<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
+    if let Some(RustParam::Binary(b)) = get_param(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+
+
+pub fn get_param<'a>(p : CItemPtr, name : &str) -> Option<&'a RustParam>{
+    let (item, def) = unsafe{ (&*p.item, &*p.list_def) };
     if let Some(ListSabValue::Param(p)) = item.values().get(name){
         Some(p)
     } else if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
+        Some(p)
+    } else{
+        None
+    }
+}
+
+pub fn get_param_def<'a, 'b>(def : CItemPtr, name : &'a str) -> Option<&'b RustParam>{
+    let def = unsafe{ &*def.list_def };
+    if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
         Some(p)
     } else{
         None
@@ -100,10 +167,10 @@ pub fn get_ref(ps : CItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
 
 pub fn get_ref_id(ps : CItemPtr, list_name : &str) -> Option<Qv<String>>{
     let (item, list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
-    get_ref_id_imol(item.refs(), list_def, list_name)
+    get_ref_id_impl(item.refs(), list_def, list_name)
 }
 
-pub fn get_ref_id_imol(refs : &HashM<String, RefSabValue>, list_def : &ListDefObj, list_name : &str) -> Option<Qv<String>>{
+pub fn get_ref_id_impl(refs : &HashM<String, RefSabValue>, list_def : &ListDefObj, list_name : &str) -> Option<Qv<String>>{
     let qv = if let Some(sab) = refs.get(list_name){
         sab.value()
     } else{

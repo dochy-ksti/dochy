@@ -5,7 +5,7 @@ use crate::error::CoreResult;
 use crate::imp::json_to_rust::names::Names;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
-use crate::structs::MetaTable;
+use crate::structs::{MetaTable};
 
 /// paramのsabunがあれば上書き、mut_listはoldのものを全部入れ、（あるなら）newの方のものは全削除して入れ替える
 /// 基本的に、新バージョンのjsonと旧バージョンのデータが有り、旧バージョンのデータはRootのsabunとMutListには変更が加えられているだろう
@@ -48,7 +48,7 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
                 } else{
                     new_map.insert(def_key, (id, RootValue::MList(m)));
                 }
-            }
+            },
             _ =>{
                 //MutとParam以外にadjustする対象はないはず
                 new_map.insert(def_key, (id, def_value));

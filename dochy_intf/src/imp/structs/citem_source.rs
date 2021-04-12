@@ -5,6 +5,7 @@ use dochy_core::intf::member_desc::MemberDesc;
 use dochy_core::intf::ref_desc::RefDescs;
 use crate::imp::util::to_type_name::to_citem_type_name;
 use crate::imp::structs::refs_source::RefsSource;
+use dochy_core::structs::ParamType;
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct CItemSource {
@@ -32,7 +33,7 @@ impl CItemSource {
         let id = self.stem();
         let item_type_name = to_citem_type_name(id);
 
-        sb.push(0,&format!("#[derive(Debug, PartialEq)]"));
+        sb.push(0,&format!("#[derive(Debug, PartialEq, Clone, Copy)]"));
         sb.push(0,&format!("pub struct {} {{", &item_type_name));
         sb.push(1,"ptr : CItemPtr,");
         sb.push(0,"}");
@@ -44,7 +45,17 @@ impl CItemSource {
         for mem in self.members() {
             match mem{
                 MemberSource::Param(param) =>{
-                    sb.push_without_newline(1, &param.get("citem"));
+                    match param.param_type() {
+                        ParamType::Binary =>{
+                            sb.push_without_newline(1, &param.get("citem"));
+                            sb.push_without_newline(1, &param.get_def("citem"));
+                            sb.push_without_newline(1, &param.get_immutable("citem"));
+                        }
+                        _ => {
+                            sb.push_without_newline(1, &param.get("citem"));
+                            sb.push_without_newline(1, &param.get_def("citem"));
+                        }
+                    }
                 },
                 MemberSource::Table(_) =>{},
                 MemberSource::CList(_) =>{},
