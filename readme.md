@@ -4,7 +4,7 @@ It's intended to replace ordinary data files,
 especially for game/cloud apps which employs auto-save 
 and undoable apps.
 
-There are three goals we want to achieve.
+There are three goals this project wants to achieve.
 
 1. [Efficiency](src/sample_test/sample_code/efficiency.md)
 2. [Version Awareness](src/sample_test/sample_code/version_awareness.md)
@@ -12,6 +12,9 @@ There are three goals we want to achieve.
 
 These three documents(and [this](src/sample_test/sample_code/history.md))
 should work as a walkthrough of Dochy's peculiar concepts. 
+
+[Hello World](dochy_manual/src/a1_hello_world/hello_world.md) 
+explains the basics.
 
 ### What does Dochy stand for?
 
