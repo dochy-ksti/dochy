@@ -19,4 +19,4 @@ explains the basics.
 ### Contribution
 
 I'm Japanese and I desperately need proofreading of my English writing for this project,
-and any other feedbacks are also needed.
+and any other feedbacks are welcome.
