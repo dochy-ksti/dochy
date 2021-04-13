@@ -4,14 +4,14 @@ It's intended to replace ordinary data files,
 especially for game/cloud apps which employs auto-save 
 and undoable apps.
 
-There are three goals this project wants to achieve.
+Let me introduce the key features of this project.
 
 1. [Efficiency](src/sample_test/sample_code/efficiency.md)
 2. [Version Awareness](src/sample_test/sample_code/version_awareness.md)
 3. [Reference and Enum](src/sample_test/sample_code/ref_and_enum.md)
 
 These three documents(and [this](src/sample_test/sample_code/history.md))
-should work as a walkthrough of Dochy's peculiar concepts. 
+should work as a walkthrough of Dochy's concepts. 
 
 [Hello World](dochy_manual/src/a1_hello_world/hello_world.md) 
 explains the basics.
