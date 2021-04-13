@@ -19,7 +19,8 @@ members = [
     "dochy_core",
     "dochy_diff",
     "dochy_fs",
-    "dochy_intf"
+    "dochy_intf",
+    "dochy_manual",
 ]
 
 [dependencies]

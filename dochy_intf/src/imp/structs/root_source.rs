@@ -17,8 +17,8 @@ impl RootSource{
         let mut sb = SourceBuilder::new();
 
         sb.push(0,     "\
-use dochy_core::intf::*;
-use dochy_core::structs::*;
+use dochy::core::intf::*;
+use dochy::core::structs::*;
 unsafe impl Send for RootIntf{}
 #[derive(Debug, PartialEq)]
 pub struct RootIntf{
