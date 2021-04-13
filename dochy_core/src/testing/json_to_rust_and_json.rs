@@ -1,9 +1,8 @@
 #[cfg(test)]
 mod tests {
     use crate::imp::json_to_rust::json_dir_to_rust::json_dir_to_root;
-    use crate::rust_to_json_new_default;
+    use crate::root_to_json_new_default;
     use crate::imp::json_to_rust::json_root_to_rust;
-    use crate::imp::rust_to_json::root_to_json::root_to_json_new_default;
 
     #[test]
     fn it_works() {
@@ -27,18 +26,18 @@ mod tests {
     fn it_works2() {
         match json_dir_to_root("src/json_dir/json_siyou", true){
             Ok(a) => {
-                match rust_to_json_new_default(&a) {
+                match root_to_json_new_default(&a) {
                     Ok(a_v) => {
                         let av_s = a_v.to_string_pretty();
                         match json_root_to_rust(&av_s){
                             Ok(b) =>{
-                                match rust_to_json_new_default(&b){
+                                match root_to_json_new_default(&b){
                                     Ok(b_v) =>{
                                         let bv_s = b_v.to_string_pretty();
 
                                         match json_root_to_rust(&bv_s){
                                             Ok(c) =>{
-                                                match rust_to_json_new_default(&c){
+                                                match root_to_json_new_default(&c){
                                                     Ok(c_v) =>{
                                                         let cv_s = c_v.to_string_pretty();
                                                         assert_eq!(bv_s, cv_s);

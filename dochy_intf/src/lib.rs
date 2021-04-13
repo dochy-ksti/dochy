@@ -1,8 +1,4 @@
-#[allow(dead_code)]
-mod test_generated;
 
-#[allow(dead_code)]
-mod test;
 mod imp;
 mod util;
 

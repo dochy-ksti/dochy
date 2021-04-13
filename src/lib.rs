@@ -3,12 +3,7 @@
 #![feature(test)]
 extern crate test;
 
-#[cfg(test)]
-mod sample_test;
 
-#[allow(dead_code)]
-#[cfg(test)]
-mod testing;
 
 pub mod intf;
 pub mod core;

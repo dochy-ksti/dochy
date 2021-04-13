@@ -33,7 +33,7 @@ pub enum CreateArchiveFromDirectory{
 ///     fn2();
 /// }
 /// fn fn2() -> ArcResult<()>{
-/// use dochy::archiver::{create_archive_from_directory, ArchiveOptions, CreateArchiveFromDirectory};
+/// use dochy_archiver::{create_archive_from_directory, ArchiveOptions, CreateArchiveFromDirectory};
 /// use std::path::Path;
 /// use std::fs::File;
 /// use std::io::Write;

@@ -20,7 +20,7 @@ pub(crate) fn get_hash_metadata_and_bytes(dir_path: &Path, opt : &ArchiveOptions
 ///
 /// This function returns the hash and the metadata.
 /// ```
-/// use dochy::archiver::{get_hash_and_metadata_from_dir, ArchiveOptions, ArcResult};
+/// use dochy_archiver::{get_hash_and_metadata_from_dir, ArchiveOptions, ArcResult};
 /// fn main(){ fn2(); }
 /// fn fn2() -> ArcResult<()>{
 ///     let (hash, metadata) = get_hash_and_metadata_from_dir("foo/some_dir", &ArchiveOptions::new())?;

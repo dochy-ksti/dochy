@@ -5,7 +5,7 @@ use crate::ArcResult;
 ///
 /// If you need the default value, you can get it with new()
 /// ```
-/// use dochy::archiver::ArchiveOptions;
+/// use dochy_archiver::ArchiveOptions;
 ///
 /// // construct with the default values.
 /// // In the default configuration, every file is archived in the folder and the subfolders.
@@ -16,8 +16,8 @@ use crate::ArcResult;
 /// Appending "..Default::default()" could make your source code
 /// compatible with the future versions of this library.
 /// ```
-/// use dochy::archiver::ArcResult;
-/// use dochy::archiver::{ArchiveOptions, ArchiveOptionsBuilder};
+/// use dochy_archiver::ArcResult;
+/// use dochy_archiver::{ArchiveOptions, ArchiveOptionsBuilder};
 ///
 /// fn main() -> ArcResult<()>{
 /// let op = ArchiveOptions::from(

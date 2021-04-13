@@ -6,11 +6,11 @@ and undoable apps.
 
 Let me introduce the key features of this project.
 
-1. [Efficiency](src/sample_test/sample_code/efficiency.md)
-2. [Version Awareness](src/sample_test/sample_code/version_awareness.md)
-3. [Reference and Enum](src/sample_test/sample_code/ref_and_enum.md)
+1. [Efficiency](dochy_manual/src/sample_test/sample_code/efficiency.md)
+2. [Version Awareness](dochy_manual/src/sample_test/sample_code/version_awareness.md)
+3. [Reference and Enum](dochy_manual/src/sample_test/sample_code/ref_and_enum.md)
 
-These three documents(and [this](src/sample_test/sample_code/history.md))
+These three documents(and [this](dochy_manual/src/sample_test/sample_code/history.md))
 should work as a walkthrough of Dochy's concepts. 
 
 [Hello World](dochy_manual/src/a1_hello_world/hello_world.md) 

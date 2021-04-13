@@ -2,7 +2,7 @@
 
 #[cfg(test)]
 mod testion {
-    use crate::{json_dir_to_root, rust_to_json_new_default};
+    use crate::{json_dir_to_root, root_to_json_new_default};
     use crate::imp::version_adjuster::version_adjuster::adjust_versions;
     use crate::error::{CoreResult};
     use crate::imp::json_to_rust::json_root_to_rust;
@@ -19,7 +19,7 @@ mod testion {
 
         let old = match json_dir_to_root("src/json_dir/version_adjuster/old", true) {
             Ok(j) =>{
-                match rust_to_json_new_default(&j){
+                match root_to_json_new_default(&j){
                     Ok(_b) =>{
                         //println!("old pretty {}", b.to_string_pretty());
                     },
@@ -35,12 +35,12 @@ mod testion {
 
         match adjust_versions(new, old, true) {
             Ok(a) => {
-                match rust_to_json_new_default(&a) {
+                match root_to_json_new_default(&a) {
                     Ok(b) => {
                         println!("pretty {}", b.to_string_pretty());
                         match json_root_to_rust(&b.to_string_pretty()){
                             Ok(a) =>{
-                                match rust_to_json_new_default(&a){
+                                match root_to_json_new_default(&a){
                                     Ok(json2) =>{
                                         assert_eq!(b.to_string_pretty(), json2.to_string_pretty());
                                         println!("OK");

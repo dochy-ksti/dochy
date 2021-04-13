@@ -1,6 +1,6 @@
 [package]
 name = "dochy_intf"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["juzu <dochy.ksti@gmail.com>"]
 edition = "2018"
 
@@ -11,4 +11,4 @@ readme = "readme.md"
 keywords = ["data", "management"]
 
 [dependencies]
-dochy_core = {path="../dochy_core", version="0.5.0"}
+dochy_core = {path="../dochy_core", version="0.6.0"}

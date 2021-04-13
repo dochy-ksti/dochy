@@ -8,7 +8,7 @@ use with_capacity_safe::vec_with_capacity_safe;
 /// Read the archive data from an archive file
 /// ```
 /// use std::fs::File;
-/// use dochy::archiver::{ArcResult, read_archive_data};
+/// use dochy_archiver::{ArcResult, read_archive_data};
 /// fn main(){
 ///     fn2();
 /// }

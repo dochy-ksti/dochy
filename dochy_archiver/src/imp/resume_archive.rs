@@ -8,10 +8,10 @@ use std::io::Write;
 ///
 /// if overwrite == false and there's a file in the target path, or failed for other reason, Error is returned.
 /// ```
-/// use dochy::archiver::read_archive_data;
+/// use dochy_archiver::read_archive_data;
 /// use std::fs::File;
-/// use dochy::archiver::ArcResult;
-/// use dochy::archiver::resume_archive;
+/// use dochy_archiver::ArcResult;
+/// use dochy_archiver::resume_archive;
 ///
 /// fn main(){
 ///     fn2();

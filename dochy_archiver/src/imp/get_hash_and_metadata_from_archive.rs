@@ -3,9 +3,9 @@ use crate::{ArcResult, Metadata};
 
 /// Read only the metadata of the archive file and calculate the hash
 /// ```
-/// use dochy::archiver::{get_hash_and_metadata_from_dir, ArchiveOptions, ArcResult};
+/// use dochy_archiver::{get_hash_and_metadata_from_dir, ArchiveOptions, ArcResult};
 /// use std::fs::File;
-/// use dochy::archiver::get_hash_and_metadata_from_archive;
+/// use dochy_archiver::get_hash_and_metadata_from_archive;
 ///
 /// fn main(){ fn2(); }
 /// fn fn2() -> ArcResult<()>{

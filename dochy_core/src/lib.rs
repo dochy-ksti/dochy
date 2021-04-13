@@ -6,7 +6,7 @@ pub mod structs;
 mod testing;
 
 
-pub use imp::rust_to_json::root_to_json::root_to_json_new_default as rust_to_json_new_default;
+pub use imp::rust_to_json::root_to_json::root_to_json_new_default;
 pub use imp::json_to_rust::json_dir_to_rust::json_dir_to_root;
 pub use imp::json_to_rust::json_dir_to_rust::json_files_to_root;
 pub use imp::version_adjuster::version_adjuster::adjust_versions;

@@ -4,7 +4,7 @@ use crate::error::FsResult;
 ///
 /// If you need the default value, you can get it with new()
 /// ```
-/// use dochy::fs::history::HistoryOptions;
+/// use dochy_fs::history::HistoryOptions;
 /// let op = HistoryOptions::new();
 /// ```
 /// If you want to customize, you can use builders.
@@ -12,8 +12,8 @@ use crate::error::FsResult;
 /// Appending "..Default::default()" could make your source code
 /// compatible with future versions of this library.
 /// ```
-/// use dochy::fs::error::FsResult;
-/// use dochy::fs::history::{HistoryOptions, HistoryOptionsBuilder, CumulativeOptionsBuilder};
+/// use dochy_fs::error::FsResult;
+/// use dochy_fs::history::{HistoryOptions, HistoryOptionsBuilder, CumulativeOptionsBuilder};
 ///
 /// fn main() -> FsResult<()>{
 /// let op = HistoryOptions::from(

@@ -1,6 +1,5 @@
 use dochy::core::intf::*;
 use dochy::core::structs::*;
-unsafe impl Send for RootIntf{}
 #[derive(Debug, PartialEq)]
 pub struct RootIntf{
     root : Box<RootObject>,
