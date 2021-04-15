@@ -1,10 +1,11 @@
 use crate::imp::json_to_rust::json_name::{json_name, NameType};
-use crate::HashM;
+//use crate::HashM;
 use crate::error::CoreResult;
 use crate::imp::json_to_rust::validation::validate_root::validate_root;
 use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
+use crate::imp::structs::util::hash_m::HashM;
 
 ///root.jsonからとったRootに、各ファイルからとった個別のメンバを混ぜる。ファイルはアルファベット順に、root.jsonの末尾に加わっていく
 pub(crate) fn construct_root(root : RootObject, map : HashM<String, RootValue>, validation : bool) -> CoreResult<RootObject>{

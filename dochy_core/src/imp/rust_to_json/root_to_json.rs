@@ -8,9 +8,13 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::my_json::Value;
 use crate::imp::structs::root_value::RootValue;
 
-///本来デフォルト値と差分が保存されているのだが、見やすくするためにまとめてデフォルト値にしてしまう。
-///デフォルト値も差分も全部Json化したいユースケースもあるかもしれない・・・？
+//本来デフォルト値と差分が保存されているのだが、見やすくするためにまとめてデフォルト値にしてしまう。
+//デフォルト値も差分も全部Json化したいユースケースもあるかもしれない・・・？
 
+/// Convert RootObject to JSON
+/// That JSON can be converted back to RootObject, but they are not identical.
+/// This may not have very useful use cases,
+/// but converting data to human readable text is good
 pub fn root_to_json_new_default(obj : &RootObject) -> CoreResult<Value> {
     let mut result : HashM<String,RustValue> = HashMt::with_capacity(obj.default().len());
     let default = obj.default().clone();

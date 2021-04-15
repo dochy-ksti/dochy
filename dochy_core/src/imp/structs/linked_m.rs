@@ -1,7 +1,8 @@
-use crate::{HashM, HashMt};
+//use crate::{HashM, HashMt};
 use std::ptr::{null_mut};
 use std::marker::PhantomData;
 use std::collections::VecDeque;
+use crate::imp::structs::util::hash_m::{HashM, HashMt};
 
 
 unsafe impl<V> Send for LinkedMap<V> {}

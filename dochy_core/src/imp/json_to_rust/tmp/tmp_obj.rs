@@ -1,4 +1,4 @@
-use crate::{HashM, HashMt};
+//use crate::{HashM, HashMt};
 use dochy_json5::Span;
 use crate::error::CoreResult;
 use crate::imp::structs::rust_value::{RustValue};
@@ -9,7 +9,8 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::list_value::{ListSabValue, ListDefValue};
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::structs::util::hash_m::{HashS, HashSt};
+use crate::imp::structs::util::hash_m::{HashS, HashSt, HashM};
+use crate::HashMt;
 
 pub(crate) struct TmpObj{
     pub(crate) default : HashM<String, (usize, RustValue)>,

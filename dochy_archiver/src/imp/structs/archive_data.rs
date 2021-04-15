@@ -1,6 +1,7 @@
 use std::collections::{BTreeMap};
 use crate::imp::structs::metadata::Metadata;
 
+/// Contains filenames and the data, and metadata.
 #[derive(Debug)]
 pub struct ArchiveData{
     meta : Metadata,

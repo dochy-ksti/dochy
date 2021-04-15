@@ -6,7 +6,7 @@ use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::util::set_sabun::{SetSabunError, verify_set_sabun};
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::linked_m::LinkedMap;
-use crate::imp::structs::util::hash_m::HashS;
+use crate::imp::structs::util::hash_m::{HashS};
 
 
 ///アイテムごとにIDをもち、Refで参照することが可能である

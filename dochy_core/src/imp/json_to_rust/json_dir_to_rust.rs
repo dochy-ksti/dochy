@@ -13,6 +13,8 @@ use crate::imp::structs::json_file::{JsonFile, JsonFileImpl};
 use crate::imp::structs::root_value::RootValue;
 use std::path::Path;
 
+/// Converts Dochy source files to RootObject
+/// Does extra checks when validation=true
 pub fn json_dir_to_root<P : AsRef<Path>>(dir_path : P, validation : bool) -> CoreResult<RootObject>{
     let dirs = std::fs::read_dir(dir_path)?;
 
@@ -48,6 +50,8 @@ pub fn json_dir_to_root<P : AsRef<Path>>(dir_path : P, validation : bool) -> Cor
     json_files_to_root(vec.iter(), validation)
 }
 
+/// Converts Dochy source files to RootObject
+/// Does extra checks when validation=true
 pub fn json_files_to_root<T : JsonFile>(ite : impl Iterator<Item = T>, validation : bool) -> CoreResult<RootObject>{
     let mut map : HashM<String, RootValue> = HashMt::new();
     let mut root= None;

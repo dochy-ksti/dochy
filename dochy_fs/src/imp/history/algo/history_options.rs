@@ -81,7 +81,7 @@ impl HistoryOptions {
     }
 }
 
-/// Customize how cumulative-diff-files are built
+/// Customize how "cumulative diff files" are built
 #[derive(Debug, Clone)]
 pub struct CumulativeOptions {
     limit_nth : Option<usize>,

@@ -8,15 +8,15 @@ pub mod common{
     pub use dochy_fs::common::JSON_ARC_OPT;
     pub use dochy_fs::common::ARCHIVE_DEFAULT_NAME;
 
-    pub use dochy_fs::common::read_archive;
-    pub use dochy_fs::common::load_archive;
+    //pub use dochy_fs::common::read_archive;
+    //pub use dochy_fs::common::load_archive;
 
     pub use dochy_fs::common::FileData;
 
-    pub mod hash{
-        pub use dochy_fs::common::hash::folder_name_to_hash;
-        pub use dochy_fs::common::hash::hash_to_folder_name;
-    }
+    // pub mod hash{
+    //     pub use dochy_fs::common::hash::folder_name_to_hash;
+    //     pub use dochy_fs::common::hash::hash_to_folder_name;
+    // }
 }
 
 pub mod history{

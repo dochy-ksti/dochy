@@ -1,12 +1,15 @@
 use std::hash::Hash;
 
-///デフォルトのHasherはランダムなので、毎回出てくる順序が違い直観的じゃないように思う。それに効率も少し悪い。
-/// このシステムは外部の人間がHashtableのKeyを決めることが出来るようになっていないのでDos耐性はいらない
-/// 固定のHasherに変える
+//デフォルトのHasherはランダムなので、毎回出てくる順序が違い直観的じゃないように思う。それに効率も少し悪い。
+// このシステムは外部の人間がHashtableのKeyを決めることが出来るようになっていないのでDos耐性はいらない
+// 固定のHasherに変える
+
+
 pub type HashM<K,V> = fnv::FnvHashMap<K,V>;
 //pub type LinkedM<K,V> = LinkedHashMap<K, V, FnvBuildHasher>;
 
 pub type HashS<K> = fnv::FnvHashSet<K>;
+
 
 pub struct HashMt{}
 impl HashMt{

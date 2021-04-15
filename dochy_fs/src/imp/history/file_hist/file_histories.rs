@@ -6,6 +6,7 @@ use std::ops::Range;
 use crate::common::remove_hash_dir;
 use crate::error::FsResult;
 
+/// Represents every file history
 pub struct FileHistories{
     vec : Vec<(u128, FileHistory)>,
 }
@@ -13,6 +14,7 @@ pub struct FileHistories{
 impl FileHistories{
     pub(crate) fn new(vec : Vec<(u128, FileHistory)>) -> FileHistories{ FileHistories{ vec } }
 
+    /// list every HistoryFileData chronologically
     pub fn list_files(&self) -> Vec<HistoryFileData>{
         self.vec.iter().flat_map(|(hash, his)|{
             //let hash = *hash;
@@ -21,17 +23,21 @@ impl FileHistories{
         }).collect()
     }
 
+    /// gets the newest HisotryFileData
     pub fn get_newest_file_data(&self) -> Option<HistoryFileData>{
         self.vec.last().and_then(|(hash, his)|
                                      his.get_newest_prop().map(|prop|
                                      HistoryFileData::new(*hash, his, prop)))
     }
 
+    /// remove old files other than latest n files. This function consumes history
     pub fn remove_old_files<P : AsRef<Path>>(self, keep_latest : usize, history_dir : P) -> FsResult<()>{
         let mut s = self;
         unsafe{ s.remove_old_files_us(keep_latest, history_dir) }
     }
 
+    /// remove old files other than latest n files. This function didn't consume the history data,
+    /// so the data will be inconsistent
     pub unsafe fn remove_old_files_us<P : AsRef<Path>>(&mut self, keep_latest : usize, history_dir : P) -> FsResult<()>{
         if self.vec.len() == 0{ return Ok(()); }
         let (hash, his) = self.vec.last().unwrap();

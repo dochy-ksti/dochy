@@ -1,9 +1,10 @@
-use crate::{HashM, HashMt};
+//use crate::{HashM, HashMt};
 use crate::error::CoreResult;
 use crate::imp::json_to_rust::names::Names;
 use crate::imp::structs::ref_def_obj::RefDefObj;
 use crate::imp::structs::ref_value::RefSabValue;
 use crate::imp::structs::qv::Qv;
+use crate::imp::structs::util::hash_m::{HashM, HashMt};
 
 pub(crate) fn adjust_mut_list_item_ref(def : &RefDefObj, old_ref : HashM<String, RefSabValue>, _names : &Names) -> CoreResult<HashM<String, RefSabValue>>{
     let mut old_ref = old_ref;

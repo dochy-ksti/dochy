@@ -1,11 +1,11 @@
-use crate::{HashM};
+//use crate::{HashM};
 use crate::imp::json_to_rust::names::Names;
 use crate::error::CoreResult;
 use crate::imp::structs::rust_list::ConstItem;
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::list_def_obj::ListDefMap;
 use crate::imp::structs::ref_def_obj::RefDefMap;
-use crate::imp::structs::util::hash_m::HashS;
+use crate::imp::structs::util::hash_m::{HashS, HashM};
 
 pub(crate) fn validate_old_root_def_mem(old : &HashS<String>, map : &HashM<String, (usize, RootValue)>, names : &Names) -> CoreResult<()>{
     for name in old{

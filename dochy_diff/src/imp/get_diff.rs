@@ -5,6 +5,7 @@ use crate::imp::prepare::get_root_diff::get_root_diff;
 use dochy_compaction::kval_enum::KVal;
 use dochy_compaction::enc_dec::encode_to_vec::encode_to_vec;
 
+/// Gets the difference from "from" to "to" in binary format.
 pub fn get_diff(from : &RootObject, to : &RootObject) -> Result<Vec<u8>, DiffError> {
     let kvals = get_kvals(from, to)?;
     Ok(encode_to_vec(&kvals)?)

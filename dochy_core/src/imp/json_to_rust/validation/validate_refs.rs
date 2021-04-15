@@ -1,4 +1,4 @@
-use crate::HashM;
+//use crate::HashM;
 use crate::error::CoreResult;
 use crate::imp::json_to_rust::names::Names;
 use crate::imp::rust_to_json::name_with_suffix::name_with_suffix;
@@ -7,6 +7,7 @@ use crate::imp::structs::ref_value::RefSabValue;
 use crate::imp::structs::qv::Qv;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
+use crate::imp::structs::util::hash_m::HashM;
 
 pub(crate) fn validate_refs(def : &RefDefObj, sabun : &HashM<String, RefSabValue>, root : &RootObject, can_use_old: bool, names : &Names) -> CoreResult<()>{
     if def.is_enum(){

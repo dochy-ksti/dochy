@@ -1,11 +1,11 @@
 use crate::imp::json_to_rust::tmp::tmp_obj::{ IdValue};
-use crate::{HashM};
+//use crate::{HashM};
 use std::collections::{BTreeSet, BTreeMap};
 use crate::imp::structs::rust_value::RustValue;
 use crate::imp::structs::rust_list::{ConstItem, MutItem, ConstTable, ConstList, MutList, ConstInnerList, MutInnerList};
 use crate::imp::structs::ref_value::RefValue;
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::structs::util::hash_m::HashS;
+use crate::imp::structs::util::hash_m::{HashS, HashM};
 
 pub(crate) struct TmpJsonList{
     pub(crate) vec : Vec<TmpJsonObj>,

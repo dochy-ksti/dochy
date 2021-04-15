@@ -2,6 +2,7 @@ use crate::imp::structs::source_builder::SourceBuilder;
 use crate::imp::to_member_source::MemberSource;
 use dochy_core::structs::ParamType;
 
+/// Contains information to generate the source code to access RootObject
 pub struct RootSource{
     members : Vec<MemberSource>,
 }
@@ -13,6 +14,7 @@ impl RootSource{
         &self.members
     }
 
+    /// Generates the source code to access RootObject
     pub fn to_string(&self) -> String{
         let mut sb = SourceBuilder::new();
 

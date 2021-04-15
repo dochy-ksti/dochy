@@ -7,7 +7,7 @@ use std::collections::BTreeMap;
 use crate::imp::history::remove::history_remover::HistoryRemover;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
 
-/// Represents every history file in a directory
+/// Represents every history file in a hash directory
 #[derive(Debug)]
 pub struct FileHistory{
     ctls : BTreeMap<u32, FileHistoryItem>
