@@ -6,6 +6,7 @@ use crate::imp::history::fs::next::next as fs_next;
 use crate::imp::history::file_hist::prepare_history_hash_dir::prepare_history_hash_dir;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 
+/// calculates diff from the last state and save the diff as a history file
 pub fn next<P : AsRef<Path>>(history_dir: P,
                              tag : Option<String>,
                              root : &RootObject,

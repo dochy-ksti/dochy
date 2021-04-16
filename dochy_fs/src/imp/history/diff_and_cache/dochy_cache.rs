@@ -8,7 +8,7 @@ use crate::imp::history::diff_and_cache::dochy_diff::DochyDiff;
 use crate::imp::history::diff_and_cache::open_diff_file_without_metadata::open_diff_file_without_metadata;
 
 
-/// Customizes how cache works
+/// Customizes how the cache works
 pub struct DochyCache{
     src_cache : Option<Box<RootObject>>,
     phase_a_cache : Option<Box<(PathBuf, RootObject)>>,

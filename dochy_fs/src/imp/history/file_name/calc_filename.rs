@@ -1,3 +1,10 @@
+/// History's filenames have a tag(arbitrary string given by user<optional>)
+/// control number(increases when start_new is called)
+/// order( numbers ancestors of this history file have.
+/// if order is (1,2,1,1) ancestors have orders
+/// (1)<- grand grandparent
+/// (1,2)<- grand parent
+/// (1,2,1)<- parent )
 pub fn calc_filename(tag : Option<&str>, control : u32, order: &[u32]) -> String{
     let mut s = String::new();
 
