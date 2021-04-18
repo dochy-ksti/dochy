@@ -16,6 +16,12 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
         self.ptr.first().map(
             move |v| MItemMut::new(v, self))
     }
+
+    pub fn another_first(&'a mut self) -> Option<AnotherItemMut<'a, V, Self>>{
+        self.ptr.first().map(
+            move |v| AnotherItemMut{ item : v, phantom : PhantomData }
+        )
+    }
 }
 
 pub struct MItemMut<'a, V>{
@@ -27,4 +33,9 @@ impl<'a, V> MItemMut<'a, V>{
     pub fn new<T>(item : V, _src : &'a mut T) -> MItemMut<'a, V>{
         MItemMut{ item, phantom : PhantomData }
     }
+}
+
+pub struct AnotherItemMut<'a, V, T : 'a>{
+    item : V,
+    phantom : PhantomData<&'a mut T>,
 }
