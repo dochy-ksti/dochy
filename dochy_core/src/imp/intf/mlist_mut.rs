@@ -2,28 +2,29 @@ use crate::imp::intf::MItemPtr;
 use crate::imp::intf::MListPtr;
 use std::marker::PhantomData;
 
-pub struct MListMut<'a, V : MListMutItemTrait, T>{
-    ptr : MListPtr<V::PtrItem>,
-    src : &'a mut T,
-    phantom2 : PhantomData<*const V>,
+pub struct MListMut<'a, V : From<MItemPtr>>{
+    ptr : MListPtr<V>,
+    phantom : PhantomData<&'a mut i32>,
 }
 
-impl<'a, V : MListMutItemTrait, T> MListMut<'a, V, T>{
-    pub fn new(ptr : MListPtr<V::PtrItem>, src : &mut T) -> MListMut<V, T>{
-        MListMut{ ptr, src, phantom2 : PhantomData::default() }
+impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
+    pub fn new<T>(ptr : MListPtr<V>, _src : &'a mut T) -> MListMut<'a, V>{
+        MListMut{ ptr, phantom : PhantomData }
     }
 
-    pub fn src(&'a mut self) -> &'a mut T{ self.src }
-
-    pub fn first(&mut self) -> Option<V>{
-        self.ptr.first().map(|v| V::from(v, self))
+    pub fn first(&mut self) -> Option<MItemMut<V>>{
+        self.ptr.first().map(
+            move |v| MItemMut::new(v, self))
     }
 }
 
-pub trait MListMutItemTrait{
-    type PtrItem : From<MItemPtr>;
+pub struct MItemMut<'a, V>{
+    item : V,
+    phantom : PhantomData<&'a mut i32>,
+}
 
-    fn from<T>(
-        ptr_item : Self::PtrItem,
-        src : &mut MListMut<Self, T>) -> Self where Self : Sized;
+impl<'a, V> MItemMut<'a, V>{
+    pub fn new<T>(item : V, _src : &'a mut T) -> MItemMut<'a, V>{
+        MItemMut{ item, phantom : PhantomData }
+    }
 }
