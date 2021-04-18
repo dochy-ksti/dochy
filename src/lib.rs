@@ -11,5 +11,7 @@ pub mod diff;
 pub mod fs;
 pub mod error;
 
+
+
 //TODO: 全部documentationする
 //TODO: Redditに出して反応を見る このペースだと何ヶ月かかるんじゃあ・・・

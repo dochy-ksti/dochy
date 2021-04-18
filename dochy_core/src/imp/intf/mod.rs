@@ -13,7 +13,7 @@ pub mod citem;
 pub mod table;
 pub mod member_desc;
 pub mod root;
-pub mod mlist_safe;
+pub mod mlist_mut;
 
 pub use root::RootObjectPtr;
 pub use table::TablePtr;

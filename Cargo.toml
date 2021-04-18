@@ -21,6 +21,7 @@ members = [
     "dochy_fs",
     "dochy_intf",
     "dochy_manual",
+    "dochy_internal_test",
 ]
 
 [dependencies]
