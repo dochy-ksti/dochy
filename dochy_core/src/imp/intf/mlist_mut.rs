@@ -31,9 +31,6 @@ impl<'a, V> MItemMut<'a, V>{
     pub fn new<T>(item : V, _src : &'a mut T) -> MItemMut<'a, V>{
         MItemMut{ item, phantom : PhantomData }
     }
-    pub fn from_phantom<T>(item : V, _src : PhantomData<&'a mut T>) -> MItemMut<'a, V>{
-        MItemMut{ item, phantom : PhantomData }
-    }
 }
 
 impl<'a, T> Deref for MItemMut<'a, T>{

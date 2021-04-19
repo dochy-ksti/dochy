@@ -10,7 +10,8 @@ fn mlilst_mut_test() -> DpResult<()> {
     let mut r = RootIntf::new(old);
     let aa = r.mlist();
     let mut huga  = MListMut::new(aa, &mut r);
-    let a1 = huga.first().unwrap();
+    let mut a1 = huga.first().unwrap();
+
 
     Ok(())
 }

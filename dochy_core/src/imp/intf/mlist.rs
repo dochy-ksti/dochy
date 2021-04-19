@@ -29,7 +29,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
     }
     /// Gets a mutable pointer from '&self'
     /// Actually this doesn't violate anything because 'self' only has pointers.
-    /// This 'unsafe' is just a marker
+    /// This 'unsafe' is just a decoration
     pub unsafe fn first_const(&self) -> Option<V> {
         let map = &mut *self.map;
         map.first_mut().map(|r| self.from(r))
@@ -45,7 +45,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
 
     /// gets a mutable pointer from '&self'
     /// actually this doesn't violate anything because 'self' only has pointers.
-    /// This 'unsafe' is just a marker
+    /// This 'unsafe' is just a decoration
     pub unsafe fn last_const(&self) -> Option<V> {
         let map = &mut *self.map;
         map.last_mut().map(|r| self.from(r))
@@ -62,7 +62,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
 
     /// gets a mutable pointer from '&self'
     /// actually this doesn't violate anything because 'self' only has pointers.
-    /// This 'unsafe' is just a marker
+    /// This 'unsafe' is just a decoration
     pub unsafe fn get_item_const(&self, id : u64) -> Option<V>{
         let map = &mut *self.map;
         map.get_item_mut(id).map(|b| self.from(b))
