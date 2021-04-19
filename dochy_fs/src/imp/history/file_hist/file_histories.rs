@@ -36,8 +36,8 @@ impl FileHistories{
         unsafe{ s.remove_old_files_us(keep_latest, history_dir) }
     }
 
-    /// remove old files other than latest n files. This function didn't consume the history data,
-    /// so the data will be inconsistent
+    /// remove old files other than latest n files. This function didn't update the history data,
+    /// so the data will be inconsistent with actual files
     pub unsafe fn remove_old_files_us<P : AsRef<Path>>(&mut self, keep_latest : usize, history_dir : P) -> FsResult<()>{
         if self.vec.len() == 0{ return Ok(()); }
         let (hash, his) = self.vec.last().unwrap();
