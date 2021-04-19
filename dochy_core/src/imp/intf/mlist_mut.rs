@@ -1,7 +1,9 @@
 use crate::imp::intf::MItemPtr;
 use crate::imp::intf::MListPtr;
 use std::marker::PhantomData;
+use std::ops::{Deref, DerefMut};
 
+#[derive(Debug)]
 pub struct MListMut<'a, V : From<MItemPtr>>{
     ptr : MListPtr<V>,
     phantom : PhantomData<&'a mut i32>,
@@ -17,11 +19,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
             move |v| MItemMut::new(v, self))
     }
 
-    pub fn another_first(&'a mut self) -> Option<AnotherItemMut<'a, V, Self>>{
-        self.ptr.first().map(
-            move |v| AnotherItemMut{ item : v, phantom : PhantomData }
-        )
-    }
+
 }
 
 pub struct MItemMut<'a, V>{
@@ -35,7 +33,16 @@ impl<'a, V> MItemMut<'a, V>{
     }
 }
 
-pub struct AnotherItemMut<'a, V, T : 'a>{
-    item : V,
-    phantom : PhantomData<&'a mut T>,
+impl<'a, T> Deref for MItemMut<'a, T>{
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.item
+    }
+}
+
+impl<'a, T> DerefMut for MItemMut<'a, T>{
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.item
+    }
 }

@@ -27,6 +27,13 @@ impl<V : From<MItemPtr>> MListPtr<V>{
         let map = unsafe{ &mut *self.map };
         map.first_mut().map(|r| self.from(r))
     }
+    /// Gets a mutable pointer from '&self'
+    /// Actually this doesn't violate anything because 'self' only has pointers.
+    /// This 'unsafe' is just a marker
+    pub unsafe fn first_const(&self) -> Option<V> {
+        let map = &mut *self.map;
+        map.first_mut().map(|r| self.from(r))
+    }
     pub fn first_id(&self) -> Option<u64> {
         let map = unsafe{ &mut *self.map };
         map.first_id()
@@ -35,12 +42,29 @@ impl<V : From<MItemPtr>> MListPtr<V>{
         let map = unsafe{ &mut *self.map };
         map.last_mut().map(|r| self.from(r))
     }
+
+    /// gets a mutable pointer from '&self'
+    /// actually this doesn't violate anything because 'self' only has pointers.
+    /// This 'unsafe' is just a marker
+    pub unsafe fn last_const(&self) -> Option<V> {
+        let map = &mut *self.map;
+        map.last_mut().map(|r| self.from(r))
+    }
+
     pub fn last_id(&self) -> Option<u64> {
         let map = unsafe{ &mut *self.map };
         map.last_id()
     }
     pub fn get_item(&mut self, id : u64) -> Option<V>{
         let map = unsafe{ &mut *self.map };
+        map.get_item_mut(id).map(|b| self.from(b))
+    }
+
+    /// gets a mutable pointer from '&self'
+    /// actually this doesn't violate anything because 'self' only has pointers.
+    /// This 'unsafe' is just a marker
+    pub unsafe fn get_item_const(&self, id : u64) -> Option<V>{
+        let map = &mut *self.map;
         map.get_item_mut(id).map(|b| self.from(b))
     }
 

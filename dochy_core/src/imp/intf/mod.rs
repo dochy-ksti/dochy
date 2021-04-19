@@ -14,6 +14,8 @@ pub mod table;
 pub mod member_desc;
 pub mod root;
 pub mod mlist_mut;
+pub mod mlist_const;
+mod mlist_iter_mut;
 
 pub use root::RootObjectPtr;
 pub use table::TablePtr;
