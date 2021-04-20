@@ -11,7 +11,7 @@ fn mlilst_mut_test() -> DpResult<()> {
     let aa = r.mlist();
     let mut huga  = MListMut::new(aa, &mut r);
     let mut a1 = huga.first().unwrap();
-
+    huga.first().unwrap().set_bar(10);
 
     Ok(())
 }

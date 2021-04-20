@@ -186,7 +186,7 @@ impl<V : From<MItemPtr>> MListPtrIter<V>{
         self.iter.prev_mut().map(|(k,v)| (*k, self.from(v)))
     }
     
-    pub fn current<'a>(&mut self) -> Option<(u64, V)> {
+    pub fn current(&mut self) -> Option<(u64, V)> {
         self.iter.current_mut().map(|(k,v)| (*k,self.from(v)))
     }
 
