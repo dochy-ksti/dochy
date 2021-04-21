@@ -3,6 +3,8 @@ use crate::imp::intf::MListPtr;
 use std::marker::PhantomData;
 use std::ops::{Deref, DerefMut};
 use crate::imp::intf::mlist_const::MItemConst;
+use crate::imp::intf::mlist_iter_const::MListIterConst;
+use crate::intf::mlist_iter_mut::MListIterMut;
 
 #[derive(Debug)]
 pub struct MListMut<'a, V : From<MItemPtr>>{
@@ -81,6 +83,31 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
     }
     pub fn remove_last(&mut self) -> bool{
         unsafe{ self.ptr.remove_last() }
+    }
+    pub fn move_to_first(&mut self, id : u64) -> bool{
+        self.ptr.move_to_first(id)
+    }
+    pub fn move_to_last(&mut self, id : u64) -> bool{
+        self.ptr.move_to_last(id)
+    }
+    pub fn move_to_prev(&mut self, next_items_id : u64, id : u64) -> bool{
+        self.ptr.move_to_prev(next_items_id, id)
+    }
+    pub fn move_to_next(&mut self, prev_items_id : u64, id : u64) -> bool{
+        self.ptr.move_to_next(prev_items_id, id)
+    }
+    pub fn iter_mut(&mut self) -> MListIterMut<V>{
+        MListIterMut::new(
+            self.ptr.iter(), self)
+    }
+    pub fn iter_from_last(&mut self) -> MListIterMut<V>{
+        MListIterMut::new(
+            self.ptr.iter_from_last(), self)
+    }
+    pub fn iter_from_id(&mut self, id : u64) -> Option<MListIterMut<V>>{
+        self.ptr.iter_from_id(id).map(
+            |iter|
+                MListIterMut::new(iter, self))
     }
 }
 

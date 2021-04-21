@@ -2,6 +2,7 @@ use crate::imp::intf::MItemPtr;
 use crate::imp::intf::MListPtr;
 use std::marker::PhantomData;
 use std::ops::{Deref};
+use crate::imp::intf::mlist_iter_const::MListIterConst;
 
 #[derive(Debug)]
 pub struct MListConst<'a, V : From<MItemPtr>>{
@@ -43,6 +44,19 @@ impl<'a, V : From<MItemPtr>> MListConst<'a, V>{
     }
     pub fn is_empty(&self) -> bool{
         self.ptr.is_empty()
+    }
+
+    pub fn iter(&self) -> MListIterConst<V>{
+        MListIterConst::new(
+        unsafe{ self.ptr.iter_const() }, self)
+    }
+    pub fn iter_from_last(&self) -> MListIterConst<V>{
+        MListIterConst::new(
+            unsafe{ self.ptr.iter_from_last_const() }, self)
+    }
+    pub fn iter_from_id(&self) -> Option<MListIterConst<V>> {
+        unsafe { self.ptr.iter_from_id_const() }.map(
+            |ptr| MListIterConst::new(ptr, self))
     }
 }
 

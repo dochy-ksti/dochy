@@ -143,19 +143,28 @@ impl<V : From<MItemPtr>> MListPtr<V>{
         map.move_to_next(prev_items_id, id)
     }
 
+    pub unsafe fn iter_const(&self) -> MListPtrIter<V> {
+        let map = &mut *self.map;
+        MListPtrIter::new(map.iter_unsafe(), self.list_def, self.root)
+    }
     pub fn iter(&mut self) -> MListPtrIter<V> {
-        let map = unsafe { &mut *self.map };
-        MListPtrIter::new(unsafe { map.iter_unsafe() }, self.list_def, self.root)
+        unsafe{ self.iter_const() }
     }
 
-    pub fn iter_from_last(&mut self) -> MListPtrIter<V> {
-        let map = unsafe{ &mut *self.map };
-        MListPtrIter::new(unsafe{ map.iter_from_last_unsafe() }, self.list_def, self.root)
+    pub unsafe fn iter_from_last_const(&self) -> MListPtrIter<V> {
+        let map = &mut *self.map;
+        MListPtrIter::new(map.iter_from_last_unsafe(), self.list_def, self.root)
+    }
+    pub fn iter_from_last(&mut self) -> MListPtrIter<V>{
+        unsafe{ self.iter_from_last_const() }
     }
 
-    pub fn iter_from_id(&mut self, id : u64) -> Option<MListPtrIter<V>> {
-        let map = unsafe{ &mut *self.map };
-        unsafe { map.iter_from_id_unsafe(id) }.map(|iter| MListPtrIter::new(iter, self.list_def, self.root))
+    pub unsafe fn iter_from_id_const(&self, id : u64) -> Option<MListPtrIter<V>> {
+        let map = &mut *self.map;
+        map.iter_from_id_unsafe(id).map(|iter| MListPtrIter::new(iter, self.list_def, self.root))
+    }
+    pub fn iter_from_id(&mut self, id : u64)-> Option<MListPtrIter<V>> {
+        unsafe{ self.iter_from_id_const() }
     }
 }
 

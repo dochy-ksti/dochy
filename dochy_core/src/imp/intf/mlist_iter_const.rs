@@ -18,6 +18,10 @@ impl<'a, V : From<MItemPtr>> Iterator for MListIterConst<'a, V>{
 }
 
 impl<'a, V : From<MItemPtr>> MListIterConst<'a, V>{
+    pub fn new<T>(ptr : MListPtrIter<V>, _src : &'a T) -> MListIterConst<'a, V>{
+        MListIterConst{ ptr, phantom : PhantomData }
+    }
+
     pub fn next(&mut self) -> Option<(u64, MItemConst<'a, V>)> {
         self.ptr.next().map(|(id, v)| (
             id,

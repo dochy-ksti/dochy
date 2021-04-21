@@ -16,6 +16,9 @@ impl<'a, V : From<MItemPtr>> Iterator for MListIterMut<'a, V>{
     }
 }
 impl<'a, V : From<MItemPtr>> MListIterMut<'a, V>{
+    pub fn new<T>(ptr : MListPtrIter<V>, _src : &'a mut T) -> MListIterMut<'a, V>{
+        MListIterMut{ ptr, phantom : PhantomData }
+    }
     pub fn next(&mut self) -> Option<(u64, MItemMut<'a, V>)> {
         self.ptr.next().map(|(id, v)| (
             id,
