@@ -5,8 +5,14 @@ use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::intf::mitem::MItemPtr;
 
-///&mut LinkedMapからしか使えない。
-/// &LinkedMapをas *const _ as *mut _ でキャストして、書き換えないように&selfのメソッドだけ呼び出す、というようなことは出来ない。
+/// This uses pointers so every method is basically unsafe.
+/// You can get this ptr, and create an immutable reference,
+/// and modify the referent through this pointer,
+/// and access the immutable reference afterwards.
+/// Anything can happen with the access.
+///
+/// getting data through this pointer while a mutable reference is alive
+/// is also an undefined behavior.
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct MListPtr<V : From<MItemPtr>>{
