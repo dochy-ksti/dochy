@@ -2,8 +2,6 @@ use crate::imp::intf::MItemPtr;
 use crate::imp::intf::MListPtr;
 use std::marker::PhantomData;
 use std::ops::{Deref, DerefMut};
-use crate::imp::intf::mlist_const::MItemConst;
-use crate::imp::intf::mlist_iter_const::MListIterConst;
 use crate::intf::mlist_iter_mut::MListIterMut;
 
 #[derive(Debug)]
@@ -17,33 +15,23 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
         MListMut{ ptr, phantom : PhantomData }
     }
 
-    pub fn first(&self) -> Option<MItemConst<V>>{
-        unsafe{ self.ptr.first_const() }.map(
-            move |v| MItemConst::new(v, self))
-    }
-    pub fn first_mut(&mut self) -> Option<MItemMut<V>>{
+    pub fn first(&mut self) -> Option<MItemMut<V>>{
         self.ptr.first().map(
             move |v| MItemMut::new(v, self))
     }
     pub fn first_id(&self) -> Option<u64>{
         self.ptr.first_id()
     }
-    pub fn last(&self) -> Option<MItemConst<V>>{
-        unsafe{ self.ptr.last_const() }.map(
-            move |v| MItemConst::new(v, self))
-    }
-    pub fn last_mut(&mut self) -> Option<MItemMut<V>>{
+
+    pub fn last(&mut self) -> Option<MItemMut<V>>{
         self.ptr.last().map(
             move |v| MItemMut::new(v, self))
     }
     pub fn last_id(&self) -> Option<u64>{
         self.ptr.last_id()
     }
-    pub fn get_item(&self, id : u64) -> Option<MItemConst<V>>{
-        unsafe{ self.ptr.get_item_const(id) }.map(
-            move |v| MItemConst::new(v, self))
-    }
-    pub fn get_item_mut(&mut self, id : u64) -> Option<MItemMut<V>>{
+
+    pub fn get_item(&mut self, id : u64) -> Option<MItemMut<V>>{
         self.ptr.get_item(id).map(
             move |v| MItemMut::new(v, self))
     }
@@ -106,7 +94,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
     }
     pub fn iter_from_id(&mut self, id : u64) -> Option<MListIterMut<V>>{
         self.ptr.iter_from_id(id).map(
-            |iter|
+            move |iter|
                 MListIterMut::new(iter, self))
     }
 }

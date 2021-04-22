@@ -54,8 +54,8 @@ impl<'a, V : From<MItemPtr>> MListConst<'a, V>{
         MListIterConst::new(
             unsafe{ self.ptr.iter_from_last_const() }, self)
     }
-    pub fn iter_from_id(&self) -> Option<MListIterConst<V>> {
-        unsafe { self.ptr.iter_from_id_const() }.map(
+    pub fn iter_from_id(&self, id : u64) -> Option<MListIterConst<V>> {
+        unsafe { self.ptr.iter_from_id_const(id) }.map(
             |ptr| MListIterConst::new(ptr, self))
     }
 }

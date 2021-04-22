@@ -164,7 +164,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
         map.iter_from_id_unsafe(id).map(|iter| MListPtrIter::new(iter, self.list_def, self.root))
     }
     pub fn iter_from_id(&mut self, id : u64)-> Option<MListPtrIter<V>> {
-        unsafe{ self.iter_from_id_const() }
+        unsafe{ self.iter_from_id_const(id) }
     }
 }
 

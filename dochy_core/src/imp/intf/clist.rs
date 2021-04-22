@@ -4,7 +4,7 @@ use crate::imp::structs::root_obj::RootObject;
 use std::marker::PhantomData;
 use crate::imp::structs::rust_list::ConstItem;
 
-
+/// CList's internal structure is Vec
 #[derive(Debug, PartialEq)]
 pub struct CListPtr<T : From<CItemPtr>> {
     ptr : *const Vec<ConstItem>,

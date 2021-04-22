@@ -3,11 +3,26 @@
     "MList",
     [{
       bar : 0,
-      baz : 1
+      baz : 1,
+      inList : [
+        "MilDef",
+        [{
+          a : 0,
+        }]
+      ]
     }],
     {
       bar : 1,
-      baz : 2
+      baz : 2,
+      inList : [
+        "Mil",
+        {
+          a : 10
+        },
+        {
+          a : 20
+        }
+      ]
     },
     {
       // not set

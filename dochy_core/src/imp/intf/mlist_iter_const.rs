@@ -1,7 +1,6 @@
 use crate::imp::intf::MItemPtr;
 use crate::imp::intf::mlist::MListPtrIter;
 use std::marker::PhantomData;
-use crate::intf::mlist_mut::MItemMut;
 use crate::imp::intf::mlist_const::MItemConst;
 
 pub struct MListIterConst<'a, V : From<MItemPtr>>{

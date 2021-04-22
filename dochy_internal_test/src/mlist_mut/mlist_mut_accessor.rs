@@ -28,6 +28,9 @@ impl From<MItemPtr> for MlistMItem {
 	}
 }
 impl MlistMItem {
+	pub fn in_list(&mut self) -> MListPtr<InListMItem>{
+		mitem::get_mil(self.ptr, "inList").unwrap().unwrap()
+	}
 	pub fn bar(&self) -> i64{
 		let qv = mitem::get_int(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
@@ -49,6 +52,30 @@ impl MlistMItem {
 	}
 	pub fn set_baz(&mut self, baz : i64){
 		mitem::set_int(self.ptr, "baz", Qv::Val(baz));
+	}
+	
+	
+}
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub struct InListMItem {
+	ptr : MItemPtr,
+}
+impl From<MItemPtr> for InListMItem {
+	fn from(ptr : MItemPtr) -> Self {
+		Self{ ptr }
+	}
+}
+impl InListMItem {
+	pub fn a(&self) -> i64{
+		let qv = mitem::get_int(self.ptr, "a").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn a_def_val(&self) -> i64{
+		let qv = mitem::get_int_def(self.ptr, "a").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn set_a(&mut self, a : i64){
+		mitem::set_int(self.ptr, "a", Qv::Val(a));
 	}
 	
 	
