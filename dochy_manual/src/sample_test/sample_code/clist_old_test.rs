@@ -7,7 +7,8 @@ fn clilst_old_test() -> DpResult<()> {
     let old = json_dir_to_root("src/sample_test/sample_code_json/clist_old", true)?;
 
     let r = RootIntf::new(old);
-    let mut iter = r.list().iter();
+    let list = r.list();
+    let mut iter = list.iter();
 
     assert_eq!(iter.next()?.foo(), 1);
     assert_eq!(iter.next()?.foo(), 2);

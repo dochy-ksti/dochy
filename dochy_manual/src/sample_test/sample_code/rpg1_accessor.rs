@@ -1,5 +1,7 @@
 use dochy::core::intf::*;
 use dochy::core::structs::*;
+unsafe impl Send for RootIntf {}
+unsafe impl Sync for RootIntf {}
 #[derive(Debug, PartialEq)]
 pub struct RootIntf{
     root : Box<RootObject>,
@@ -11,15 +13,21 @@ impl RootIntf{
 		let ptr = RootObjectPtr::new(root.as_mut());
 		RootIntf { root, ptr }
 	}
-    pub unsafe fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
-    pub unsafe fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+    pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
+    pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
 	pub fn class(&self) -> ClassTable{
 		let ans = root::get_table(self.ptr, "class").unwrap();
 		ClassTable::new(ans)
 	}
-	pub fn pc_list(&mut self) -> MListPtr<PcListMItem>{
+	pub unsafe fn pc_list_us(&self) -> MListPtr<PcListMItem>{
 		root::get_mlist(self.ptr, "pcList").unwrap()
+	}
+	pub fn pc_list(&self) -> MListConst<PcListMItem>{
+		MListConst::new(unsafe{ self.pc_list_us() }, self)
+	}
+	pub fn pc_list_mut(&mut self) -> MListMut<PcListMItem>{
+		MListMut::new(unsafe{ self.pc_list_us() }, self)
 	}
 	pub fn race(&self) -> RaceTable{
 		let ans = root::get_table(self.ptr, "race").unwrap();

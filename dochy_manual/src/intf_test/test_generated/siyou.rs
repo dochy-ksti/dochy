@@ -1,5 +1,7 @@
 use dochy::core::intf::*;
 use dochy::core::structs::*;
+unsafe impl Send for RootIntf {}
+unsafe impl Sync for RootIntf {}
 #[derive(Debug, PartialEq)]
 pub struct RootIntf{
     root : Box<RootObject>,
@@ -11,8 +13,8 @@ impl RootIntf{
 		let ptr = RootObjectPtr::new(root.as_mut());
 		RootIntf { root, ptr }
 	}
-    pub unsafe fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
-    pub unsafe fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+    pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
+    pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
 	pub fn pugya_int(&self) -> UndefOr<i64>{
 		let qv = root::get_int(self.ptr, "pugyaInt").unwrap();
@@ -47,8 +49,11 @@ impl RootIntf{
 	pub fn set_at_huga_number(&mut self, at_huga_number : i64){
 		root::set_int(self.ptr, "@HugaNumber", Qv::Val(at_huga_number));
 	}
-	pub fn ini_item_list(&self) -> CListPtr<IniItemListCItem>{
+	pub unsafe fn ini_item_list_us(&self) -> CListPtr<IniItemListCItem>{
 		root::get_clist(self.ptr, "iniItemList").unwrap()
+	}
+	pub fn ini_item_list(&self) -> CListConst<IniItemListCItem>{
+		CListConst::new(unsafe{ self.ini_item_list_us() }, self)
 	}
 	pub fn int_array(&self) -> Vec<i64>{
 		let qv = root::get_int_array(self.ptr, "intArray").unwrap();
@@ -184,11 +189,20 @@ impl RootIntf{
 		let ans = root::get_table(self.ptr, "usable").unwrap();
 		UsableTable::new(ans)
 	}
-	pub fn item_list3(&self) -> CListPtr<ItemList3CItem>{
+	pub unsafe fn item_list3_us(&self) -> CListPtr<ItemList3CItem>{
 		root::get_clist(self.ptr, "itemList3").unwrap()
 	}
-	pub fn mut1(&mut self) -> MListPtr<Mut1MItem>{
+	pub fn item_list3(&self) -> CListConst<ItemList3CItem>{
+		CListConst::new(unsafe{ self.item_list3_us() }, self)
+	}
+	pub unsafe fn mut1_us(&self) -> MListPtr<Mut1MItem>{
 		root::get_mlist(self.ptr, "mut1").unwrap()
+	}
+	pub fn mut1(&self) -> MListConst<Mut1MItem>{
+		MListConst::new(unsafe{ self.mut1_us() }, self)
+	}
+	pub fn mut1_mut(&mut self) -> MListMut<Mut1MItem>{
+		MListMut::new(unsafe{ self.mut1_us() }, self)
 	}
 	pub fn hego_int(&self) -> NullOr<i64>{
 		let qv = root::get_int(self.ptr, "hegoInt").unwrap();
@@ -228,8 +242,14 @@ impl RootIntf{
 		let ans = root::get_table(self.ptr, "hegoList").unwrap();
 		HegoListTable::new(ans)
 	}
-	pub fn mut2(&mut self) -> MListPtr<Mut2MItem>{
+	pub unsafe fn mut2_us(&self) -> MListPtr<Mut2MItem>{
 		root::get_mlist(self.ptr, "mut2").unwrap()
+	}
+	pub fn mut2(&self) -> MListConst<Mut2MItem>{
+		MListConst::new(unsafe{ self.mut2_us() }, self)
+	}
+	pub fn mut2_mut(&mut self) -> MListMut<Mut2MItem>{
+		MListMut::new(unsafe{ self.mut2_us() }, self)
 	}
 	pub fn old_name2_old(&self) -> NullOr<i64>{
 		let qv = root::get_int(self.ptr, "oldName2").unwrap();
@@ -253,8 +273,11 @@ impl RootIntf{
 	pub fn set_pugya_int2(&mut self, pugya_int2 : Qv<i64>){
 		root::set_int(self.ptr, "pugyaInt2", pugya_int2.into_qv());
 	}
-	pub fn enum_list(&self) -> CListPtr<EnumListCItem>{
+	pub unsafe fn enum_list_us(&self) -> CListPtr<EnumListCItem>{
 		root::get_clist(self.ptr, "enumList").unwrap()
+	}
+	pub fn enum_list(&self) -> CListConst<EnumListCItem>{
+		CListConst::new(unsafe{ self.enum_list_us() }, self)
 	}
 	pub fn empty_int_array(&self) -> Vec<i64>{
 		let qv = root::get_int_array(self.ptr, "emptyIntArray").unwrap();
@@ -677,8 +700,14 @@ impl From<MItemPtr> for Mut1MItem {
 	}
 }
 impl Mut1MItem {
-	pub fn inner_mut_list(&mut self) -> MListPtr<InnerMutListMItem>{
+	pub unsafe fn inner_mut_list_us(&self) -> MListPtr<InnerMutListMItem>{
 		mitem::get_mil(self.ptr, "innerMutList").unwrap().unwrap()
+	}
+	pub fn inner_mut_list(&self) -> MListConst<InnerMutListMItem>{
+		MListConst::new(unsafe{ self.inner_mut_list_us() }, self)
+	}
+	pub fn inner_mut_list_mut(&mut self) -> MListMut<InnerMutListMItem>{
+		MListMut::new(unsafe{ self.inner_mut_list_us() }, self)
 	}
 	pub fn some_name(&self) -> String{
 		let qv = mitem::get_str(self.ptr, "someName").unwrap();

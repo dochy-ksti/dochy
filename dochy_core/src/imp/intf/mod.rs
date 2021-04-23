@@ -27,3 +27,7 @@ pub use clist::CListPtr;
 pub use mlist::MListPtr;
 pub use mitem::MItemPtr;
 pub use clist_const::CItemConst;
+pub use clist_const::CListConst;
+pub use mlist_const::MListConst;
+pub use mlist_mut::MListMut;
+pub use mlist_mut::MItemMut;

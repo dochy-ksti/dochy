@@ -7,7 +7,8 @@ fn mlilst_old_test() -> DpResult<()> {
     let old = json_dir_to_root("src/sample_test/sample_code_json/mlist_old", true)?;
 
     let mut r = RootIntf::new(old);
-    let mut iter = r.mlist().iter();
+    let mut list = r.mlist_mut();
+    let mut iter = list.iter();
 
     if let Some((_id, item)) = iter.next(){
         assert_eq!(item.bar(), 1);

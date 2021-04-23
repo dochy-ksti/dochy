@@ -9,8 +9,9 @@ fn mlilst_new_adjust_test() -> DpResult<()> {
 
     let r = adjust_versions(new, old, true)?;
 
-    let mut r = RootIntf::new(r);
-    let mut iter = r.mlist().iter();
+    let r = RootIntf::new(r);
+    let list = r.mlist();
+    let mut iter = list.iter();
 
     if let Some((_id, item)) = iter.next(){
         //assert_eq!(item.bar(), 1); //bar is removed

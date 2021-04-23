@@ -1,5 +1,7 @@
 use dochy::core::intf::*;
 use dochy::core::structs::*;
+unsafe impl Send for RootIntf {}
+unsafe impl Sync for RootIntf {}
 #[derive(Debug, PartialEq)]
 pub struct RootIntf{
     root : Box<RootObject>,
@@ -11,11 +13,17 @@ impl RootIntf{
 		let ptr = RootObjectPtr::new(root.as_mut());
 		RootIntf { root, ptr }
 	}
-    pub unsafe fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
-    pub unsafe fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+    pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
+    pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
-	pub fn mlist(&mut self) -> MListPtr<MlistMItem>{
+	pub unsafe fn mlist_us(&self) -> MListPtr<MlistMItem>{
 		root::get_mlist(self.ptr, "mlist").unwrap()
+	}
+	pub fn mlist(&self) -> MListConst<MlistMItem>{
+		MListConst::new(unsafe{ self.mlist_us() }, self)
+	}
+	pub fn mlist_mut(&mut self) -> MListMut<MlistMItem>{
+		MListMut::new(unsafe{ self.mlist_us() }, self)
 	}
 }
 #[derive(Debug, PartialEq, Clone, Copy)]

@@ -35,8 +35,12 @@ impl CListSource {
         let snake_name = to_snake_name(id);
         let is_old = self.is_old();
         let item_type_name = to_citem_type_name(id);
-        sb.push(0,&format!("pub fn {}(&self) -> CListPtr<{}>{{", with_old(&snake_name, is_old), &item_type_name));
+        let fn_name = with_old(&snake_name, is_old);
+        sb.push(0,&format!("pub unsafe fn {}_us(&self) -> CListPtr<{}>{{", &fn_name, &item_type_name));
         sb.push(1,&format!("root::get_clist(self.ptr, \"{}\").unwrap()", id));
+        sb.push(0,"}");
+        sb.push(0,&format!("pub fn {}(&self) -> CListConst<{}>{{", &fn_name, &item_type_name));
+        sb.push(1,&format!("CListConst::new(unsafe{{ self.{}_us() }}, self)", &fn_name));
         sb.push(0,"}");
         sb.to_string()
     }

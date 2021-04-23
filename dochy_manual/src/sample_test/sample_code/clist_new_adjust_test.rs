@@ -10,7 +10,8 @@ fn clilst_new_adjust_test() -> DpResult<()> {
     let r = adjust_versions(new, old, true)?;
 
     let r = RootIntf::new(r);
-    let mut iter = r.list().iter();
+    let list = r.list();
+    let mut iter = list.iter();
 
     assert_eq!(iter.next()?.foo(), 3);
     assert_eq!(iter.next()?.foo(), 4);

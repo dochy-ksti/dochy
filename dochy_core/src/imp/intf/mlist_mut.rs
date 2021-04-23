@@ -84,7 +84,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
     pub fn move_to_next(&mut self, prev_items_id : u64, id : u64) -> bool{
         self.ptr.move_to_next(prev_items_id, id)
     }
-    pub fn iter_mut(&mut self) -> MListIterMut<V>{
+    pub fn iter(&mut self) -> MListIterMut<V>{
         MListIterMut::new(
             self.ptr.iter(), self)
     }

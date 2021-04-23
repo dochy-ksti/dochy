@@ -1,6 +1,8 @@
 #[cfg(test)] pub mod test{
 	use dochy::core::intf::*;
 	use dochy::core::structs::*;
+	unsafe impl Send for RootIntf {}
+	unsafe impl Sync for RootIntf {}
 	#[derive(Debug, PartialEq)]
 	pub struct RootIntf{
 	    root : Box<RootObject>,
@@ -12,8 +14,8 @@
 			let ptr = RootObjectPtr::new(root.as_mut());
 			RootIntf { root, ptr }
 		}
-	    pub unsafe fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
-	    pub unsafe fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+	    pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
+	    pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 	
 		pub fn mem54(&self) -> i64{
 			let qv = root::get_int(self.ptr, "mem54").unwrap();

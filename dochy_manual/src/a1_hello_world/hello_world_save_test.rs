@@ -14,7 +14,7 @@ fn hello_world_save_test() -> DpResult<()> {
 
     let saved_path = save_file(
         "src/a1_hello_world/save_dir",
-        unsafe{ root.root_obj_ref() },
+        root.root_obj_ref(),
         &CurrentSrc::SrcDir(PathBuf::from("src/a1_hello_world/some_dir")),
         "next_world.dochy",
         true)?;

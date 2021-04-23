@@ -48,7 +48,7 @@ mod tests {
 
         let mut moto = get_root_obj(json_dir_path)?;
 
-        let diff = dochy::diff::get_diff(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.to_string()))?;
+        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
         dochy::diff::apply_diff(&mut moto, &mut diff.as_slice()).or_else(|e| Err(e.to_string()))?;
         let intf = RootIntf::new(moto);
 
@@ -105,7 +105,7 @@ mod tests {
 
         let mut applied1 = get_root_obj(json_dir_path)?;
 
-        let diff1 = dochy::diff::get_diff(&applied1, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.to_string()))?;
+        let diff1 = dochy::diff::get_diff(&applied1, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
         dochy::diff::apply_diff(&mut applied1, &mut diff1.as_slice()).or_else(|e| Err(e.to_string()))?;
 
         intf.set_hoge_int(1);
@@ -128,7 +128,7 @@ mod tests {
         intf.set_hoge_undef_null_undef_to_null(Qv::Null);
 
         let mut applied2 = applied1.clone();
-        let diff2 = dochy::diff::get_diff(&applied1, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.to_string()))?;
+        let diff2 = dochy::diff::get_diff(&applied1, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
         dochy::diff::apply_diff(&mut applied2, &mut diff2.as_slice()).or_else(|e| Err(e.to_string()))?;
 
         let intf = RootIntf::new(applied2);
