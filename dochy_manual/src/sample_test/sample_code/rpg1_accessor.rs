@@ -32,19 +32,28 @@ pub struct ClassTable {
 }
 impl ClassTable {
 	pub fn new(ptr : TablePtr) -> ClassTable{ ClassTable{ ptr } } 
-	pub fn mage(&self) -> ClassCItem {
+	pub unsafe fn mage_us(&self) -> ClassCItem {
 		let ptr = table::get_value(self.ptr, "mage").unwrap();
 		ClassCItem::from(ptr)
 	}
-	pub fn fighter(&self) -> ClassCItem {
+	pub fn mage(&self) -> CItemConst<ClassCItem> {
+		CItemConst::new(unsafe{ self.mage_us() }, self)
+	}
+	pub unsafe fn fighter_us(&self) -> ClassCItem {
 		let ptr = table::get_value(self.ptr, "fighter").unwrap();
 		ClassCItem::from(ptr)
 	}
-	pub fn get_by_id(&self, id : ClassTableID) -> ClassCItem{
+	pub fn fighter(&self) -> CItemConst<ClassCItem> {
+		CItemConst::new(unsafe{ self.fighter_us() }, self)
+	}
+	pub unsafe fn get_by_id_us(&self, id : ClassTableID) -> ClassCItem{
 		match id{
-			ClassTableID::Mage => self.mage(),
-			ClassTableID::Fighter => self.fighter(),
+			ClassTableID::Mage => self.mage_us(),
+			ClassTableID::Fighter => self.fighter_us(),
 		}
+	}
+	pub fn get_by_id(&self, id : ClassTableID) -> CItemConst<ClassCItem>{
+		CItemConst::new(unsafe{ self.get_by_id_us(id) }, self)
 	}
 }
 #[repr(u64)] pub enum ClassTableID{ Mage, Fighter, }
@@ -155,19 +164,28 @@ pub struct RaceTable {
 }
 impl RaceTable {
 	pub fn new(ptr : TablePtr) -> RaceTable{ RaceTable{ ptr } } 
-	pub fn dwarf(&self) -> RaceCItem {
+	pub unsafe fn dwarf_us(&self) -> RaceCItem {
 		let ptr = table::get_value(self.ptr, "dwarf").unwrap();
 		RaceCItem::from(ptr)
 	}
-	pub fn elf(&self) -> RaceCItem {
+	pub fn dwarf(&self) -> CItemConst<RaceCItem> {
+		CItemConst::new(unsafe{ self.dwarf_us() }, self)
+	}
+	pub unsafe fn elf_us(&self) -> RaceCItem {
 		let ptr = table::get_value(self.ptr, "elf").unwrap();
 		RaceCItem::from(ptr)
 	}
-	pub fn get_by_id(&self, id : RaceTableID) -> RaceCItem{
+	pub fn elf(&self) -> CItemConst<RaceCItem> {
+		CItemConst::new(unsafe{ self.elf_us() }, self)
+	}
+	pub unsafe fn get_by_id_us(&self, id : RaceTableID) -> RaceCItem{
 		match id{
-			RaceTableID::Dwarf => self.dwarf(),
-			RaceTableID::Elf => self.elf(),
+			RaceTableID::Dwarf => self.dwarf_us(),
+			RaceTableID::Elf => self.elf_us(),
 		}
+	}
+	pub fn get_by_id(&self, id : RaceTableID) -> CItemConst<RaceCItem>{
+		CItemConst::new(unsafe{ self.get_by_id_us(id) }, self)
 	}
 }
 #[repr(u64)] pub enum RaceTableID{ Dwarf, Elf, }

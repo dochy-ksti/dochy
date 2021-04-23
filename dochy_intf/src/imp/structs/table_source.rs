@@ -81,23 +81,31 @@ impl TableSource {
 
         for key in &self.keys {
             let key_name = key.key_name();
-            sb.push(1,&format!("pub fn {}(&self) -> {} {{", &key_name, &item_type_name));
+            sb.push(1,&format!("pub unsafe fn {}_us(&self) -> {} {{", &key_name, &item_type_name));
             sb.push(2,&format!("let ptr = table::get_value(self.ptr, \"{}\").unwrap();", &key.key));
-
             sb.push(2, &format!("{}::from(ptr)", &item_type_name));
+            sb.push(1, "}");
+
+            sb.push(1,&format!("pub fn {}(&self) -> CItemConst<{}> {{", &key_name, &item_type_name));
+            sb.push(2,&format!("CItemConst::new(unsafe{{ self.{}_us() }}, self)", &key_name));
             sb.push(1, "}");
         }
 
         if self.keys.len() != 0 {
-            sb.push(1,&format!("pub fn get_by_id(&self, id : {}) -> {}{{", &ids_type_name, &item_type_name));
+            sb.push(1,&format!("pub unsafe fn get_by_id_us(&self, id : {}) -> {}{{", &ids_type_name, &item_type_name));
             sb.push(2,"match id{");
 
             for key in &self.keys {
-                 sb.push(3,&format!("{}::{} => self.{}(),", &ids_type_name, &key.enum_name(), &key.key_name()));
+                 sb.push(3,&format!("{}::{} => self.{}_us(),", &ids_type_name, &key.enum_name(), &key.key_name()));
             }
             sb.push(2, "}");
+            sb.push(1, "}");
+
+            sb.push(1,&format!("pub fn get_by_id(&self, id : {}) -> CItemConst<{}>{{", &ids_type_name, &item_type_name));
+            sb.push(2,"CItemConst::new(unsafe{ self.get_by_id_us(id) }, self)");
+            sb.push(1, "}");
         }
-        sb.push(1, "}");
+
         sb.push(0, "}");
 
 

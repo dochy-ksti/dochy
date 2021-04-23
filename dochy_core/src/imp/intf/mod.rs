@@ -26,3 +26,4 @@ pub use clist::CListPtr;
 //pub use c_qv_str::StrPtr as RustStrPtr;
 pub use mlist::MListPtr;
 pub use mitem::MItemPtr;
+pub use clist_const::CItemConst;
