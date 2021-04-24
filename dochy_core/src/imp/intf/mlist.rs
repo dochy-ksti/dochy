@@ -11,8 +11,10 @@ use crate::imp::intf::mitem::MItemPtr;
 /// and access the immutable reference afterwards.
 /// Anything can happen with the access.
 ///
-/// getting data through this pointer while a mutable reference is alive
+/// Getting data through this pointer while a mutable reference is alive
 /// is also an undefined behavior.
+///
+/// Pointers can outlive their referents, and access dropped items. It's also UB.
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct MListPtr<V : From<MItemPtr>>{

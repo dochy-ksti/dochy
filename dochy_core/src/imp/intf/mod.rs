@@ -18,6 +18,7 @@ pub mod mlist_iter_mut;
 pub mod mlist_iter_const;
 pub mod clist_const;
 pub mod clist_iter_const;
+pub mod ctable_const;
 
 pub use root::RootObjectPtr;
 pub use table::TablePtr;
@@ -31,3 +32,4 @@ pub use clist_const::CListConst;
 pub use mlist_const::MListConst;
 pub use mlist_mut::MListMut;
 pub use mlist_mut::MItemMut;
+pub use ctable_const::CTableConst;

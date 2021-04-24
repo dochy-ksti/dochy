@@ -16,9 +16,12 @@ impl RootIntf{
     pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
-	pub fn class(&self) -> ClassTable{
+	pub unsafe fn class_us(&self) -> ClassTable{
 		let ans = root::get_table(self.ptr, "class").unwrap();
 		ClassTable::new(ans)
+	}
+	pub fn class(&self) -> CTableConst<ClassTable>{
+		CTableConst::new(unsafe{ self.class_us() }, self)
 	}
 	pub unsafe fn pc_list_us(&self) -> MListPtr<PcListMItem>{
 		root::get_mlist(self.ptr, "pcList").unwrap()
@@ -29,9 +32,12 @@ impl RootIntf{
 	pub fn pc_list_mut(&mut self) -> MListMut<PcListMItem>{
 		MListMut::new(unsafe{ self.pc_list_us() }, self)
 	}
-	pub fn race(&self) -> RaceTable{
+	pub unsafe fn race_us(&self) -> RaceTable{
 		let ans = root::get_table(self.ptr, "race").unwrap();
 		RaceTable::new(ans)
+	}
+	pub fn race(&self) -> CTableConst<RaceTable>{
+		CTableConst::new(unsafe{ self.race_us() }, self)
 	}
 }
 #[derive(Debug, PartialEq)]

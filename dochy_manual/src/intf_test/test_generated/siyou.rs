@@ -140,9 +140,12 @@ impl RootIntf{
 	pub fn set_binary(&mut self, binary : Vec<u8>){
 		root::set_binary(self.ptr, "binary", Qv::Val(binary));
 	}
-	pub fn weapon(&self) -> WeaponTable{
+	pub unsafe fn weapon_us(&self) -> WeaponTable{
 		let ans = root::get_table(self.ptr, "weapon").unwrap();
 		WeaponTable::new(ans)
+	}
+	pub fn weapon(&self) -> CTableConst<WeaponTable>{
+		CTableConst::new(unsafe{ self.weapon_us() }, self)
 	}
 	pub fn float_array(&self) -> Vec<f64>{
 		let qv = root::get_float_array(self.ptr, "floatArray").unwrap();
@@ -166,13 +169,19 @@ impl RootIntf{
 	pub fn set_nullable_int_array(&mut self, nullable_int_array : NullOr<Vec<i64>>){
 		root::set_int_array(self.ptr, "nullableIntArray", nullable_int_array.into_qv());
 	}
-	pub fn hoge_list(&self) -> HogeListTable{
+	pub unsafe fn hoge_list_us(&self) -> HogeListTable{
 		let ans = root::get_table(self.ptr, "hogeList").unwrap();
 		HogeListTable::new(ans)
 	}
-	pub fn some_data(&self) -> SomeDataTable{
+	pub fn hoge_list(&self) -> CTableConst<HogeListTable>{
+		CTableConst::new(unsafe{ self.hoge_list_us() }, self)
+	}
+	pub unsafe fn some_data_us(&self) -> SomeDataTable{
 		let ans = root::get_table(self.ptr, "someData").unwrap();
 		SomeDataTable::new(ans)
+	}
+	pub fn some_data(&self) -> CTableConst<SomeDataTable>{
+		CTableConst::new(unsafe{ self.some_data_us() }, self)
 	}
 	pub fn hoge_int(&self) -> i64{
 		let qv = root::get_int(self.ptr, "hogeInt").unwrap();
@@ -185,9 +194,12 @@ impl RootIntf{
 	pub fn set_hoge_int(&mut self, hoge_int : i64){
 		root::set_int(self.ptr, "hogeInt", Qv::Val(hoge_int));
 	}
-	pub fn usable(&self) -> UsableTable{
+	pub unsafe fn usable_us(&self) -> UsableTable{
 		let ans = root::get_table(self.ptr, "usable").unwrap();
 		UsableTable::new(ans)
+	}
+	pub fn usable(&self) -> CTableConst<UsableTable>{
+		CTableConst::new(unsafe{ self.usable_us() }, self)
 	}
 	pub unsafe fn item_list3_us(&self) -> CListPtr<ItemList3CItem>{
 		root::get_clist(self.ptr, "itemList3").unwrap()
@@ -215,17 +227,26 @@ impl RootIntf{
 	pub fn set_hego_int(&mut self, hego_int : NullOr<i64>){
 		root::set_int(self.ptr, "hegoInt", hego_int.into_qv());
 	}
-	pub fn huga_list(&self) -> HugaListTable{
+	pub unsafe fn huga_list_us(&self) -> HugaListTable{
 		let ans = root::get_table(self.ptr, "hugaList").unwrap();
 		HugaListTable::new(ans)
 	}
-	pub fn dim2_list(&self) -> Dim2ListTable{
+	pub fn huga_list(&self) -> CTableConst<HugaListTable>{
+		CTableConst::new(unsafe{ self.huga_list_us() }, self)
+	}
+	pub unsafe fn dim2_list_us(&self) -> Dim2ListTable{
 		let ans = root::get_table(self.ptr, "dim2List").unwrap();
 		Dim2ListTable::new(ans)
 	}
-	pub fn unko_list(&self) -> UnkoListTable{
+	pub fn dim2_list(&self) -> CTableConst<Dim2ListTable>{
+		CTableConst::new(unsafe{ self.dim2_list_us() }, self)
+	}
+	pub unsafe fn unko_list_us(&self) -> UnkoListTable{
 		let ans = root::get_table(self.ptr, "unkoList").unwrap();
 		UnkoListTable::new(ans)
+	}
+	pub fn unko_list(&self) -> CTableConst<UnkoListTable>{
+		CTableConst::new(unsafe{ self.unko_list_us() }, self)
 	}
 	pub fn hoge_string(&self) -> String{
 		let qv = root::get_str(self.ptr, "hogeString").unwrap();
@@ -238,9 +259,12 @@ impl RootIntf{
 	pub fn set_hoge_string(&mut self, hoge_string : String){
 		root::set_str(self.ptr, "hogeString", Qv::Val(hoge_string));
 	}
-	pub fn hego_list(&self) -> HegoListTable{
+	pub unsafe fn hego_list_us(&self) -> HegoListTable{
 		let ans = root::get_table(self.ptr, "hegoList").unwrap();
 		HegoListTable::new(ans)
+	}
+	pub fn hego_list(&self) -> CTableConst<HegoListTable>{
+		CTableConst::new(unsafe{ self.hego_list_us() }, self)
 	}
 	pub unsafe fn mut2_us(&self) -> MListPtr<Mut2MItem>{
 		root::get_mlist(self.ptr, "mut2").unwrap()
