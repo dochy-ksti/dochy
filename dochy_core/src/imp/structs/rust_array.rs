@@ -2,6 +2,7 @@ use crate::imp::structs::qv::Qv;
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::array_type::ArrayType;
 use crate::error::CoreResult;
+use crate::imp::structs::rust_identity::RustIdentity;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct RustArray{
@@ -50,27 +51,27 @@ impl RustArray{
     }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct RustFloatArray{
-    b : Box<Vec<f64>>,
+    b : Box<(Vec<f64>, RustIdentity)>,
 }
 
 impl RustFloatArray{
-    pub fn new(b : Vec<f64>) -> RustFloatArray{ RustFloatArray{ b : Box::new(b) }}
+    pub fn new(b : Vec<f64>) -> RustFloatArray{ RustFloatArray{ b : Box::new((b, RustIdentity::new())) }}
     //pub(crate) fn as_ref(&self) -> &Vec<f64>{ self.b.as_ref() }
     pub(crate) fn to_params(&self) -> Vec<RustParam>{
-        self.b.iter().map(|a| RustParam::Float(Qv::Val(*a))).collect()
+        self.vec().iter().map(|a| RustParam::Float(Qv::Val(*a))).collect()
     }
     pub(crate) fn from_params(v : &Vec<RustParam>) -> Option<RustFloatArray>{
         let op  = v.iter().map(|p| p.to_float()).collect::<Option<Vec<f64>>>();
         Some(RustFloatArray::new(op?))
     }
-    pub fn vec(&self) -> &Vec<f64>{ self.b.as_ref() }
+    pub fn vec(&self) -> &Vec<f64>{ &self.b.as_ref().0 }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct RustIntArray{
-    b : Box<Vec<i64>>,
+    b : Box<(Vec<i64>, RustIdentity)>,
 }
 
 impl RustIntArray{
@@ -86,13 +87,13 @@ impl RustIntArray{
     pub fn vec(&self) -> &Vec<i64>{ self.b.as_ref() }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct RustBinary{
-    b : Box<Vec<u8>>,
+    b : Box<(Vec<u8>, RustIdentity)>,
 }
 
 impl RustBinary{
-    pub fn new(b : Vec<u8>) -> RustBinary{ RustBinary{ b : Box::new(b) }}
+    pub fn new(b : Vec<u8>) -> RustBinary{ RustBinary{ b : Box::new((b, RustIdentity)) }}
     pub(crate) fn to_params(&self) -> Vec<RustParam>{
         self.b.iter().map(|a| RustParam::Int(Qv::Val(*a as i64))).collect()
     }
@@ -100,6 +101,6 @@ impl RustBinary{
         let op  = v.iter().map(|p| p.to_u8()).collect::<Option<Vec<u8>>>();
         Some(RustBinary::new(op?))
     }
-    pub fn vec(&self) -> &Vec<u8>{ self.b.as_ref() }
+    pub fn vec(&self) -> &Vec<u8>{ &self.b.as_ref().0 }
     pub fn vec_mut(&mut self) -> &mut Vec<u8>{ self.b.as_mut() }
 }
