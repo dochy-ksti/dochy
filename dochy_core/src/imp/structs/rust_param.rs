@@ -3,8 +3,9 @@ use crate::imp::structs::rust_string::{RustString };
 use crate::imp::structs::rust_value::RustMemberType;
 use crate::imp::structs::rust_array::{RustArray, RustIntArray, RustFloatArray, RustBinary};
 use crate::imp::structs::array_type::ArrayType;
+use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug,  Clone)]
 pub enum RustParam{
     Bool(Qv<bool>),
     Float(Qv<f64>),
@@ -97,5 +98,13 @@ impl RustParam {
             }
         }
         return None;
+    }
+}
+
+impl IdentityEqual for RustParam{
+    fn identity_eq(&self, other: &Self) -> bool {
+        match self{
+            RustParam::Bool()
+        }
     }
 }

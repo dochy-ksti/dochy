@@ -3,7 +3,7 @@ use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::rust_list::{ConstTable, ConstList, MutList};
 use crate::imp::structs::rust_value::RustValue;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub enum RootValue{
     Param(RustParam, VarType),
     Table(ConstTable),
@@ -12,15 +12,6 @@ pub enum RootValue{
 }
 
 impl RootValue{
-    // pub(crate) fn list_def(&self) ->  Option<&ListDefObj> {
-    //     match self {
-    //         RootValue::Table(d) => Some(d.default()),
-    //         RootValue::CList(d) => Some(d.default()),
-    //         RootValue::MList(d) => Some(d.default()),
-    //         _ => None,
-    //     }
-    // }
-
 
     pub fn into_rust_value(self) -> RustValue{
         match self{

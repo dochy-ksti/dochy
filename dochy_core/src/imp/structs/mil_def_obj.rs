@@ -1,6 +1,6 @@
 use crate::imp::structs::list_def_obj::ListDefObj;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug,  Clone)]
 pub struct MilDefObj {
     list_def : Box<ListDefObj>,
     undefinable: bool,

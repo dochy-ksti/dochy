@@ -4,6 +4,7 @@ use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::util::set_sabun::{SetSabunError, verify_set_sabun};
 use crate::imp::structs::meta_table::MetaTable;
 use crate::imp::structs::util::hash_m::HashS;
+use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
 
 #[derive(Debug)]
 pub struct RootObject{
@@ -20,12 +21,12 @@ pub struct RootObject{
     meta_table : Box<MetaTable>,
 }
 
-impl PartialEq for RootObject{
-    fn eq(&self, other: &Self) -> bool {
-        //meta tableは既存の情報を整理しただけで情報量的に変わりがないから等価性には関わらない
-        self.default == other.default && self.sabun == other.sabun && self.old == other.old
-    }
-}
+// impl PartialEq for RootObject{
+//     fn eq(&self, other: &Self) -> bool {
+//         //meta tableは既存の情報を整理しただけで情報量的に変わりがないから等価性には関わらない
+//         self.default == other.default && self.sabun == other.sabun && self.old == other.old
+//     }
+// }
 
 impl Clone for RootObject{
     fn clone(&self) -> Self {
@@ -76,5 +77,10 @@ impl RootObject{
         verify_set_sabun(p, vt, &param)?;
         Ok(self.sabun.insert(name, param))
     }
+
+    // pub(crate) fn identity_equal(&self, other : &Self) -> bool{
+    //     self.default().identity_eq(other.default()) &&
+    //         self.sabun().identity_eq(other.sabun())
+    // }
 }
 

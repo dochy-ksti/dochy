@@ -4,7 +4,7 @@ use crate::imp::structs::ref_def_obj::RefDefObj;
 use std::collections::hash_map::Iter;
 use crate::imp::structs::util::hash_m::{HashS, HashM};
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct ListDefObj{
     default : Box<ListDefMap>,
     ///RustValueを巨大にしすぎないためにBoxにしてサイズを削る
@@ -27,7 +27,7 @@ impl ListDefObj{
     pub(crate) fn old(&self) -> &HashS<String>{ self.old.as_ref() }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct ListDefMap{
     map : HashM<String, (usize, ListDefValue)>
 }

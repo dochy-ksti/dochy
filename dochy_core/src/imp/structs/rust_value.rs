@@ -7,7 +7,7 @@ use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::mil_def_obj::MilDefObj;
 
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub enum RustValue{
     Param(RustParam, VarType),
     Table(ConstTable),

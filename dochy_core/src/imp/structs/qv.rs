@@ -1,3 +1,4 @@
+use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
 
 #[derive(Debug, PartialEq)]
 pub enum Qv<T>{ Val(T), Undefined, Null }
@@ -63,6 +64,19 @@ impl<T : Clone> Clone for Qv<T>{
     }
 }
 
+impl<T : IdentityEqual> IdentityEqual for Qv<T>{
+    fn identity_eq(&self, other: &Self) -> bool {
+        match self{
+            Qv::Val(v) =>{
+                if let Qv::Val(o) = other{
+                    v.identity_eq(o)
+                } else{ false }
+            },
+            Qv::Null => if let Qv::Null = other{ true } else { false }
+            Qv::Undefined => if let Qv::Undefined = other{ true } else { false }
+        }
+    }
+}
 
 
 pub enum QvType{

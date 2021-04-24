@@ -10,7 +10,7 @@ use crate::imp::structs::util::hash_m::{HashS};
 
 
 ///アイテムごとにIDをもち、Refで参照することが可能である
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct ConstTable {
     default : Box<ListDefObj>,
     list : Box<HashM<String, ConstItem>>,
@@ -30,7 +30,7 @@ impl ConstTable {
 ///IDを持たず、参照できない。バージョン違い読み出し時の動作の違いが一番大きな違いで、それが存在理由。
 /// MutListは旧バージョンのアイテムが残り新バージョンの初期値が消えるが、ConstListでは新バージョンのアイテムが残り旧バージョンは消える。
 /// Constなので当然といえるだろう・・・
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct ConstList {
     default : Box<ListDefObj>,
     list : Box<Vec<ConstItem>>,
@@ -44,7 +44,7 @@ impl ConstList {
 
 ///追加、削除、順番の変更等ができるリスト
 /// ConstListとMutListはstruct定義を見ると近い存在なので、まとめてもいいように思うかもしれないけれど、意味が全く別ものなので型を分けたほうが混乱が少ない。
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct MutList{
     default : Box<ListDefObj>,
     list : Box<LinkedMap<MutItem>>,
@@ -73,7 +73,7 @@ impl MutList{
 }
 
 ///Table or CListの内部に作るList。ListDefObjの内部にはDefaultだけ書き、CItemの内部にはListのItemの羅列のみを書く。
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct ConstInnerList {
     list : Vec<ConstItem>,
 }
@@ -83,7 +83,7 @@ impl ConstInnerList {
     pub(crate) fn list(&self) -> &Vec<ConstItem>{ &self.list }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug,  Clone)]
 pub struct MutInnerList {
     list : Box<LinkedMap<MutItem>>,
 }
@@ -95,7 +95,7 @@ impl MutInnerList {
     pub fn list_mut(&mut self) -> &mut LinkedMap<MutItem>{ self.list.as_mut() }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct ConstItem {
     ///ListItemの値は常にDefaultからの差分である
     values : Box<HashM<String, ListSabValue>>,
@@ -130,7 +130,7 @@ impl ConstItem {
 /// （パラメータは上書きされうるので、その場合(item_id, BTreeのid)のRelationも使って、上書き時にBTreeをアップデートできるようにしておく必要もあり大変だが)
 /// Relationとパラメータ範囲での検索が効率的にできるシステムが作れる。ただそれは外部に作ればいいので、このシステム自体の守備範囲ではない
 /// それが出来る土台として、idとLinkedHashMで出来たMutListがある
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct MutItem {
     ///ListItemの値は常にDefaultからの差分である
     values : Box<HashM<String, ListSabValue>>,

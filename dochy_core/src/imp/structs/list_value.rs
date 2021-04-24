@@ -6,7 +6,7 @@ use crate::imp::structs::qv::QvType;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::mil_def_obj::MilDefObj;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub enum ListDefValue{
     Param(RustParam, VarType),
     //InnerDataDef(ListDefObj),
@@ -14,7 +14,7 @@ pub enum ListDefValue{
     MilDef(MilDefObj),
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub enum ListSabValue{
     Param(RustParam),
     //InnerData(InnerData),

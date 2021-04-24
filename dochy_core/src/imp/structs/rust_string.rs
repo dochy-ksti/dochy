@@ -1,19 +1,52 @@
 use std::fmt::{Display, Formatter};
+use crate::imp::structs::rust_identity::RustIdentity;
+use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct RustString{
-    str : Box<String>,
+    str : Box<(String, RustIdentity)>,
 }
 
 impl RustString{
     pub fn new(s : String) -> RustString{ RustString{ str : Box::new(s) } }
-    pub fn str(&self) -> &str{ self.str.as_ref().as_str() }
+    pub fn str(&self) -> &str{ self.str.as_ref().0.as_str() }
 
 }
 
 impl Display for RustString{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         self.str().fmt(f)
+    }
+}
+
+impl IdentityEqual for RustString{
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.str.as_ref().1 == other.str.as_ref().1
+    }
+}
+
+
+///
+#[derive(Debug, Clone)]
+pub struct RustBigString{
+    str : Box<(String, RustIdentity)>,
+}
+
+impl RustBigString{
+    pub fn new(s : String) -> RustBigString{ RustBigString{ str : Box::new((s, RustIdentity::new())) } }
+    pub fn str(&self) -> &str{ self.str.as_ref().0.as_str() }
+
+}
+
+impl Display for RustBigString{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        self.str().fmt(f)
+    }
+}
+
+impl IdentityEqual for RustBigString{
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.str.as_ref().1 == other.str.as_ref().1
     }
 }
 
