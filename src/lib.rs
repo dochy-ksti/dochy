@@ -11,8 +11,7 @@ pub mod diff;
 pub mod fs;
 pub mod error;
 
-//TODO: StringやArray,BinaryにIdentityをいれる TakeとSetで上書きするようにする
-//TODO: Safe IntfにSend Syncを実装する
+
 
 //TODO: 全部documentationする
 //TODO: Redditに出して反応を見る このペースだと何ヶ月かかるんじゃあ・・・
