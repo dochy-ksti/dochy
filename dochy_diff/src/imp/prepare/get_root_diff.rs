@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use crate::imp::structs_write::{RootDiffW, ListDiffW};
 use crate::diff_error::DiffError;
 use crate::imp::prepare::get_mlist_diff::get_mlist_diff;
+use dochy_core::IdentityEqual;
 
 pub(crate) fn get_root_diff<'a, 'b>(from : &'a RootObject, to : &'b RootObject) -> Result<RootDiffW<'b>, DiffError>{
     let f = from.sabun();
@@ -15,7 +16,7 @@ pub(crate) fn get_root_diff<'a, 'b>(from : &'a RootObject, to : &'b RootObject) 
     //なので変化の可能性があるものは全部toを調べればわかる
     for (key,to_val) in t {
         if let Some(from_val) = f.get(key) {
-            if from_val != to_val{
+            if from_val.identity_eq(to_val) == false{
                 if let Some((id,_v)) = def.get(key) {
                     params.insert(*id, to_val);
                 } else{

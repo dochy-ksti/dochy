@@ -46,7 +46,7 @@ impl CItemSource {
             match mem{
                 MemberSource::Param(param) =>{
                     match param.param_type() {
-                        ParamType::Binary =>{
+                        ParamType::Binary | ParamType::String | ParamType::IntArray | ParamType::FloatArray =>{
                             sb.push_without_newline(1, &param.get("citem"));
                             sb.push_without_newline(1, &param.get_def("citem"));
                             sb.push_without_newline(1, &param.get_immutable("citem"));

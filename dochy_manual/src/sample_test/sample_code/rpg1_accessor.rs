@@ -2,7 +2,7 @@ use dochy::core::intf::*;
 use dochy::core::structs::*;
 unsafe impl Send for RootIntf {}
 unsafe impl Sync for RootIntf {}
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct RootIntf{
     root : Box<RootObject>,
     ptr : RootObjectPtr,
@@ -143,6 +143,14 @@ impl PcListMItem {
 	}
 	pub fn name_def_val(&self) -> String{
 		let qv = mitem::get_str_def(self.ptr, "name").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn name_immutable(&self) -> &String{
+		let qv = mitem::get_immutable_str(self.ptr, "name").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn name_mutable(&self) -> &mut String{
+		let qv = mitem::get_mutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_name(&mut self, name : String){

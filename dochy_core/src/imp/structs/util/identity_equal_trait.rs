@@ -1,8 +1,5 @@
-use std::collections::HashMap;
-use std::borrow::Borrow;
-use std::hash::{Hash, BuildHasher};
 
-pub(crate) trait IdentityEqual{
+pub trait IdentityEqual{
     fn identity_eq(&self, other : &Self) -> bool;
 }
 

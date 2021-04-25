@@ -83,6 +83,18 @@ impl RustParam {
         }
     }
 
+    pub fn to_default_value(&self) -> RustParam{
+        match self{
+            RustParam::Bool(_) => RustParam::Bool(Qv::Val(false)),
+            RustParam::Float(_) => RustParam::Float(Qv::Val(0.0)),
+            RustParam::Int(_) => RustParam::Int(Qv::Val(0)),
+            RustParam::String(_) => RustParam::String(Qv::Val(RustString::new("".to_string()))),
+            RustParam::FloatArray(_) => RustParam::FloatArray(Qv::Val(RustFloatArray::new(vec![]))),
+            RustParam::IntArray(_) => RustParam::IntArray(Qv::Val(RustIntArray::new(vec![]))),
+            RustParam::Binary(_) => RustParam::Binary(Qv::Val(RustBinary::new(vec![])))
+        }
+    }
+
     pub(crate) fn to_float(&self) -> Option<f64>{
         if let RustParam::Float(Qv::Val(s)) = self { Some(*s) } else{ None }
     }
@@ -104,7 +116,15 @@ impl RustParam {
 impl IdentityEqual for RustParam{
     fn identity_eq(&self, other: &Self) -> bool {
         match self{
-            RustParam::Bool()
+            RustParam::Bool(s) => if let RustParam::Bool(o) = other{ s.identity_eq(o) } else { false }
+            RustParam::Int(s) => if let RustParam::Int(o) = other{ s.identity_eq(o) } else { false }
+            RustParam::Float(s) => if let RustParam::Float(o) = other{ s.identity_eq(o) } else { false }
+            RustParam::String(s) => if let RustParam::String(o) = other{ s.identity_eq(o) } else { false }
+            RustParam::IntArray(s) => if let RustParam::IntArray(o) = other{ s.identity_eq(o) } else { false }
+            RustParam::FloatArray(s) => if let RustParam::FloatArray(o) = other{ s.identity_eq(o) } else { false }
+            RustParam::Binary(s) => if let RustParam::Binary(o) = other{ s.identity_eq(o) } else { false }
+
+
         }
     }
 }

@@ -4,6 +4,8 @@ use std::marker::PhantomData;
 use std::ops::{Deref};
 use crate::imp::intf::mlist_iter_const::MListIterConst;
 
+unsafe impl<'a, V:From<MItemPtr>> Send for MListConst<'a, V>{}
+unsafe impl<'a, V:From<MItemPtr>> Sync for MListConst<'a, V>{}
 #[derive(Debug)]
 pub struct MListConst<'a, V : From<MItemPtr>>{
     ptr : MListPtr<V>,
@@ -60,6 +62,8 @@ impl<'a, V : From<MItemPtr>> MListConst<'a, V>{
     }
 }
 
+unsafe impl<'a, V> Send for MItemConst<'a, V>{}
+unsafe impl<'a, V> Sync for MItemConst<'a, V>{}
 pub struct MItemConst<'a, V>{
     item : V,
     phantom : PhantomData<&'a i32>,

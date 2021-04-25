@@ -3,6 +3,7 @@ use crate::imp::structs_write::{ListItemDiffW, ListDiffW};
 use std::collections::BTreeMap;
 use crate::imp::prepare::get_mlist_diff::get_mlist_diff;
 use crate::imp::prepare::new_list::new_list;
+use dochy_core::IdentityEqual;
 
 pub(crate) fn compare_items<'a, 'b>(from : &'a MutItem, to : &'b MutItem, def : &'b ListDefObj, meta : &'b MetaTables) -> Option<ListItemDiffW<'b>>{
     let ref_def = def.refs();
@@ -16,7 +17,7 @@ pub(crate) fn compare_items<'a, 'b>(from : &'a MutItem, to : &'b MutItem, def : 
             ListSabValue::Param(p) =>{
                 if let Some((id, _item)) = def.get_with_id(key) {
                     if let Some(ListSabValue::Param(from_p)) = from_values.get(key) {
-                        if p != from_p {
+                        if p.identity_eq(from_p) == false {
                             params.insert(id, p);
                         }
                     } else {

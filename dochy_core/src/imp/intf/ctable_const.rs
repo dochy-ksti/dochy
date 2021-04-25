@@ -1,6 +1,8 @@
 use std::marker::PhantomData;
 use std::ops::Deref;
 
+unsafe impl<'a, T> Send for CTableConst<'a, T>{}
+unsafe impl<'a, T> Sync for CTableConst<'a, T>{}
 #[derive(Debug)]
 pub struct CTableConst<'a, T>{
     ptr : T,

@@ -135,7 +135,39 @@ pub fn get_immutable_binary<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<
         None
     }
 }
-
+pub fn get_immutable_str<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b String>>{
+    if let Some(RustParam::String(b)) = get_param(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.string())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_immutable_int_array<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b Vec<i64>>>{
+    if let Some(RustParam::IntArray(b)) = get_param(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_immutable_float_array<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b Vec<f64>>>{
+    if let Some(RustParam::FloatArray(b)) = get_param(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
 
 pub fn get_param<'a>(p : CItemPtr, name : &str) -> Option<&'a RustParam>{
     let (item, def) = unsafe{ (&*p.item, &*p.list_def) };

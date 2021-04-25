@@ -30,6 +30,11 @@ impl RustIdentity{
             .unwrap_or(0);
         RustIdentity{ time, random }
     }
+    pub fn create(time : u64, random : u64) -> RustIdentity{
+        RustIdentity{ time, random }
+    }
+    pub fn time(&self) -> u64{ self.time }
+    pub fn random(&self) -> u64{ self.random }
 }
 
 impl IdentityEqual for RustIdentity{

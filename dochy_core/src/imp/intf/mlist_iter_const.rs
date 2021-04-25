@@ -3,6 +3,9 @@ use crate::imp::intf::mlist::MListPtrIter;
 use std::marker::PhantomData;
 use crate::imp::intf::mlist_const::MItemConst;
 
+unsafe impl<'a, V:From<MItemPtr>> Send for MListIterConst<'a, V>{}
+unsafe impl<'a, V:From<MItemPtr>> Sync for MListIterConst<'a, V>{}
+
 pub struct MListIterConst<'a, V : From<MItemPtr>>{
     ptr : MListPtrIter<V>,
     phantom : PhantomData<&'a i32>,

@@ -4,6 +4,8 @@ use std::marker::PhantomData;
 use std::ops::{Deref, DerefMut};
 use crate::intf::mlist_iter_mut::MListIterMut;
 
+unsafe impl<'a, V:From<MItemPtr>> Send for MListMut<'a, V>{}
+unsafe impl<'a, V:From<MItemPtr>> Sync for MListMut<'a, V>{}
 #[derive(Debug)]
 pub struct MListMut<'a, V : From<MItemPtr>>{
     ptr : MListPtr<V>,
@@ -99,6 +101,8 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
     }
 }
 
+unsafe impl<'a, V> Send for MItemMut<'a, V>{}
+unsafe impl<'a, V> Sync for MItemMut<'a, V>{}
 pub struct MItemMut<'a, V>{
     item : V,
     phantom : PhantomData<&'a mut i32>,

@@ -2,7 +2,7 @@ use dochy::core::intf::*;
 use dochy::core::structs::*;
 unsafe impl Send for RootIntf {}
 unsafe impl Sync for RootIntf {}
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct RootIntf{
     root : Box<RootObject>,
     ptr : RootObjectPtr,

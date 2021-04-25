@@ -412,6 +412,7 @@ impl<V : PartialEq> PartialEq for LinkedMap<V>{
 /// &LinkedMapから as *const _ as *mut _でポインタを取り出しても良い。
 /// next_mutのようなmut系を呼び出さなければ、&mut参照はされないので安全。もちろん mut 系を呼び出したらアウト
 /// これによって、これをベースにLinkedMapIterが作れる
+#[derive(Debug)]
 pub struct LinkedMapUnsafeIter<V>{
     map : *mut LinkedMap<V>,
     node : *mut MutNode<V>,

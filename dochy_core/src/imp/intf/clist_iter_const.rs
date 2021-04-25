@@ -3,6 +3,9 @@ use crate::imp::intf::CItemPtr;
 use crate::imp::intf::clist::CListPtrIter;
 use crate::imp::intf::clist_const::CItemConst;
 
+unsafe impl<'a, V:From<CItemPtr>> Send for CListIterConst<'a, V>{}
+unsafe impl<'a, V:From<CItemPtr>> Sync for CListIterConst<'a, V>{}
+
 pub struct CListIterConst<'a, V : From<CItemPtr>>{
     ptr : CListPtrIter<V>,
     phantom : PhantomData<&'a i32>,

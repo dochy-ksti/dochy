@@ -1,7 +1,7 @@
 use crate::imp::structs::rust_list::MutItem;
 //use crate::imp::intf::inner_data::InnerDataPtr;
 use crate::imp::structs::list_value::{ListDefValue, ListSabValue};
-use crate::imp::structs::qv::Qv;
+use crate::imp::structs::qv::{Qv};
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::root_obj::RootObject;
@@ -138,6 +138,41 @@ pub fn get_binary_def(ps : MItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
 
 pub fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param(ps, name){
+
+        match b{
+             Qv::Val(v) => Some(Qv::Val(v.vec())),
+             Qv::Null => Some(Qv::Null),
+             Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+
+pub fn get_immutable_str<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b String>>{
+    if let Some(RustParam::String(b)) = get_param(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.string())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_immutable_int_array<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b Vec<i64>>>{
+    if let Some(RustParam::IntArray(b)) = get_param(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_immutable_float_array<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b Vec<f64>>>{
+    if let Some(RustParam::FloatArray(b)) = get_param(ps, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec())),
             Qv::Null => Some(Qv::Null),
@@ -150,7 +185,7 @@ pub fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<
 
 /// Vec のメモリは 最低でも8byte境界にalignされているはず(Rustはそれを保証していないが、それをしないallocatorは存在してないはず)
 /// なので、slice::align_to_mut で u64 や i32 のsliceを取得してゴリゴリ書き換えることも可能なはず
-/// vec.len が sizeof の倍数ならば、align_toしてもprefixやsuffixは発生しないだろう
+/// vec.len が sizeof の倍数ならば、align_toしてもprefixやsuffixは発生しないだろう。(align_to_mutはそれを保証していないが)
 ///
 /// 常にCとの相互運用性を考えているのだが、結局ポインタを渡してしまえばCのノリで何も考えずにキャストされゴリゴリ書き換えられるだろうから、
 /// align_toのこととか考えても無駄だろう
@@ -166,6 +201,39 @@ pub fn get_immutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<
 /// まあRustはBoxの中の値が置き換えられたときBox内への参照が有効であることは保証していないと思うが・・・
 pub fn get_mutable_binary<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param_mut(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_mutable_str<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut String>>{
+    if let Some(RustParam::String(b)) = get_param_mut(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.string_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_mutable_int_array<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut Vec<i64>>>{
+    if let Some(RustParam::IntArray(b)) = get_param_mut(ps, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_mutable_float_array<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b mut Vec<f64>>>{
+    if let Some(RustParam::FloatArray(b)) = get_param_mut(ps, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
             Qv::Null => Some(Qv::Null),
@@ -227,12 +295,22 @@ pub fn get_param_def<'a>(ps : MItemPtr, name : &str) -> Option<&'a RustParam>{
     }
 }
 
-pub fn get_param_mut<'a>(ps : MItemPtr, name : &str) -> Option<&'a mut RustParam>{
-    let item = unsafe{ &mut *ps.item };
-    if let Some(ListSabValue::Param(p)) = item.values_mut().get_mut(name){
+/// 差分がない場合、デフォルト値をコピーして差分にツッコミ、さらにその&mut を返す
+pub fn get_param_mut<'a>(ps : MItemPtr, name : &str) -> Option<&'a mut RustParam> {
+    let (def, item) = unsafe { (&*ps.list_def, &mut *ps.item) };
+    if let Some(ListSabValue::Param(p)) = item.values_mut().get_mut(name) {
+        return Some(p);
+    }
+    let item = unsafe { &mut *ps.item }; //なんでこうしないとコンパイラに怒られるのかはよくわからない
+    if let Some(ListDefValue::Param(p, _)) = def.default().get(name) {
+        item.values_mut().insert(name.to_string(), ListSabValue::Param(p.clone()));
+    } else {
+        return None;
+    }
+    if let Some(ListSabValue::Param(p)) = item.values_mut().get_mut(name) {
         Some(p)
-    } else{
-        None
+    } else {
+        unreachable!()
     }
 }
 
@@ -264,4 +342,19 @@ pub fn set_enum(ps : MItemPtr, list_name : &str, id : &str) -> bool{
     let item = unsafe{ &mut *ps.item };
     item.refs_mut().clear();
     set_ref(ps, list_name, Qv::Val(id.to_string()))
+}
+
+/// Sets itinital value(0, empty string/vec) to a parameter
+/// if the parameter hasn't been modified yet
+pub fn set_initial_value_to_param_if_unmodified(ps : MItemPtr, name : &str) -> bool{
+    let (def, item) = unsafe { (&*ps.list_def, &mut *ps.item) };
+    if item.values().contains_key(name) {
+        return false;
+    }
+    if let Some(ListDefValue::Param(p, _)) = def.default().get(name) {
+        item.values_mut().insert(name.to_string(), ListSabValue::Param(p.to_default_value()));
+        return true;
+    } else{
+        return false;
+    }
 }

@@ -15,6 +15,9 @@ pub use imp::intf;
 pub use imp::structs::util::hash_m::HashMt;
 pub use imp::structs::util::hash_m::HashM;
 pub use imp::structs::util::set_sabun::SetSabunError;
+pub use imp::structs::util::identity_equal_trait::IdentityEqual;
 
 pub use imp::structs::json_file::JsonFile;
 pub use imp::structs::json_file::JsonFileImpl;
+
+

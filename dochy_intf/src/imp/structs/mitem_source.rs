@@ -49,7 +49,7 @@ impl MItemSource {
                 MemberSource::Param(param) =>{
 
                     match param.param_type() {
-                        ParamType::Binary =>{
+                        ParamType::Binary | ParamType::String | ParamType::IntArray | ParamType::FloatArray =>{
                             sb.push_without_newline(1, &param.get("mitem"));
                             sb.push_without_newline(1, &param.get_def("mitem"));
                             sb.push_without_newline(1, &param.get_immutable("mitem"));

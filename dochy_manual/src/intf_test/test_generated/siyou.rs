@@ -2,7 +2,7 @@ use dochy::core::intf::*;
 use dochy::core::structs::*;
 unsafe impl Send for RootIntf {}
 unsafe impl Sync for RootIntf {}
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct RootIntf{
     root : Box<RootObject>,
     ptr : RootObjectPtr,
@@ -496,6 +496,10 @@ impl HogeListCItem {
 		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn mem_immutable(&self) -> &String{
+		let qv = citem::get_immutable_str(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
 	
 }
 
@@ -581,6 +585,10 @@ impl SomeDataCItem {
 	}
 	pub fn s_def_val(&self) -> String{
 		let qv = citem::get_str_def(self.ptr, "s").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn s_immutable(&self) -> &String{
+		let qv = citem::get_immutable_str(self.ptr, "s").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn ref_unko_list(&self) -> UnkoListCItem{
@@ -688,6 +696,10 @@ impl ItemList3CItem {
 		let qv = citem::get_str_def(self.ptr, "memOverride").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
+	pub fn mem_override_immutable(&self) -> NullOr<&String>{
+		let qv = citem::get_immutable_str(self.ptr, "memOverride").unwrap();
+		NullOr::from_qv(qv).unwrap()
+	}
 	pub fn ref_hoge_list(&self) -> HogeListCItem{
 		let qv = citem::get_ref(self.ptr, "hogeList").unwrap();
 		HogeListCItem::from(qv.into_value().unwrap())
@@ -739,6 +751,14 @@ impl Mut1MItem {
 	}
 	pub fn some_name_def_val(&self) -> String{
 		let qv = mitem::get_str_def(self.ptr, "someName").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn some_name_immutable(&self) -> &String{
+		let qv = mitem::get_immutable_str(self.ptr, "someName").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn some_name_mutable(&self) -> &mut String{
+		let qv = mitem::get_mutable_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_some_name(&mut self, some_name : String){
@@ -1015,6 +1035,10 @@ impl UnkoListCItem {
 		let qv = citem::get_str_def(self.ptr, "hogeString").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn hoge_string_immutable(&self) -> &String{
+		let qv = citem::get_immutable_str(self.ptr, "hogeString").unwrap();
+		qv.into_value().unwrap()
+	}
 	
 }
 
@@ -1094,6 +1118,10 @@ impl HegoListCItem {
 		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn mem_immutable(&self) -> &String{
+		let qv = citem::get_immutable_str(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
 	
 }
 
@@ -1113,6 +1141,14 @@ impl Mut2MItem {
 	}
 	pub fn mem_def_val(&self) -> String{
 		let qv = mitem::get_str_def(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn mem_immutable(&self) -> &String{
+		let qv = mitem::get_immutable_str(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn mem_mutable(&self) -> &mut String{
+		let qv = mitem::get_mutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_mem(&mut self, mem : String){
@@ -1167,6 +1203,10 @@ impl EnumListCItem {
 	}
 	pub fn mem_def_val(&self) -> String{
 		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn mem_immutable(&self) -> &String{
+		let qv = citem::get_immutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn get_enum(&self) -> EnumListEnum{

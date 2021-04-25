@@ -16,6 +16,12 @@ should work as a walkthrough of Dochy's concepts.
 [Hello World](dochy_manual/src/a1_hello_world/hello_world.md) 
 explains the basics.
 
+### caution
+
+Quickly changing
+
+Documentation is incomplete.  
+
 ### Contribution
 
 I'm Japanese and I desperately need proofreading of my English writing for this project,

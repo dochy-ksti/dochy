@@ -68,6 +68,13 @@ impl RustFloatArray{
         Some(RustFloatArray::new(op?))
     }
     pub fn vec(&self) -> &Vec<f64>{ self.b.as_ref() }
+    pub fn vec_mut(&mut self) -> &mut Vec<f64>{ self.b.as_mut() }
+}
+
+impl IdentityEqual for RustFloatArray{
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.b == other.b
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -86,6 +93,13 @@ impl RustIntArray{
         Some(RustIntArray::new(op?))
     }
     pub fn vec(&self) -> &Vec<i64>{ self.b.as_ref() }
+    pub fn vec_mut(&mut self) -> &mut Vec<i64>{ self.b.as_mut() }
+}
+
+impl IdentityEqual for RustIntArray{
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.b == other.b
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -94,7 +108,10 @@ pub struct RustBinary{
 }
 
 impl RustBinary{
-    pub fn new(b : Vec<u8>) -> RustBinary{ RustBinary{ b : Box::new((b, RustIdentity::new())) }}
+    pub fn new(b : Vec<u8>) -> RustBinary{ Self::identity_new(b, RustIdentity::new())}
+    pub fn identity_new(b : Vec<u8>, identity : RustIdentity) -> RustBinary{
+        RustBinary{ b : Box::new((b, identity)) }
+    }
     pub(crate) fn to_params(&self) -> Vec<RustParam>{
         self.vec().iter().map(|a| RustParam::Int(Qv::Val(*a as i64))).collect()
     }
@@ -107,6 +124,7 @@ impl RustBinary{
         self.b.as_mut().1 = RustIdentity::new();
         &mut self.b.as_mut().0
     }
+    pub fn identity(&self) -> &RustIdentity{ &self.b.as_ref().1 }
 }
 
 impl IdentityEqual for RustBinary{

@@ -3,6 +3,10 @@ use crate::imp::intf::mlist::MListPtrIter;
 use std::marker::PhantomData;
 use crate::intf::mlist_mut::MItemMut;
 
+unsafe impl<'a, V:From<MItemPtr>> Send for MListIterMut<'a, V>{}
+unsafe impl<'a, V:From<MItemPtr>> Sync for MListIterMut<'a, V>{}
+
+#[derive(Debug)]
 pub struct MListIterMut<'a, V : From<MItemPtr>>{
     ptr : MListPtrIter<V>,
     phantom : PhantomData<&'a mut i32>,

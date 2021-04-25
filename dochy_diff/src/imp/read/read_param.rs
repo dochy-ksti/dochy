@@ -1,4 +1,4 @@
-use dochy_core::structs::{MetaParam, VarType, RustParam, ParamType, Qv, RustString, RustIntArray, RustFloatArray, RustBinary};
+use dochy_core::structs::{MetaParam, VarType, RustParam, ParamType, Qv, RustString, RustIntArray, RustFloatArray, RustBinary, RustIdentity};
 use crate::diff_error::DiffError;
 use crate::imp::read::reader::Reader;
 use crate::imp::read::get_null::get_null;
@@ -77,7 +77,9 @@ fn read_float_array(r : &mut Reader) -> Result<RustFloatArray, DiffError>{
 
 fn read_binary(r : &mut Reader) -> Result<RustBinary, DiffError>{
     if let KVal::Binary(b) = r.read()?{
-        Ok(RustBinary::new(b))
+        let time = r.read()?.as_i64()? as u64;
+        let random = r.read()?.as_i64()? as u64;
+        Ok(RustBinary::identity_new(b, RustIdentity::create(time, random)))
     } else{
         Err("Binary couldn't be read")?
     }

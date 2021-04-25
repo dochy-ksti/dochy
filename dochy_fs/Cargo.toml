@@ -1,6 +1,6 @@
 [package]
 name = "dochy_fs"
-version = "0.6.1"
+version = "0.7.0"
 authors = ["juzu <dochy.ksti@gmail.com>"]
 edition = "2018"
 
@@ -11,11 +11,11 @@ readme = "readme.md"
 keywords = ["data","management","file","system", "diff"]
 
 [dependencies]
-dochy_core = {path="../dochy_core", version="0.6.1" }
+dochy_core = {path="../dochy_core", version="0.7.0" }
 anyhow = "1.0.34"
-dochy_archiver = {path="../dochy_archiver", version="0.6.1"}
-dochy_diff = {path="../dochy_diff", version="0.6.1"}
-dochy_compaction = {path="../dochy_compaction", version="0.6.1" }
+dochy_archiver = {path="../dochy_archiver", version="0.7.0"}
+dochy_diff = {path="../dochy_diff", version="0.7.0"}
+dochy_compaction = {path="../dochy_compaction", version="0.7.0" }
 tempfile = "3.2.0"
 rand = "0.8.3"
 with_capacity_safe = "0.3.0"

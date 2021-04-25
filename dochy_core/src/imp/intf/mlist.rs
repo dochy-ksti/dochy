@@ -170,6 +170,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
     }
 }
 
+#[derive(Debug)]
 pub struct MListPtrIter<V : From<MItemPtr>>{
     iter : LinkedMapUnsafeIter<MutItem>,
     list_def : *const ListDefObj,

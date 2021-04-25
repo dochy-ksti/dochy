@@ -2,7 +2,8 @@ use crate::imp::intf::{CItemPtr, CListPtr};
 use std::marker::PhantomData;
 use crate::imp::intf::clist_iter_const::CListIterConst;
 use std::ops::Deref;
-
+unsafe impl<'a, V:From<CItemPtr>> Send for CListConst<'a, V>{}
+unsafe impl<'a, V:From<CItemPtr>> Sync for CListConst<'a, V>{}
 #[derive(Debug)]
 pub struct CListConst<'a, V : From<CItemPtr>>{
     ptr : CListPtr<V>,
@@ -26,6 +27,8 @@ impl<'a, V : From<CItemPtr>> CListConst<'a, V>{
     }
 }
 
+unsafe impl<'a, V> Send for CItemConst<'a, V>{}
+unsafe impl<'a, V> Sync for CItemConst<'a, V>{}
 pub struct CItemConst<'a, V>{
     item : V,
     phantom : PhantomData<&'a i32>,
