@@ -344,17 +344,20 @@ pub fn set_enum(ps : MItemPtr, list_name : &str, id : &str) -> bool{
     set_ref(ps, list_name, Qv::Val(id.to_string()))
 }
 
-/// Sets itinital value(0, empty string/vec) to a parameter
-/// if the parameter hasn't been modified yet
-pub fn set_initial_value_to_param_if_unmodified(ps : MItemPtr, name : &str) -> bool{
+/// Sets itinital value(0, empty string/vec) to the parameter
+/// This should be needed in the C interface
+pub fn set_initial_value<'a>(ps : MItemPtr, name : &str) -> bool{
     let (def, item) = unsafe { (&*ps.list_def, &mut *ps.item) };
-    if item.values().contains_key(name) {
-        return false;
-    }
     if let Some(ListDefValue::Param(p, _)) = def.default().get(name) {
         item.values_mut().insert(name.to_string(), ListSabValue::Param(p.to_default_value()));
         return true;
     } else{
         return false;
     }
+}
+
+/// Checks if the param hasn't been modified yet
+pub fn is_unmodified(ps : MItemPtr, name : &str) -> bool{
+    let item = unsafe { &*ps.item };
+    !item.values().contains_key(name)
 }
