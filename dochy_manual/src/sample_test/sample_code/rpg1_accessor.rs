@@ -172,10 +172,10 @@ impl PcListMItem {
 		let qv = mitem::get_ref_id(self.ptr, "race").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn set_ref_class(&self, id : ClassTableID){
+	pub fn set_ref_class(&mut self, id : ClassTableID){
 		mitem::set_ref(self.ptr, "class", Qv::Val(id.to_str().to_string()));
 	}
-	pub fn set_ref_race(&self, id : RaceTableID){
+	pub fn set_ref_race(&mut self, id : RaceTableID){
 		mitem::set_ref(self.ptr, "race", Qv::Val(id.to_str().to_string()));
 	}
 }

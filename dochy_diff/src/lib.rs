@@ -3,6 +3,9 @@
 #![feature(vec_into_raw_parts)]
 extern crate test;
 
+#[cfg(test)]
+#[allow(dead_code)]
+mod test_diff;
 
 mod imp;
 pub mod diff_error;

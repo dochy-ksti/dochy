@@ -62,7 +62,7 @@ impl ListMItem {
 		let qv = mitem::get_ref_id(self.ptr, "tableA").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn set_ref_table_a(&self, id : TableATableID){
+	pub fn set_ref_table_a(&mut self, id : TableATableID){
 		mitem::set_ref(self.ptr, "tableA", Qv::Val(id.to_str().to_string()));
 	}
 }

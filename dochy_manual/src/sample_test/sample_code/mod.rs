@@ -35,5 +35,3 @@ mod rpg2_accessor;
 mod rpg2_generate;
 mod rpg2_test;
 mod rpg2_accessor_wrapper;
-mod poly_generate;
-mod poly_accessor;

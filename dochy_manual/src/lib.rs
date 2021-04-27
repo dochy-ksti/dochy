@@ -5,6 +5,4 @@ mod a1_hello_world;
 #[allow(dead_code)]
 mod sample_test;
 
-#[allow(dead_code)]
-#[cfg(test)]
-mod testing;
+

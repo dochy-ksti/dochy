@@ -41,6 +41,14 @@ impl Cache<DochyDiff, RootObject> for DochyCache{
 }
 
 impl DochyCache{
+    /// Creates the cache.
+    ///
+    /// # Arguments
+    /// * `current_src` - the source JSON5 files or the archive file of them.
+    /// * 'cache_src' - If the object created from the current_src is cached. It's always the same object so you can safely cache.
+    /// * 'cache_phase_a' - If the object derived directly from the src(Phase_A object) is cached.
+    ///
+    /// Phase_A objects tend to be big and are not frequently updated. Maybe you can efficiently cache it.
     pub fn new(current_src : CurrentSrc, cache_src : bool, cache_phase_a : bool) -> DochyCache{
         DochyCache{
             src_cache: None,
