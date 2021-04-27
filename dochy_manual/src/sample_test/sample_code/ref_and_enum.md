@@ -361,26 +361,25 @@ impl ItemUtil for ItemsMItem{
 }
 ```
 ```Rust
-use dochy_core::json_dir_to_root;
+use dochy::core::json_dir_to_root;
 use crate::sample_test::sample_code::rpg2_accessor::{RootIntf, ItemsEnum};
-use crate::error::DpResult;
+use dochy::error::DpResult;
 use crate::sample_test::sample_code::rpg2_accessor_wrapper::ItemUtil;
 
-#[test]
 fn rpg2_test() -> DpResult<()> {
     let r = json_dir_to_root("src/sample_test/sample_code_json/rpg2", true)?;
 
-    let mut r = RootIntf::new(r);
+    let r = RootIntf::new(r);
 
-    for (_id, mut pc) in r.pc_list().iter(){
+    for (_id, pc) in r.pc_list().iter(){
         for (_id, item) in pc.items().iter(){
-            println!("the price is {}", item.price());
+            format!("the price is {}", item.price());
             match item.get_enum(){
                 ItemsEnum::Sword(s) =>{
-                    println!("the attack power is {}", s.attack());
+                    format!("the attack power is {}", s.attack());
                 },
                 ItemsEnum::Herb(h) =>{
-                    println!("the heal power is {}", h.restore());
+                    format!("the heal power is {}", h.restore());
                 }
             }
         }

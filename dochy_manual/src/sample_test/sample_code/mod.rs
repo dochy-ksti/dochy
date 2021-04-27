@@ -1,5 +1,4 @@
 mod sample_employee;
-mod whats_statically;
 mod sample_employee_minimum;
 mod users_omitted;
 mod users;
@@ -21,9 +20,7 @@ mod mlist_old_generate;
 mod mlist_old_accessor;
 mod mlist_new_accessor;
 mod mlist_new_generate;
-mod rpg1_generate;
-mod rpg1_accessor;
-mod rpg1_accessor_wrapper;
+
 mod ref1_generate;
 mod ref1_accessor;
 mod ref1_test;
@@ -33,5 +30,5 @@ mod ref2_accessor;
 mod ref2_wrapper;
 mod rpg2_accessor;
 mod rpg2_generate;
-mod rpg2_test;
+mod rpg2_test_nottest;
 mod rpg2_accessor_wrapper;
