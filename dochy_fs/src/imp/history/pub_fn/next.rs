@@ -6,7 +6,8 @@ use crate::imp::history::fs::next::next as fs_next;
 use crate::imp::history::file_hist::prepare_history_hash_dir::prepare_history_hash_dir;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 
-/// calculates the diff from the last state(most of the time) and save the diff as a history file
+/// calculates the diff from the latest save file(most of the time) and save the diff file.
+/// If the 'root' is not derived from the latest save file, use start_new.
 ///
 /// # Arguments
 ///
