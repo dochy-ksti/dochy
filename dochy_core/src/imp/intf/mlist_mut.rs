@@ -17,7 +17,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
         MListMut{ ptr, phantom : PhantomData }
     }
 
-    pub fn first(&mut self) -> Option<MItemMut<V>>{
+    pub fn first_mut(&mut self) -> Option<MItemMut<V>>{
         self.ptr.first().map(
             move |v| MItemMut::new(v, self))
     }
@@ -25,7 +25,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
         self.ptr.first_id()
     }
 
-    pub fn last(&mut self) -> Option<MItemMut<V>>{
+    pub fn last_mut(&mut self) -> Option<MItemMut<V>>{
         self.ptr.last().map(
             move |v| MItemMut::new(v, self))
     }
@@ -33,7 +33,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
         self.ptr.last_id()
     }
 
-    pub fn get_item(&mut self, id : u64) -> Option<MItemMut<V>>{
+    pub fn get_mut(&mut self, id : u64) -> Option<MItemMut<V>>{
         self.ptr.get_item(id).map(
             move |v| MItemMut::new(v, self))
     }

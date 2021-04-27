@@ -1,5 +1,5 @@
 
-use crate::{HashM,  HashMt};
+use crate::{HashM, HashMt, IdentityEqual};
 use crate::imp::structs::ref_value::RefSabValue;
 use crate::imp::structs::list_value::{ListSabValue, ListDefValue};
 use crate::imp::structs::rust_param::RustParam;
@@ -72,6 +72,12 @@ impl MutList{
     }
 }
 
+impl IdentityEqual for MutList{
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.list.identity_eq(other.list())
+    }
+}
+
 ///Table or CListの内部に作るList。ListDefObjの内部にはDefaultだけ書き、CItemの内部にはListのItemの羅列のみを書く。
 #[derive(Debug, Clone)]
 pub struct ConstInnerList {
@@ -93,6 +99,12 @@ impl MutInnerList {
     pub(crate) fn deconstruct(self) -> LinkedMap<MutItem>{ *self.list }
     pub fn list(&self) -> &LinkedMap<MutItem>{ self.list.as_ref() }
     pub fn list_mut(&mut self) -> &mut LinkedMap<MutItem>{ self.list.as_mut() }
+}
+
+impl IdentityEqual for MutInnerList{
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.list.as_ref().identity_eq(other.list.as_ref())
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -172,5 +184,11 @@ impl MutItem {
             _ => unreachable!(),
         }))
     }
+}
 
+impl IdentityEqual for MutItem{
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.values.identity_eq(other.values()) &&
+            self.refs.identity_eq(other.refs())
+    }
 }

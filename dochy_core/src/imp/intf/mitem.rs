@@ -344,12 +344,13 @@ pub fn set_enum(ps : MItemPtr, list_name : &str, id : &str) -> bool{
     set_ref(ps, list_name, Qv::Val(id.to_string()))
 }
 
-/// Sets itinital value(0, empty string/vec) to the parameter
-/// This should be needed in the C interface
-pub fn set_initial_value<'a>(ps : MItemPtr, name : &str) -> bool{
+/// Sets itinital value(0, empty string, zero-filled vec) to the parameter.
+/// len is ignored except for vec-types.
+/// This should be needed in the C interface.
+pub fn set_initial_value<'a>(ps : MItemPtr, name : &str, len : usize) -> bool{
     let (def, item) = unsafe { (&*ps.list_def, &mut *ps.item) };
     if let Some(ListDefValue::Param(p, _)) = def.default().get(name) {
-        item.values_mut().insert(name.to_string(), ListSabValue::Param(p.to_default_value()));
+        item.values_mut().insert(name.to_string(), ListSabValue::Param(p.to_default_value(len)));
         return true;
     } else{
         return false;

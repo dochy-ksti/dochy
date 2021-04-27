@@ -1,5 +1,6 @@
 use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::qv::Qv;
+use crate::IdentityEqual;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct RefValue{
@@ -43,5 +44,11 @@ impl RefSabValue{
     pub(crate) fn into_ref_value_for_json(self) -> RefValue{
         //sabun側は?とか!とかなくていいのでNormalでよい
         RefValue::new(self.value().clone(), VarType::Normal)
+    }
+}
+
+impl IdentityEqual for RefSabValue{
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.value.identity_eq(other.value())
     }
 }

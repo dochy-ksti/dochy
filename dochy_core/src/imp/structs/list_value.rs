@@ -5,6 +5,7 @@ use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::qv::QvType;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::mil_def_obj::MilDefObj;
+use crate::IdentityEqual;
 
 #[derive(Debug, Clone)]
 pub enum ListDefValue{
@@ -110,6 +111,24 @@ impl ListSabValue{
             ListSabValue::Param(p) => p.qv_type(),
             ListSabValue::Mil(m) => if m.is_some(){ QvType::Val } else{ QvType::Undefined },
             _ => QvType::Val,
+        }
+    }
+}
+
+impl IdentityEqual for ListSabValue{
+    fn identity_eq(&self, other: &Self) -> bool {
+        match self{
+            ListSabValue::Param(p) => if let ListSabValue::Param(p2) = other{ p.identity_eq(p2) } else{ false }
+            ListSabValue::Mil(m) => if let ListSabValue::Mil(m2) = other{
+                if let Some(m) = m{
+                    if let Some(m2) = m2{
+                        m.identity_eq(m2)
+                    } else{ false }
+                }
+                else if m.is_none() && m2.is_none(){ true }
+                else{ false }
+            } else{ false },
+            _ => true,
         }
     }
 }

@@ -149,7 +149,7 @@ impl PcListMItem {
 		let qv = mitem::get_immutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn name_mutable(&self) -> &mut String{
+	pub fn name_mutable(&mut self) -> &mut String{
 		let qv = mitem::get_mutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}

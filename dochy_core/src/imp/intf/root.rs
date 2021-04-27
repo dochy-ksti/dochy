@@ -128,7 +128,7 @@ pub fn get_binary_def(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<u8>>>{
         None
     }
 }
-pub fn get_immutable_binary(root : RootObjectPtr, name : &str) -> Option<Qv<&Vec<u8>>>{
+pub fn get_immutable_binary<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param(root, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec())),
@@ -139,9 +139,79 @@ pub fn get_immutable_binary(root : RootObjectPtr, name : &str) -> Option<Qv<&Vec
         None
     }
 }
+pub fn get_immutable_str<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'b String>>{
+    if let Some(RustParam::String(b)) = get_param(root, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.string())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_immutable_int_array<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'b Vec<i64>>>{
+    if let Some(RustParam::IntArray(b)) = get_param(root, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_immutable_float_array<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'b Vec<f64>>>{
+    if let Some(RustParam::FloatArray(b)) = get_param(root, name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+
 pub fn get_mutable_binary<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
     let item =  unsafe{ &mut *ps.ptr };
     if let Some(RustParam::Binary(b)) = get_param_mut(item.sabun_mut(), name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_mutable_str<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut String>>{
+    let item =  unsafe{ &mut *ps.ptr };
+    if let Some(RustParam::String(b)) = get_param_mut(item.sabun_mut(), name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.string_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_mutable_int_array<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<i64>>>{
+    let item =  unsafe{ &mut *ps.ptr };
+    if let Some(RustParam::IntArray(b)) = get_param_mut(item.sabun_mut(), name){
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
+    } else{
+        None
+    }
+}
+pub fn get_mutable_float_array<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<f64>>>{
+    let item =  unsafe{ &mut *ps.ptr };
+    if let Some(RustParam::FloatArray(b)) = get_param_mut(item.sabun_mut(), name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
             Qv::Null => Some(Qv::Null),
@@ -226,4 +296,24 @@ pub fn set_float_array(root : RootObjectPtr, name : &str, val : Qv<Vec<f64>>) ->
 }
 pub fn set_binary(root : RootObjectPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
     set_sabun(root,name, RustParam::Binary(val.into_map(|s| RustBinary::new(s))))
+}
+/// Sets itinital value(0, empty string, zero-filled vec) to the parameter.
+/// len is ignored except for vec-types.
+/// This should be needed in the C interface.
+pub fn set_initial_value<'a>(ps : RootObjectPtr, name : &str, len : usize) -> bool{
+    let (def,sabun, _,_) =  unsafe{ &mut *ps.ptr }.mut_refs();
+
+    if let Some((_, RootValue::Param(p, _))) = def.get(name) {
+        sabun.insert(name.to_string(),p.to_default_value(len));
+        return true;
+    } else{
+        return false;
+    }
+}
+
+/// Checks if the param hasn't been modified yet
+pub fn is_unmodified(ps : RootObjectPtr, name : &str) -> bool{
+    let item =  unsafe{ &mut *ps.ptr };
+
+    !item.sabun().contains_key(name)
 }

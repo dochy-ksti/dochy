@@ -1,4 +1,4 @@
-use crate::{HashM};
+use crate::{HashM, IdentityEqual};
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::util::set_sabun::{SetSabunError, verify_set_sabun};
@@ -77,9 +77,14 @@ impl RootObject{
         Ok(self.sabun.insert(name, param))
     }
 
-    // pub(crate) fn identity_equal(&self, other : &Self) -> bool{
-    //     self.default().identity_eq(other.default()) &&
-    //         self.sabun().identity_eq(other.sabun())
-    // }
+    pub fn identity_eq(&self, other : &Self) -> bool{
+         self.default().identity_eq(other.default()) &&
+             self.sabun().identity_eq(other.sabun())
+    }
 }
 
+impl IdentityEqual for (usize, RootValue){
+    fn identity_eq(&self, other: &Self) -> bool {
+        self.0 == other.0 && self.1.identity_eq(&other.1)
+    }
+}

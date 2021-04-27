@@ -70,7 +70,7 @@ impl RefSource{
         let ids_type_name = to_ids_type_name(id);
         let is_old = self.is_old();
         let var_type = self.var_type;
-        sb.push(0, &format!("pub fn set_ref_{}(&self, id : {}){{", with_old(&snake_name, is_old), with_var(&ids_type_name, var_type)));
+        sb.push(0, &format!("pub fn set_ref_{}(&mut self, id : {}){{", with_old(&snake_name, is_old), with_var(&ids_type_name, var_type)));
 
         let exp = if var_type == VarType::Normal {
             format!("Qv::Val(id.to_str().to_string())")

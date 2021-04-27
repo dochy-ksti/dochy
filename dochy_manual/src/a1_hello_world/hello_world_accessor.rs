@@ -24,6 +24,14 @@ impl RootIntf{
 		let qv = root::get_str_def(self.ptr, "message").unwrap();
 		qv.into_value().unwrap()
 	}
+	pub fn message_immutable(&self) -> &String{
+		let qv = root::get_immutable_str(self.ptr, "message").unwrap();
+		qv.into_value().unwrap()
+	}
+	pub fn message_mutable(&mut self) -> &mut String{
+		let qv = root::get_mutable_str(self.ptr, "message").unwrap();
+		qv.into_value().unwrap()
+	}
 	pub fn set_message(&mut self, message : String){
 		root::set_str(self.ptr, "message", Qv::Val(message));
 	}

@@ -83,15 +83,15 @@ impl RustParam {
         }
     }
 
-    pub fn to_default_value(&self) -> RustParam{
+    pub fn to_default_value(&self, len : usize) -> RustParam{
         match self{
             RustParam::Bool(_) => RustParam::Bool(Qv::Val(false)),
             RustParam::Float(_) => RustParam::Float(Qv::Val(0.0)),
             RustParam::Int(_) => RustParam::Int(Qv::Val(0)),
             RustParam::String(_) => RustParam::String(Qv::Val(RustString::new("".to_string()))),
-            RustParam::FloatArray(_) => RustParam::FloatArray(Qv::Val(RustFloatArray::new(vec![]))),
-            RustParam::IntArray(_) => RustParam::IntArray(Qv::Val(RustIntArray::new(vec![]))),
-            RustParam::Binary(_) => RustParam::Binary(Qv::Val(RustBinary::new(vec![])))
+            RustParam::FloatArray(_) => RustParam::FloatArray(Qv::Val(RustFloatArray::new(vec![0.0; len]))),
+            RustParam::IntArray(_) => RustParam::IntArray(Qv::Val(RustIntArray::new(vec![0; len]))),
+            RustParam::Binary(_) => RustParam::Binary(Qv::Val(RustBinary::new(vec![0; len])))
         }
     }
 
