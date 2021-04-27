@@ -860,7 +860,7 @@ impl InnerMutListMItem {
 		let qv = mitem::get_ref_id(self.ptr, "hegoList").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn set_ref_hego_list(&self, id : HegoListTableID){
+	pub fn set_ref_hego_list(&mut self, id : HegoListTableID){
 		mitem::set_ref(self.ptr, "hegoList", Qv::Val(id.to_str().to_string()));
 	}
 }
