@@ -35,7 +35,7 @@ mod tests {
         dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
 
         let moto2 = json_dir_to_root(json_dir_path, false)?;
-        assert!(moto.identity_eq(&moto2));
+        assert!(moto.contents_eq(&moto2));
 
         Ok(())
     }

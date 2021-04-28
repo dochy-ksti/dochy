@@ -2,6 +2,8 @@ use std::collections::HashMap;
 use std::hash::{Hash, BuildHasher};
 use crate::imp::structs::linked_m::LinkedMap;
 
+/// When items have identity objects, compare identity objects, otherwise compare items directly.
+/// This can shortcut comparing and make it faster.
 pub trait IdentityEqual{
     fn identity_eq(&self, other : &Self) -> bool;
 }

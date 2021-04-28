@@ -8,8 +8,8 @@ use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
 /// It's not 100%, but with working clock and decent random generator,
 /// I believe false negatives are negligible.
 ///
-/// time is micro seconds.
-/// Unless you don't update and save twice in a micro second,
+/// time's unit is 100 nano seconds.
+/// Unless you update, save and update within 100 nano second,
 /// and their random numbers are accidentally the same,
 /// this shouldn't be false negative.
 #[derive(Debug, PartialEq, Clone)]
@@ -21,12 +21,13 @@ pub struct RustIdentity{
 impl RustIdentity{
     pub fn new() -> RustIdentity{
         // これが偶然おなじになる確率が 1 / 2^64 とすると、
-        // 1000兆回やれば 1/2ぐらいの確率で発生する
+        // 1600京回ぐらいやれば60%ぐらいの確率で発生する
         let random = rand::thread_rng().gen();
-        //u64で30万年ぐらいのマイクロ秒を表せる
+        //100ナノ秒を単位にする
+        //u64で3万年ぐらいの期間を表せる
         let time = SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .map(|d| d.as_micros() as u64)
+            .map(|d| (d.as_nanos() / 100) as u64)
             .unwrap_or(0);
         RustIdentity{ time, random }
     }

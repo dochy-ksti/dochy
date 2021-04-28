@@ -41,7 +41,7 @@ fn test_diff_his() -> FsResult<()> {
 
         let loaded = load_history_file_data(proj_dir_path,
                                             &newest, &mut cache, &opt, false)?;
-        assert!(root.identity_eq(&loaded));
+        assert!(root.contents_eq(&loaded));
     }
 
     std::fs::copy("src/json_dir/simple_mod1/root.json5", &src_dir_path.join("root.json5"))?;
@@ -62,7 +62,7 @@ fn test_diff_his() -> FsResult<()> {
 
         let loaded = load_history_file_data(proj_dir_path,
                                             &newest, &mut cache, &opt, false)?;
-        assert!(root.identity_eq(&loaded));
+        assert!(root.contents_eq(&loaded));
 
         histories.remove_old_files(5, proj_dir_path)?;
 

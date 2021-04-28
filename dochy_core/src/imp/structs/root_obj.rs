@@ -77,7 +77,10 @@ impl RootObject{
         Ok(self.sabun.insert(name, param))
     }
 
-    pub fn identity_eq(&self, other : &Self) -> bool{
+    /// Use some shortcuts to compare data
+    /// If the type is the same(created from the same source JSON5),
+    ///
+    pub fn contents_eq(&self, other : &Self) -> bool{
          self.default().identity_eq(other.default()) &&
              self.sabun().identity_eq(other.sabun())
     }
