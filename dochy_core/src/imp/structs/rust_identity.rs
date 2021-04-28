@@ -9,7 +9,7 @@ use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
 /// I believe false negatives are negligible.
 ///
 /// time's unit is 100 nano seconds.
-/// Unless you update, save and update within 100 nano second,
+/// Unless you update, save and update within 100 nano seconds,
 /// and their random numbers are accidentally the same,
 /// this shouldn't be false negative.
 #[derive(Debug, PartialEq, Clone)]
