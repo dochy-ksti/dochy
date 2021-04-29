@@ -23,4 +23,3 @@ pub mod list_value;
 pub mod util;
 pub mod meta_table;
 pub mod rust_identity;
-pub mod root_identity;

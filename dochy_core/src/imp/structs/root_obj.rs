@@ -4,6 +4,7 @@ use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::util::set_sabun::{SetSabunError, verify_set_sabun};
 use crate::imp::structs::meta_table::MetaTable;
 use crate::imp::structs::util::hash_m::HashS;
+use crate::imp::structs::rust_identity::RustIdentity;
 
 #[derive(Debug)]
 pub struct RootObject{
@@ -18,6 +19,8 @@ pub struct RootObject{
     old : Box<HashS<String>>,
 
     meta_table : Box<MetaTable>,
+
+    id : RustIdentity,
 }
 
 // impl PartialEq for RootObject{
@@ -27,20 +30,20 @@ pub struct RootObject{
 //     }
 // }
 
-impl Clone for RootObject{
-    fn clone(&self) -> Self {
-        let default = self.default.clone();
-        let sabun = self.sabun.clone();
-        let old  = self.old.clone();
-        let meta_table = MetaTable::from_root(default.as_ref());
-        Self{ default, sabun, old, meta_table : Box::new(meta_table) }
-    }
-}
+// impl Clone for RootObject{
+//     fn clone(&self) -> Self {
+//         let default = self.default.clone();
+//         let sabun = self.sabun.clone();
+//         let old  = self.old.clone();
+//         let meta_table = MetaTable::from_root(default.as_ref());
+//         Self{ default, sabun, old, meta_table : Box::new(meta_table) }
+//     }
+// }
 
 impl RootObject{
     pub fn new(default : HashM<String, (usize, RootValue)>, sabun : HashM<String, RustParam>, old : HashS<String>) -> RootObject{
         let meta_table = MetaTable::from_root(&default);
-        RootObject{ default: Box::new(default), sabun : Box::new(sabun), old : Box::new(old), meta_table : Box::new(meta_table) }
+        RootObject{ default: Box::new(default), sabun : Box::new(sabun), old : Box::new(old), meta_table : Box::new(meta_table), id : RustIdentity::new() }
     }
     pub fn default(&self) -> &HashM<String, (usize, RootValue)>{ self.default.as_ref() }
 
@@ -64,7 +67,7 @@ impl RootObject{
                      sabun : Box<HashM<String, RustParam>>,
                      old : Box<HashS<String>>,
                      meta_table : Box<MetaTable>) -> RootObject{
-        RootObject{ default, sabun, old, meta_table }
+        RootObject{ default, sabun, old, meta_table, id : RustIdentity::new() }
     }
     pub fn sabun(&self) -> &HashM<String, RustParam>{ self.sabun.as_ref() }
     pub fn sabun_mut(&mut self) -> &mut HashM<String, RustParam>{ self.sabun.as_mut() }
@@ -79,10 +82,14 @@ impl RootObject{
 
     /// Use some shortcuts to compare data
     /// If the type is the same(created from the same source JSON5),
-    ///
+    /// returning false results is near impossible
     pub fn contents_eq(&self, other : &Self) -> bool{
          self.default().identity_eq(other.default()) &&
              self.sabun().identity_eq(other.sabun())
+    }
+
+    pub fn identity(&self) -> &RustIdentity{
+        &self.id
     }
 }
 
