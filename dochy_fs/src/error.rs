@@ -76,3 +76,7 @@ impl From<&str> for FsError{
 impl From<String> for FsError{
     fn from(e : String) -> Self{ Self::new(anyhow!("{}", e)) }
 }
+
+//impl From<std::sys_common::poison::PoisonError<Guard>> for FsError{
+  //  fn from(e : dochy_diff::diff_error::DiffError) -> Self{ Self::new(e) }
+//}

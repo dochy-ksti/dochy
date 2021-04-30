@@ -30,15 +30,15 @@ pub struct RootObject{
 //     }
 // }
 
-// impl Clone for RootObject{
-//     fn clone(&self) -> Self {
-//         let default = self.default.clone();
-//         let sabun = self.sabun.clone();
-//         let old  = self.old.clone();
-//         let meta_table = MetaTable::from_root(default.as_ref());
-//         Self{ default, sabun, old, meta_table : Box::new(meta_table) }
-//     }
-// }
+impl Clone for RootObject{
+    fn clone(&self) -> Self {
+        let default = self.default.clone();
+        let sabun = self.sabun.clone();
+        let old  = self.old.clone();
+        let meta_table = MetaTable::from_root(default.as_ref());
+        Self{ default, sabun, old, meta_table : Box::new(meta_table), id : RustIdentity::new() }
+    }
+}
 
 impl RootObject{
     pub fn new(default : HashM<String, (usize, RootValue)>, sabun : HashM<String, RustParam>, old : HashS<String>) -> RootObject{
