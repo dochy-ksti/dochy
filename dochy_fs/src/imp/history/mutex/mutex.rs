@@ -1,9 +1,9 @@
 use once_cell::sync::Lazy;
-use std::sync::{Arc, Mutex, MutexGuard};
-use crate::error::FsResult;
+use std::sync::{Mutex, MutexGuard, PoisonError};
 
-static LOCK : Lazy<Arc<Mutex<()>>> = Lazy::new(|| Arc::new(Mutex::new(())));
+static LOCK : Lazy<Mutex<()>> = Lazy::new(||Mutex::new(()));
 
-pub fn lock<'a>() -> FsResult<MutexGuard<'a, ()>>{
-    Ok(LOCK.as_ref().lock().map_err(|_e| Err("An error occurred in an earlier thread of this mutex"))?)
+pub fn lock<'a>() -> Result<MutexGuard<'a, ()>, PoisonError<MutexGuard<'a, ()>>>{
+    LOCK.lock()
 }
+
