@@ -2,8 +2,9 @@ use std::time::SystemTime;
 use std::path::Path;
 use crate::error::FsResult;
 use crate::common::hash::folder_name_to_hash;
-use crate::imp::common::path::created_time_file::{CREATED_TIME_FILE_NAME, from_time_dat};
+use crate::imp::common::path::created_time_file::{ from_time_dat};
 use std::fs::{File, Metadata};
+use crate::imp::common::path::reserved_filename::CREATED_TIME_FILE_NAME;
 
 ///Sorted by modified time
 pub fn get_hash_times<P : AsRef<Path>>(proj_dir : P) -> FsResult<Vec<(u128, SystemTime)>>{

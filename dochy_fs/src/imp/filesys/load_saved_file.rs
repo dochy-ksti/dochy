@@ -5,8 +5,8 @@ use std::fs::File;
 use dochy_diff::apply_diff;
 use dochy_core::{adjust_versions, json_dir_to_root};
 use crate::imp::common::current_src::CurrentSrc;
-use crate::imp::common::archive::archive_default_name::ARCHIVE_DEFAULT_NAME;
 use crate::imp::common::archive::load_archive::load_archive;
+use crate::imp::common::path::reserved_filename::ARCHIVE_DEFAULT_NAME;
 
 /// archiveファイルは常にファイルと同じディレクトリにあることになっている。
 pub fn load_saved_file<P : AsRef<Path>>(file_path : P, current_src : &CurrentSrc, validation : bool) -> FsResult<RootObject>{

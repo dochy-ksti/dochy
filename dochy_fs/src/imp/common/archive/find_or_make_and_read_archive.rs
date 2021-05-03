@@ -3,11 +3,11 @@ use crate::error::FsResult;
 use dochy_archiver::{ArchiveData, create_archive_from_directory, read_archive_data};
 use std::fs::File;
 use std::io::Write;
-use crate::imp::common::archive::archive_default_name::ARCHIVE_DEFAULT_NAME;
-use crate::imp::common::path::created_time_file::{CREATED_TIME_FILE_NAME, create_time_dat};
+use crate::imp::common::path::created_time_file::{ create_time_dat};
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
 use std::time::SystemTime;
 use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
+use crate::imp::common::path::reserved_filename::{ARCHIVE_DEFAULT_NAME, CREATED_TIME_FILE_NAME};
 
 pub(crate) enum BufOrPath<'a>{
     SrcDir(&'a Path),

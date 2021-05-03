@@ -2,7 +2,6 @@ use std::io::{Write, Read};
 use std::time::{SystemTime, Duration};
 use crate::error::FsResult;
 
-pub const CREATED_TIME_FILE_NAME : &'static str = "created_time.dat";
 
 pub(crate) fn create_time_dat<W : Write>(time : SystemTime, write : &mut W) -> FsResult<()>{
     let std_time = time.duration_since(SystemTime::UNIX_EPOCH)?;

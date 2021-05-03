@@ -1,6 +1,6 @@
 use std::path::Path;
 use crate::error::FsResult;
-use crate::imp::common::path::is_reserved_filename::is_reserved_filename;
+use crate::imp::common::path::reserved_filename::is_reserved_filename;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
 
 ///saved files can be safely removed.

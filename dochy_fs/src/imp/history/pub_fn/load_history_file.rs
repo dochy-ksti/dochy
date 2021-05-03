@@ -10,6 +10,8 @@ use crate::imp::common::current_src::CurrentSrc;
 use dochy_core::{json_dir_to_root, adjust_versions};
 use crate::imp::common::archive::load_archive::load_archive;
 use crate::imp::history::file_hist::history_file_data::HistoryFileData;
+use crate::imp::history::mutex::mutex::lock_mutex;
+use std::sync::MutexGuard;
 
 pub fn load_history_file<P : AsRef<Path>>(history_dir : P,
                                           hash : u128,
@@ -18,6 +20,25 @@ pub fn load_history_file<P : AsRef<Path>>(history_dir : P,
                                           cache : &mut DochyCache,
                                           op : &HistoryOptions,
                                           validation : bool) -> FsResult<RootObject> {
+    let l : MutexGuard<()> = lock_mutex();
+
+    match load_impl(history_dir, hash, props, history, cache, op, validation, &l){
+        Ok(root) =>{
+            //TODO
+            Ok(root)
+        },
+        Err(e) => Err(e),
+    }
+}
+
+fn load_impl<P : AsRef<Path>, T>(history_dir : P,
+                              hash : u128,
+                              props : &FileNameProps,
+                              history : &FileHistory,
+                              cache : &mut DochyCache,
+                              op : &HistoryOptions,
+                              validation : bool,
+                              _lock : &T) -> FsResult<RootObject> {
     let dir = history_dir.as_ref();
     let hash_dir = hash_dir_path(dir, hash);
     let file_path = hash_dir.join(props.calc_filename());

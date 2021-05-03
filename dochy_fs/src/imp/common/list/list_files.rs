@@ -3,7 +3,7 @@ use crate::error::FsResult;
 use crate::imp::common::list::list_files_iterator::ListFilesIterator;
 use crate::imp::common::list::find_next_dir::find_next_dir;
 use crate::imp::common::list::file_data::FileData;
-use crate::imp::common::path::is_reserved_filename::is_reserved_filename;
+use crate::imp::common::path::reserved_filename::is_reserved_filename;
 
 
 pub(crate) fn list_files<P : AsRef<Path>>(proj_dir: P) -> FsResult<Vec<FileData>>{

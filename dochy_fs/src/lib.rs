@@ -25,7 +25,7 @@ pub mod common{
     pub use crate::imp::common::remove_hash_dir::remove_hash_dir;
 
     pub use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
-    pub use crate::imp::common::archive::archive_default_name::ARCHIVE_DEFAULT_NAME;
+    pub use crate::imp::common::path::reserved_filename;
 
     pub use crate::imp::common::archive::read_archive::read_archive;
     pub use crate::imp::common::archive::load_archive::load_archive;
@@ -56,8 +56,8 @@ pub mod history{
     pub use crate::imp::history::file_name::calc_filename::calc_filename;
     pub use crate::imp::history::file_name::file_name_props::FileNameProps;
 
-    pub use crate::imp::history::pub_fn::next::next;
-    pub use crate::imp::history::pub_fn::start_new::start_new;
+    pub use crate::imp::history::pub_fn::save_history_file::save_history_file;
+    //pub use crate::imp::history::pub_fn::start_new::start_new;
 
     pub use crate::imp::history::pub_fn::list_histories::list_histories;
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file;
