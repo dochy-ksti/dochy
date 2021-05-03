@@ -6,7 +6,7 @@ pub mod common{
     pub use dochy_fs::common::remove_hash_dir;
 
     pub use dochy_fs::common::JSON_ARC_OPT;
-    pub use dochy_fs::common::ARCHIVE_DEFAULT_NAME;
+    pub use dochy_fs::common::reserved_filename;
 
     //pub use dochy_fs::common::read_archive;
     //pub use dochy_fs::common::load_archive;
@@ -37,8 +37,8 @@ pub mod history{
     pub use dochy_fs::history::calc_filename;
     pub use dochy_fs::history::FileNameProps;
 
-    pub use dochy_fs::history::next;
-    pub use dochy_fs::history::start_new;
+    //pub use dochy_fs::history::next;
+    //pub use dochy_fs::history::start_new;
 
     pub use dochy_fs::history::list_histories;
     pub use dochy_fs::history::load_history_file;

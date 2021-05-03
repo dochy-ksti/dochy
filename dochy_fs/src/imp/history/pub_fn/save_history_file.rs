@@ -5,6 +5,8 @@ use dochy_core::structs::RootObject;
 use crate::imp::history::fs::next::next as fs_next;
 use crate::imp::history::file_hist::prepare_history_hash_dir::prepare_history_hash_dir;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
+use crate::imp::history::identity::ideneity_file::{read_identity_file_data, write_identity_file_data};
+use crate::imp::history::fs::start_new::start_new as fs_start_new;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 /// If the 'root' is not derived from the latest save file, calculate diff from the source JSON5 and save it.
@@ -12,7 +14,8 @@ use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 /// When this function is called, root's ID is compared to the recorded ID.
 /// If they are different, calc the diff from the source)
 ///
-/// Concurrent access is not supported. This function is synced by a mutex.
+/// Concurrent access to a history_dir is not supported.
+/// Use synchronization if you want to access concurrently.
 ///
 /// # Arguments
 ///
@@ -32,5 +35,14 @@ pub fn save_history_file<P : AsRef<Path>>(history_dir: P,
     let src = cache.current_src();
 
     let history_hash_dir = prepare_history_hash_dir(history_dir, src)?;
-    fs_next(tag, root, cache, history_hash_dir, options)
+
+    if let Ok(id) = read_identity_file_data(&history_hash_dir) {
+        if &id == root.identity() {
+            fs_next(tag, root, cache, &history_hash_dir, options)?;
+            return Ok(());
+        }
+    }
+    fs_start_new(tag, root, cache, &history_hash_dir, options.max_phase())?;
+    write_identity_file_data(&history_hash_dir, root.identity())?;
+    Ok(())
 }

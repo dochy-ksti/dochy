@@ -4,7 +4,7 @@ use crate::imp::history::file_name::analyze_file_name::analyze_file_name;
 
 ///Metadata history files' filename contains.
 ///The filename can be precisely restored from it.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct FileNameProps {
     control: u32,
     order : Vec<u32>,

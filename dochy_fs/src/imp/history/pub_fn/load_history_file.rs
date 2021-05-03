@@ -10,9 +10,12 @@ use crate::imp::common::current_src::CurrentSrc;
 use dochy_core::{json_dir_to_root, adjust_versions};
 use crate::imp::common::archive::load_archive::load_archive;
 use crate::imp::history::file_hist::history_file_data::HistoryFileData;
-use crate::imp::history::mutex::mutex::lock_mutex;
-use std::sync::MutexGuard;
+use crate::imp::history::identity::ideneity_file::{write_identity_file_data};
 
+/// Loads a history file.
+/// Concurrent access to a history_dir is not supported.
+/// Concurrent load and save, save and save, load and load access can cause problems,
+/// so use synchronization if you want to access concurrently.
 pub fn load_history_file<P : AsRef<Path>>(history_dir : P,
                                           hash : u128,
                                           props : &FileNameProps,
@@ -20,25 +23,30 @@ pub fn load_history_file<P : AsRef<Path>>(history_dir : P,
                                           cache : &mut DochyCache,
                                           op : &HistoryOptions,
                                           validation : bool) -> FsResult<RootObject> {
-    let l : MutexGuard<()> = lock_mutex();
+    let history_dir = history_dir.as_ref();
 
-    match load_impl(history_dir, hash, props, history, cache, op, validation, &l){
+    match load_impl(history_dir, hash, props, history, cache, op, validation){
         Ok(root) =>{
-            //TODO
+            if let Some(newest) = history.get_newest_prop(){
+                if newest == props{
+                    write_identity_file_data(
+                        hash_dir_path(history_dir, hash),root.identity())?;
+                }
+            }
+
             Ok(root)
         },
         Err(e) => Err(e),
     }
 }
 
-fn load_impl<P : AsRef<Path>, T>(history_dir : P,
+fn load_impl<P : AsRef<Path>>(history_dir : P,
                               hash : u128,
                               props : &FileNameProps,
                               history : &FileHistory,
                               cache : &mut DochyCache,
                               op : &HistoryOptions,
-                              validation : bool,
-                              _lock : &T) -> FsResult<RootObject> {
+                              validation : bool) -> FsResult<RootObject> {
     let dir = history_dir.as_ref();
     let hash_dir = hash_dir_path(dir, hash);
     let file_path = hash_dir.join(props.calc_filename());

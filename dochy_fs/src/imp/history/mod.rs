@@ -6,4 +6,3 @@ pub mod diff_and_cache;
 pub mod pub_fn;
 pub mod remove;
 pub mod identity;
-pub mod mutex;
