@@ -47,7 +47,7 @@ impl FileHistory{
     /// Remove old files. Files will be deleted in this method,
     /// and this history will be inconsistent with saved files, so the history will be consumed.
     ///
-    /// returns file paths which is failed to remove if any.
+    /// Returns file paths which is failed to remove if any.
     pub fn remove_old_files<P:AsRef<Path>>(self, keep_latest : usize, history_hash_dir: P) -> Vec<PathBuf>{
         let removables = self.get_removable_old_items(keep_latest);
         let failed = unsafe{ Self::remove_files(removables.iter().map(|a| *a), history_hash_dir) };
@@ -57,7 +57,7 @@ impl FileHistory{
     /// remove files.
     /// History files have dependencies, so arbitrary removing can make files inconsistent.
     ///
-    /// If the "filenames" arg is created from "get_removable_old_items," this function itself will be safe,
+    /// If the "filenames" are created from "get_removable_old_items", this function itself will be safe,
     /// but removing files make existing FileHistory inconsistent with saved files.
     ///
     /// Returns paths which is failed to remove
