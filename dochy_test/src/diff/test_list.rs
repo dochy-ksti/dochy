@@ -10,8 +10,8 @@ mod tests {
     fn apply(current : &RootObject, path : &str) -> DpResult<RootIntf>{
         let mut moto = json_dir_to_root(path, false)?;
 
-        let diff = dochy::diff::get_diff(&moto, current)?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, current)?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         Ok(RootIntf::new(moto))
     }
 

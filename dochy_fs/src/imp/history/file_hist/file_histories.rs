@@ -44,7 +44,7 @@ impl FileHistories{
         if len == 0{ return Ok(()); }
         if keep_latest == 0{
             // 最新ファイルに付随する制御ファイルがあって面倒なので、ディレクトリごと全部削除してしまう
-            remove_hash_dirs(&mut self.vec, 0..len,history_dir);
+            remove_hash_dirs(&mut self.vec, 0..len,history_dir)?;
             return Ok(());
         }
         let (hash, his) = self.vec.last().unwrap();
@@ -84,6 +84,7 @@ impl FileHistories{
 }
 
 fn remove_hash_dirs(vec : &mut Vec<(u128, FileHistory)>, range : Range<usize>, history_dir : &Path) -> FsResult<()>{
+    //drainとか使ってファイルとデータを一致させようと頑張ってはいるが、最終的に技術的難題にぶつかって完全な同期を諦めているのであまり意味がない
     for (hash, _) in vec.drain(range){
         remove_hash_dir(history_dir, hash)?;
     }

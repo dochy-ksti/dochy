@@ -31,8 +31,8 @@ mod tests {
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
         //zero
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
 
         let moto2 = json_dir_to_root(json_dir_path, false)?;
         assert!(moto.contents_eq(&moto2));
@@ -50,8 +50,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto,&mut  diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto,&mut  diff.as_slice())?;
         let intf = RootIntf::new(moto);
 
         assert_eq!(intf.mem1(), 1);
@@ -69,8 +69,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path,false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let intf = RootIntf::new(moto);
 
         assert_eq!(intf.mem63(), 1);
@@ -93,8 +93,8 @@ mod tests {
         //store ids はnumbers
         // let diff = dochy_diff::get_kvals(&moto, unsafe{ intf.root_obj_ref() }).or_else(|e| Err(e.message))?;
         //println!("{:?}", diff);
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let intf = RootIntf::new(moto);
 
         assert_eq!(intf.mem64(), 1);
@@ -117,8 +117,8 @@ mod tests {
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
         //numbers
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let intf = RootIntf::new(moto);
         assert_eq!(intf.mem58(), 1);
         assert_eq!(intf.mem59(), 1);
@@ -146,8 +146,8 @@ mod tests {
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
         //u64
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let intf = RootIntf::new(moto);
         assert_eq!(intf.mem58(), 1);
         assert_eq!(intf.mem59(), 1);

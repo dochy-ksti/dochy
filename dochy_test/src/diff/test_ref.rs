@@ -25,8 +25,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice()).or_else(|e| Err(e.to_string()))?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice()).or_else(|e| Err(e.to_string()))?;
         let mut intf = RootIntf::new(moto);
         let list1 = intf.list1();
         let f = list1.first().unwrap();
@@ -46,8 +46,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let list1 = intf.list1();
         let f = list1.last().unwrap();
@@ -67,8 +67,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let list2 = intf.list2();
         let f = list2.first().unwrap();
@@ -87,8 +87,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let list2 = intf.list2();
         let f = list2.last().unwrap();
@@ -108,8 +108,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let mut intf = RootIntf::new(moto);
         let list3 = intf.list3();
         let f = list3.first().unwrap();
@@ -128,8 +128,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path, false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref())?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice())?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref())?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice())?;
         let intf = RootIntf::new(moto);
         let list3 = intf.list3();
         let f = list3.last().unwrap();

@@ -7,7 +7,6 @@ extern crate test;
 
 pub mod intf;
 pub mod core;
-pub mod diff;
 pub mod fs;
 pub mod error;
 

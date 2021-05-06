@@ -39,8 +39,8 @@ mod tests {
 
         let mut moto = json_dir_to_root(json_dir_path,false)?;
 
-        let diff = dochy::diff::get_diff(&moto, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
-        dochy::diff::apply_diff(&mut moto, &mut diff.as_slice()).or_else(|e| Err(e.to_string()))?;
+        let diff = dochy_diff::get_diff(&moto, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
+        dochy_diff::apply_diff(&mut moto, &mut diff.as_slice()).or_else(|e| Err(e.to_string()))?;
         let intf = RootIntf::new(moto);
 
 
@@ -96,8 +96,8 @@ mod tests {
 
         let mut applied1 = json_dir_to_root(json_dir_path, false)?;
 
-        let diff1 = dochy::diff::get_diff(&applied1, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
-        dochy::diff::apply_diff(&mut applied1, &mut diff1.as_slice()).or_else(|e| Err(e.to_string()))?;
+        let diff1 = dochy_diff::get_diff(&applied1, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
+        dochy_diff::apply_diff(&mut applied1, &mut diff1.as_slice()).or_else(|e| Err(e.to_string()))?;
 
         intf.set_hoge_int(1);
         intf.set_hoge_float(1.0);
@@ -119,8 +119,8 @@ mod tests {
         intf.set_hoge_undef_null_undef_to_null(Qv::Null);
 
         let mut applied2 = applied1.clone();
-        let diff2 = dochy::diff::get_diff(&applied1, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
-        dochy::diff::apply_diff(&mut applied2, &mut diff2.as_slice()).or_else(|e| Err(e.to_string()))?;
+        let diff2 = dochy_diff::get_diff(&applied1, intf.root_obj_ref()).or_else(|e| Err(e.to_string()))?;
+        dochy_diff::apply_diff(&mut applied2, &mut diff2.as_slice()).or_else(|e| Err(e.to_string()))?;
 
         let intf = RootIntf::new(applied2);
 

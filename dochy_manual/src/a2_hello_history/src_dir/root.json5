@@ -1,0 +1,4 @@
+{
+  very_big_data : "This is very big data(kind of), but it's immutable so you don't need to save",
+  small_data : "This data is small, but changes frequently"
+}
