@@ -10,14 +10,18 @@ use dochy_compaction::enc_dec::encode_to_vec::encode_to_vec;
 /// When the diff binary is applied to a object with identical state of "from" object,
 /// an object with identical state of "to" object will be constructed.
 ///
+/// You need two Rootobjects which has the same type data,
+/// which means those two are created from or adjusted to the same source file.
+/// No type-checks are available so be careful.
+///
 /// if 'to' is not derived from 'from', the diff binary can be invalid.
 ///
 /// This system can't restore 'unmodified' state.
-/// To calculate diff from newer data with a modified variable
+/// To apply diff from newer data with a modified variable
 /// to older data with the variable unmodified,
-/// this system needs to restore 'unmodified' state, but it can't because of technical difficulties.
+/// the system needs to restore 'unmodified' state, but it can't due to technical difficulties.
 ///
-/// So you must make sure the "to" object is derived from "from" object.
+/// So you must make sure the "to" object is derived from "from" object. No checks are available about it too.
 pub fn get_diff(from : &RootObject, to : &RootObject) -> Result<Vec<u8>, DiffError> {
     let kvals = get_kvals(from, to)?;
     Ok(encode_to_vec(&kvals)?)
