@@ -37,7 +37,7 @@ pub mod history{
     pub use dochy_fs::history::calc_filename;
     pub use dochy_fs::history::FileNameProps;
 
-    //pub use dochy_fs::history::next;
+    pub use dochy_fs::history::save_history_file;
     //pub use dochy_fs::history::start_new;
 
     pub use dochy_fs::history::list_histories;

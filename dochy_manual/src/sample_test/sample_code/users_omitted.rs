@@ -2,7 +2,7 @@ use dochy::core::intf::{RootObjectPtr, MListPtr, MItemPtr};
 use dochy::core::intf::{mitem};
 use dochy::core::structs::Qv;
 use dochy::core::root_to_json_new_default;
-use dochy::diff::apply_diff;
+use dochy_diff::apply_diff;
 use flate2::write::ZlibEncoder;
 use flate2::Compression;
 use std::io::prelude::*;
@@ -65,7 +65,7 @@ fn users_omitted() -> DpResult<()>{
 
     // let mut from = dochy_core::json_dir_to_rust(
     //     ini_path, false)?;
-    let vec = dochy::diff::get_diff(&cloned, &r)?;
+    let vec = dochy_diff::get_diff(&cloned, &r)?;
     println!("{}", vec.len());
     apply_diff(&mut cloned, &mut vec.as_slice())?;
 
