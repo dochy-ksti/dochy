@@ -32,7 +32,7 @@ pub(crate) fn read_identity_file_data<P : AsRef<Path>>(hash_dir : P) -> FsResult
 
 pub(crate) fn write_identity_file_data<P : AsRef<Path>>(hash_dir : P,
                                                         identity : &RustIdentity) -> FsResult<()>{
-    let mut file = std::fs::File::open(hash_dir.as_ref().join(LATEST_ROOT_ID_FILENAME))?;
+    let mut file = std::fs::File::create(hash_dir.as_ref().join(LATEST_ROOT_ID_FILENAME))?;
     write(&mut file, identity)
 }
 

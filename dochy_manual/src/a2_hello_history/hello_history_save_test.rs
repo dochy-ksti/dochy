@@ -18,7 +18,7 @@ fn hello_history_save_test() -> DpResult<()> {
     let his = list_histories(history_dir)?;
     his.remove_old_files(0, history_dir)?;
     let mut cache = DochyCache::new(
-        CurrentSrc::SrcDir(PathBuf::from(history_dir)));
+        CurrentSrc::SrcDir(PathBuf::from(src_dir)));
     let opt = HistoryOptions::new();
     save_history_file(history_dir, None, root.root_obj_ref(), &mut cache, &opt)?;
 
@@ -53,7 +53,10 @@ fn hello_history_save_test() -> DpResult<()> {
         "d2.dochy",
         true)?;
 
-    print_file_data(save_dir)?;
+    let paths : Vec<PathBuf> = dochy::fs::common::hash_dir_paths(save_dir)?.collect();
+    assert_eq!(paths.len(), 1);
+
+    print_file_data(&paths[0])?;
     Ok(())
 }
 
