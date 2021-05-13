@@ -21,6 +21,7 @@ pub mod common{
     pub use crate::imp::common::current_src::CurrentSrc;
 
     pub use crate::imp::common::path::hash_dir_path::hash_dir_path;
+    pub use crate::imp::common::path::hash_dir_path::hash_dir_paths;
     pub use crate::imp::common::path::get_hash_times::get_hash_times;
     pub use crate::imp::common::remove_hash_dir::remove_hash_dir;
 

@@ -2,6 +2,7 @@ pub mod common{
     pub use dochy_fs::common::CurrentSrc;
 
     pub use dochy_fs::common::hash_dir_path;
+    pub use dochy_fs::common::hash_dir_paths;
     pub use dochy_fs::common::get_hash_times;
     pub use dochy_fs::common::remove_hash_dir;
 

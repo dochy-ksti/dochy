@@ -49,7 +49,7 @@ impl DochyCache{
     /// * 'cache_phase_a' - If the object derived directly from the src(Phase_A object) is cached.
     ///
     /// Phase_A objects tend to be big and are not frequently updated. Maybe you can efficiently cache it.
-    pub fn new(current_src : CurrentSrc, cache_src : bool, cache_phase_a : bool) -> DochyCache{
+    pub fn create(current_src : CurrentSrc, cache_src : bool, cache_phase_a : bool) -> DochyCache{
         DochyCache{
             src_cache: None,
             phase_a_cache: None,
@@ -57,6 +57,11 @@ impl DochyCache{
             cache_src,
             cache_phase_a
         }
+    }
+
+    /// The minimum constructor, which does create(current_src, true, true)
+    pub fn new(current_src : CurrentSrc) -> DochyCache{
+        Self::create(current_src, true, true)
     }
 
     fn get_or_create_src(&mut self) -> FsResult<RootObject> {
