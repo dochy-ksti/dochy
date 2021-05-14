@@ -18,7 +18,7 @@ fn hello_history_save_test() -> DpResult<()> {
     let his = list_histories(history_dir)?;
     his.remove_old_files(0, history_dir)?;
     let mut cache = DochyCache::new(
-        CurrentSrc::SrcDir(PathBuf::from(src_dir)));
+        CurrentSrc::from_src_dir(src_dir));
     let opt = HistoryOptions::new();
     save_history_file(history_dir, None, root.root_obj_ref(), &mut cache, &opt)?;
 
@@ -40,7 +40,7 @@ fn hello_history_save_test() -> DpResult<()> {
     save_file(
         save_dir,
         root.root_obj_ref(),
-        &CurrentSrc::SrcDir(PathBuf::from(src_dir)),
+        &CurrentSrc::from_src_dir(src_dir),
         "d1.dochy",
         true)?;
 
@@ -49,7 +49,7 @@ fn hello_history_save_test() -> DpResult<()> {
     save_file(
         save_dir,
         root.root_obj_ref(),
-        &CurrentSrc::SrcDir(PathBuf::from(src_dir)),
+        &CurrentSrc::from_src_dir(src_dir),
         "d2.dochy",
         true)?;
 

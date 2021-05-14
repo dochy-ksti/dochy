@@ -1,4 +1,4 @@
-use std::path::{ PathBuf};
+use std::path::{PathBuf, Path};
 use dochy_core::structs::RootObject;
 use crate::error::FsResult;
 use crate::imp::common::archive::load_archive::load_archive;
@@ -24,5 +24,13 @@ impl CurrentSrc{
                 load_archive(arc, false)
             }
         }
+    }
+
+    pub fn from_src_dir<P : AsRef<Path>>(src_dir : P) -> CurrentSrc{
+        CurrentSrc::SrcDir(PathBuf::from(src_dir.as_ref()))
+    }
+
+    pub fn from_archive_file<P : AsRef<Path>>(archive_file_path : P) -> CurrentSrc{
+        CurrentSrc::ArchiveFile(PathBuf::from(archive_file_path.as_ref()))
     }
 }
