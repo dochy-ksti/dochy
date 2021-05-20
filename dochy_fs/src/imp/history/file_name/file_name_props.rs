@@ -7,6 +7,7 @@ use crate::imp::history::file_name::analyze_file_name::analyze_file_name;
 #[derive(Debug, Clone, PartialEq)]
 pub struct FileNameProps {
     control: u32,
+    prev_ctl : u32,
     order : Vec<u32>,
     tag: Option<String>,
 }
