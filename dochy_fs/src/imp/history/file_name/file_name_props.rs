@@ -15,7 +15,7 @@ pub struct FileNameProps {
 impl FileNameProps{
 
     /// Create item from metadata.
-    pub fn new(control : u32, order : Vec<u32>, tag : Option<String>) -> FsResult<FileNameProps>{
+    pub fn new(control : u32, prev_ctl : u32, order : Vec<u32>, tag : Option<String>) -> FsResult<FileNameProps>{
         if order.len() == 0{
             Err("order.len() must be >= 1")?
         }
