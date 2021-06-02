@@ -19,7 +19,7 @@ impl FileNameProps{
         if order.len() == 0{
             Err("order.len() must be >= 1")?
         }
-        Ok(FileNameProps{ control, order, tag })
+        Ok(FileNameProps{ control, prev_ctl, order, tag })
     }
 
     pub fn from(filename : &str) -> FsResult<FileNameProps>{
@@ -30,7 +30,7 @@ impl FileNameProps{
     pub fn control(&self) -> u32{ self.control }
 
     /// numbers which describes how this item is derived.
-    /// if the order is `[3,8,2]`, this item depends on items which have orders of `[3]` and `[3,8]`
+    /// if the order is `[3,8,2]`, this item depends on items which has the order of `[3]` and `[3,8]`
     ///
     /// order.len >= 1
     pub fn order(&self) -> &[u32]{ &self.order }
@@ -62,7 +62,7 @@ impl FileNameProps{
         } else{
             return None;
         }
-        return Some(FileNameProps::new(n, order, tag).ok()?)
+        return Some(FileNameProps::new(n, n, order, tag).ok()?)
     }
 
 }
