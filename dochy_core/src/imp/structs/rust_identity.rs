@@ -11,6 +11,7 @@ pub struct RustIdentity{
 }
 
 impl RustIdentity{
+    /// Randomly generates the ID
     pub fn new() -> RustIdentity{
         let mut r = rand::thread_rng();
         let random1 = r.gen();

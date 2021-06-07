@@ -26,8 +26,13 @@ impl FileNameProps{
         Ok(analyze_file_name(filename, None)?)
     }
 
-    ///how many times "start_new" is called in this directory when this item is created.
+    ///how many times "start_new" is called or deriving has happened.
     pub fn control(&self) -> u32{ self.control }
+
+    /// If this item is derived, "control" of the parent item,
+    /// otherwise this item's "control"
+    pub fn prev_ctl(&self) -> u32{ self.prev_ctl }
+
 
     /// numbers which describes how this item is derived.
     /// if the order is `[3,8,2]`, this item depends on items which has the order of `[3]` and `[3,8]`
@@ -41,7 +46,9 @@ impl FileNameProps{
 
     /// calculate the filename from the metadata this item contains.
     pub fn calc_filename(&self) -> String{
-        calc_filename(self.tag(), self.control(), self.order())
+        calc_filename(self.tag(), self.control(),
+                      if self.control() == self.prev_ctl(){ None } else{ Some(self.prev_ctl()) }
+                      ,self.order())
     }
 
     // ///dir_path.join(filename)

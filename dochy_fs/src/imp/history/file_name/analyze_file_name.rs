@@ -1,4 +1,5 @@
 use crate::imp::history::file_name::file_name_props::FileNameProps;
+use std::str::FromStr;
 
 /// #hogehoge#(0)_0_0_0_0_0_0.his といった感じである。tagがない場合
 /// (0)_0_0_0_0_0_0.his となる。
@@ -49,8 +50,16 @@ pub(crate) fn analyze_file_name(s : &str, hint_max_phase : Option<usize>) -> Opt
 
     let tag = get_tag(s);
 
-    let mut s = if let Some(tag) = tag{
+    let s = if let Some(tag) = tag{
         &s[(tag.len() + 2)..]
+    } else{
+        s
+    };
+
+    let prev_ctl = get_prev_ctl(s);
+
+    let mut s = if let Some(prev_ctl) = prev_ctl{
+        &s[(prev_ctl.len() + 2)..]
     } else{
         s
     };
@@ -62,6 +71,8 @@ pub(crate) fn analyze_file_name(s : &str, hint_max_phase : Option<usize>) -> Opt
         return None;
     };
 
+    let prev_ctl = prev_ctl.and_then(|s| u32::from_str(s).ok()).unwrap_or(n);
+
     let capacity = hint_max_phase.unwrap_or(0) + 1;
     let mut order : Vec<u32> = Vec::with_capacity(capacity);
     loop{
@@ -70,7 +81,8 @@ pub(crate) fn analyze_file_name(s : &str, hint_max_phase : Option<usize>) -> Opt
             s = &s[read..];
         } else{
             if s == ".his" && order.len() != 0{
-                if let Ok(props) = FileNameProps::new(n, order, tag.map(|t| t.to_string())){
+                if let Ok(props) = FileNameProps::new(n, prev_ctl,
+                                                      order, tag.map(|t| t.to_string())){
                     return Some(props);
                 }
             }
@@ -88,6 +100,21 @@ fn get_tag(s : &str) -> Option<&str>{
     }
     for (i,c) in bytes.iter().skip(1).enumerate(){
         if *c == '#' as u8{
+            return Some(&s[1..i])
+        }
+    }
+    return None;
+}
+
+fn get_prev_ctl(s : &str) -> Option<&str>{
+    let bytes = s.as_bytes();
+    if bytes.len() <= 1{ return None; }
+    let first = bytes[0];
+    if first != '(' as u8{
+        return None;
+    }
+    for (i,c) in bytes.iter().skip(1).enumerate(){
+        if *c == ')' as u8{
             return Some(&s[1..i])
         }
     }

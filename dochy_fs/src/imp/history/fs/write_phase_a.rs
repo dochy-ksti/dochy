@@ -14,7 +14,7 @@ pub(crate) fn write_phase_a<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     cache : &mut C,
     history_hash_dir: &Path) -> FsResult<()>{
 
-    let file_name = calc_filename(tag.as_ref().map(|s| s.as_str()), control, &[0]);
+    let file_name = calc_filename(tag.as_ref().map(|s| s.as_str()), control, None,&[0]);
     let file_path = history_hash_dir.join(file_name);
 
     let (initial, _) = cache.get_cache(vec![])?;
