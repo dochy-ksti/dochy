@@ -12,6 +12,8 @@ pub mod error;
 
 
 //TODO: セーブ、ロード時にSingletonにWeak参照を記録し、セーブ時のオブジェクトが同一かどうかを確かめられるようにする。LatestFileInfo
+//TODO: そのSingletonはMutexにくるみ、少なくとも同じプロセスからはhistoryに対して並列アクセス出来なくする
+//TODO: 外部からLatestFileInfoを直接書き換えられるようにする。これによって、LastAutosaveFile名がわかれば、Simpleで保存したファイルをロードしたとき、LatestFileInfoを書き換えることで、Autosave時に派生ファイルを作ることができる（あれば)
 //TODO: ロード後のファイルから派生できるようにする
 //TODO: 途中での派生を考慮した依存関係、削除ルーチンを作る
 //TODO: キャッシュは全段階で行うようにする。フェーズ数は3を基本に。フェーズ変更オプションが必要かどうかはわからないが一旦消してしまってもいい
