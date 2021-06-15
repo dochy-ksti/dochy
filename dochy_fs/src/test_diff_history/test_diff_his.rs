@@ -18,7 +18,7 @@ fn test_diff_his() -> FsResult<()> {
 
     copy_dir_all("src/json_dir/simple", &src_dir_path)?;
 
-    let mut cache = DochyCache::new(current_src.clone(), false, false);
+    let mut cache = DochyCache::new(current_src.clone());
     let opt = HistoryOptions::from(HistoryOptionsBuilder {
         max_phase: 1,
         update_phase_a: true,
@@ -50,7 +50,7 @@ fn test_diff_his() -> FsResult<()> {
 
     let mut root = load_history_file_data(proj_dir_path, &newest, &mut cache, &opt, false)?;
     let p = RootObjectPtr::new(&mut root);
-    let mut cache = DochyCache::new(current_src.clone(), false, false);
+    let mut cache = DochyCache::new(current_src.clone());
 
     for i in 0..15 {
         set_int(p, "int", Qv::Val(i));

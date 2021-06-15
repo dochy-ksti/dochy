@@ -2,8 +2,8 @@ use crate::imp::structs::qv::Qv;
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::array_type::ArrayType;
 use crate::error::CoreResult;
-use crate::imp::structs::rust_identity::RustIdentity;
 use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct RustArray{
@@ -104,14 +104,12 @@ impl IdentityEqual for RustIntArray{
 
 #[derive(Debug, Clone)]
 pub struct RustBinary{
-    b : Box<(Vec<u8>, RustIdentity)>,
+    b : Arc<Vec<u8>>,
 }
 
 impl RustBinary{
-    pub fn new(b : Vec<u8>) -> RustBinary{ Self::identity_new(b, RustIdentity::new())}
-    pub fn identity_new(b : Vec<u8>, identity : RustIdentity) -> RustBinary{
-        RustBinary{ b : Box::new((b, identity)) }
-    }
+    pub fn new(b : Vec<u8>) -> RustBinary{ RustBinary{ b : Arc::new(b)} }
+
     pub(crate) fn to_params(&self) -> Vec<RustParam>{
         self.vec().iter().map(|a| RustParam::Int(Qv::Val(*a as i64))).collect()
     }
@@ -119,16 +117,15 @@ impl RustBinary{
         let op  = v.iter().map(|p| p.to_u8()).collect::<Option<Vec<u8>>>();
         Some(RustBinary::new(op?))
     }
-    pub fn vec(&self) -> &Vec<u8>{ &self.b.as_ref().0 }
+    pub fn vec(&self) -> &Vec<u8>{ self.b.as_ref() }
     pub fn vec_mut(&mut self) -> &mut Vec<u8>{
-        self.b.as_mut().1 = RustIdentity::new();
-        &mut self.b.as_mut().0
+        //Arcが複数インスタンスある場合、Vecをコピーしてから&mutを返す(なんて便利なのだ・・・
+        Arc::make_mut(&mut self.b)
     }
-    pub fn identity(&self) -> &RustIdentity{ &self.b.as_ref().1 }
 }
 
 impl IdentityEqual for RustBinary{
     fn identity_eq(&self, other: &Self) -> bool {
-        self.b.as_ref().1 == other.b.as_ref().1
+        Arc::ptr_eq(&self.b, &other.b)
     }
 }

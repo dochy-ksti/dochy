@@ -122,5 +122,26 @@ impl FileHistory{
     pub(crate) fn get_ctl(&self, control : u32) -> Option<&FileHistoryItem>{
         self.ctls.get(&control)
     }
+
+    pub fn contains(&self, props : &FileNameProps) -> bool{
+        if let Some(a) = self.ctls.get(&props.control()){
+            let mut a = a;
+            let len = props.order().len();
+            for ord in props.order()[0..len-1]{
+                if let Some(item) = a.children().get(ord){
+                    a = item;
+                } else{
+                    return false;
+                }
+            }
+            if let Some(p) = a.items().get(&props.order_last()){
+                p.tag() == props.tag()
+            } else{
+                false
+            }
+        } else{
+            false
+        }
+    }
 }
 

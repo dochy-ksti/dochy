@@ -10,7 +10,7 @@ use crate::imp::common::current_src::CurrentSrc;
 use dochy_core::{json_dir_to_root, adjust_versions};
 use crate::imp::common::archive::load_archive::load_archive;
 use crate::imp::history::file_hist::history_file_data::HistoryFileData;
-use crate::imp::history::identity::ideneity_file::{write_identity_file_data};
+use crate::imp::history::latest_file_info::latest_file_info::set_latest_file_info;
 
 /// Loads a history file.
 /// Concurrent access to a history_dir is not supported.
@@ -29,8 +29,7 @@ pub fn load_history_file<P : AsRef<Path>>(history_dir : P,
         Ok(root) =>{
             if let Some(newest) = history.get_newest_prop(){
                 if newest == props{
-                    write_identity_file_data(
-                        hash_dir_path(history_dir, hash),root.identity())?;
+                    //TODO:
                 }
             }
 

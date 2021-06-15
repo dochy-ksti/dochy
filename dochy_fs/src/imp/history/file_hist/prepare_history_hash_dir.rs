@@ -8,9 +8,9 @@ use std::fs::File;
 use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
 use std::ops::Deref;
 
-pub(crate) fn prepare_history_hash_dir(history_dir: &Path, src : &CurrentSrc) -> FsResult<PathBuf>{
+pub(crate) fn prepare_history_hash_dir(history_dir: &Path, src : &CurrentSrc) -> FsResult<(PathBuf, u128)>{
 
-    let history_hash_dir = match src {
+    let (history_hash_dir, hash) = match src {
         CurrentSrc::SrcDir(src_dir) => {
             let mut buf : Vec<u8> = vec![];
 
@@ -22,11 +22,11 @@ pub(crate) fn prepare_history_hash_dir(history_dir: &Path, src : &CurrentSrc) ->
             match r {
                 CreateArchiveFromDirectory::Canceled(hash) => {
                     make_archive_if_not_exist(history_dir, hash, BufOrPath::SrcDir(src_dir))?;
-                    hash_dir_path(history_dir, hash)
+                    (hash_dir_path(history_dir, hash), hash)
                 },
                 CreateArchiveFromDirectory::WrittenSuccessfully(_, hash) => {
                     make_archive_if_not_exist(history_dir, hash, BufOrPath::Buf(&buf))?;
-                    hash_dir_path(history_dir, hash)
+                    (hash_dir_path(history_dir, hash), hash)
                 }
             }
         },
@@ -36,8 +36,8 @@ pub(crate) fn prepare_history_hash_dir(history_dir: &Path, src : &CurrentSrc) ->
                 get_hash_and_metadata_from_archive(&mut file)?
             };
             make_archive_if_not_exist(history_dir, hash, BufOrPath::ArchivePath(archive_path))?;
-            hash_dir_path(history_dir, hash)
+            (hash_dir_path(history_dir, hash), hash)
         }
     };
-    Ok(history_hash_dir)
+    Ok((history_hash_dir, hash))
 }

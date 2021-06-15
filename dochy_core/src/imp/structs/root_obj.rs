@@ -4,7 +4,7 @@ use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::util::set_sabun::{SetSabunError, verify_set_sabun};
 use crate::imp::structs::meta_table::MetaTable;
 use crate::imp::structs::util::hash_m::HashS;
-use crate::imp::structs::rust_identity::RustIdentity;
+use std::sync::{Arc, Weak};
 
 #[derive(Debug)]
 pub struct RootObject{
@@ -18,9 +18,10 @@ pub struct RootObject{
     ///ConstTableである場合、jsonで Refできない
     old : Box<HashS<String>>,
 
+    id : Arc<()>,
+
     meta_table : Box<MetaTable>,
 
-    id : RustIdentity,
 }
 
 // impl PartialEq for RootObject{
@@ -36,14 +37,17 @@ impl Clone for RootObject{
         let sabun = self.sabun.clone();
         let old  = self.old.clone();
         let meta_table = MetaTable::from_root(default.as_ref());
-        Self{ default, sabun, old, meta_table : Box::new(meta_table), id : RustIdentity::new() }
+
+        //idはclone時も新調する
+        let id = Arc::new(());
+        Self{ default, sabun, old, meta_table : Box::new(meta_table), id }
     }
 }
 
 impl RootObject{
     pub fn new(default : HashM<String, (usize, RootValue)>, sabun : HashM<String, RustParam>, old : HashS<String>) -> RootObject{
         let meta_table = MetaTable::from_root(&default);
-        RootObject{ default: Box::new(default), sabun : Box::new(sabun), old : Box::new(old), meta_table : Box::new(meta_table), id : RustIdentity::new() }
+        RootObject{ default: Box::new(default), sabun : Box::new(sabun), old : Box::new(old), meta_table : Box::new(meta_table), id : Arc::new(()) }
     }
     pub fn default(&self) -> &HashM<String, (usize, RootValue)>{ self.default.as_ref() }
 
@@ -67,7 +71,7 @@ impl RootObject{
                      sabun : Box<HashM<String, RustParam>>,
                      old : Box<HashS<String>>,
                      meta_table : Box<MetaTable>) -> RootObject{
-        RootObject{ default, sabun, old, meta_table, id : RustIdentity::new() }
+        RootObject{ default, sabun, old, meta_table, id : Arc::new(()) }
     }
     pub fn sabun(&self) -> &HashM<String, RustParam>{ self.sabun.as_ref() }
     pub fn sabun_mut(&mut self) -> &mut HashM<String, RustParam>{ self.sabun.as_mut() }
@@ -88,8 +92,16 @@ impl RootObject{
              self.sabun().identity_eq(other.sabun())
     }
 
-    pub fn identity(&self) -> &RustIdentity{
-        &self.id
+    pub fn id(&self) -> Weak<()>{
+        Arc::downgrade(&self.id)
+    }
+
+    pub fn id_eq(&self, id : &Weak<()>) -> bool{
+        if let Some(arc) = id.upgrade() {
+            Arc::ptr_eq(&self.id, &arc)
+        } else{
+            false
+        }
     }
 }
 
