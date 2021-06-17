@@ -11,10 +11,11 @@ use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
 use crate::imp::history::diff_and_cache::cacher::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::imp::history::file_hist::create_file_history::create_file_history;
-use crate::imp::history::file_name::file_name_props::FileNameProps;
+use crate::history::FileNameProps;
+use crate::imp::history::file_hist::file_history::FileHistory;
 
 
-pub(crate) fn next<
+pub(crate) fn derive_impl<
     V : DiffValue,
     S: DiffSrc<V>,
     C : Cache<V, S>,
@@ -22,27 +23,19 @@ pub(crate) fn next<
                      diff_src: &S,
                      cache : &mut C,
                      history_hash_dir: P,
+                     history : &FileHistory,
+                     from : &FileNameProps,
                      options: &HistoryOptions) -> FsResult<FileNameProps> {
-    let history_hash_dir = history_hash_dir.as_ref();
+    let from_file_path = history_hash_dir.as_ref().join(from.calc_filename());
 
-    let history = create_file_history(history_hash_dir, Some(options.max_phase()))?;
-    let newest_prop = if let Some(prop) = history.get_newest_prop() {
-        prop
-    } else {
-        return first(tag, diff_src, cache, history_hash_dir);
-    };
-
-    //dbg!(&newest_prop);
-    let newest_file_path = history_hash_dir.join(newest_prop.calc_filename());
-    //dbg!(&newest_file_path);
-    let mut file = std::fs::File::open(&newest_file_path)?;
+    let mut file = std::fs::File::open(&from_file_path)?;
     let (decoded, _) = dochy_compaction::enc_dec::decode::decode(&mut file)?;
     let mut data = PhaseData::decode(&decoded)?;
     let next_phase = calc_next_phase(&data, options);
-    //dbg!(next_phase);
-    let next_prop = newest_prop.create_next_phase_props(newest_prop.control(), tag, next_phase)?;
-    //dbg!(&next_prop);
-    //let ancestors = Ancestors::create(&history, &next_prop, max_phase, cumulative, dir_path.into());
+    let newest_ctl = history.get_newest_prop().control();
+    let next_ctl = if newest_ctl == from.control(){ newest_ctl } else{ newest_ctl + 1 };
+    let next_prop = from.create_next_phase_props(next_ctl, tag, next_phase)?;
+
     let ancestors = Ancestors::create(
         &history, &next_prop, options.max_phase(), options.is_cumulative())? ;
 

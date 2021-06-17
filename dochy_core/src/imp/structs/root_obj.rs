@@ -97,11 +97,10 @@ impl RootObject{
     }
 
     pub fn id_eq(&self, id : &Weak<()>) -> bool{
-        if let Some(arc) = id.upgrade() {
-            Arc::ptr_eq(&self.id, &arc)
-        } else{
-            false
+        if id.strong_count() == 0{
+            return false;
         }
+        id.as_ptr() == Arc::as_ptr(&self.id)
     }
 }
 

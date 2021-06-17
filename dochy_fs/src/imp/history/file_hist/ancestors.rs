@@ -39,6 +39,8 @@ fn create_ancestors(history: &FileHistory,
         return Ok(vec);
     }
 
+    kokowoyare
+
     for (i, order) in props.order().iter().take(len-1).enumerate(){
         vec.push(his.items().get(order)?.clone());
         if let Some(next_his) = his.children().get(order) {

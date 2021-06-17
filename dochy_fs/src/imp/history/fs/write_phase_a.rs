@@ -6,16 +6,17 @@ use crate::imp::history::fs::write_phase_file::write_phase_file;
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
 use crate::imp::history::diff_and_cache::cacher::Cache;
+use crate::imp::history::file_name::file_name_props::FileNameProps;
 
 pub(crate) fn write_phase_a<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     tag : Option<String>,
     control : u32,
     diff_src: &S,
     cache : &mut C,
-    history_hash_dir: &Path) -> FsResult<()>{
+    history_hash_dir: &Path) -> FsResult<FileNameProps>{
 
     let file_name = calc_filename(tag.as_ref().map(|s| s.as_str()), control, None,&[0]);
-    let file_path = history_hash_dir.join(file_name);
+    let file_path = history_hash_dir.join(&file_name);
 
     let (initial, _) = cache.get_cache(vec![])?;
 
@@ -24,5 +25,7 @@ pub(crate) fn write_phase_a<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     diff.write_value(&mut vec)?;
     let data = PhaseData::new(vec.len() as u64);
 
-    write_phase_file(&data, &file_path, &vec)
+    write_phase_file(&data, &file_path, &vec)?;
+
+    FileNameProps::from(&file_name)
 }

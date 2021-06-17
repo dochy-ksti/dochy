@@ -6,7 +6,9 @@ use crate::imp::history::fs::next::next as fs_next;
 use crate::imp::history::file_hist::prepare_history_hash_dir::prepare_history_hash_dir;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
-use crate::imp::history::latest_file_info::latest_file_info::get_latest_file_info;
+use crate::imp::history::latest_file_info::latest_file_info::{get_latest_file_info, set_latest_file_info, LatestFileInfo};
+use crate::imp::history::fs::derive::derive;
+use crate::imp::history::file_name::file_name_props::FileNameProps;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 /// If the 'root' is not derived from the latest save file, calculate diff from the source JSON5 and save it.
@@ -23,14 +25,12 @@ use crate::imp::history::latest_file_info::latest_file_info::get_latest_file_inf
 /// * `name` - arbitrary string to distinguish files. It's appended to the file name.
 /// * 'root' - the object to save
 /// * 'cache' - Cached data to make the process faster.
-/// * 'options' - Options
 ///
 /// The algorithm to generate diffs is described [here](https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/src/sample_test/sample_code/history.md)
 pub fn save_history_file<P : AsRef<Path>>(history_dir: P,
                              tag : Option<String>,
                              root : &RootObject,
-                             cache : &mut DochyCache,
-                             options : &HistoryOptions) -> FsResult<()> {
+                             cache : &mut DochyCache) -> FsResult<FileNameProps> {
     let history_dir = history_dir.as_ref();
     let src = cache.current_src();
 
@@ -38,20 +38,13 @@ pub fn save_history_file<P : AsRef<Path>>(history_dir: P,
 
     let info = get_latest_file_info(history_dir, hash);
 
-    if info.is_some(){
-        let info = &info.unwrap();
+    if let Some(info) = info.as_ref(){
         if root.id_eq(info.latest_root_id()){
-
+            let latest_props = derive(tag, root, cache, &history_hash_dir, info.latest_base_file(), &HistoryOptions::new())?;
+            set_latest_file_info(history_dir, hash, Some(LatestFileInfo::new(root.id(), latest_props.clone())));
+            return Ok(latest_props);
         }
     }
 
-    // if let Ok(id) = read_identity_file_data(&history_hash_dir) {
-    //     if &id == root.identity() {
-    //         fs_next(tag, root, cache, &history_hash_dir, options)?;
-    //         return Ok(());
-    //     }
-    // }
-    // fs_start_new(tag, root, cache, &history_hash_dir, options.max_phase())?;
-    // write_identity_file_data(&history_hash_dir, root.identity())?;
-    Ok(())
+    fs_start_new(tag, root, cache, &history_hash_dir, HistoryOptions::new().max_phase())
 }

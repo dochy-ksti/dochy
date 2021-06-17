@@ -56,12 +56,10 @@ impl FileNameProps{
     //     history_hash_dir.as_ref().join(self.calc_filename())
     // }
 
-    pub(crate) fn create_next_phase_props(&self, tag : Option<String>, next_phase : usize) -> Option<FileNameProps> {
-        //dbg!(next_phase);
-        let n = self.control();
+    pub(crate) fn create_next_phase_props(&self, ctl : u32, tag : Option<String>, next_phase : usize) -> Option<FileNameProps> {
+
         let mut order : Vec<u32> = self.order()[0..next_phase].iter().map(|i| *i).collect();
         let len = self.order().len();
-        //dbg!(len);
         if next_phase == len{
             order.push(0);
         } else if next_phase < len{
@@ -69,7 +67,7 @@ impl FileNameProps{
         } else{
             return None;
         }
-        return Some(FileNameProps::new(n, n, order, tag).ok()?)
+        return Some(FileNameProps::new(ctl, self.control(), order, tag).ok()?)
     }
 
 }

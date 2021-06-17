@@ -33,7 +33,7 @@ fn test_diff_his() -> FsResult<()> {
         let p = RootObjectPtr::new(&mut root);
         set_int(p, "int", Qv::Val(i));
 
-        save_history_file(proj_dir_path, None, &root, &mut cache, &opt)?;
+        save_history_file(proj_dir_path, None, &root, &mut cache)?;
         let histories = list_histories(proj_dir_path)?;
 
         let newest = histories.get_newest_file_data()?;
@@ -55,7 +55,7 @@ fn test_diff_his() -> FsResult<()> {
     for i in 0..15 {
         set_int(p, "int", Qv::Val(i));
 
-        save_history_file(proj_dir_path, None, &root, &mut cache, &opt)?;
+        save_history_file(proj_dir_path, None, &root, &mut cache)?;
         let histories = list_histories(proj_dir_path)?;
 
         let newest = histories.get_newest_file_data()?;
