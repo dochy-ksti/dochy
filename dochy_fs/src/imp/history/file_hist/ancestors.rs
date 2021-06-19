@@ -24,46 +24,85 @@ impl Ancestors {
     }
 }
 
-
 fn create_ancestors(history: &FileHistory,
                     props: &FileNameProps,
                     max_phase: usize,
                     cumulative : bool) -> FsResult<Vec<FileNameProps>>{
     let mut vec : Vec<FileNameProps> = vec![];
 
-    let first_his = history.get_ctl(props.control())?;
-    let mut his = first_his;
     let len = props.order().len();
     if len == 0{
-        //nextのorderが空の時点で不正であるが、ここでは関知しない
         return Ok(vec);
     }
-
-    kokowoyare
-
-    for (i, order) in props.order().iter().take(len-1).enumerate(){
-        vec.push(his.items().get(order)?.clone());
-        if let Some(next_his) = his.children().get(order) {
-            his = next_his;
-        } else{
-            //cumulativeでない場合、ancestorはorderの最後の一つ前までである。
-            //orderの最後のファイルはこれから作るので当然まだ存在しないし、
-            //そのphaseがまだない場合childrenも存在していなくて正常
-            if i == len - 2 && props.order_last() == 0{
-                //別に場合分けしなくても、historyが不正でない限り結果は変わらないが・・・
-                return Ok(vec);
-            } else{
-                //ここに来るのは俺のバグなのでpanicでも良い・・・
-                Err(format!("Invalid history, order {:?} his {:?}", props.order(), first_his))?
-            }
-        }
-    }
-
     if len - 1 == max_phase && cumulative{
         let order_last = props.order_last();
-        for i in 0..order_last{
-            vec.push(his.items().get(&i)?.clone())
+        let order_base = &props.order()[0..len-1];
+        let parent = history.get_item(props.prev_ctol(), order_base)?{
+            for i in 0..order_last{
+                let ind = order_last - i - 1;
+                vec.push(parent.items().get(&ind)?.clone())
+            }
+        }
+
+    }
+
+    let mut props = props;
+    loop{
+        let prev_ctl = props.prev_ctl();
+        let len = props.order().len()-1;
+        if 1 <= len {
+            let order = &props.order()[0..len]
+            if let Some(p) = history.get_props(prev_ctl, order){
+                vec.push(p.clone());
+                props = p;
+            }
+        } else{
+            vec.reverse();
+            return Ok(vec)
         }
     }
-    return Ok(vec)
+
 }
+//
+// fn create_ancestors_b(history: &FileHistory,
+//                     props: &FileNameProps,
+//                     max_phase: usize,
+//                     cumulative : bool) -> FsResult<Vec<FileNameProps>>{
+//     let mut vec : Vec<FileNameProps> = vec![];
+//
+//     let first_his = history.get_ctl(props.control())?;
+//     let mut his = first_his;
+//     let len = props.order().len();
+//     if len == 0{
+//         //nextのorderが空の時点で不正であるが、ここでは関知しない
+//         return Ok(vec);
+//     }
+//
+//     kokowoyare
+//
+//     for (i, order) in props.order().iter().take(len-1).enumerate(){
+//         vec.push(his.items().get(order)?.clone());
+//         if let Some(next_his) = his.children().get(order) {
+//             his = next_his;
+//         } else{
+//             //cumulativeでない場合、ancestorはorderの最後の一つ前までである。
+//             //orderの最後のファイルはこれから作るので当然まだ存在しないし、
+//             //そのphaseがまだない場合childrenも存在していなくて正常
+//             if i == len - 2 && props.order_last() == 0{
+//                 //別に場合分けしなくても、historyが不正でない限り結果は変わらないが・・・
+//                 return Ok(vec);
+//             } else{
+//                 //ここに来るのは俺のバグなのでpanicでも良い・・・
+//                 Err(format!("Invalid history, order {:?} his {:?}", props.order(), first_his))?
+//             }
+//         }
+//     }
+//
+//     if len - 1 == max_phase && cumulative{
+//         let order_last = props.order_last();
+//         for i in 0..order_last{
+//             vec.push(his.items().get(&i)?.clone())
+//         }
+//     }
+//     return Ok(vec)
+// }

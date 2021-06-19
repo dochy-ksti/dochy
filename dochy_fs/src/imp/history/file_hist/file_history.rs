@@ -130,5 +130,13 @@ impl FileHistory{
             None
         }
     }
+
+    pub fn get_item(&self, ctl : u32, order : &[u32]) -> Option<&FileHistoryItem>{
+        if let Some(h) = self.ctls.get(&ctl){
+            h.get_item(order)
+        } else{
+            None
+        }
+    }
 }
 

@@ -51,10 +51,6 @@ impl FileNameProps{
                       ,self.order())
     }
 
-    // ///dir_path.join(filename)
-    // pub fn calc_file_path<P:AsRef<Path>>(&self, history_hash_dir: P) -> PathBuf{
-    //     history_hash_dir.as_ref().join(self.calc_filename())
-    // }
 
     pub(crate) fn create_next_phase_props(&self, ctl : u32, tag : Option<String>, next_phase : usize) -> Option<FileNameProps> {
 
