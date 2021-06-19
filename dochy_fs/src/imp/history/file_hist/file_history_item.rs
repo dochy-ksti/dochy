@@ -45,29 +45,19 @@ impl FileHistoryItem{
         self.items.iter().last()
     }
 
-    pub(crate) fn get_newest_prop(&self) -> Option<&FileNameProps>{
-        let mut his = self;
-        loop {
-            //dbg!(self.children.len());
-            //dbg!(self.items.len());
-            if let Some((&item_ind, prop)) = his.newest_item() {
-                if let Some((&child_ind, newest_child)) = his.newest_child() {
-                    if child_ind < item_ind{
-              //          dbg!(format!("child ind {} item ind {}", child_ind, item_ind));
-                        return Some(prop);
-                    } else {
-                //        dbg!("soko");
-                        his = newest_child;
-                    }
-                } else {
-                  //  dbg!("koko");
+    pub(crate) fn get_newest_prop(&self) -> Option<&FileNameProps> {
+        if let Some((&item_ind, prop)) = his.newest_item() {
+            if let Some((&child_ind, newest_child)) = his.newest_child() {
+                if child_ind < item_ind {
                     return Some(prop);
+                } else {
+                    newest_child.get_newest_prop()
                 }
-            }  else{
-                //dbg!("empty");
-                //historyがemptyの時だけここにくる
-                return None;
+            } else {
+                return Some(prop);
             }
+        } else {
+            return None;
         }
     }
 
@@ -78,5 +68,22 @@ impl FileHistoryItem{
                 self.children[a].flatten(vec);
             }
         }
+    }
+
+    pub(crate) fn get_props(&self, order : &[u32]) -> Option<&FileNameProps>{
+        if let Some(ind) = order.get(0) {
+            if order.len() == 1 {
+                self.items.get(ind)
+            } else {
+                if let Some(child) = self.children.get(ind){
+                    child.get_props(&order[1..])
+                } else{
+                    None
+                }
+            }
+        } else{
+            None
+        }
+
     }
 }
