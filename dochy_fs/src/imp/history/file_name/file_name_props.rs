@@ -39,6 +39,13 @@ impl FileNameProps{
     ///
     /// order.len >= 1
     pub fn order(&self) -> &[u32]{ &self.order }
+
+    /// the last item of the order is excluded
+    /// panics if the order.len() == 0
+    pub fn order_base(&self) -> &[u32]{
+        let len = self.order.len() - 1;
+        &self.order[0..len]
+    }
     pub(crate) fn order_last(&self) -> u32{ *self.order.last().unwrap() }
 
     /// string data users can append in this item's filename.

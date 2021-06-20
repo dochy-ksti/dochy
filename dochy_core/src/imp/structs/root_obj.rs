@@ -96,10 +96,8 @@ impl RootObject{
         Arc::downgrade(&self.id)
     }
 
-    pub fn id_eq(&self, id : &Weak<()>) -> bool{
-        if id.strong_count() == 0{
-            return false;
-        }
+    pub fn id_ptr_eq(&self, id : &Weak<()>) -> bool{
+        //WeakもArcも生きている。勝手にdropしたりしない
         id.as_ptr() == Arc::as_ptr(&self.id)
     }
 }

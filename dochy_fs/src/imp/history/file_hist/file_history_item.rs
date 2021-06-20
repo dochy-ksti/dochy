@@ -46,8 +46,8 @@ impl FileHistoryItem{
     }
 
     pub(crate) fn get_newest_prop(&self) -> Option<&FileNameProps> {
-        if let Some((&item_ind, prop)) = his.newest_item() {
-            if let Some((&child_ind, newest_child)) = his.newest_child() {
+        if let Some((&item_ind, prop)) = self.newest_item() {
+            if let Some((&child_ind, newest_child)) = self.newest_child() {
                 if child_ind < item_ind {
                     return Some(prop);
                 } else {

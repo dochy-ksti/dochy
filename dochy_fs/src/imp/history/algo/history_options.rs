@@ -125,7 +125,7 @@ pub struct HistoryOptionsBuilder {
 impl Default for HistoryOptionsBuilder {
     fn default() -> Self {
         Self{
-            max_phase : 4,
+            max_phase : 3,
             update_phase_a : true,
             cumulative : Some(CumulativeOptionsBuilder::default()),
         }

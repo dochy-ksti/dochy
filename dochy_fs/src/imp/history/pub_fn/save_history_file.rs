@@ -39,7 +39,7 @@ pub fn save_history_file<P : AsRef<Path>>(history_dir: P,
     let info = get_latest_file_info(history_dir, hash);
 
     if let Some(info) = info.as_ref(){
-        if root.id_eq(info.latest_root_id()){
+        if root.id_ptr_eq(info.latest_root_id()){
             let latest_props = derive(tag, root, cache, &history_hash_dir, info.latest_base_file(), &HistoryOptions::new())?;
             set_latest_file_info(history_dir, hash, Some(LatestFileInfo::new(root.id(), latest_props.clone())));
             return Ok(latest_props);

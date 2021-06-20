@@ -1,7 +1,6 @@
 use std::path::Path;
 use crate::error::FsResult;
 use crate::imp::history::file_hist::file_history::FileHistory;
-use crate::imp::history::file_hist::ancestors::{Ancestors};
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
 use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
@@ -24,8 +23,9 @@ pub(crate) fn load<
     let analyzed = analyze_file_name(&filename, Some(op.max_phase()))
         .ok_or_else(|| format!("invalid file name {}", &filename))?;
 
-    let ancestors = Ancestors::create(history,&analyzed, op.max_phase(), op.is_cumulative())?;
-    let mut paths = ancestors.calc_paths(dir_path);
-    paths.push(path.to_path_buf());
-    Ok(accumulate_diff(paths, cache)?)
+    unimplemented!()
+    // let ancestors = Ancestors::create(history,&analyzed, op.max_phase(), op.is_cumulative())?;
+    // let mut paths = ancestors.calc_paths(dir_path);
+    // paths.push(path.to_path_buf());
+    // Ok(accumulate_diff(paths, cache)?)
 }

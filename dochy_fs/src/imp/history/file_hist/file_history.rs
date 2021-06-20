@@ -10,13 +10,18 @@ use crate::imp::common::path::hash_dir_path::hash_dir_path;
 /// Represents every history file in a hash directory
 #[derive(Debug)]
 pub struct FileHistory{
-    ctls : BTreeMap<u32, FileHistoryItem>
+    ctls : BTreeMap<u32, FileHistoryItem>,
+    max_phase : usize,
+    cumulative : bool,
 }
 
 impl FileHistory{
-    pub(crate) fn new() -> FileHistory{
-        FileHistory{ ctls : BTreeMap::new() }
+    pub(crate) fn new(max_phase : usize, cumulative : bool) -> FileHistory{
+        FileHistory{ ctls : BTreeMap::new(), max_phase, cumulative }
     }
+
+    pub fn max_phase(&self) -> usize{ self.max_phase }
+    pub fn cumultavie(&self) -> bool{ self.cumulative }
 
     pub fn create<P : AsRef<Path>>(history_dir: P, hash : u128) -> FsResult<FileHistory>{
         let dir = hash_dir_path(history_dir.as_ref(), hash);
@@ -33,25 +38,25 @@ impl FileHistory{
     }
 
     ///returns old files which can be removed.
-    pub fn get_removable_old_items(&self, keep_latest : usize) -> Vec<&FileNameProps>{
+    pub fn get_removable_old_items(&self, keep_latest : usize) -> FsResult<Vec<&FileNameProps>>{
         let files = self.list_files();
-        let mut remover = HistoryRemover::from(self);
+        let mut remover = HistoryRemover::from(self)?;
         let num_remove = files.len() - keep_latest;
         for item in files.iter().skip(num_remove) {
-            remover.keep(item);
+            remover.keep(*item);
         }
         let props = remover.get_removable_props();
-        props
+        Ok(props)
     }
 
     /// Remove old files. Files will be deleted in this method,
     /// and this history will be inconsistent with saved files, so the history will be consumed.
     ///
     /// Returns file paths which is failed to remove if any.
-    pub fn remove_old_files<P:AsRef<Path>>(self, keep_latest : usize, history_hash_dir: P) -> Vec<PathBuf>{
-        let removables = self.get_removable_old_items(keep_latest);
+    pub fn remove_old_files<P:AsRef<Path>>(self, keep_latest : usize, history_hash_dir: P) -> FsResult<Vec<PathBuf>>{
+        let removables = self.get_removable_old_items(keep_latest)?;
         let failed = unsafe{ Self::remove_files(removables.iter().map(|a| *a), history_hash_dir) };
-        failed
+        Ok(failed)
     }
 
     /// remove files.
@@ -131,7 +136,7 @@ impl FileHistory{
         }
     }
 
-    pub fn get_item(&self, ctl : u32, order : &[u32]) -> Option<&FileHistoryItem>{
+    pub(crate) fn get_item(&self, ctl : u32, order : &[u32]) -> Option<&FileHistoryItem>{
         if let Some(h) = self.ctls.get(&ctl){
             h.get_item(order)
         } else{

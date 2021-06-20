@@ -4,7 +4,6 @@ use crate::imp::history::fs::first::first;
 use crate::imp::history::algo::phase_data::PhaseData;
 use crate::imp::history::algo::calc_next_phase::calc_next_phase;
 use crate::imp::history::fs::write_phase_file::write_phase_file;
-use crate::imp::history::file_hist::ancestors::{Ancestors};
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
 use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
@@ -13,6 +12,7 @@ use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::history::FileNameProps;
 use crate::imp::history::file_hist::file_history::FileHistory;
+use crate::imp::history::file_hist::ancestors::{create_ancestors_rev, calc_ancestors_paths};
 
 
 pub(crate) fn derive_impl<
@@ -26,20 +26,22 @@ pub(crate) fn derive_impl<
                      history : &FileHistory,
                      from : &FileNameProps,
                      options: &HistoryOptions) -> FsResult<FileNameProps> {
-    let from_file_path = history_hash_dir.as_ref().join(from.calc_filename());
+    let history_hash_dir = history_hash_dir.as_ref();
+    let from_file_path = history_hash_dir.join(from.calc_filename());
 
     let mut file = std::fs::File::open(&from_file_path)?;
     let (decoded, _) = dochy_compaction::enc_dec::decode::decode(&mut file)?;
     let mut data = PhaseData::decode(&decoded)?;
     let next_phase = calc_next_phase(&data, options);
-    let newest_ctl = history.get_newest_prop().control();
+    let newest_ctl = history.get_newest_prop()?.control();
     let next_ctl = if newest_ctl == from.control(){ newest_ctl } else{ newest_ctl + 1 };
     let next_prop = from.create_next_phase_props(next_ctl, tag, next_phase)?;
 
-    let ancestors = Ancestors::create(
-        &history, &next_prop, options.max_phase(), options.is_cumulative())? ;
+    let ancestors = create_ancestors_rev(&history, &from, options.max_phase(), options.is_cumulative())?;
+    let mut paths = calc_ancestors_paths(&ancestors, history_hash_dir);
+    paths.push(history_hash_dir.join(from.calc_filename()));
 
-    let composed = accumulate_diff(ancestors.calc_paths(history_hash_dir), cache)?;
+    let composed = accumulate_diff(paths, cache)?;
     let diff = diff_src.create_diff(&composed)?;
 
     let mut vec: Vec<u8> = vec![];
