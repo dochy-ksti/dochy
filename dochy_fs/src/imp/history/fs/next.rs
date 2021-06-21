@@ -1,17 +1,13 @@
 use std::path::Path;
 use crate::error::FsResult;
 use crate::imp::history::fs::first::first;
-use crate::imp::history::algo::phase_data::PhaseData;
-use crate::imp::history::algo::calc_next_phase::calc_next_phase;
-use crate::imp::history::fs::write_phase_file::write_phase_file;
-//use crate::imp::history::file_hist::ancestors::{Ancestors};
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
-use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
 use crate::imp::history::diff_and_cache::cacher::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
+use crate::imp::history::fs::derive_impl::derive_impl;
 
 
 pub(crate) fn next<
@@ -23,15 +19,17 @@ pub(crate) fn next<
                      cache : &mut C,
                      history_hash_dir: P,
                      options: &HistoryOptions) -> FsResult<FileNameProps> {
-    unimplemented!()
-    // let history_hash_dir = history_hash_dir.as_ref();
-    //
-    // let history = create_file_history(history_hash_dir, Some(options.max_phase()))?;
-    // let newest_prop = if let Some(prop) = history.get_newest_prop() {
-    //     prop
-    // } else {
-    //     return first(tag, diff_src, cache, history_hash_dir);
-    // };
+
+    let history_hash_dir = history_hash_dir.as_ref();
+
+    let history = create_file_history(history_hash_dir, options.max_phase(), options.is_cumulative())?;
+    let newest_prop = if let Some(prop) = history.get_newest_prop() {
+         prop
+    } else {
+         return first(tag, diff_src, cache, history_hash_dir);
+    };
+
+    derive_impl(tag, diff_src, cache, history_hash_dir, &history, newest_prop, options)
     //
     // //dbg!(&newest_prop);
     // let newest_file_path = history_hash_dir.join(newest_prop.calc_filename());

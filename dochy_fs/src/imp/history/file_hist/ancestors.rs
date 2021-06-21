@@ -26,6 +26,16 @@ use crate::error::FsResult;
 //     }
 // }
 
+pub(crate) fn create_ancestors_paths<'a>(history: &'a FileHistory,
+                                        props: &'a FileNameProps,
+                                        max_phase: usize,
+                                        cumulative : bool,
+                                         history_dir : &Path) -> FsResult<Vec<PathBuf>>{
+    let mut rev = create_ancestors_rev(history, props, max_phase, cumulative)?;
+    rev.reverse();
+    Ok(calc_ancestors_paths(&rev, history_dir))
+}
+
 pub(crate) fn calc_ancestors_paths(ancestors : &[&FileNameProps], history_dir : &Path) -> Vec<PathBuf>{
     ancestors.iter().map(|&props| history_dir.join(props.calc_filename())).collect()
 }

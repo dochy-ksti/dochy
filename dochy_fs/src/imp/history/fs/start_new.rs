@@ -14,10 +14,10 @@ pub(crate) fn start_new<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     diff_src : &S,
     cache : &mut C,
     history_hash_dir: &Path,
-    max_phase : usize) -> FsResult<FileNameProps>{
+    max_phase : usize, cumulative : bool) -> FsResult<FileNameProps>{
 
     //file history は OS にキャッシュされており、基本的にノーコストで取り出せる、と考えよう。そうしないと単純に出来ない
-    let history = create_file_history(history_hash_dir, Some(max_phase))?;
+    let history = create_file_history(history_hash_dir, max_phase, cumulative)?;
 
     if let Some(prop) = history.get_newest_prop(){
 

@@ -21,11 +21,11 @@ impl FileHistory{
     }
 
     pub fn max_phase(&self) -> usize{ self.max_phase }
-    pub fn cumultavie(&self) -> bool{ self.cumulative }
+    pub fn cumulative(&self) -> bool{ self.cumulative }
 
-    pub fn create<P : AsRef<Path>>(history_dir: P, hash : u128) -> FsResult<FileHistory>{
+    pub fn create<P : AsRef<Path>>(history_dir: P, hash : u128, max_phase : usize, cumulative : bool) -> FsResult<FileHistory>{
         let dir = hash_dir_path(history_dir.as_ref(), hash);
-        create_file_history(&dir, None)
+        create_file_history(&dir, max_phase, cumulative)
     }
 
     /// show every file in chronological order
@@ -40,10 +40,10 @@ impl FileHistory{
     ///returns old files which can be removed.
     pub fn get_removable_old_items(&self, keep_latest : usize) -> FsResult<Vec<&FileNameProps>>{
         let files = self.list_files();
-        let mut remover = HistoryRemover::from(self)?;
+        let remover = HistoryRemover::from(self)?;
         let num_remove = files.len() - keep_latest;
         for item in files.iter().skip(num_remove) {
-            remover.keep(*item);
+            remover.keep(*item)?;
         }
         let props = remover.get_removable_props();
         Ok(props)

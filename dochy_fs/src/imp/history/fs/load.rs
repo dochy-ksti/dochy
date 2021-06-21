@@ -3,10 +3,11 @@ use crate::error::FsResult;
 use crate::imp::history::file_hist::file_history::FileHistory;
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
-use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
 use crate::imp::history::diff_and_cache::cacher::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::imp::history::file_name::analyze_file_name::analyze_file_name;
+use crate::imp::history::file_hist::ancestors::create_ancestors_paths;
+use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
 
 
 pub(crate) fn load<
@@ -23,9 +24,7 @@ pub(crate) fn load<
     let analyzed = analyze_file_name(&filename, Some(op.max_phase()))
         .ok_or_else(|| format!("invalid file name {}", &filename))?;
 
-    unimplemented!()
-    // let ancestors = Ancestors::create(history,&analyzed, op.max_phase(), op.is_cumulative())?;
-    // let mut paths = ancestors.calc_paths(dir_path);
-    // paths.push(path.to_path_buf());
-    // Ok(accumulate_diff(paths, cache)?)
+    let mut paths = create_ancestors_paths(history, &analyzed, op.max_phase(), op.is_cumulative(), dir_path)?;
+    paths.push(path.to_path_buf());
+    Ok(accumulate_diff(paths, cache)?)
 }

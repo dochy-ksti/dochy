@@ -1,12 +1,7 @@
 use std::path::Path;
 use crate::error::FsResult;
-use crate::imp::history::fs::first::first;
-use crate::imp::history::algo::phase_data::PhaseData;
-use crate::imp::history::algo::calc_next_phase::calc_next_phase;
-use crate::imp::history::fs::write_phase_file::write_phase_file;
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
-use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
 use crate::imp::history::diff_and_cache::cacher::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::imp::history::file_hist::create_file_history::create_file_history;
@@ -26,7 +21,7 @@ pub(crate) fn derive<
                      options: &HistoryOptions) -> FsResult<FileNameProps> {
     let history_hash_dir = history_hash_dir.as_ref();
 
-    let history = create_file_history(history_hash_dir, Some(options.max_phase()))?;
+    let history = create_file_history(history_hash_dir, options.max_phase(), options.is_cumulative())?;
 
     derive_impl(tag, diff_src, cache, history_hash_dir, &history, from, options)
 }

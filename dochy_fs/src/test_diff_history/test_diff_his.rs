@@ -34,7 +34,7 @@ fn test_diff_his() -> FsResult<()> {
         set_int(p, "int", Qv::Val(i));
 
         save_history_file(proj_dir_path, None, &root, &mut cache)?;
-        let histories = list_histories(proj_dir_path)?;
+        let histories = list_histories(proj_dir_path, opt.max_phase(), opt.is_cumulative())?;
 
         let newest = histories.get_newest_file_data()?;
 
@@ -45,7 +45,7 @@ fn test_diff_his() -> FsResult<()> {
     }
 
     std::fs::copy("src/json_dir/simple_mod1/root.json5", &src_dir_path.join("root.json5"))?;
-    let histories = list_histories(proj_dir_path)?;
+    let histories = list_histories(proj_dir_path, opt.max_phase(), opt.is_cumulative())?;
     let newest = histories.get_newest_file_data()?;
 
     let mut root = load_history_file_data(proj_dir_path, &newest, &mut cache, &opt, false)?;
@@ -56,7 +56,7 @@ fn test_diff_his() -> FsResult<()> {
         set_int(p, "int", Qv::Val(i));
 
         save_history_file(proj_dir_path, None, &root, &mut cache)?;
-        let histories = list_histories(proj_dir_path)?;
+        let histories = list_histories(proj_dir_path, opt.max_phase(), opt.is_cumulative())?;
 
         let newest = histories.get_newest_file_data()?;
 
@@ -66,7 +66,7 @@ fn test_diff_his() -> FsResult<()> {
 
         histories.remove_old_files(5, proj_dir_path)?;
 
-        for (hash, name, size) in show_dir_contents_diff_history(proj_dir_path)?{
+        for (hash, name, size) in show_dir_contents_diff_history(proj_dir_path, opt.max_phase(), opt.is_cumulative())?{
             println!("{} {} {}", hash, name, size);
         }
 

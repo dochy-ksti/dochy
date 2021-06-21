@@ -1,6 +1,5 @@
 use once_cell::sync::Lazy;
 use std::path::{Path, PathBuf};
-use std::collections::HashMap;
 use parking_lot::{Mutex, MutexGuard};
 use std::sync::Weak;
 use crate::history::FileNameProps;

@@ -38,7 +38,7 @@ fn test_simple_diff_files() -> FsResult<()> {
         }
 
         next(None, &data, &mut cache,&dir, &op)?;
-        let history = create_file_history(&dir, Some(op.max_phase()))?;
+        let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
         let loaded = load(&history.newest_file_path(&dir)?, &history, &mut cache, &op)?;
         assert_eq!(loaded, data)
     }

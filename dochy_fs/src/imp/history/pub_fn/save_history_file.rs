@@ -2,7 +2,6 @@ use crate::error::FsResult;
 use std::path::Path;
 use crate::history::HistoryOptions;
 use dochy_core::structs::RootObject;
-use crate::imp::history::fs::next::next as fs_next;
 use crate::imp::history::file_hist::prepare_history_hash_dir::prepare_history_hash_dir;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
@@ -46,5 +45,6 @@ pub fn save_history_file<P : AsRef<Path>>(history_dir: P,
         }
     }
 
-    fs_start_new(tag, root, cache, &history_hash_dir, HistoryOptions::new().max_phase())
+    let opt = HistoryOptions::new();
+    fs_start_new(tag, root, cache, &history_hash_dir, opt.max_phase(), opt.is_cumulative())
 }
