@@ -1,8 +1,9 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use std::sync::atomic::AtomicBool;
 use crate::imp::history::file_hist::file_history_item::FileHistoryItem;
 use std::sync::atomic::Ordering;
+use crate::imp::history::remove::composite_remover::composite_remover;
 
 pub(crate) struct HistoryRemoverItem<'a>{
     cumulative : bool,
@@ -44,18 +45,22 @@ impl<'a> HistoryRemoverItem<'a>{
     /// 自分自身のRemovableをfalseにし、直近の親のorderを返す
     /// &mut selfにするとlifetimeの整合性が取れなかったので、interior mutabilityを使う(AtomicBoolなのでスレッドセーフ)
     pub(crate) fn keep(&self) -> Option<RemoveCueItem<'a>>{
+        let props = if let Some(props) = self.props { props } else {
+            return None;
+        };
+
         //特に何とも関わっていないと思うのでRelaxedでいいと思う
         if self.removable.load(Ordering::Relaxed) == false{ return None; }
 
         self.removable.store(false,Ordering::Relaxed);
-        if self.cumulative{
-            let order_last = self.props.order_last();
-            if order_last != 0{
-                return Some(RemoveCueItem::new(self.props.control(), self.props.order_base(), Some(order_last - 1)));
+        if self.cumulative {
+            let order_last = props.order_last();
+            if order_last != 0 {
+                return Some(RemoveCueItem::new(props.control(), props.order_base(), Some(order_last - 1)));
             }
         }
-        if self.props.order().len() != 1{
-            return Some(RemoveCueItem::new(self.props.prev_ctl(), self.props.order_base(), None));
+        if props.order().len() != 1{
+            return Some(RemoveCueItem::new(props.prev_ctl(), props.order_base(), None));
         } else{
             return None;
         }
@@ -63,33 +68,20 @@ impl<'a> HistoryRemoverItem<'a>{
 
     pub(crate) fn get_removable_props(&self, r : &mut Vec<&'a FileNameProps>){
         if self.removable.load(Ordering::Relaxed){
-            r.push(self.props)
+            if let Some(props) = self.props {
+                r.push(props)
+            }
         }
         for (_,child) in &self.children{
             child.get_removable_props(r);
         }
     }
 
-    pub(crate) fn from(src : &'a FileHistoryItem, props : Option<&'a FileNameProps>, max_phase : usize, cumulative_option : bool) -> HistoryRemoverItem<'a>{
-        let src_items = src.items();
-        let src_children = src.children();
-        let mut children : HashMap<u32, HistoryRemoverItem> = HashMap::with_capacity(src_children.len().max(src_items.len()));
+    pub(crate) fn from(src : &'a FileHistoryItem, props : Option<&'a FileNameProps>,
+                       cur_phase : usize, max_phase : usize, cumulative_option : bool) -> HistoryRemoverItem<'a>{
 
-        let cumulative = cumulative_option && max_phase - 1 == props.order().len();
-
-        let mut key_set = src_items.keys().collect::<HashSet<u32>>();
-        key_set.extend(src_children.keys());
-        for key in &key_set{
-            let props = src_items.get(key);
-            if let Some(child) = src_children.get(key) {
-                children.insert(*index, HistoryRemoverItem::from(child, props, max_phase, cumulative_option));
-            } else{
-                children.insert(*index, HistoryRemoverItem::new(cumulative, props, HashMap::new()));
-            }
-        }
-
-
-
-        HistoryRemoverItem::new(cumulative, props,  children)
+        let r = composite_remover(src.items(), src.children(), cur_phase, max_phase, cumulative_option);
+        let cumulative = cur_phase == max_phase && cumulative_option;
+        HistoryRemoverItem::new(cumulative, props,  r)
     }
 }

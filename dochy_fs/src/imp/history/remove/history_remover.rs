@@ -4,6 +4,7 @@ use crate::imp::history::remove::history_remover_item::{HistoryRemoverItem, Remo
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::error::FsResult;
 use crate::imp::history::file_hist::file_history_item::FileHistoryItem;
+use crate::imp::history::remove::composite_remover::composite_remover;
 
 /// Determines if files are safe to be removed
 pub struct HistoryRemover<'a>{
@@ -54,13 +55,9 @@ impl<'a> HistoryRemover<'a>{
 
 impl<'a> HistoryRemoverCtlItem<'a>{
     pub(crate) fn from(ctl : &'a FileHistoryItem, max_phase : usize, cumulative_option : bool) -> FsResult<HistoryRemoverCtlItem<'a>>{
-        let items = ctl.items();
-        let mut r : HashMap<u32, HistoryRemoverItem> = HashMap::with_capacity(items.len());
-        for (index, child) in ctl.children() {
-            let props = items.get(index)?;
-            r.insert(*index, HistoryRemoverItem::from(child, props, max_phase, cumulative_option));
-        }
-        Ok(HistoryRemoverCtlItem{ items: r })
+        let r = composite_remover(ctl.items(),ctl.children(),
+                                  0, max_phase, cumulative_option);
+        Ok(HistoryRemoverCtlItem{ items : r })
     }
 
     pub(crate) fn get_item_from_cue(&self, cue_order : &[u32], cue_order_last : Option<u32>) -> FsResult<&'a HistoryRemoverItem>{
