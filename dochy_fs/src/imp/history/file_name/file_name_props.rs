@@ -59,7 +59,7 @@ impl FileNameProps{
     }
 
 
-    pub(crate) fn create_next_phase_props(&self, ctl : u32, tag : Option<String>, next_phase : usize) -> Option<FileNameProps> {
+    pub(crate) fn create_next_phase_props(&self, history : &History, ctl : u32, tag : Option<String>, next_phase : usize) -> Option<FileNameProps> {
 
         let mut order : Vec<u32> = self.order()[0..next_phase].iter().map(|i| *i).collect();
         let len = self.order().len();
@@ -70,6 +70,7 @@ impl FileNameProps{
         } else{
             return None;
         }
+        kokowoyare
         return Some(FileNameProps::new(ctl, self.control(), order, tag).ok()?)
     }
 
