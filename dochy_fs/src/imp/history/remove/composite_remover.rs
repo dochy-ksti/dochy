@@ -10,7 +10,8 @@ pub(crate) fn composite_remover<'a>(props : &'a BTreeMap<u32, FileNameProps>,
                                 max_phase : usize,
                                 cumulative_option : bool)
         -> HashMap<u32, HistoryRemoverItem<'a>>{
-    let mut r : HashMap<u32, HistoryRemoverItem> = HashMap::with_capacity(props.len() + his.len());
+    let len = his.len().max(props.len());
+    let mut r : HashMap<u32, HistoryRemoverItem> = HashMap::with_capacity(len);
     let zipper = BTreeZipper::new(props, his);
     let cumulative = cumulative_option && cur_phase == max_phase;
 
