@@ -6,6 +6,7 @@ use crate::error::FsResult;
 use std::collections::BTreeMap;
 use crate::imp::history::remove::history_remover::HistoryRemover;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
+use crate::imp::history::file_hist::ancestors::create_ancestors_rev;
 
 /// Represents every history file in a hash directory
 #[derive(Debug)]
@@ -142,6 +143,12 @@ impl FileHistory{
         } else{
             None
         }
+    }
+
+    pub(crate) fn get_ancestor_ctl(&self, props : &FileNameProps, phase : usize) -> FsResult<u32>{
+        let v = create_ancestors_rev(self, props, self.max_phase, self.cumulative)?;
+        let len = v.len();
+        Ok(v.get(len - 1 - phase).control())
     }
 }
 

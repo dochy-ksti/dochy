@@ -10,7 +10,9 @@ use crate::imp::history::diff_and_cache::cacher::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::history::FileNameProps;
 use crate::imp::history::file_hist::file_history::FileHistory;
-use crate::imp::history::file_hist::ancestors::{create_ancestors_rev, calc_ancestors_paths};
+use crate::imp::history::file_hist::ancestors::{create_ancestors_rev, calc_ancestors_paths, create_ancestors};
+use crate::imp::history::fs::start_new::{start_new, start_new_impl};
+use crate::imp::history::fs::first::first;
 
 
 pub(crate) fn derive_impl<
@@ -27,17 +29,35 @@ pub(crate) fn derive_impl<
     let history_hash_dir = history_hash_dir.as_ref();
     let from_file_path = history_hash_dir.join(from.calc_filename());
 
+    let newest_ctl = if let Some(np) = history.get_newest_prop(){
+        np.control()
+    } else{
+        Err(format!("{} couldn't be found", from.calc_filename()))?
+    };
+    let next_ctl = if newest_ctl == from.control(){ newest_ctl } else{ newest_ctl + 1 };
+
     let mut file = std::fs::File::open(&from_file_path)?;
     let (decoded, _) = dochy_compaction::enc_dec::decode::decode(&mut file)?;
     let mut data = PhaseData::decode(&decoded)?;
     let next_phase = calc_next_phase(&data, options);
-    let newest_ctl = history.get_newest_prop()?.control();
-    let next_ctl = if newest_ctl == from.control(){ newest_ctl } else{ newest_ctl + 1 };
-    let next_prop = from.create_next_phase_props(next_ctl, tag, next_phase)?;
+    if next_phase == 0{
+        return start_new_impl(tag, diff_src, cache, history_hash_dir, history);
+    }
 
-    let ancestors = create_ancestors_rev(&history, &from, options.max_phase(), options.is_cumulative())?;
+    let mut ancestors = create_ancestors(&history, &from, options.max_phase(), options.is_cumulative())?;
+
+    let ancestors = if next_phase == from.phase() + 1 ||
+        options.is_cumulative() && from.phase() == options.max_phase() && next_phase == from.phase(){
+        ancestors.push(from);
+        ancestors.as_slice()
+    } else{
+        //後ろに戻るのはfromが最終フェーズの場合だけ
+        &ancestors[0..next_phase-1]
+    };
+
+    let next_prop = ancestors.last()?.create_next_phase_props(next_ctl, tag, next_phase == options.max_phase())?;
+
     let mut paths = calc_ancestors_paths(&ancestors, history_hash_dir);
-    paths.push(history_hash_dir.join(from.calc_filename()));
 
     let composed = accumulate_diff(paths, cache)?;
     let diff = diff_src.create_diff(&composed)?;

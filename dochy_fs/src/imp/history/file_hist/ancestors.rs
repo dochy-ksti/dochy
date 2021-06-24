@@ -40,6 +40,17 @@ pub(crate) fn calc_ancestors_paths(ancestors : &[&FileNameProps], history_dir : 
     ancestors.iter().map(|&props| history_dir.join(props.calc_filename())).collect()
 }
 
+///最も遠い祖先から直近の親まで並べる
+pub(crate) fn create_ancestors<'a>(history: &'a FileHistory,
+                                   props: &'a FileNameProps,
+                                   max_phase: usize,
+                                   cumulative : bool) -> FsResult<Vec<&'a FileNameProps>>{
+    let mut r = create_ancestors_rev(history, props, max_phase, cumulative)?;
+    r.reverse();
+    Ok(r)
+}
+
+
 ///直近の親からスタートして、最も遠い祖先まで並べる。なので通常の親子関係の逆順になる
 pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
                     props: &'a FileNameProps,

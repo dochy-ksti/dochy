@@ -1,6 +1,7 @@
 use crate::imp::history::file_name::calc_filename::calc_filename;
 use crate::error::FsResult;
 use crate::imp::history::file_name::analyze_file_name::analyze_file_name;
+use crate::imp::history::file_hist::file_history::FileHistory;
 
 ///Metadata history files' filename contains.
 ///The filename can be precisely restored from it.
@@ -40,6 +41,9 @@ impl FileNameProps{
     /// order.len >= 1
     pub fn order(&self) -> &[u32]{ &self.order }
 
+    /// self.order.len() - 1
+    pub fn phase(&self) -> usize{ self.order.len() - 1 }
+
     /// the last item of the order is excluded
     /// panics if the order.len() == 0
     pub fn order_base(&self) -> &[u32]{
@@ -59,18 +63,13 @@ impl FileNameProps{
     }
 
 
-    pub(crate) fn create_next_phase_props(&self, history : &History, ctl : u32, tag : Option<String>, next_phase : usize) -> Option<FileNameProps> {
-
-        let mut order : Vec<u32> = self.order()[0..next_phase].iter().map(|i| *i).collect();
-        let len = self.order().len();
-        if next_phase == len{
-            order.push(0);
-        } else if next_phase < len{
-            order.push(self.order[next_phase] + 1);
-        } else{
-            return None;
+    pub(crate) fn create_next_phase_props(&self, ctl : u32, tag : Option<String>, is_last_phase : bool) -> Option<FileNameProps> {
+        let mut order = self.order.clone();
+        if is_last_phase{
+            let order_last = self.order_last();
+            *order.last_mut() = order_last + 1;
         }
-        kokowoyare
+
         return Some(FileNameProps::new(ctl, self.control(), order, tag).ok()?)
     }
 
