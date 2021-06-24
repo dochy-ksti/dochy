@@ -1,4 +1,5 @@
 use crate::error::FsResult;
+use once_cell::sync::Lazy;
 
 /// Customize how we build history files.
 ///
@@ -29,6 +30,13 @@ use crate::error::FsResult;
 ///     Ok(())
 /// }
 /// ```
+/// You need to use the same options for a history_hash_dir.
+/// Changing the value causes an undefined behavior.
+///
+/// When you modify the source Dochy file, a new history_hash_dir will be created,
+/// so you can change the options at the very time.
+///
+/// You can use () for AsRef<HistoryOptions> to assign the default value.
 #[derive(Debug, Clone)]
 pub struct HistoryOptions {
     max_phase : usize,
@@ -153,3 +161,15 @@ impl Default for CumulativeOptionsBuilder {
     }
 }
 
+impl AsRef<HistoryOptions> for HistoryOptions{
+    fn as_ref(&self) -> &HistoryOptions {
+        &self
+    }
+}
+
+impl AsRef<HistoryOptions> for (){
+    fn as_ref(&self) -> &HistoryOptions {
+        static DEF : Lazy<HistoryOptions> = Lazy::new(|| HistoryOptions::new());
+        DEF.as_ref()
+    }
+}

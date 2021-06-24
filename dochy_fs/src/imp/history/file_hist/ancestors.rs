@@ -40,7 +40,7 @@ pub(crate) fn calc_ancestors_paths(ancestors : &[&FileNameProps], history_dir : 
     ancestors.iter().map(|&props| history_dir.join(props.calc_filename())).collect()
 }
 
-///最も遠い祖先から直近の親まで並べる
+///最も遠い祖先から自分自身まで並べる
 pub(crate) fn create_ancestors<'a>(history: &'a FileHistory,
                                    props: &'a FileNameProps,
                                    max_phase: usize,
@@ -50,13 +50,28 @@ pub(crate) fn create_ancestors<'a>(history: &'a FileHistory,
     Ok(r)
 }
 
+///ancestors から next_phase までを切り出す。cumulativeかどうか、最終フェーズかどうかにより最後を含むかどうかが変わる
+pub(crate) fn create_dependencies<'a,'b>(ancestors : &'b[&'a FileNameProps],
+                                      next_phase : usize,
+                                      max_phase: usize,
+                                      cumulative : bool) -> FsResult<&'b[&'a FileNameProps]>{
+    if next_phase == max_phase && cumulative {
+        Ok(ancestors)
+    } else {
+        if next_phase <= ancestors.len() {
+            Ok(&ancestors[0..next_phase])
+        } else{
+            Err("create dependencies failed")?
+        }
+    }
+}
 
-///直近の親からスタートして、最も遠い祖先まで並べる。なので通常の親子関係の逆順になる
+///自分自身からスタートして、最も遠い祖先まで並べる。なので通常の親子関係の逆順になる
 pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
                     props: &'a FileNameProps,
                     max_phase: usize,
                     cumulative : bool) -> FsResult<Vec<&'a FileNameProps>>{
-    let mut vec : Vec<&FileNameProps> = vec![];
+    let mut vec : Vec<&FileNameProps> = vec![props];
 
     let len = props.order().len();
     if len == 0{
@@ -64,23 +79,27 @@ pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
     }
     let mut props = props;
 
-    if len - 1 == max_phase && cumulative {
-        let order_last = props.order_last();
-        let order_base = props.order_base();
-        let parent =
+    if len - 1 == max_phase{
+        if cumulative {
+            let order_last = props.order_last();
+            let order_base = props.order_base();
+            let parent =
             if let Some(parent) = history.get_item(props.prev_ctl(), order_base) {
-                parent
+            parent
             } else {
-                Err(format!("missing ancestor {} {:?}", props.prev_ctl(), order_base))?
+            Err(format!("missing ancestor {} {:?}", props.prev_ctl(), order_base))?
             };
 
-        for inv_i in 0..order_last {
-            let ind = order_last - 1 - inv_i;
-            if let Some(p) = parent.items().get(&ind) {
+            for inv_i in 0..order_last {
+                let ind = order_last - 1 - inv_i;
+                if let Some(p) = parent.items().get(&ind) {
                 vec.push(p);
-            } else{
+                } else{
                 Err(format!("missing ancestor {} {:?}", props.prev_ctl(), order_base))?
+                }
             }
+        } else{
+            vec.pop();
         }
     }
 

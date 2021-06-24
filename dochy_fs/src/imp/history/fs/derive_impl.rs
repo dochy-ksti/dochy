@@ -10,7 +10,7 @@ use crate::imp::history::diff_and_cache::cacher::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::history::FileNameProps;
 use crate::imp::history::file_hist::file_history::FileHistory;
-use crate::imp::history::file_hist::ancestors::{create_ancestors_rev, calc_ancestors_paths, create_ancestors};
+use crate::imp::history::file_hist::ancestors::{create_ancestors_rev, calc_ancestors_paths, create_ancestors, create_dependencies};
 use crate::imp::history::fs::start_new::{start_new, start_new_impl};
 use crate::imp::history::fs::first::first;
 
@@ -45,15 +45,7 @@ pub(crate) fn derive_impl<
     }
 
     let mut ancestors = create_ancestors(&history, &from, options.max_phase(), options.is_cumulative())?;
-
-    let ancestors = if next_phase == from.phase() + 1 ||
-        options.is_cumulative() && from.phase() == options.max_phase() && next_phase == from.phase(){
-        ancestors.push(from);
-        ancestors.as_slice()
-    } else{
-        //後ろに戻るのはfromが最終フェーズの場合だけ
-        &ancestors[0..next_phase-1]
-    };
+    let ancestors = create_dependencies(&ancestors, next_phase, options.max_phase(), options.is_cumulative())?;
 
     let next_prop = ancestors.last()?.create_next_phase_props(next_ctl, tag, next_phase == options.max_phase())?;
 

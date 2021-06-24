@@ -8,7 +8,7 @@ use crate::imp::history::fs::load::load;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::next::next;
 
-//#[test]
+#[test]
 fn test_simple_diff_files() -> FsResult<()> {
     let dir = temp_dir();
     let mut rng = rand::thread_rng();

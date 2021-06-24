@@ -1,6 +1,5 @@
 /target
 Cargo.lock
 /.idea/
-save_dir/*
-history_dir/*
-!.gitkeep
+save_dir/
+history_dir/

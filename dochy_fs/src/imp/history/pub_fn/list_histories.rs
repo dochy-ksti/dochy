@@ -5,10 +5,10 @@ use crate::error::FsResult;
 use crate::imp::history::file_hist::file_histories::FileHistories;
 
 
-pub fn list_histories<P:AsRef<Path>>(history_dir : P) -> FsResult<FileHistories>{
+pub fn list_histories<P:AsRef<Path>, Q : AsRef<HistoryOptions>>(history_dir : P, options : Q) -> FsResult<FileHistories>{
     let history_dir = history_dir.as_ref();
     let hash_times = get_hash_times(history_dir)?;
-    let opt = HistoryOptions::new();
+    let opt = options.as_ref();
 
     let mut vec : Vec<(u128, FileHistory)> = vec![];
     for (hash, _time) in hash_times{

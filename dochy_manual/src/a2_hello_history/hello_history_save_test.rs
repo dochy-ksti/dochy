@@ -15,7 +15,7 @@ fn hello_history_save_test() -> DpResult<()> {
     root.set_data2("data2'".to_string());
 
     let history_dir = "src/a2_hello_history/history_dir";
-    let his = list_histories(history_dir)?;
+    let his = list_histories(history_dir, ())?;
     his.remove_old_files(0, history_dir)?;
     let mut cache = DochyCache::new(
         CurrentSrc::from_src_dir(src_dir));

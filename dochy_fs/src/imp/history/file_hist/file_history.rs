@@ -148,7 +148,7 @@ impl FileHistory{
     pub(crate) fn get_ancestor_ctl(&self, props : &FileNameProps, phase : usize) -> FsResult<u32>{
         let v = create_ancestors_rev(self, props, self.max_phase, self.cumulative)?;
         let len = v.len();
-        Ok(v.get(len - 1 - phase).control())
+        Ok(v.get(len - 1 - phase)?.control())
     }
 }
 

@@ -67,7 +67,7 @@ impl FileNameProps{
         let mut order = self.order.clone();
         if is_last_phase{
             let order_last = self.order_last();
-            *order.last_mut() = order_last + 1;
+            *order.last_mut()? = order_last + 1;
         }
 
         return Some(FileNameProps::new(ctl, self.control(), order, tag).ok()?)

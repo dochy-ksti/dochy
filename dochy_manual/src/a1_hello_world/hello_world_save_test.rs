@@ -5,7 +5,7 @@ use dochy::fs::filesys::{save_file};
 use dochy::fs::common::CurrentSrc;
 use std::path::PathBuf;
 
-//#[test]
+#[test]
 fn hello_world_save_test() -> DpResult<()> {
     let root = json_dir_to_root("src/a1_hello_world/some_dir", true)?;
 
