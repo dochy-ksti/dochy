@@ -6,7 +6,6 @@ use crate::error::FsResult;
 use std::collections::BTreeMap;
 use crate::imp::history::remove::history_remover::HistoryRemover;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
-use crate::imp::history::file_hist::ancestors::create_ancestors_rev;
 
 /// Represents every history file in a hash directory
 #[derive(Debug)]
@@ -125,9 +124,9 @@ impl FileHistory{
         his.insert_props(index, props);
     }
 
-    pub(crate) fn get_ctl(&self, control : u32) -> Option<&FileHistoryItem>{
-        self.ctls.get(&control)
-    }
+    // pub(crate) fn get_ctl(&self, control : u32) -> Option<&FileHistoryItem>{
+    //     self.ctls.get(&control)
+    // }
 
     pub fn get_props(&self, ctl : u32, order : &[u32]) -> Option<&FileNameProps>{
         if let Some(h) = self.ctls.get(&ctl){
@@ -145,10 +144,10 @@ impl FileHistory{
         }
     }
 
-    pub(crate) fn get_ancestor_ctl(&self, props : &FileNameProps, phase : usize) -> FsResult<u32>{
-        let v = create_ancestors_rev(self, props, self.max_phase, self.cumulative)?;
-        let len = v.len();
-        Ok(v.get(len - 1 - phase)?.control())
-    }
+    // pub(crate) fn get_ancestor_ctl(&self, props : &FileNameProps, phase : usize) -> FsResult<u32>{
+    //     let v = create_ancestors_rev(self, props, self.max_phase, self.cumulative)?;
+    //     let len = v.len();
+    //     Ok(v.get(len - 1 - phase)?.control())
+    // }
 }
 

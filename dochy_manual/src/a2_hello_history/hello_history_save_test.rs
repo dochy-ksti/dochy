@@ -4,7 +4,7 @@ use crate::a2_hello_history::hello_history_accessor::RootIntf;
 use dochy::fs::filesys::{save_file};
 use dochy::fs::common::CurrentSrc;
 use std::path::{PathBuf, Path};
-use dochy::fs::history::{save_history_file, DochyCache, HistoryOptions, list_histories};
+use dochy::fs::history::{save_history_file, DochyCache, list_histories};
 
 #[test]
 fn hello_history_save_test() -> DpResult<()> {
@@ -29,7 +29,7 @@ fn hello_history_save_test() -> DpResult<()> {
     let paths : Vec<PathBuf> = dochy::fs::common::hash_dir_paths(history_dir)?.collect();
     assert_eq!(paths.len(), 1);
 
-    print_file_data(&paths[0])?;
+    //print_file_data(&paths[0])?;
 
     let root = json_dir_to_root(src_dir, true)?;
 

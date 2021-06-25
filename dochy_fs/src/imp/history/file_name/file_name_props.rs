@@ -1,7 +1,6 @@
 use crate::imp::history::file_name::calc_filename::calc_filename;
 use crate::error::FsResult;
 use crate::imp::history::file_name::analyze_file_name::analyze_file_name;
-use crate::imp::history::file_hist::file_history::FileHistory;
 
 ///Metadata history files' filename contains.
 ///The filename can be precisely restored from it.

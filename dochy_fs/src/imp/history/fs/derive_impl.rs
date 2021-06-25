@@ -10,9 +10,8 @@ use crate::imp::history::diff_and_cache::cacher::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::history::FileNameProps;
 use crate::imp::history::file_hist::file_history::FileHistory;
-use crate::imp::history::file_hist::ancestors::{create_ancestors_rev, calc_ancestors_paths, create_ancestors, create_dependencies};
-use crate::imp::history::fs::start_new::{start_new, start_new_impl};
-use crate::imp::history::fs::first::first;
+use crate::imp::history::file_hist::ancestors::{calc_ancestors_paths, create_ancestors, create_dependencies};
+use crate::imp::history::fs::start_new::{start_new_impl};
 
 
 pub(crate) fn derive_impl<
@@ -44,12 +43,12 @@ pub(crate) fn derive_impl<
         return start_new_impl(tag, diff_src, cache, history_hash_dir, history);
     }
 
-    let mut ancestors = create_ancestors(&history, &from, options.max_phase(), options.is_cumulative())?;
+    let ancestors = create_ancestors(&history, &from, options.max_phase(), options.is_cumulative())?;
     let ancestors = create_dependencies(&ancestors, next_phase, options.max_phase(), options.is_cumulative())?;
 
     let next_prop = ancestors.last()?.create_next_phase_props(next_ctl, tag, next_phase == options.max_phase())?;
 
-    let mut paths = calc_ancestors_paths(&ancestors, history_hash_dir);
+    let paths = calc_ancestors_paths(&ancestors, history_hash_dir);
 
     let composed = accumulate_diff(paths, cache)?;
     let diff = diff_src.create_diff(&composed)?;
