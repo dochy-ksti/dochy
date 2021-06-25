@@ -12,14 +12,16 @@ fn hello_world_save_test() -> DpResult<()> {
     let mut root = RootIntf::new(root);
     root.set_message("Hello the next world".to_string());
 
-    let saved_path = save_file(
+    std::fs::create_dir("src/a1_hello_world/save_dir").ok();
+
+    let _saved_path = save_file(
         "src/a1_hello_world/save_dir",
         root.root_obj_ref(),
         &CurrentSrc::SrcDir(PathBuf::from("src/a1_hello_world/some_dir")),
         "next_world.dochy",
         true)?;
 
-    println!("{:?}", &saved_path);
+    //println!("{:?}", &saved_path);
 
     Ok(())
 }

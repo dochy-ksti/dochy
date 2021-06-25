@@ -15,6 +15,8 @@ fn hello_history_save_test() -> DpResult<()> {
     root.set_data2("data2'".to_string());
 
     let history_dir = "src/a2_hello_history/history_dir";
+
+    std::fs::create_dir(history_dir).ok();
     let his = list_histories(history_dir, ())?;
     his.remove_old_files(0, history_dir)?;
     let mut cache = DochyCache::new(
@@ -35,6 +37,7 @@ fn hello_history_save_test() -> DpResult<()> {
     root.set_data2("data2'".to_string());
 
     let save_dir = "src/a2_hello_history/save_dir";
+    std::fs::create_dir(save_dir).ok();
 
     save_file(
         save_dir,
@@ -55,7 +58,7 @@ fn hello_history_save_test() -> DpResult<()> {
     let paths : Vec<PathBuf> = dochy::fs::common::hash_dir_paths(save_dir)?.collect();
     assert_eq!(paths.len(), 1);
 
-    print_file_data(&paths[0])?;
+    //print_file_data(&paths[0])?;
     Ok(())
 }
 
