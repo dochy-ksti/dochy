@@ -1,13 +1,13 @@
 // use dochy::error::DpResult;
-// use crate::a1_hello_world::hello_world_accessor::RootIntf;
+// use crate::a2_hello_history::hello_history_accessor::RootIntf;
 // use dochy::fs::filesys::{ load_saved_file, list_saved_files};
 // use dochy::fs::common::CurrentSrc;
 // use std::path::PathBuf;
 //
 // #[test]
 // fn hello_world_load_test() -> DpResult<()> {
-//     let save_dir = "src/a1_hello_world/save_dir";
-//     let files = list_saved_files(save_dir)?;
+//     let save_dir = "src/a2_hello_history/history_dir";
+//     dochy::fs::history::list_histories()
 //
 //     let file = files.iter().find(|f| f.name() == "next_world.dochy")?;
 //

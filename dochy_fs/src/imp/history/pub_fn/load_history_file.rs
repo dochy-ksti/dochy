@@ -15,14 +15,17 @@ use crate::imp::history::file_hist::history_file_data::HistoryFileData;
 /// Concurrent access to a history_dir is not supported.
 /// Concurrent load and save, save and save, load and load access can cause problems,
 /// so use synchronization if you want to access concurrently.
-pub fn load_history_file<P : AsRef<Path>>(history_dir : P,
-                                          hash : u128,
-                                          props : &FileNameProps,
-                                          history : &FileHistory,
-                                          cache : &mut DochyCache,
-                                          op : &HistoryOptions,
-                                          validation : bool) -> FsResult<RootObject> {
+pub fn load_history_file<
+    P : AsRef<Path>,
+    Op : AsRef<HistoryOptions>>(history_dir : P,
+                                hash : u128,
+                                props : &FileNameProps,
+                                history : &FileHistory,
+                                cache : &mut DochyCache,
+                                op : Op,
+                                validation : bool) -> FsResult<RootObject> {
     let history_dir = history_dir.as_ref();
+    let op = op.as_ref();
 
     match load_impl(history_dir, hash, props, history, cache, op, validation){
         Ok(root) =>{

@@ -26,10 +26,10 @@ use crate::imp::history::file_name::file_name_props::FileNameProps;
 /// * 'cache' - Cached data to make the process faster.
 ///
 /// The algorithm to generate diffs is described [here](https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/src/sample_test/sample_code/history.md)
-pub fn save_history_file<P : AsRef<Path>>(history_dir: P,
+pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_dir: P,
                              tag : Option<String>,
                              root : &RootObject,
-                             cache : &mut DochyCache) -> FsResult<FileNameProps> {
+                             cache : &mut DochyCache, opt : Op) -> FsResult<FileNameProps> {
     let history_dir = history_dir.as_ref();
     let src = cache.current_src();
 
@@ -45,6 +45,6 @@ pub fn save_history_file<P : AsRef<Path>>(history_dir: P,
         }
     }
 
-    let opt = HistoryOptions::new();
+    let opt = opt.as_ref();
     fs_start_new(tag, root, cache, &history_hash_dir, opt.max_phase(), opt.is_cumulative())
 }

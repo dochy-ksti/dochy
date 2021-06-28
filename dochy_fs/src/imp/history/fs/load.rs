@@ -14,17 +14,19 @@ pub(crate) fn load<
     V : DiffValue,
     S : DiffSrc<V>,
     C : Cache<V, S>,
-    P : AsRef<Path>>(diff_file_path: P,
+    P : AsRef<Path>,
+    Op : AsRef<HistoryOptions>>(diff_file_path: P,
                      history : &FileHistory,
                      cache : &mut C,
-                     op : &HistoryOptions) -> FsResult<S> {
+                     opt : Op) -> FsResult<S> {
     let path = diff_file_path.as_ref();
+    let opt = opt.as_ref();
     let dir_path = path.parent()?;
     let filename = path.file_name()?.to_string_lossy().to_string();
-    let analyzed = analyze_file_name(&filename, Some(op.max_phase()))
+    let analyzed = analyze_file_name(&filename, Some(opt.max_phase()))
         .ok_or_else(|| format!("invalid file name {}", &filename))?;
 
-    let mut paths = create_ancestors_paths(history, &analyzed, op.max_phase(), op.is_cumulative(), dir_path)?;
+    let mut paths = create_ancestors_paths(history, &analyzed, opt.max_phase(), opt.is_cumulative(), dir_path)?;
     paths.push(path.to_path_buf());
     Ok(accumulate_diff(paths, cache)?)
 }

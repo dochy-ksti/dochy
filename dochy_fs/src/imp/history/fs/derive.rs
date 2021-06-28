@@ -13,15 +13,16 @@ pub(crate) fn derive<
     V : DiffValue,
     S: DiffSrc<V>,
     C : Cache<V, S>,
-    P : AsRef<Path>>(tag : Option<String>,
+    P : AsRef<Path>,
+    Op : AsRef<HistoryOptions>>(tag : Option<String>,
                      diff_src: &S,
                      cache : &mut C,
                      history_hash_dir: P,
                      from : &FileNameProps,
-                     options: &HistoryOptions) -> FsResult<FileNameProps> {
+                     opt: Op) -> FsResult<FileNameProps> {
     let history_hash_dir = history_hash_dir.as_ref();
+    let opt = opt.as_ref();
+    let history = create_file_history(history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
 
-    let history = create_file_history(history_hash_dir, options.max_phase(), options.is_cumulative())?;
-
-    derive_impl(tag, diff_src, cache, history_hash_dir, &history, from, options)
+    derive_impl(tag, diff_src, cache, history_hash_dir, &history, from, opt)
 }

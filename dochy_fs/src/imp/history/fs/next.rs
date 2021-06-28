@@ -14,22 +14,24 @@ pub(crate) fn next<
     V : DiffValue,
     S: DiffSrc<V>,
     C : Cache<V, S>,
-    P : AsRef<Path>>(tag : Option<String>,
-                     diff_src: &S,
-                     cache : &mut C,
-                     history_hash_dir: P,
-                     options: &HistoryOptions) -> FsResult<FileNameProps> {
+    P : AsRef<Path>,
+    Op : AsRef<HistoryOptions>>(tag : Option<String>,
+                                diff_src: &S,
+                                cache : &mut C,
+                                history_hash_dir: P,
+                                opt: Op) -> FsResult<FileNameProps> {
 
     let history_hash_dir = history_hash_dir.as_ref();
+    let opt = opt.as_ref();
 
-    let history = create_file_history(history_hash_dir, options.max_phase(), options.is_cumulative())?;
+    let history = create_file_history(history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
     let newest_prop = if let Some(prop) = history.get_newest_prop() {
          prop
     } else {
          return first(tag, diff_src, cache, history_hash_dir);
     };
 
-    derive_impl(tag, diff_src, cache, history_hash_dir, &history, newest_prop, options)
+    derive_impl(tag, diff_src, cache, history_hash_dir, &history, newest_prop, opt)
     //
     // //dbg!(&newest_prop);
     // let newest_file_path = history_hash_dir.join(newest_prop.calc_filename());

@@ -18,13 +18,15 @@ pub(crate) fn derive_impl<
     V : DiffValue,
     S: DiffSrc<V>,
     C : Cache<V, S>,
-    P : AsRef<Path>>(tag : Option<String>,
-                     diff_src: &S,
-                     cache : &mut C,
-                     history_hash_dir: P,
-                     history : &FileHistory,
-                     from : &FileNameProps,
-                     options: &HistoryOptions) -> FsResult<FileNameProps> {
+    P : AsRef<Path>,
+    Op : AsRef<HistoryOptions>>(tag : Option<String>,
+                                diff_src: &S,
+                                cache : &mut C,
+                                history_hash_dir: P,
+                                history : &FileHistory,
+                                from : &FileNameProps,
+                                opt: Op) -> FsResult<FileNameProps> {
+    let options = opt.as_ref();
     let history_hash_dir = history_hash_dir.as_ref();
     let from_file_path = history_hash_dir.join(from.calc_filename());
 
