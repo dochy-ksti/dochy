@@ -4,6 +4,7 @@ use parking_lot::{Mutex, MutexGuard};
 use std::sync::Weak;
 use crate::history::FileNameProps;
 
+#[derive(Debug, Clone)]
 pub struct LatestFileInfo{
     latest_root_id : Weak<()>,
     latest_base_file : FileNameProps,
@@ -23,22 +24,25 @@ pub fn get_mutex<'a, P : AsRef<Path>>(history_hash_dir_path : P, hash : u128) ->
     static ST : Lazy<Mutex<Vec<(PathBuf, u128, Box<Mutex<Option<LatestFileInfo>>>)>>> = Lazy::new(||{
         Mutex::new(Vec::new())
     });
-    let mut vec = ST.lock();
-    //パスの比較は、多少の表記ゆれなら吸収できる（何も信頼は出来ないが・・・)
-    if vec.iter().any(|(p,h, _)| *h == hash && p == path) == false{
-        vec.push((path.to_path_buf(), hash, Box::new(Mutex::new(None))));
-    }
-    let (_,_,b) =vec.iter().find(|(p,h,_)| *h == hash && p == path).unwrap();
+    let ptr: *const _ = {
+        let mut vec = ST.lock();
+        //パスの比較は、多少の表記ゆれなら吸収できる（何も信頼は出来ないが・・・)
+        if vec.iter().any(|(p, h, _)| *h == hash && p == path) == false {
+            vec.push((path.to_path_buf(), hash, Box::new(Mutex::new(None))));
+        }
+        let (_, _, b) = vec.iter().find(|(p, h, _)| *h == hash && p == path).unwrap();
 
-    //最初のMutexのlockが解除されるように、vecへの参照をとらず中のMutexだけもらいたい。
-    //Boxed ptrなので移動することはないし、削除ルーチンがないので削除されることもないから、ポインタにしてもOKなはずである
-    let ptr : *const _ = &**b;
+        //最初のMutexのlockが解除されるように、vecへの参照をとらず中のMutexだけもらいたい。
+        //Boxed ptrなので移動することはないし、削除ルーチンがないので削除されることもないから、ポインタにしてもOKなはずである
+        b.as_ref()
 
+    };
     return unsafe{ &*ptr }
 }
 
 pub fn get_latest_file_info<'a, P : AsRef<Path>>(history_dir_path : P, hash : u128) -> MutexGuard<'a, Option<LatestFileInfo>>{
-    get_mutex(history_dir_path, hash).lock()
+    let a = get_mutex(history_dir_path, hash).lock();
+    a
 }
 
 pub fn set_latest_file_info<P : AsRef<Path>>(history_dir_path : P, hash : u128, latest_file_info : Option<LatestFileInfo>){

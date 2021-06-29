@@ -11,7 +11,7 @@ pub(crate) struct SdData{
 
 impl SdData{
     pub(crate) fn new() -> SdData{
-        SdData{ bytes : std::iter::repeat(0).take(10_000).collect()}
+        SdData{ bytes : std::iter::repeat(0).take(20).collect()}
     }
 
     pub(crate) fn len(&self) -> usize{ self.bytes.len() }

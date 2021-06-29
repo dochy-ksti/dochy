@@ -53,13 +53,33 @@ pub(crate) fn create_ancestors<'a>(history: &'a FileHistory,
 ///ancestors から next_phase までを切り出す。cumulativeかどうか、最終フェーズかどうかにより最後を含むかどうかが変わる
 pub(crate) fn create_dependencies<'a,'b>(ancestors : &'b[&'a FileNameProps],
                                       next_phase : usize,
+                                      ctl : u32,
+                                      tag : Option<String>,
                                       max_phase: usize,
-                                      cumulative : bool) -> FsResult<&'b[&'a FileNameProps]>{
+                                      cumulative : bool) -> FsResult<(&'b[&'a FileNameProps], FileNameProps)>{
+
+    let len = ancestors.len();
+    if len == 0{
+        return Err("no ancestors")?;
+    }
+
+    let last_prop = *ancestors.last().unwrap();
+    let mut order = last_prop.order().to_vec();
+    if order.len() - 1 < max_phase{
+        order.push(0);
+    } else if next_phase == max_phase{
+        *order.last_mut().unwrap() += 1;
+    } else {
+        order = order[0..next_phase+1].to_vec();
+        *order.last_mut().unwrap() += 1;
+    }
+    let props = FileNameProps::new(ctl, last_prop.control(), order, tag)?;
+
     if next_phase == max_phase && cumulative {
-        Ok(ancestors)
+        Ok((ancestors, props))
     } else {
         if next_phase <= ancestors.len() {
-            Ok(&ancestors[0..next_phase])
+            Ok((&ancestors[0..next_phase], props))
         } else{
             Err("create dependencies failed")?
         }
@@ -84,18 +104,20 @@ pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
             let order_last = props.order_last();
             let order_base = props.order_base();
             let parent =
-            if let Some(parent) = history.get_item(props.prev_ctl(), order_base) {
-            parent
-            } else {
-            Err(format!("missing ancestor {} {:?}", props.prev_ctl(), order_base))?
-            };
+                if let Some(parent) = history.get_item(props.control(), order_base) {
+                    parent
+                } else {
+                    Err(format!("missing ancestor {} {:?}", props.control(), order_base))?
+                };
+
+
 
             for inv_i in 0..order_last {
                 let ind = order_last - 1 - inv_i;
                 if let Some(p) = parent.items().get(&ind) {
-                vec.push(p);
+                    vec.push(p);
                 } else{
-                Err(format!("missing ancestor {} {:?}", props.prev_ctl(), order_base))?
+                    Err(format!("missing ancestor {} {:?}", props.prev_ctl(), order_base))?
                 }
             }
         } else{

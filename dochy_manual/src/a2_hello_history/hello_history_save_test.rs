@@ -38,6 +38,7 @@ fn hello_history_save_test() -> DpResult<()> {
     let loaded2 = load_history_file(history_dir, file_data.hash(), file_data.props(), file_data.history(), &mut cache, (), false)?;
     let mut loaded2 = RootIntf::new(loaded2);
     assert_eq!(loaded2.data2(), "data2'".to_string());
+
     assert_eq!(loaded2.data3(), "data3'".to_string());
 
 

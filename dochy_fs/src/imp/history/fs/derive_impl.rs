@@ -45,10 +45,9 @@ pub(crate) fn derive_impl<
         return start_new_impl(tag, diff_src, cache, history_hash_dir, history);
     }
 
-    let ancestors = create_ancestors(&history, &from, options.max_phase(), options.is_cumulative())?;
-    let ancestors = create_dependencies(&ancestors, next_phase, options.max_phase(), options.is_cumulative())?;
-
-    let next_prop = ancestors.last()?.create_next_phase_props(next_ctl, tag, next_phase == options.max_phase())?;
+    let ancestors1 = create_ancestors(&history, &from, options.max_phase(), options.is_cumulative())?;
+    //dbg!(&ancestors1);
+    let (ancestors, next_props) = create_dependencies(&ancestors1, next_phase, next_ctl, tag, options.max_phase(), options.is_cumulative())?;
 
     let paths = calc_ancestors_paths(&ancestors, history_hash_dir);
 
@@ -61,9 +60,9 @@ pub(crate) fn derive_impl<
     //ファイルに書き込む前に先にlenを求める必要がある
     data.pop_and_push(next_phase, vec.len() as u64);
 
-    let next_file_path = history_hash_dir.join(&next_prop.calc_filename());
+    let next_file_path = history_hash_dir.join(&next_props.calc_filename());
 
     write_phase_file(&data, &next_file_path, &vec)?;
 
-    Ok(next_prop)
+    Ok(next_props)
 }

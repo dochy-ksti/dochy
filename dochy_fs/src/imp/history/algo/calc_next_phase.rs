@@ -5,6 +5,7 @@ use crate::imp::history::algo::history_options::HistoryOptions;
 pub(crate) fn calc_next_phase(data : &PhaseData, op : &HistoryOptions) -> usize{
     let len = data.len();
     let max_phase = op.max_phase();
+
     if len <= max_phase{
         return len;
     }

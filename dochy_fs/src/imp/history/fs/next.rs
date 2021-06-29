@@ -28,7 +28,7 @@ pub(crate) fn next<
     let newest_prop = if let Some(prop) = history.get_newest_prop() {
          prop
     } else {
-         return first(tag, diff_src, cache, history_hash_dir);
+        return first(tag, diff_src, cache, history_hash_dir);
     };
 
     derive_impl(tag, diff_src, cache, history_hash_dir, &history, newest_prop, opt)
