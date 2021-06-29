@@ -35,13 +35,26 @@ fn hello_history_save_test() -> DpResult<()> {
     root.set_data3("data3'".to_string());
     save_history_file(history_dir, None, root.root_obj_ref(), &mut cache, ())?;
 
+    let his = list_histories(history_dir, ())?;
+    let file_data = his.get_newest_file_data().unwrap();
+
     let loaded2 = load_history_file(history_dir, file_data.hash(), file_data.props(), file_data.history(), &mut cache, (), false)?;
     let mut loaded2 = RootIntf::new(loaded2);
     assert_eq!(loaded2.data2(), "data2'".to_string());
-
     assert_eq!(loaded2.data3(), "data3'".to_string());
 
-
+    let his = list_histories(history_dir, ())?;
+    let d = his.list_files()[0];
+    let prev_load = load_history_file(history_dir, d.hash(), d.props(), d.history(), &mut cache, (), false)?;
+    let mut p_l = RootIntf::new(prev_load);
+    p_l.set_data3("data3'''".to_string());
+    save_history_file(history_dir, None, p_l.root_obj_ref(), &mut cache, ())?;
+    let his = list_histories(history_dir, ())?;
+    let d = his.get_newest_file_data().unwrap();
+    let loaded3 = load_history_file(history_dir, d.hash(), d.props(), d.history(), &mut cache, (), false)?;
+    let loaded3 = RootIntf::new(loaded3);
+    assert_eq!(loaded3.data2(), "data2'".to_string());
+    assert_eq!(loaded3.data3(), "data3'''".to_string());
 
     Ok(())
 }
