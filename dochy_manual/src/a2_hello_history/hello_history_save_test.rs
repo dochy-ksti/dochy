@@ -2,7 +2,7 @@ use dochy::error::DpResult;
 use dochy::core::json_dir_to_root;
 use crate::a2_hello_history::hello_history_accessor::RootIntf;
 use dochy::fs::filesys::{save_file};
-use dochy::fs::common::CurrentSrc;
+use dochy::fs::common::{CurrentSrc, hash_dir_path};
 use std::path::{PathBuf, Path};
 use dochy::fs::history::{save_history_file, DochyCache, list_histories, load_history_file};
 
@@ -48,14 +48,14 @@ fn hello_history_save_test() -> DpResult<()> {
     let prev_load = load_history_file(history_dir, d.hash(), d.props(), d.history(), &mut cache, (), false)?;
     let mut p_l = RootIntf::new(prev_load);
     p_l.set_data3("data3'''".to_string());
-    save_history_file(history_dir, None, p_l.root_obj_ref(), &mut cache, ())?;
+    let a = save_history_file(history_dir, None, p_l.root_obj_ref(), &mut cache, ())?;
     let his = list_histories(history_dir, ())?;
     let d = his.get_newest_file_data().unwrap();
     let loaded3 = load_history_file(history_dir, d.hash(), d.props(), d.history(), &mut cache, (), false)?;
     let loaded3 = RootIntf::new(loaded3);
     assert_eq!(loaded3.data2(), "data2'".to_string());
     assert_eq!(loaded3.data3(), "data3'''".to_string());
-
+    print_file_data(hash_dir_path(history_dir, d.hash()))?;
     Ok(())
 }
 
