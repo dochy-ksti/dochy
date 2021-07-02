@@ -10,7 +10,6 @@ pub(crate) fn create_file_history(history_hash_dir: &Path, max_phase : usize, cu
     for entry in dir {
         let entry = entry?;
         let filename = entry.path().file_name()?.to_string_lossy().to_string();
-        //dbg!(format!("filename {}", &filename));
         if let Some(props) = analyze_file_name(&filename, Some(max_phase)) {
             history.add(props)
         }

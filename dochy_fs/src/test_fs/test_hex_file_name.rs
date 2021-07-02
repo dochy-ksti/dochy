@@ -9,7 +9,6 @@ fn test_hex_file_name() {
             assert_eq!(val, hex);
         }
         None =>{
-            dbg!("file_name_to_hex failed");
             assert!(false)
         },
     }

@@ -111,8 +111,6 @@ fn find(sizes : &SizeList, child : &FileHistoryItem2, depth_goal : usize,
 
 fn check(items : &BTreeMap<u32, (FileNameProps, u64)>, count : usize) -> bool{
     if count < items.len(){
-        //let s = format!("items.len {} count {}", items.len(), count);
-        //dbg!(s);
         return false;
     } else{
         return true;

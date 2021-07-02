@@ -57,7 +57,6 @@ pub(crate) fn analyze_file_name(s : &str, hint_max_phase : Option<usize>) -> Opt
     };
 
     let prev_ctl = get_prev_ctl(s);
-
     let mut s = if let Some(prev_ctl) = prev_ctl{
         &s[(prev_ctl.len() + 2)..]
     } else{
@@ -115,7 +114,7 @@ fn get_prev_ctl(s : &str) -> Option<&str>{
     }
     for (i,c) in bytes.iter().skip(1).enumerate(){
         if *c == ')' as u8{
-            return Some(&s[1..i])
+            return Some(&s[1..i+1])
         }
     }
     return None;

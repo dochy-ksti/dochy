@@ -13,7 +13,6 @@ fn general_to_simple_test() -> ArcResult<()>{
         })?)?{
 
         let archive = read_archive_data(&mut buf.as_slice())?;
-        dbg!(&archive);
 
         resume_archive("./src/output/general_to_simple", &archive, true)?;
         Ok(())

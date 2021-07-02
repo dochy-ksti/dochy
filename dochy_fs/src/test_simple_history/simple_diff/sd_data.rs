@@ -33,7 +33,6 @@ impl SdData{
             }
             index += 1;
         }
-        //dbg!(index);
         for n in 0..num{
             *self.bytes.get_mut(index + n as usize)? = num;
         }

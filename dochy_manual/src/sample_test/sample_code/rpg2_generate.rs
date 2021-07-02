@@ -12,7 +12,6 @@ fn rpg2_generate() {
             ).unwrap();
         }
         Err(e) => {
-            dbg!(e);
             assert!(false);
         }
     }

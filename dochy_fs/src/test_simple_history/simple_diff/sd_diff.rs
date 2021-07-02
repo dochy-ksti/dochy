@@ -44,7 +44,6 @@ impl SdDiff{
     pub(crate) fn decode_kvals(kvals : &[KVal]) -> FsResult<SdDiff>{
         let mut iter = kvals.iter();
         let len = iter.next()?.as_i64()? as usize;
-        //dbg!(len);
         let mut vec : Vec<SdDiffItem> = vec_with_capacity_safe(len)?;
 
         for _ in 0..len{

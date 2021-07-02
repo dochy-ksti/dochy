@@ -64,10 +64,8 @@ fn save_test() -> FsResult<()> {
     }
 
     for file in list_files(proj_dir_path)?{
-        dbg!(file);
     }
 
 
-    dbg!("ok");
     Ok(())
 }

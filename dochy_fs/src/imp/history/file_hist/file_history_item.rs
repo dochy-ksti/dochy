@@ -56,7 +56,9 @@ impl FileHistoryItem{
             } else {
                 return Some(prop);
             }
-        } else {
+        } else if let Some((&child_ind, newest_child)) = self.newest_child() {
+            newest_child.get_newest_prop()
+        } else{
             return None;
         }
     }

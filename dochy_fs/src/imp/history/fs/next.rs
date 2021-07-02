@@ -33,16 +33,12 @@ pub(crate) fn next<
 
     derive_impl(tag, diff_src, cache, history_hash_dir, &history, newest_prop, opt)
     //
-    // //dbg!(&newest_prop);
     // let newest_file_path = history_hash_dir.join(newest_prop.calc_filename());
-    // //dbg!(&newest_file_path);
     // let mut file = std::fs::File::open(&newest_file_path)?;
     // let (decoded, _) = dochy_compaction::enc_dec::decode::decode(&mut file)?;
     // let mut data = PhaseData::decode(&decoded)?;
     // let next_phase = calc_next_phase(&data, options);
-    // //dbg!(next_phase);
     // let next_prop = newest_prop.create_next_phase_props(newest_prop.control(), tag, next_phase)?;
-    // //dbg!(&next_prop);
     // //let ancestors = Ancestors::create(&history, &next_prop, max_phase, cumulative, dir_path.into());
     // let ancestors = Ancestors::create(
     //     &history, &next_prop, options.max_phase(), options.is_cumulative())? ;

@@ -13,7 +13,6 @@ fn generate_version_awareness() {
             .unwrap();
         }
         Err(e) => {
-            dbg!(e);
             assert!(false);
         }
     }
@@ -30,7 +29,6 @@ fn generate_version_awareness2() {
                 .unwrap();
         }
         Err(e) => {
-            dbg!(e);
             assert!(false);
         }
     }

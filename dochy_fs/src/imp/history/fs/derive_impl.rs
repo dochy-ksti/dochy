@@ -46,7 +46,6 @@ pub(crate) fn derive_impl<
     }
 
     let ancestors1 = create_ancestors(&history, &from, options.max_phase(), options.is_cumulative())?;
-    //dbg!(&ancestors1);
     let (ancestors, next_props) = create_dependencies(&ancestors1, next_phase, next_ctl, tag, options.max_phase(), options.is_cumulative())?;
 
     let paths = calc_ancestors_paths(&ancestors, history_hash_dir);

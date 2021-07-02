@@ -58,10 +58,8 @@ fn users() -> DpResult<()>{
 
     let mut e = ZlibEncoder::new(Vec::new(), Compression::default());
     let js = std::fs::read("src/sample_code_json/users/users.json5")?;
-    dbg!(js.len());
     e.write_all(&js)?;
     let compressed_bytes = e.finish()?;
-    dbg!(compressed_bytes.len());
 
     let mut from = dochy::core::json_dir_to_root(
         ini_path, false)?;

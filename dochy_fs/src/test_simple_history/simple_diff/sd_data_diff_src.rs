@@ -20,13 +20,10 @@ impl DiffSrc<SdDiff> for SdData{
     //     let mut base = SdData::new();
     //     for data in ancestors.iterate_file_data(){
     //         let data = data?;
-    //         //dbg!(data.len());
     //         let diff = SdDiff::decode_kvals(&data)?;
-    //         //dbg!(diff.len());
     //         base.apply_diff(&diff)?;
     //     }
     //     let diff = create_diff(&base, self);
-    //     //dbg!(&diff);
     //     diff.encode(write)?;
     //     Ok(())
     // }

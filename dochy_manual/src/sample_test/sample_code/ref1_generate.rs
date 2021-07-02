@@ -12,7 +12,6 @@ fn ref1_generate() {
             ).unwrap();
         }
         Err(e) => {
-            dbg!(e);
             assert!(false);
         }
     }

@@ -12,7 +12,6 @@ fn mlilst_mut_generate() {
             ).unwrap();
         }
         Err(e) => {
-            dbg!(e);
             assert!(false);
         }
     }

@@ -7,6 +7,7 @@ use crate::common::remove_hash_dir;
 use crate::error::FsResult;
 
 /// Represents every file history in every hash directory of a project
+#[derive(Debug)]
 pub struct FileHistories{
     vec : Vec<(u128, FileHistory)>,
 }

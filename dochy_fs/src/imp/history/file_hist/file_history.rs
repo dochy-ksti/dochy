@@ -116,7 +116,6 @@ impl FileHistory{
 
     pub(crate) fn add(&mut self, props : FileNameProps){
         let mut his = self.insert_or_get_mut(props.control());
-        //dbg!(props.order().len());
         for &order in &props.order()[0..(props.order().len()-1)]{
             his = his.insert_or_get_mut(order);
         }

@@ -12,7 +12,6 @@ fn clilst_old_generate() {
             ).unwrap();
         }
         Err(e) => {
-            dbg!(e);
             assert!(false);
         }
     }

@@ -13,11 +13,9 @@ pub(crate) fn create_file_history2(dir_path : &Path, hint_max_phase : Option<usi
         let filename = entry.path().file_name()?.to_string_lossy().to_string();
         let len = entry.metadata()?.len();
 
-        //dbg!(format!("filename {}", &filename));
         if let Some(props) = analyze_file_name(&filename, hint_max_phase) {
             let mut file = std::fs::File::open(entry.path())?;
             let (_,tag_size) = decode(&mut file)?;
-            //dbg!(tag_size);
             let size = len - tag_size as u64;
             history.add(props, size)
         }

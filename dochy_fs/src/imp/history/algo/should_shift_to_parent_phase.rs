@@ -15,13 +15,6 @@ pub fn should_shift_to_parent_phase(
     let len = 1 + descendant_total_len;
     let average_parent_shift = size as f64 / len as f64;
 
-    // dbg!(parent_size);
-    // dbg!(descendant_total_size);
-    // dbg!(descendant_total_len);
-    // dbg!(current_total_size);
-    // dbg!(current_total_len);
-    // dbg!(average_normal_shift);
-    // dbg!(average_parent_shift);
 
     return average_normal_shift > average_parent_shift;
 }

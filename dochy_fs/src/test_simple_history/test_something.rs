@@ -7,7 +7,7 @@
 //     let count = (hoge - 1) as usize;
 //     let mut vec : Vec<usize> = Vec::new();
 //     // match vec.try_reserve(count){
-//     //     Ok(_) =>{ dbg!("ok"); }
+//     //     Ok(_) =>{  }
 //     //     Err(e) =>{ Err(format!("{:?}", e))? }
 //     // }
 //     //let vec : Vec<usize> = Vec::with_capacity(count);
