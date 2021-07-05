@@ -11,7 +11,7 @@ fn clilst_new_generate() {
                 &ans.to_string(),
             ).unwrap();
         }
-        Err(e) => {
+        Err(_e) => {
             assert!(false);
         }
     }

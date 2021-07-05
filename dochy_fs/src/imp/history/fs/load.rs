@@ -26,6 +26,6 @@ pub(crate) fn load<
     let analyzed = analyze_file_name(&filename, Some(opt.max_phase()))
         .ok_or_else(|| format!("invalid file name {}", &filename))?;
 
-    let mut paths = create_ancestors_paths(history, &analyzed, opt.max_phase(), opt.is_cumulative(), dir_path)?;
+    let paths = create_ancestors_paths(history, &analyzed, opt.max_phase(), opt.is_cumulative(), dir_path)?;
     Ok(accumulate_diff(paths, cache)?)
 }

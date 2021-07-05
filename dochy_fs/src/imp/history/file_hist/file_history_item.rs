@@ -56,7 +56,7 @@ impl FileHistoryItem{
             } else {
                 return Some(prop);
             }
-        } else if let Some((&child_ind, newest_child)) = self.newest_child() {
+        } else if let Some((&_child_ind, newest_child)) = self.newest_child() {
             newest_child.get_newest_prop()
         } else{
             return None;
@@ -64,11 +64,13 @@ impl FileHistoryItem{
     }
 
     pub(crate) fn flatten<'a, 'b>(&'a self, vec : &'b mut Vec<&'a FileNameProps>){
-        for (a,b) in &self.items{
+        for (_a,b) in &self.items{
             vec.push(b);
-            if self.children.contains_key(a){
-                self.children[a].flatten(vec);
-            }
+
+        }
+
+        for(_a, b) in &self.children{
+            b.flatten(vec);
         }
     }
 

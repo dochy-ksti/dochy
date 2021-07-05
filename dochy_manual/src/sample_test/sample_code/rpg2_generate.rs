@@ -11,7 +11,7 @@ fn rpg2_generate() {
                 &ans.to_string(),
             ).unwrap();
         }
-        Err(e) => {
+        Err(_e) => {
             assert!(false);
         }
     }

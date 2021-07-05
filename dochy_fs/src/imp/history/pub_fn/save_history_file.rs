@@ -8,6 +8,7 @@ use crate::imp::history::fs::start_new::start_new as fs_start_new;
 use crate::imp::history::latest_file_info::latest_file_info::{get_latest_file_info, set_latest_file_info, LatestFileInfo};
 use crate::imp::history::fs::derive::derive;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
+use crate::imp::history::file_hist::create_file_history::create_file_history;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 /// If the 'root' is not derived from the latest save file, calculate diff from the source JSON5 and save it.
@@ -31,6 +32,7 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
                              root : &RootObject,
                              cache : &mut DochyCache, opt : Op) -> FsResult<FileNameProps> {
     let history_dir = history_dir.as_ref();
+    let opt = opt.as_ref();
     let src = cache.current_src();
 
     let (history_hash_dir, hash) = prepare_history_hash_dir(history_dir, src)?;
@@ -40,6 +42,13 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
 
     if let Some(info) = info.as_ref() {
         if root.id_ptr_eq(info.latest_root_id()) {
+            let latest = if info.latest_base_file().phase() ==  opt.max_phase(){
+                let history = create_file_history(&history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
+                history.
+            } else{
+                info.latest_base_file()
+            }
+
             let latest = derive(tag, root, cache, &history_hash_dir, info.latest_base_file(), &HistoryOptions::new())?;
             set_latest_file_info(history_dir, hash, Some(LatestFileInfo::new(root.id(), latest.clone())));
             return Ok(latest);

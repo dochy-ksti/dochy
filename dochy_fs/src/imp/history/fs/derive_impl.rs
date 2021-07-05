@@ -30,12 +30,12 @@ pub(crate) fn derive_impl<
     let history_hash_dir = history_hash_dir.as_ref();
     let from_file_path = history_hash_dir.join(from.calc_filename());
 
-    let newest_ctl = if let Some(np) = history.get_newest_prop(){
-        np.control()
+    let np = if let Some(np) = history.get_newest_prop(){
+        np
     } else{
         Err(format!("{} couldn't be found", from.calc_filename()))?
     };
-    let next_ctl = if newest_ctl == from.control(){ newest_ctl } else{ newest_ctl + 1 };
+    let next_ctl = if np == from{ np.control() } else{ np.control() + 1 };
 
     let mut file = std::fs::File::open(&from_file_path)?;
     let (decoded, _) = dochy_compaction::enc_dec::decode::decode(&mut file)?;

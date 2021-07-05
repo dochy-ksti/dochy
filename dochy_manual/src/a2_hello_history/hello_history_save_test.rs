@@ -1,9 +1,8 @@
 use dochy::error::DpResult;
 use dochy::core::json_dir_to_root;
 use crate::a2_hello_history::hello_history_accessor::RootIntf;
-use dochy::fs::filesys::{save_file};
 use dochy::fs::common::{CurrentSrc, hash_dir_path};
-use std::path::{PathBuf, Path};
+use std::path::{Path};
 use dochy::fs::history::{save_history_file, DochyCache, list_histories, load_history_file};
 use dochy::core::structs::RootObject;
 
@@ -22,12 +21,15 @@ fn hello_history_save_test() -> DpResult<()> {
         CurrentSrc::from_src_dir(src_dir));
 
     for counter in 0..10{
-        save_twice(history_dir, root, counter, &mut cache);
+        save_twice(history_dir, root, counter, &mut cache)?;
         root = load_prev_file(history_dir, &mut cache)?;
     }
     let his = list_histories(history_dir, ())?;
     let d = his.get_newest_file_data()?;
 
+    let r = load_history_file(history_dir, d.hash(), d.props(), d.history(), &mut cache, (), false)?;
+    let r = RootIntf::new(r);
+    println!("{}", r.data1());
     print_file_data(hash_dir_path(history_dir, d.hash()))?;
     Ok(())
 }
@@ -46,7 +48,7 @@ fn save_twice(history_dir : &Path, root : RootObject, counter : usize, cache : &
     txt.push_str(&format!("{}", counter));
     r.set_data1(txt.clone());
     save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
-    txt.push_str(&format!("{}", counter+1));
+    txt.push_str(&format!("{}", counter));
     r.set_data1(txt);
     save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
     Ok(())
