@@ -12,6 +12,6 @@ impl SdCache{
 
 impl Cache<SdDiff, SdData> for SdCache{
     fn get_cache(&mut self, pathes: Vec<PathBuf>) -> FsResult<(SdData, Vec<PathBuf>)> {
-        Ok((SdData::new(), pathes))
+        Ok((SdData::new(None), pathes))
     }
 }

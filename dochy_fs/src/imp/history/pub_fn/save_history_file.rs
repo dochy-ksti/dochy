@@ -5,10 +5,11 @@ use dochy_core::structs::RootObject;
 use crate::imp::history::file_hist::prepare_history_hash_dir::prepare_history_hash_dir;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
-use crate::imp::history::latest_file_info::latest_file_info::{get_latest_file_info, set_latest_file_info, LatestFileInfo};
+use crate::imp::history::latest_file_info::latest_file_info::{get_current_root_obj_info, set_current_root_Obj_info, CurrentRootObjInfo};
 use crate::imp::history::fs::derive::derive;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
+use crate::imp::history::fs::derive_impl::derive_impl;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 /// If the 'root' is not derived from the latest save file, calculate diff from the source JSON5 and save it.
@@ -38,19 +39,20 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
     let (history_hash_dir, hash) = prepare_history_hash_dir(history_dir, src)?;
 
 
-    let info = get_latest_file_info(history_dir, hash).clone();
+    let info = get_current_root_obj_info(history_dir, hash).clone();
 
     if let Some(info) = info.as_ref() {
-        if root.id_ptr_eq(info.latest_root_id()) {
-            let latest = if info.latest_base_file().phase() ==  opt.max_phase(){
-                let history = create_file_history(&history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
-                history.
+        if root.id_ptr_eq(info.current_root_id()) {
+            let history = create_file_history(&history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
+            let from = if info.current_base_file().phase() ==  opt.max_phase() && info.is_latest() == false{
+                //最新ファイルの読み出しでない場合、キャッシュ効率を上げるため、最終フェーズからの派生では一つ前から派生する
+                history.get_parent(info.current_base_file())?
             } else{
-                info.latest_base_file()
-            }
+                info.current_base_file()
+            };
 
-            let latest = derive(tag, root, cache, &history_hash_dir, info.latest_base_file(), &HistoryOptions::new())?;
-            set_latest_file_info(history_dir, hash, Some(LatestFileInfo::new(root.id(), latest.clone())));
+            let latest = derive_impl(tag, root, cache, &history_hash_dir, &history, from, opt)?;
+            set_current_root_Obj_info(history_dir, hash, Some(CurrentRootObjInfo::new(root.id(), latest.clone(), true)));
             return Ok(latest);
         }
     }
@@ -58,6 +60,6 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
 
     let opt = opt.as_ref();
     let latest = fs_start_new(tag, root, cache, &history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
-    set_latest_file_info(history_dir, hash, Some(LatestFileInfo::new(root.id(), latest.clone())));
+    set_current_root_Obj_info(history_dir, hash, Some(CurrentRootObjInfo::new(root.id(), latest.clone(), true)));
     return Ok(latest);
 }

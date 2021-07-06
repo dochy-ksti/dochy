@@ -9,6 +9,7 @@ use crate::test_fs::copy_dir_all::copy_dir_all;
 use dochy_core::json_dir_to_root;
 use crate::test_diff_history::show_dir_contents_diff_history::show_dir_contents_diff_history;
 
+///途中でソースを変えるテスト
 //#[test]
 fn test_diff_his() -> FsResult<()> {
     let dir = tempdir()?;

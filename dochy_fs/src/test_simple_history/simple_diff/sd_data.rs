@@ -10,8 +10,8 @@ pub(crate) struct SdData{
 }
 
 impl SdData{
-    pub(crate) fn new() -> SdData{
-        SdData{ bytes : std::iter::repeat(0).take(20).collect()}
+    pub(crate) fn new(size : Option<usize>) -> SdData{
+        SdData{ bytes : std::iter::repeat(0).take(size.unwrap_or(10000)).collect()}
     }
 
     pub(crate) fn len(&self) -> usize{ self.bytes.len() }
@@ -28,9 +28,8 @@ impl SdData{
         if num == 0{ return Err("num=0")? }
         let mut index = 0;
         loop{
-            if *self.bytes.get(index)? == 0{
-                break;
-            }
+            if *self.bytes.get(index)? == 0{ break; }
+
             index += 1;
         }
         for n in 0..num{

@@ -143,6 +143,10 @@ impl FileHistory{
         }
     }
 
+    pub fn get_parent(&self, props : &FileNameProps) -> Option<&FileNameProps>{
+        self.get_props(props.prev_ctl(), props.order_base())
+    }
+
     // pub(crate) fn get_ancestor_ctl(&self, props : &FileNameProps, phase : usize) -> FsResult<u32>{
     //     let v = create_ancestors_rev(self, props, self.max_phase, self.cumulative)?;
     //     let len = v.len();

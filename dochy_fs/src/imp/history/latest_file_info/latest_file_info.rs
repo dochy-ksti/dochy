@@ -5,23 +5,25 @@ use std::sync::Weak;
 use crate::history::FileNameProps;
 
 #[derive(Debug, Clone)]
-pub struct LatestFileInfo{
-    latest_root_id : Weak<()>,
-    latest_base_file : FileNameProps,
+pub struct CurrentRootObjInfo {
+    current_root_id: Weak<()>,
+    current_base_file: FileNameProps,
+    is_latest: bool,
 }
 
-impl LatestFileInfo{
-    pub fn new(latest_root_id : Weak<()>, latest_base_file : FileNameProps) -> LatestFileInfo{
-        LatestFileInfo{ latest_root_id, latest_base_file }
+impl CurrentRootObjInfo {
+    pub fn new(current_root_id: Weak<()>, current_base_file: FileNameProps, is_latest : bool) -> CurrentRootObjInfo {
+        CurrentRootObjInfo { current_root_id, current_base_file, is_latest }
     }
 
-    pub fn latest_root_id(&self) -> &Weak<()>{ &self.latest_root_id }
-    pub fn latest_base_file(&self) -> &FileNameProps{ &self.latest_base_file }
+    pub fn current_root_id(&self) -> &Weak<()>{ &self.current_root_id }
+    pub fn current_base_file(&self) -> &FileNameProps{ &self.current_base_file }
+    pub fn is_latest(&self) -> bool{ self.is_latest }
 }
 
-pub fn get_mutex<'a, P : AsRef<Path>>(history_hash_dir_path : P, hash : u128) -> &'a Mutex<Option<LatestFileInfo>>{
+pub fn get_mutex<'a, P : AsRef<Path>>(history_hash_dir_path : P, hash : u128) -> &'a Mutex<Option<CurrentRootObjInfo>>{
     let path = history_hash_dir_path.as_ref();
-    static ST : Lazy<Mutex<Vec<(PathBuf, u128, Box<Mutex<Option<LatestFileInfo>>>)>>> = Lazy::new(||{
+    static ST : Lazy<Mutex<Vec<(PathBuf, u128, Box<Mutex<Option<CurrentRootObjInfo>>>)>>> = Lazy::new(||{
         Mutex::new(Vec::new())
     });
     let ptr: *const _ = {
@@ -40,12 +42,12 @@ pub fn get_mutex<'a, P : AsRef<Path>>(history_hash_dir_path : P, hash : u128) ->
     return unsafe{ &*ptr }
 }
 
-pub fn get_latest_file_info<'a, P : AsRef<Path>>(history_dir_path : P, hash : u128) -> MutexGuard<'a, Option<LatestFileInfo>>{
+pub fn get_current_root_obj_info<'a, P : AsRef<Path>>(history_dir_path : P, hash : u128) -> MutexGuard<'a, Option<CurrentRootObjInfo>>{
     let a = get_mutex(history_dir_path, hash).lock();
     a
 }
 
-pub fn set_latest_file_info<P : AsRef<Path>>(history_dir_path : P, hash : u128, latest_file_info : Option<LatestFileInfo>){
+pub fn set_current_root_Obj_info<P : AsRef<Path>>(history_dir_path : P, hash : u128, latest_file_info : Option<CurrentRootObjInfo>){
     let mut m = get_mutex(history_dir_path, hash).lock();
     *m = latest_file_info;
 }

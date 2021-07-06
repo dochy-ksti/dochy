@@ -27,7 +27,7 @@ fn test_simple_diff_files() -> FsResult<()> {
             })
         })?;
 
-    let mut data : SdData = SdData::new();
+    let mut data : SdData = SdData::new(None);
     let mut cache = SdCache::new();
     let repeat = 100;
     for _rep in 0..repeat{

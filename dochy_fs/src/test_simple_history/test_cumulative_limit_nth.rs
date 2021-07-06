@@ -10,6 +10,7 @@ use crate::test_simple_history::history2::file_history_item2::FileHistoryItem2;
 use std::collections::BTreeMap;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 
+///nthに合わせてcumulative phaseが伸びていくか調べる。目視で
 //#[test]
 fn test_cumulative_limit_nth() -> FsResult<()> {
     let dir = temp_dir();
@@ -29,7 +30,7 @@ fn test_cumulative_limit_nth() -> FsResult<()> {
             })
         })?;
 
-    let mut data : SdData = SdData::new();
+    let mut data : SdData = SdData::new(None);
     let mut cache = SdCache::new();
     let repeat = 100;
     for _rep in 0..repeat{
@@ -48,10 +49,10 @@ fn test_cumulative_limit_nth() -> FsResult<()> {
         assert!(vec.iter().all(|b| *b))
     }
 
-    // let vec = history.flatten();
-    // for (name,size) in &vec{
-    //     println!("{} {}", name, *size);
-    // }
+    let vec = history.flatten();
+    for (name,size) in &vec{
+        println!("{} {}", name, *size);
+    }
 
     Ok(())
 }

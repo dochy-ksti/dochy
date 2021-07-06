@@ -8,7 +8,7 @@ use crate::imp::history::algo::history_options::{HistoryOptions, HistoryOptionsB
 use crate::imp::history::fs::load::load;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 
-//#[test]
+#[test]
 fn test_max_phase0() -> FsResult<()> {
     let dir = temp_dir();
     let mut rng = rand::thread_rng();
@@ -24,7 +24,7 @@ fn test_max_phase0() -> FsResult<()> {
             cumulative: None,
         })?;
 
-    let mut data : SdData = SdData::new();
+    let mut data : SdData = SdData::new(Some(200));
     let mut cache = SdCache::new();
     let repeat = 100;
     for _rep in 0..repeat{

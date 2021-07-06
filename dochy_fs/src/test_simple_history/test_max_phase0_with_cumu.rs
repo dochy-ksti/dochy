@@ -28,7 +28,7 @@ fn test_max_phase0_with_cumu() -> FsResult<()> {
             }),
         })?;
 
-    let mut data : SdData = SdData::new();
+    let mut data : SdData = SdData::new(None);
     let mut cache = SdCache::new();
     let repeat = 100;
     for _rep in 0..repeat{
