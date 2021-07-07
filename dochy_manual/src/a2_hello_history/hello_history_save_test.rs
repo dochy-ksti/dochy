@@ -11,7 +11,6 @@ fn hello_history_save_test() -> DpResult<()> {
     let src_dir = "src/a2_hello_history/src_dir";
     let mut root = json_dir_to_root(src_dir, true)?;
 
-
     let history_dir = Path::new("src/a2_hello_history/history_dir");
 
     std::fs::create_dir(history_dir).ok();
@@ -20,7 +19,7 @@ fn hello_history_save_test() -> DpResult<()> {
     let mut cache = DochyCache::new(
         CurrentSrc::from_src_dir(src_dir));
 
-    for counter in 0..10{
+    for counter in 0..40{
         save_twice(history_dir, root, counter, &mut cache)?;
         root = load_prev_file(history_dir, &mut cache)?;
     }
@@ -30,6 +29,11 @@ fn hello_history_save_test() -> DpResult<()> {
     let r = load_history_file(history_dir, d.hash(), d.props(), d.history(), &mut cache, (), false)?;
     let r = RootIntf::new(r);
     println!("{}", r.data1());
+
+    for file in &his.list_files(){
+        dbg!(file.calc_path("hoge"));
+    }
+
     print_file_data(hash_dir_path(history_dir, d.hash()))?;
     Ok(())
 }
@@ -47,10 +51,12 @@ fn save_twice(history_dir : &Path, root : RootObject, counter : usize, cache : &
     let mut txt = r.data1();
     txt.push_str(&format!("{}", counter));
     r.set_data1(txt.clone());
-    save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
+    let props = save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
+    //dbg!(format!("1 {} {}", props.calc_filename(), counter));
     txt.push_str(&format!("{}", counter));
     r.set_data1(txt);
-    save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
+    let props = save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
+    //dbg!(format!("2 {} {}", props.calc_filename(), counter));
     Ok(())
 }
 
@@ -58,5 +64,6 @@ fn load_prev_file(history_dir : &Path, cache : &mut DochyCache) -> DpResult<Root
     let his = list_histories(history_dir, ())?;
     let v = his.list_files();
     let d = v.get(v.len() - 2)?;
+    //dbg!(d.calc_path("hoge"));
     Ok(load_history_file(history_dir, d.hash(), d.props(), d.history(), cache, (), false)?)
 }

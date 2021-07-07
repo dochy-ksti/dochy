@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
+use crate::imp::history::remove::btree_zipper::BTreeZipper;
 
 /// Historyが正しければ、itemの下にchildrenがあるわけだが、誰かが勝手にファイルを削除したりした場合、
 /// itemがないのにchildrenだけあるといった事態も起こりうる
@@ -64,13 +65,14 @@ impl FileHistoryItem{
     }
 
     pub(crate) fn flatten<'a, 'b>(&'a self, vec : &'b mut Vec<&'a FileNameProps>){
-        for (_a,b) in &self.items{
-            vec.push(b);
-
-        }
-
-        for(_a, b) in &self.children{
-            b.flatten(vec);
+        let zipper = BTreeZipper::new(self.items(), self.children());
+        for (_ind, child,props) in zipper{
+            if let Some(item) = props{
+                vec.push(item);
+            }
+            if let Some(child) = child{
+                child.flatten(vec);
+            }
         }
     }
 

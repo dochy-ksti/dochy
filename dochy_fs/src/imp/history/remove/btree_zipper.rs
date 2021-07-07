@@ -25,8 +25,8 @@ impl<'a> BTreeZipper<'a>{
         BTreeZipper{
             props : props.iter(),
             his : his.iter(),
-            cur_props : -2,
-            cur_his : -2,
+            cur_props : -1,
+            cur_his : -1,
             r_props : None,
             r_his : None,
         }
@@ -41,7 +41,7 @@ impl<'a> Iterator for BTreeZipper<'a>{
         let move_his;
 
         if self.cur_props == self.cur_his{
-            if self.cur_props == -1{
+            if self.cur_props == i64::MAX{
                 return None;
             }
             move_props = true;
@@ -60,7 +60,7 @@ impl<'a> Iterator for BTreeZipper<'a>{
                 self.cur_props = *cur as i64;
             } else{
                 self.r_props = None;
-                self.cur_props = -1;
+                self.cur_props = i64::MAX;
             }
         }
         if move_his{
@@ -69,29 +69,21 @@ impl<'a> Iterator for BTreeZipper<'a>{
                 self.cur_his = *cur as i64;
             } else{
                 self.r_his = None;
-                self.cur_his = -1;
+                self.cur_his = i64::MAX;
             }
         }
 
         if self.cur_props == self.cur_his {
-            if self.cur_props == -1 {
+            if self.cur_props == i64::MAX {
                 None
             } else {
                 Some((self.cur_props as u32, self.r_his, self.r_props))
             }
         }
-        else if self.cur_props < self.cur_his{
-            if self.cur_props == -1 {
-                Some((self.cur_his as u32, self.r_his, None))
-            } else {
-                Some((self.cur_props as u32, None, self.r_props))
-            }
-        } else{
-            if self.cur_his == -1 {
-                Some((self.cur_props as u32, None, self.r_props))
-            } else{
-                Some((self.cur_his as u32, self.r_his, None))
-            }
+        else if self.cur_props < self.cur_his {
+            Some((self.cur_props as u32, None, self.r_props))
+        } else {
+            Some((self.cur_his as u32, self.r_his, None))
         }
     }
 }

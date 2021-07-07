@@ -20,7 +20,7 @@ pub(crate) fn show_dir_contents_history<P : AsRef<Path>>(path : P) -> FsResult<V
     Ok(r)
 }
 
-pub(crate) fn show_history_dir<P : AsRef<Path>>(path : P) -> FsResult<()>{
+pub fn show_history_dir<P : AsRef<Path>>(path : P) -> FsResult<()>{
     let hoge = show_dir_contents_history(path)?;
     for (name,size) in &hoge{
         println!("{} {}", name, size);
