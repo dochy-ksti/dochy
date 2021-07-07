@@ -8,7 +8,9 @@ use crate::imp::history::algo::history_options::{HistoryOptions, HistoryOptionsB
 use crate::imp::history::fs::load::load;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::history::CumulativeOptionsBuilder;
+use crate::test_simple_history::show_dir_contents_history::show_history_dir;
 
+///max_phase_0にしてcumulativeという怪しい設定でも動くかチェック
 //#[test]
 fn test_max_phase0_with_cumu() -> FsResult<()> {
     let dir = temp_dir();
@@ -29,7 +31,7 @@ fn test_max_phase0_with_cumu() -> FsResult<()> {
         })?;
 
     let mut data : SdData = SdData::new(None);
-    let mut cache = SdCache::new();
+    let mut cache = SdCache::new(None);
     let repeat = 100;
     for _rep in 0..repeat{
         let n = rng.gen_range(1..=3);
@@ -44,10 +46,7 @@ fn test_max_phase0_with_cumu() -> FsResult<()> {
         assert_eq!(loaded, data)
     }
 
-    // let hoge = show_dir_contents(&dir)?;
-    // for (name,size) in &hoge{
-    //     println!("{} {}", name, size);
-    // }
+    //show_history_dir(&dir);
 
     Ok(())
 }

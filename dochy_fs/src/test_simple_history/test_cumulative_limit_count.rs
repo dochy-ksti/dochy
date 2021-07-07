@@ -31,7 +31,7 @@ fn test_cumulative_limit_count() -> FsResult<()> {
         })?;
 
     let mut data : SdData = SdData::new(None);
-    let mut cache = SdCache::new();
+    let mut cache = SdCache::new(None);
     let repeat = 100;
     for _rep in 0..repeat{
         data.mutate(1)?;

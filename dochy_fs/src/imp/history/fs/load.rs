@@ -27,5 +27,6 @@ pub(crate) fn load<
         .ok_or_else(|| format!("invalid file name {}", &filename))?;
 
     let paths = create_ancestors_paths(history, &analyzed, opt.max_phase(), opt.is_cumulative(), dir_path)?;
+
     Ok(accumulate_diff(paths, cache)?)
 }

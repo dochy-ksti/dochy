@@ -90,18 +90,14 @@ impl FileHistoryItem{
         }
     }
 
-    pub(crate) fn get_item(&self, order : &[u32]) -> Option<&FileHistoryItem>{
-        if let Some(ind) = order.get(0) {
-            if order.len() == 1 {
-                self.children.get(ind)
-            } else {
-                if let Some(child) = self.children.get(ind){
-                    child.get_item(&order[1..])
-                } else{
-                    None
-                }
-            }
-        } else{
+    pub(crate) fn get_item(&self, order : &[u32]) -> Option<&FileHistoryItem> {
+        if order.len() == 0 {
+            return Some(self);
+        }
+        let ind = order[0];
+        if let Some(child) = self.children.get(&ind) {
+            child.get_item(&order[1..])
+        } else {
             None
         }
     }

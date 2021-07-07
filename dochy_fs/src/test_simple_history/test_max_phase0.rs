@@ -7,8 +7,10 @@ use crate::test_simple_history::simple_diff::sd_cache::SdCache;
 use crate::imp::history::algo::history_options::{HistoryOptions, HistoryOptionsBuilder};
 use crate::imp::history::fs::load::load;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
+use crate::test_simple_history::show_dir_contents_history::{show_dir_contents_history, show_history_dir};
 
-#[test]
+///max_phase 0 みたいな無意味な設定でも正しく動くかチェック
+//#[test]
 fn test_max_phase0() -> FsResult<()> {
     let dir = temp_dir();
     let mut rng = rand::thread_rng();
@@ -25,25 +27,26 @@ fn test_max_phase0() -> FsResult<()> {
         })?;
 
     let mut data : SdData = SdData::new(Some(200));
-    let mut cache = SdCache::new();
+    let mut cache = SdCache::new(Some(200));
     let repeat = 100;
-    for _rep in 0..repeat{
+    for _rep in 0..repeat {
         let n = rng.gen_range(1..=3);
 
         for _ in 0..n {
             data.mutate_randomly();
         }
 
-        next(None, &data, &mut cache,&dir, &op)?;
+
+        next(None, &data, &mut cache, &dir, &op)?;
+
         let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
-        let loaded = load(&history.newest_file_path(&dir)?, &history, &mut cache, &op)?;
+        //show_history_dir(&dir);
+        let newest_path = history.newest_file_path(&dir)?;
+        //dbg!(&newest_path);
+        let loaded = load(newest_path, &history, &mut cache, &op)?;
+
         assert_eq!(loaded, data)
     }
-
-    // let hoge = show_dir_contents(&dir)?;
-    // for (name,size) in &hoge{
-    //     println!("{} {}", name, size);
-    // }
 
     Ok(())
 }

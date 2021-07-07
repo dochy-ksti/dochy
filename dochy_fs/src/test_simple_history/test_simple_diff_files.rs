@@ -7,6 +7,7 @@ use crate::imp::history::algo::history_options::{HistoryOptions, HistoryOptionsB
 use crate::imp::history::fs::load::load;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::next::next;
+use crate::test_simple_history::show_dir_contents_history::show_history_dir;
 
 #[test]
 fn test_simple_diff_files() -> FsResult<()> {
@@ -19,7 +20,7 @@ fn test_simple_diff_files() -> FsResult<()> {
 
     let op = HistoryOptions::from(
         HistoryOptionsBuilder {
-            max_phase: 4,
+            max_phase: 2,
             update_phase_a : true,
             cumulative: Some(CumulativeOptionsBuilder {
                 limit_nth: Some(2),
@@ -28,7 +29,7 @@ fn test_simple_diff_files() -> FsResult<()> {
         })?;
 
     let mut data : SdData = SdData::new(None);
-    let mut cache = SdCache::new();
+    let mut cache = SdCache::new(None);
     let repeat = 100;
     for _rep in 0..repeat{
         let n = rng.gen_range(1..=3);
@@ -44,12 +45,8 @@ fn test_simple_diff_files() -> FsResult<()> {
     }
 
     //ちゃんとCumulativeOptionで設定したとおりに動いてるか頑張って確認してもいいが、
-    //難しすぎて見合わない気がする
-    //
-    // let hoge = show_dir_contents(&dir)?;
-    // for (name,size) in &hoge{
-    //     println!("{} {}", name, size);
-    // }
+    //難しすぎて見合わない気がするので目視で適当に見る
+    show_history_dir(&dir);
 
     Ok(())
 }
