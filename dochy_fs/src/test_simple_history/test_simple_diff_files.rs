@@ -9,7 +9,8 @@ use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::next::next;
 use crate::test_simple_history::show_dir_contents_history::show_history_dir;
 
-#[test]
+///通常のシナリオでhistoryシステムが動いてるか確認。主に目視で。
+//#[test]
 fn test_simple_diff_files() -> FsResult<()> {
     let dir = temp_dir();
     let mut rng = rand::thread_rng();
