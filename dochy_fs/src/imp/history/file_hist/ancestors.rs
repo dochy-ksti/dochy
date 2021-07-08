@@ -65,15 +65,19 @@ pub(crate) fn create_dependencies<'a,'b>(ancestors : &'b[&'a FileNameProps],
 
     let last_prop = *ancestors.last().unwrap();
     let mut order = last_prop.order().to_vec();
+    let prev_ctl;
     if order.len() - 1 < max_phase{
         order.push(0);
+        prev_ctl = last_prop.control();
     } else if next_phase == max_phase{
         *order.last_mut().unwrap() += 1;
+        prev_ctl = last_prop.control();
     } else {
         order = order[0..next_phase+1].to_vec();
         *order.last_mut().unwrap() += 1;
+        prev_ctl = ancestors.get(next_phase)?.prev_ctl();
     }
-    let props = FileNameProps::new(ctl, last_prop.control(), order, tag)?;
+    let props = FileNameProps::new(ctl, prev_ctl, order, tag)?;
 
     if next_phase == max_phase && cumulative {
         Ok((ancestors, props))
@@ -103,16 +107,20 @@ pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
     if len - 1 == max_phase{
         if cumulative {
             let order_last = props.order_last();
-            let order_base = props.order_base();
+            let mut order = Vec::with_capacity(props.order().len());
+            for v in props.order_base(){
+                order.push(*v);
+            }
 
-            if let Some(parent) = history.get_item(props.control(), order_base) {
-                for inv_i in 0..order_last {
-                    let ind = order_last - 1 - inv_i;
-                    if let Some(p) = parent.items().get(&ind) {
-                        vec.push(p);
-                    } else {
-                        Err(format!("missing ancestor {} {:?}", props.control(), order_base))?
-                    }
+            for inv_i in 0..order_last {
+                let ind = order_last - 1 - inv_i;
+                order.push(ind);
+                if let Some(p) = history.get_props(props.prev_ctl(), &order) {
+                    props = p;
+                    order.pop();
+                    vec.push(p);
+                } else {
+                    Err(format!("missing ancestor {} {:?}", props.prev_ctl(), &order))?
                 }
             }
         }
