@@ -7,6 +7,7 @@ use dochy_diff::apply_diff;
 use crate::imp::history::diff_and_cache::dochy_diff::DochyDiff;
 use crate::imp::history::diff_and_cache::open_diff_file_without_metadata::open_diff_file_without_metadata;
 
+//TODO: ここをやれ
 
 /// Customizes how the cache works
 pub struct DochyCache{
@@ -44,7 +45,7 @@ impl DochyCache{
     /// Creates the cache.
     ///
     /// # Arguments
-    /// * `current_src` - the source JSON5 files or the archive file of them.
+    /// * `current_src` - source JSON5 files or an archive file.
     /// * 'cache_src' - If the object created from the current_src is cached. It's always the same object so you can safely cache.
     /// * 'cache_phase_a' - If the object derived directly from the src(Phase_A object) is cached.
     ///

@@ -1,13 +1,12 @@
 use crate::error::FsResult;
 use std::env::temp_dir;
 use crate::test_simple_history::simple_diff::sd_data::SdData;
-use crate::imp::history::fs::next::next;
+use crate::imp::history::fs::next::_next;
 use rand::Rng;
 use crate::test_simple_history::simple_diff::sd_cache::SdCache;
 use crate::imp::history::algo::history_options::{HistoryOptions, HistoryOptionsBuilder};
 use crate::imp::history::fs::load::load;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
-use crate::test_simple_history::show_dir_contents_history::{show_dir_contents_history, show_history_dir};
 
 ///max_phase 0 みたいな無意味な設定でも正しく動くかチェック
 //#[test]
@@ -37,7 +36,7 @@ fn test_max_phase0() -> FsResult<()> {
         }
 
 
-        next(None, &data, &mut cache, &dir, &op)?;
+        _next(None, &data, &mut cache, &dir, &op)?;
 
         let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
         //show_history_dir(&dir);

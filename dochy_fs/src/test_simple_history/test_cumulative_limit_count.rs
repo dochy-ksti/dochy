@@ -1,7 +1,7 @@
 use crate::error::FsResult;
 use std::env::temp_dir;
 use crate::test_simple_history::simple_diff::sd_data::SdData;
-use crate::imp::history::fs::next::next;
+use crate::imp::history::fs::next::_next;
 use rand::Rng;
 use crate::test_simple_history::simple_diff::sd_cache::SdCache;
 use crate::imp::history::algo::history_options::{HistoryOptions, HistoryOptionsBuilder, CumulativeOptionsBuilder};
@@ -35,7 +35,7 @@ fn test_cumulative_limit_count() -> FsResult<()> {
     let repeat = 100;
     for _rep in 0..repeat{
         data.mutate(1)?;
-        next(None, &data, &mut cache,&dir, &op)?;
+        _next(None, &data, &mut cache, &dir, &op)?;
     }
 
     let history = FileHistory2::create(&dir, Some(op.max_phase()))?;

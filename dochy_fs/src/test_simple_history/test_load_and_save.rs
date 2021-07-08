@@ -8,23 +8,24 @@ use crate::imp::history::fs::load::load;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::next::_next;
 use crate::test_simple_history::show_dir_contents_history::show_history_dir;
+use crate::imp::history::fs::derive::_derive;
 
-///通常のシナリオでhistoryシステムが動いてるか確認。主に目視で。
-//#[test]
-fn test_simple_diff_files() -> FsResult<()> {
+///ロード後にセーブしてもおかしくならないかチェック
+#[test]
+fn test_load_and_save() -> FsResult<()> {
     let dir = temp_dir();
     let mut rng = rand::thread_rng();
-    let dir_name = format!("test_simple_diff_{}",rng.gen_range(0..100_000_000));
+    let dir_name = format!("test_load_and_save_{}",rng.gen_range(0..100_000_000));
     let dir = dir.join(&dir_name);
     //std::filesys::remove_dir(&dir).ok();
     std::fs::create_dir(&dir).ok();
 
     let op = HistoryOptions::from(
         HistoryOptionsBuilder {
-            max_phase: 2,
+            max_phase: 4,
             update_phase_a : true,
             cumulative: Some(CumulativeOptionsBuilder {
-                limit_nth: Some(2),
+                limit_nth: Some(1),
                 limit_count: Some(100)
             })
         })?;
@@ -32,7 +33,27 @@ fn test_simple_diff_files() -> FsResult<()> {
     let mut data : SdData = SdData::new(None);
     let mut cache = SdCache::new(None);
     let repeat = 100;
-    for _rep in 0..repeat{
+    for _rep in 0..5{
+        let n = rng.gen_range(1..=3);
+
+        for _ in 0..n {
+            data.mutate_randomly();
+        }
+
+        _next(None, &data, &mut cache, &dir, &op)?;
+        let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
+        let loaded = load(&history.newest_file_path(&dir)?, &history, &mut cache, &op)?;
+        assert_eq!(loaded, data)
+    }
+
+    let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
+    let files= history.list_files();
+    let prev = files[files.len() - 2];
+    assert_eq!(prev.phase(), 3);
+    let mut data = load(&dir.join(prev.calc_filename()), &history, &mut cache, &op)?;
+    _derive(None, &data, &mut cache, &dir, prev, &op)?;
+
+    for _ in 0..30{
         let n = rng.gen_range(1..=3);
 
         for _ in 0..n {

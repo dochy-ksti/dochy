@@ -63,7 +63,7 @@ fn save_test() -> FsResult<()> {
         assert_eq!(a.value().unwrap(), &100);
     }
 
-    for file in list_files(proj_dir_path)?{
+    for _file in list_files(proj_dir_path)?{
     }
 
 
