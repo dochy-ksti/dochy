@@ -97,28 +97,22 @@ pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
     if len == 0{
         return Ok(vec);
     }
+    dbg!(props);
     let mut props = props;
 
     if len - 1 == max_phase{
         if cumulative {
-
             let order_last = props.order_last();
             let order_base = props.order_base();
-            let parent =
-                if let Some(parent) = history.get_item(props.control(), order_base) {
-                    parent
-                } else if max_phase == 0 {
-                    return Ok(vec);
-                } else{
-                    Err(format!("missing ancestor {} {:?}", props.control(), order_base))?
-                };
 
-            for inv_i in 0..order_last {
-                let ind = order_last - 1 - inv_i;
-                if let Some(p) = parent.items().get(&ind) {
-                    vec.push(p);
-                } else{
-                    Err(format!("missing ancestor {} {:?}", props.prev_ctl(), order_base))?
+            if let Some(parent) = history.get_item(props.control(), order_base) {
+                for inv_i in 0..order_last {
+                    let ind = order_last - 1 - inv_i;
+                    if let Some(p) = parent.items().get(&ind) {
+                        vec.push(p);
+                    } else {
+                        Err(format!("missing ancestor {} {:?}", props.control(), order_base))?
+                    }
                 }
             }
         }
@@ -127,10 +121,11 @@ pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
     loop{
         if 2 <= props.order().len() {
             if let Some(p) = history.get_parent(props){
+                dbg!(p);
                 vec.push(p);
                 props = p;
             } else{
-                Err(format!("missing ancestor {} {:?}",props.prev_ctl(), props.order_base()))?
+                Err(format!("l missing ancestor {} {:?}",props.prev_ctl(), props.order_base()))?
             }
         } else{
             return Ok(vec)

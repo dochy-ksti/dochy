@@ -56,10 +56,12 @@ fn test_load_and_save() -> FsResult<()> {
     for _ in 0..30{
         let n = rng.gen_range(1..=3);
 
+        dbg!("a");
         for _ in 0..n {
             data.mutate_randomly();
         }
 
+        show_history_dir(&dir)?;
         _next(None, &data, &mut cache, &dir, &op)?;
         let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
         let loaded = load(&history.newest_file_path(&dir)?, &history, &mut cache, &op)?;
