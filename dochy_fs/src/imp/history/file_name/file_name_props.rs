@@ -62,7 +62,7 @@ impl FileNameProps{
     }
 
 
-    pub(crate) fn create_next_phase_props(&self, ctl : u32, tag : Option<String>, next_phase : usize) -> Option<FileNameProps> {
+    pub(crate) fn _create_next_phase_props(&self, ctl : u32, tag : Option<String>, next_phase : usize) -> Option<FileNameProps> {
         let mut order = self.order.clone();
         if order.len() < next_phase{
             order.push(0);

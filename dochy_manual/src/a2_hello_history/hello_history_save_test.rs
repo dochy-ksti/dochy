@@ -6,7 +6,7 @@ use std::path::{Path};
 use dochy::fs::history::{save_history_file, DochyCache, list_histories, load_history_file};
 use dochy::core::structs::RootObject;
 
-#[test]
+//#[test]
 fn hello_history_save_test() -> DpResult<()> {
     let src_dir = "src/a2_hello_history/src_dir";
     let mut root = json_dir_to_root(src_dir, true)?;
@@ -51,11 +51,11 @@ fn save_twice(history_dir : &Path, root : RootObject, counter : usize, cache : &
     let mut txt = r.data1();
     txt.push_str(&format!("{}", counter));
     r.set_data1(txt.clone());
-    let props = save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
+    let _props = save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
     //dbg!(format!("1 {} {}", props.calc_filename(), counter));
     txt.push_str(&format!("{}", counter));
     r.set_data1(txt);
-    let props = save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
+    let _props = save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
     //dbg!(format!("2 {} {}", props.calc_filename(), counter));
     Ok(())
 }

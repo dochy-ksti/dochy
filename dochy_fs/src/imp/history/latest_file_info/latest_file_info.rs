@@ -47,7 +47,7 @@ pub fn get_current_root_obj_info<'a, P : AsRef<Path>>(history_dir_path : P, hash
     a
 }
 
-pub fn set_current_root_Obj_info<P : AsRef<Path>>(history_dir_path : P, hash : u128, latest_file_info : Option<CurrentRootObjInfo>){
+pub fn set_current_root_obj_info<P : AsRef<Path>>(history_dir_path : P, hash : u128, latest_file_info : Option<CurrentRootObjInfo>){
     let mut m = get_mutex(history_dir_path, hash).lock();
     *m = latest_file_info;
 }

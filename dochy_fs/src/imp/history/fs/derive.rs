@@ -9,7 +9,7 @@ use crate::history::FileNameProps;
 use crate::imp::history::fs::derive_impl::derive_impl;
 
 
-pub(crate) fn derive<
+pub(crate) fn _derive<
     V : DiffValue,
     S: DiffSrc<V>,
     C : Cache<V, S>,

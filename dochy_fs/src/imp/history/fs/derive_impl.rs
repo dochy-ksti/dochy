@@ -11,7 +11,6 @@ use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::history::FileNameProps;
 use crate::imp::history::file_hist::file_history::FileHistory;
 use crate::imp::history::file_hist::ancestors::{calc_ancestors_paths, create_ancestors, create_dependencies};
-use crate::imp::history::fs::start_new::{start_new_impl};
 
 
 pub(crate) fn derive_impl<
