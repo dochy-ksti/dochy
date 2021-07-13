@@ -135,13 +135,13 @@ impl FileHistory{
         }
     }
 
-    pub(crate) fn get_item(&self, ctl : u32, order : &[u32]) -> Option<&FileHistoryItem>{
-        if let Some(h) = self.ctls.get(&ctl){
-            h.get_item(order)
-        } else{
-            None
-        }
-    }
+    // pub(crate) fn _get_item(&self, ctl : u32, order : &[u32]) -> Option<&FileHistoryItem>{
+    //     if let Some(h) = self.ctls.get(&ctl){
+    //         h._get_item(order)
+    //     } else{
+    //         None
+    //     }
+    // }
 
     pub fn get_parent(&self, props : &FileNameProps) -> Option<&FileNameProps>{
         self.get_props(props.prev_ctl(), props.order_base())

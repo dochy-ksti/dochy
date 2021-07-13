@@ -10,8 +10,8 @@ use crate::imp::history::fs::next::_next;
 use crate::test_simple_history::show_dir_contents_history::show_history_dir;
 use crate::imp::history::fs::derive::_derive;
 
-///ロード後にセーブしてもおかしくならないかチェック
-#[test]
+///ロード後にセーブしてもおかしくならないかチェック 主に目視で
+//#[test]
 fn test_load_and_save() -> FsResult<()> {
     let dir = temp_dir();
     let mut rng = rand::thread_rng();
@@ -32,7 +32,6 @@ fn test_load_and_save() -> FsResult<()> {
 
     let mut data : SdData = SdData::new(None);
     let mut cache = SdCache::new(None);
-    let repeat = 100;
     for _rep in 0..5{
         let n = rng.gen_range(1..=3);
 
@@ -56,12 +55,10 @@ fn test_load_and_save() -> FsResult<()> {
     for _ in 0..30{
         let n = rng.gen_range(1..=3);
 
-        dbg!("a");
         for _ in 0..n {
             data.mutate_randomly();
         }
 
-        show_history_dir(&dir)?;
         _next(None, &data, &mut cache, &dir, &op)?;
         let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
         let loaded = load(&history.newest_file_path(&dir)?, &history, &mut cache, &op)?;

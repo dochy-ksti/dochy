@@ -50,7 +50,7 @@ pub(crate) fn create_ancestors<'a>(history: &'a FileHistory,
     Ok(r)
 }
 
-///ancestors から next_phase までを切り出す。cumulativeかどうか、最終フェーズかどうかにより最後を含むかどうかが変わる
+///ancestors から next_phase までを切り出し、次のFileNameも計算する
 pub(crate) fn create_dependencies<'a,'b>(ancestors : &'b[&'a FileNameProps],
                                       next_phase : usize,
                                       ctl : u32,
@@ -101,7 +101,6 @@ pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
     if len == 0{
         return Ok(vec);
     }
-    dbg!(props);
     let mut props = props;
 
     if len - 1 == max_phase{
@@ -129,7 +128,6 @@ pub(crate) fn create_ancestors_rev<'a>(history: &'a FileHistory,
     loop{
         if 2 <= props.order().len() {
             if let Some(p) = history.get_parent(props){
-                dbg!(p);
                 vec.push(p);
                 props = p;
             } else{
