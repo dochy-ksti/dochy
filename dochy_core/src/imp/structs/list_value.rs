@@ -1,10 +1,10 @@
 use crate::imp::structs::rust_param::RustParam;
-use crate::imp::structs::rust_list::{ConstInnerList, MutInnerList};
+use crate::imp::structs::rust_list::{ConstListVal, MutListVal};
 use crate::imp::structs::rust_value::{RustValue, RustMemberType};
 use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::qv::QvType;
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::structs::mil_def_obj::MilDefObj;
+use crate::imp::structs::mut_list_def::MutListDef;
 use crate::IdentityEqual;
 
 #[derive(Debug, Clone)]
@@ -12,16 +12,16 @@ pub enum ListDefValue{
     Param(RustParam, VarType),
     //InnerDataDef(ListDefObj),
     CilDef(ListDefObj),
-    MilDef(MilDefObj),
+    MilDef(MutListDef),
 }
 
 #[derive(Debug, Clone)]
 pub enum ListSabValue{
     Param(RustParam),
     //InnerData(InnerData),
-    Cil(ConstInnerList),
+    Cil(ConstListVal),
     ///MutInnerListだけundefinedになりうる
-    Mil(Option<MutInnerList>),
+    Mil(Option<MutListVal>),
 }
 
 impl ListDefValue{

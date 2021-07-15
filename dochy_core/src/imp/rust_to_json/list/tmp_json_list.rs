@@ -2,10 +2,11 @@ use crate::imp::json_to_rust::tmp::tmp_obj::{ IdValue};
 //use crate::{HashM};
 use std::collections::{BTreeSet, BTreeMap};
 use crate::imp::structs::rust_value::RustValue;
-use crate::imp::structs::rust_list::{ConstItem, MutItem, ConstTable, ConstList, MutList, ConstInnerList, MutInnerList};
+use crate::imp::structs::rust_list::{ConstItem, MutItem, ConstTable, ConstList, MutList, ConstListVal, MutListVal};
 use crate::imp::structs::ref_value::RefValue;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::util::hash_m::{HashS, HashM};
+use crate::imp::structs::mut_list_def::MutListDef;
 
 pub(crate) struct TmpJsonList{
     pub(crate) vec : Vec<TmpJsonObj>,
@@ -76,14 +77,21 @@ impl TmpJsonList{
              next_id: None, old : get_from_set(l.old()), default : Some(l.default().clone()) }
     }
 
-    pub(crate) fn from_const_list(l : &ConstList) -> TmpJsonList{
+    pub(crate) fn from_const_list(d : &ListDefObj, l : &ConstListVal) -> TmpJsonList{
         TmpJsonList{ vec: l.list().iter().map(|item| TmpJsonObj::from_list_item(item, None)).collect(),
-            next_id: None, old : None, default : Some(l.default().clone()) }
+            next_id: None, old : None, default : Some(d.clone()) }
     }
 
-    pub(crate) fn from_mut_list(l : &MutList) -> TmpJsonList{
-        TmpJsonList{ vec: l.list().iter().map(|(id,item)| TmpJsonObj::from_mut_list_item(item, *id)).collect(),
-            next_id: Some(l.next_id()), old : None, default : Some(l.default().clone()) }
+    pub(crate) fn from_mut_list(d : &MutListDef, l : &Option<MutListVal>) -> TmpJsonList{
+        let (vec, next_id) = if let Some(l) = l{
+            (l.list().iter().map(|(id,item)| TmpJsonObj::from_mut_list_item(item, *id)).collect(),
+            l.list().next_id())
+        } else{
+            //undefinedは勝手に空リストにしてしまう
+            (vec![], 0)
+        };
+        TmpJsonList{ vec,
+            next_id: Some(next_id), old : None, default : Some(d.list_def().clone()) }
     }
 
     // pub(crate ) fn from_inner_data(l : &InnerData) -> TmpJsonList{
@@ -91,12 +99,12 @@ impl TmpJsonList{
     //         compatible : None, next_id: None, old : get_from_set(l.old()), default : None }
     // }
 
-    pub(crate) fn from_inner_list(l : &ConstInnerList) -> TmpJsonList{
+    pub(crate) fn from_inner_list(l : &ConstListVal) -> TmpJsonList{
         TmpJsonList{ vec : l.list().iter().map(|item| TmpJsonObj::from_list_item(item, None)).collect(),
             next_id: None, old : None, default : None }
     }
 
-    pub(crate) fn from_inner_mut(l : &MutInnerList) -> TmpJsonList{
+    pub(crate) fn from_inner_mut(l : &MutListVal) -> TmpJsonList{
         TmpJsonList{ vec : l.list().iter().map(|(id, item)| TmpJsonObj::from_mut_list_item(item, *id)).collect(),
             next_id: None, old : None, default : None }
     }

@@ -80,28 +80,28 @@ impl IdentityEqual for MutList{
 
 ///Table or CListの内部に作るList。ListDefObjの内部にはDefaultだけ書き、CItemの内部にはListのItemの羅列のみを書く。
 #[derive(Debug, Clone)]
-pub struct ConstInnerList {
+pub struct ConstListVal {
     list : Vec<ConstItem>,
 }
 
-impl ConstInnerList {
-    pub(crate) fn new(list : Vec<ConstItem>) -> ConstInnerList { ConstInnerList { list }}
+impl ConstListVal {
+    pub(crate) fn new(list : Vec<ConstItem>) -> ConstListVal { ConstListVal { list }}
     pub(crate) fn list(&self) -> &Vec<ConstItem>{ &self.list }
 }
 
 #[derive(Debug,  Clone)]
-pub struct MutInnerList {
+pub struct MutListVal {
     list : Box<LinkedMap<MutItem>>,
 }
 
-impl MutInnerList {
-    pub fn new(list : LinkedMap<MutItem>,) -> MutInnerList { MutInnerList { list : Box::new(list) } }
+impl MutListVal {
+    pub fn new(list : LinkedMap<MutItem>,) -> MutListVal { MutListVal { list : Box::new(list) } }
     pub(crate) fn deconstruct(self) -> LinkedMap<MutItem>{ *self.list }
     pub fn list(&self) -> &LinkedMap<MutItem>{ self.list.as_ref() }
     pub fn list_mut(&mut self) -> &mut LinkedMap<MutItem>{ self.list.as_mut() }
 }
 
-impl IdentityEqual for MutInnerList{
+impl IdentityEqual for MutListVal {
     fn identity_eq(&self, other: &Self) -> bool {
         self.list.as_ref().identity_eq(other.list.as_ref())
     }

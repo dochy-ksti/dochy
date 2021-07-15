@@ -41,16 +41,11 @@ pub(crate) fn json_array_to_rust(array : &Vec<JVal>, value_type : VarType, span 
                     match gat{
                         CList => Ok(RustValue::CList(tmp.into_const_list()?)),
                         Table => Ok(RustValue::Table(tmp.into_const_data()?)),
-                        MList => Ok(RustValue::MList(tmp.into_mut_list()?)),
+                        MList => Ok(RustValue::MList(tmp.into_mut_list(false)?)),
                         Cil => Ok(RustValue::Cil(tmp.into_inner_list()?)),
-                        //InnerData => Ok(RustValue::InnerData(tmp.into_inner_data()?)),
                         Mil => Ok(RustValue::Mil(Some(tmp.into_mut_inner_list()?))),
                         CilDef => Ok(RustValue::CilDef(tmp.into_inner_def()?)),
-                        //InnerDataDef => Ok(RustValue::InnerDataDef(tmp.into_inner_def()?)),
                         MilDef => Ok(RustValue::MilDef(tmp.into_inner_mut_def(false)?)),
-                        //ViolatedList =>{ Ok(RustValue::MList(tmp.into_violated_list()?)) },
-                        //InnerViolatedList => Ok(RustValue::Mil(Some(tmp.into_inner_violated_list()?))),
-                        //InnerViolatedListDef => Ok(RustValue::MilDef(tmp.into_inner_mut_def(false)?)),
                         _ => unreachable!() ,
                     }
                 },
@@ -58,7 +53,7 @@ pub(crate) fn json_array_to_rust(array : &Vec<JVal>, value_type : VarType, span 
                     let tmp = json_list_to_rust(&array[1..], span, names)?;
                     match gat {
                         MilDef => Ok(RustValue::MilDef(tmp.into_inner_mut_def(true)?)),
-                        //InnerViolatedListDef => Ok(RustValue::MilDef(tmp.into_inner_mut_def(true)?)),
+                        MList => Ok(RustValue::MList(tmp.into_mut_list(true)?)),
                         _ =>{
                             Err(format!(r#"{} Lists can't be undefined {} except for InnerMut"#, span.line_str(), names))?
                         }
@@ -73,7 +68,7 @@ pub(crate) fn json_array_to_rust(array : &Vec<JVal>, value_type : VarType, span 
     }
 }
 
-pub(crate ) enum GatResult{
+pub(crate) enum GatResult{
     AT(ArrayType),
     CList,
     Table,
@@ -82,9 +77,6 @@ pub(crate ) enum GatResult{
     Mil,
     CilDef,
     MilDef,
-    //ViolatedList,
-    //InnerViolatedList,
-    //InnerViolatedListDef,
     Int,
     NoTagInt,
     Float,
@@ -114,9 +106,6 @@ fn get_array_type(a : &Vec<JVal>) -> GatResult{
                     "Mil" =>{ GatResult::Mil },
                     "CilDef" => { GatResult::CilDef },
                     "MilDef" =>{ GatResult::MilDef },
-                    //"__ViolatedList" => { GatResult::ViolatedList },
-                    //"__InnerViolatedList" => { GatResult::InnerViolatedList },
-                    //"__InnerViolatedListDef" => { GatResult::InnerViolatedListDef },
                     "__InnerMutUndefined" => { GatResult::InnerMutUndefined },
                     _=>{ GatResult::NotDefined },
                 }

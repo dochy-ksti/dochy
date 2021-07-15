@@ -1,24 +1,24 @@
 use crate::imp::structs::var_type::VarType;
-use crate::imp::structs::rust_list::{ConstTable, ConstList, MutList, ConstInnerList, MutInnerList};
+use crate::imp::structs::rust_list::{ConstTable, ConstList, MutList, ConstListVal, MutListVal};
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::list_value::{ListDefValue, ListSabValue};
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::structs::mil_def_obj::MilDefObj;
+use crate::imp::structs::mut_list_def::MutListDef;
 
 
 #[derive(Debug, Clone)]
 pub enum RustValue{
     Param(RustParam, VarType),
     Table(ConstTable),
-    CList(ConstList),
-    MList(MutList),
-    Cil(ConstInnerList),
+    CList((ListDefObj, ConstListVal)),
+    MList((MutListDef, Option<MutListVal>)),
+    Cil(ConstListVal),
     ///MutInnerListだけundefinedになりうる
-    Mil(Option<MutInnerList>),
+    Mil(Option<MutListVal>),
     //InnerDataDef(ListDefObj),
     CilDef(ListDefObj),
-    MilDef(MilDefObj),
+    MilDef(MutListDef),
 }
 
 #[repr(u64)]

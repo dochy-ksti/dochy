@@ -7,6 +7,9 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
 use crate::structs::{MetaTable};
 use crate::imp::structs::util::hash_m::{HashM, HashMt};
+use crate::imp::structs::list_value::ListSabValue;
+
+//TODO: ここ
 
 // paramのsabunがあれば上書き、mut_listはoldのものを全部入れ、（あるなら）newの方のものは全削除して入れ替える
 // 基本的に、新バージョンのjsonと旧バージョンのデータが有り、旧バージョンのデータはRootのsabunとMutListには変更が加えられているだろう
@@ -28,7 +31,7 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
             RootValue::Param(p,v) =>{
                 let undef = if v.undefiable(){
                     if old_def.contains_key(&def_key) == false{
-                        sabun.insert(def_key.to_string(),p.to_undefined());
+                        sabun.insert(def_key.to_string(),ListSabValue::Param(p.to_undefined()));
                         true
                     } else {
                         false

@@ -2,7 +2,7 @@ use crate::error::CoreResult;
 use crate::imp::version_adjuster::adjust_mut_list_item_sabun::adjust_mut_list_item_sabun;
 use crate::imp::json_to_rust::names::Names;
 use crate::imp::version_adjuster::adjust_mut_list_item_ref::adjust_mut_list_item_ref;
-use crate::imp::structs::rust_list::{MutItem, MutList, MutInnerList};
+use crate::imp::structs::rust_list::{MutItem, MutList, MutListVal};
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::linked_m::LinkedMap;
 
@@ -30,10 +30,10 @@ pub(crate) fn adjust_mut_list(new : MutList, old : MutList, names : &Names) -> C
     Ok(MutList::new(default, new_list))
 }
 
-pub(crate) fn adjust_mut_inner_list(def : &ListDefObj, old : MutInnerList, names : &Names) -> CoreResult<MutInnerList>{
+pub(crate) fn adjust_mut_inner_list(def : &ListDefObj, old : MutListVal, names : &Names) -> CoreResult<MutListVal>{
     let old_list = old.deconstruct();
 
     let new_list = adjust_mut(def, old_list, names)?;
     //let next_id = new_list.len() as u64;
-    Ok(MutInnerList::new(new_list))
+    Ok(MutListVal::new(new_list))
 }

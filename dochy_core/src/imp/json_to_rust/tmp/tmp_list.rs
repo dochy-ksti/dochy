@@ -2,9 +2,9 @@ use crate::imp::json_to_rust::tmp::tmp_obj::TmpObj;
 use crate::{HashM, HashMt};
 use dochy_json5::Span;
 use crate::error::CoreResult;
-use crate::imp::structs::rust_list::{ConstList, ConstInnerList, ConstTable, MutList, MutInnerList, ConstItem, MutItem};
+use crate::imp::structs::rust_list::{ConstList, ConstListVal, ConstTable, MutList, MutListVal, ConstItem, MutItem};
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::structs::mil_def_obj::MilDefObj;
+use crate::imp::structs::mut_list_def::MutListDef;
 use crate::imp::structs::linked_m::LinkedMap;
 use crate::imp::structs::util::hash_m::{HashS, HashSt};
 
@@ -23,7 +23,7 @@ impl TmpList{
         TmpList{ vec : Vec::with_capacity(capacity), old : None, default : None,  next_id : None, span }
     }
 
-    pub(crate) fn into_const_list(self) -> CoreResult<ConstList>{
+    pub(crate) fn into_const_list(self) -> CoreResult<(ListDefObj, ConstListVal)>{
         // if self.compatible.is_some(){
         //     Err(format!("{} Compatible is not needed for a List {}", self.span.line_str(), self.span.slice()))?
         // }
@@ -36,13 +36,14 @@ impl TmpList{
         if self.next_id.is_some(){
             Err(format!("{} NextID must not be defined {}", self.span.line_str(), self.span.slice()))?
         }
+        let list_item = to_list_items(self.vec)?;
 
-        Ok(ConstList::new(self.default.unwrap(), to_list_items(self.vec)?))
+        Ok((self.default.unwrap(), ConstListVal::new(list_item)))
     }
 
 
 
-    pub(crate) fn into_inner_list(self) -> CoreResult<ConstInnerList>{
+    pub(crate) fn into_inner_list(self) -> CoreResult<ConstListVal>{
         // if self.compatible.is_some(){
         //     Err(format!("{} Compatible is not needed for InnerList {}", self.span.line_str(), self.span.slice()))?
         // }
@@ -56,7 +57,7 @@ impl TmpList{
             Err(format!("{} NextID must not be defined for InnerList {}", self.span.line_str(), self.span.slice()))?
         }
 
-        Ok(ConstInnerList::new(to_list_items(self.vec)?))
+        Ok(ConstListVal::new(to_list_items(self.vec)?))
     }
 
     pub(crate) fn into_const_data(self) -> CoreResult<ConstTable>{
@@ -126,7 +127,7 @@ impl TmpList{
     // }
 
 
-    pub(crate) fn into_mut_list(self) -> CoreResult<MutList>{
+    pub(crate) fn into_mut_list(self, undefiable : bool) -> CoreResult<(MutListDef, Option<MutListVal>)>{
 
         if self.old.is_some(){
             Err(format!("{} Old is not needed for MutList {}", self.span.line_str(), self.span.slice()))?
@@ -139,11 +140,11 @@ impl TmpList{
 
         let items = to_mut_list_items(self.vec, next_id)?;
         //let compatible = self.compatible.unwrap_or_else(|| HashSt::new());
-
-        Ok(MutList::new(self.default.unwrap(), items))
+        let def = self.default.unwrap();
+        Ok((MutListDef::new(def, undefiable), Some(MutListVal::new(items))))
     }
 
-    pub(crate) fn into_mut_inner_list(self) -> CoreResult<MutInnerList>{
+    pub(crate) fn into_mut_inner_list(self) -> CoreResult<MutListVal>{
         // if self.compatible.is_some(){
         //     Err(format!("{} Compatible is not needed for MutInnerList {}", self.span.line_str(), self.span.slice()))?
         // }
@@ -158,7 +159,7 @@ impl TmpList{
 
         let items = to_mut_list_items(self.vec, next_id)?;
 
-        Ok(MutInnerList::new(items))
+        Ok(MutListVal::new(items))
     }
 
     pub(crate) fn into_inner_def(self) -> CoreResult<ListDefObj>{
@@ -181,7 +182,7 @@ impl TmpList{
         Ok(self.default.unwrap())
     }
 
-    pub(crate) fn into_inner_mut_def(self, undefinable : bool) -> CoreResult<MilDefObj>{
+    pub(crate) fn into_inner_mut_def(self, undefinable : bool) -> CoreResult<MutListDef>{
         if self.old.is_some(){
             Err(format!("{} Old is not needed for InnerDef {}", self.span.line_str(), self.span.slice()))?
         }
@@ -195,7 +196,7 @@ impl TmpList{
             Err(format!("{} InnerDef must not have items {}", self.span.line_str(), self.span.slice()))?
         }
         //let compatible = self.compatible.unwrap_or_else(|| HashSt::new());
-        Ok(MilDefObj::new(self.default.unwrap(), undefinable))
+        Ok(MutListDef::new(self.default.unwrap(), undefinable))
     }
 }
 
