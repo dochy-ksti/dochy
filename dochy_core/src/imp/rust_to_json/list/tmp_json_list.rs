@@ -91,7 +91,7 @@ impl TmpJsonList{
             (vec![], 0)
         };
         TmpJsonList{ vec,
-            next_id: Some(next_id), old : None, default : Some(d.list_def().clone()) }
+            next_id: Some(next_id), old : None, default : Some(d.default().clone()) }
     }
 
     // pub(crate ) fn from_inner_data(l : &InnerData) -> TmpJsonList{

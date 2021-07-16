@@ -34,9 +34,13 @@ pub(crate) fn validate_root(root : &RootObject, can_use_old: bool) -> CoreResult
         //なのでここではOldは無視
         match val {
             RootValue::Param(p, _) => {
-                if let Some(ListSabValue::Param(sab)) = root.sabun().get(name){
-                    if p.acceptable(sab) == false{
-                        Err(format!("Root's member {}'s sabun is invalid", name))?
+                if let Some(sab) = root.sabun().get(name) {
+                    if let ListSabValue::Param(sab) = sab {
+                        if p.acceptable(sab) == false {
+                            Err(format!("Root's member {}'s sabun is invalid", name))?
+                        }
+                    } else {
+                        Err(format!("Root's member {} is not a param", name))?
                     }
                 }
             },
@@ -47,19 +51,28 @@ pub(crate) fn validate_root(root : &RootObject, can_use_old: bool) -> CoreResult
             RootValue::CList(list) =>{
                 validate_list_def(list, root, can_use_old, false, names)?;
 
-                if let Some(ListSabValue::Cil(sab)) = root.sabun().get(name) {
-                    validate_const_list(list, sab.list(), root, can_use_old, names)?
+                if let Some(sab) = root.sabun().get(name) {
+                    if let ListSabValue::Cil(sab) = sab {
+                        validate_const_list(list, sab.list(), root, can_use_old, names)?
+                    } else{
+                        //const listにはadjustmentが入らないのでここに来るのは不可能だと思うが・・・
+                        Err(format!("Root's member {} is not a const list", name))?
+                    }
                 }
             },
             RootValue::MList(m) =>{
-                validate_list_def(m.list_def(), root, can_use_old, true, names)?;
-                if let Some(ListSabValue::Mil(sab)) = root.sabun().get(name){
-                    if let Some(list) = sab {
-                        validate_mut_list(m.list_def(), list.list(), root, can_use_old, names)?
-                    } else{
-                        if m.undefinable(){
-                            Err(format!("Root's member {} can't be undefined", name))?
+                validate_list_def(m.default(), root, can_use_old, true, names)?;
+                if let Some(sab) = root.sabun().get(name) {
+                    if let ListSabValue::Mil(sab) = sab {
+                        if let Some(list) = sab {
+                            validate_mut_list(m.default(), list.list(), root, can_use_old, names)?
+                        } else {
+                            if m.undefiable() {
+                                Err(format!("Root's member {} can't be undefined", name))?
+                            }
                         }
+                    } else{
+                        Err(format!("Root's member {} is not a mut list", name))?
                     }
                 }
 

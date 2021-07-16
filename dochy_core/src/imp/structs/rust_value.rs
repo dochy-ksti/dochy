@@ -29,18 +29,18 @@ pub enum RustMemberType {
 }
 
 impl RustValue{
-    pub(crate) fn into_root_value(self) -> Result<RootValue, String>{
+    pub(crate) fn into_root_value(self) -> Result<(RootValue, Option<ListSabValue>), String>{
         let v = match self{
-            RustValue::Param(p,v) => RootValue::Param(p,v),
-            RustValue::Table(d) => RootValue::Table(d),
-            RustValue::CList(l) => RootValue::CList(l),
-            RustValue::MList(m) => RootValue::MList(m),
+            RustValue::Param(p,v) => (RootValue::Param(p,v), None),
+            RustValue::Table(d) => (RootValue::Table(d), None),
+            RustValue::CList((def, val)) => (RootValue::CList(def), Some(ListSabValue::Cil(val))),
+            RustValue::MList((def, val)) => (RootValue::MList(def), Some(ListSabValue::Mil(val))),
             _ =>{ return Err(self.type_string()); },
         };
         Ok(v)
     }
 
-    pub(crate) fn into_root_value2(self, name : &str) -> crate::error::CoreResult<RootValue>{
+    pub(crate) fn into_root_value2(self, name : &str) -> crate::error::CoreResult<(RootValue, Option<ListSabValue>)>{
         match self.into_root_value(){
             Ok(a) => Ok(a),
             Err(s) =>{ Err(format!("{} the root obj can't have {}", name, s))? }

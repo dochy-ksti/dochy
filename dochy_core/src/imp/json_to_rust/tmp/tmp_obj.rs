@@ -54,16 +54,25 @@ impl TmpObj{
     }
 
     pub fn into_root_obj(self) -> CoreResult<RootObject>{
-        fn to_root_hash(map : HashM<String, (usize, RustValue)>) -> CoreResult<HashM<String, (usize, RootValue)>>{
+        fn to_root_hash(map : HashM<String, (usize, RustValue)>) ->
+                                                                 CoreResult<(
+                                                                     HashM<String, (usize, RootValue)>,
+                                                                     HashM<String, ListSabValue>)>{
             let mut result : HashM<String, (usize, RootValue)> = HashMt::with_capacity(map.len());
+            let mut sabun : HashM<String, ListSabValue> = HashMt::new();
 
             for (key, (id, value)) in map{
                 match value.into_root_value(){
-                    Ok(v) =>{ result.insert(key, (id, v)); },
+                    Ok((def, val)) =>{
+                        result.insert(key, (id, def));
+                        if let Some(val) = val{
+                            sabun.insert(key.to_string(), val);
+                        }
+                    },
                     Err(type_s) => Err(format!("{} root object can't have {}", key, type_s))?,
                 }
             }
-            Ok(result)
+            Ok((result, sabun))
         }
 
         if self.id.is_some(){
@@ -73,9 +82,8 @@ impl TmpObj{
             Err(format!("Ref is not needed for the root obj"))?
         }
 
-        Ok(RootObject::new(
-            to_root_hash(self.default)?,
-            HashMt::new(), self.old))
+        let (def, sabun) = to_root_hash(self.default)?;
+        Ok(RootObject::new(def, sabun, self.old))
     }
 
     pub fn into_list_def_obj(self) -> CoreResult<ListDefObj>{

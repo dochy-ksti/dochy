@@ -1,7 +1,7 @@
 //use crate::{HashM, HashMt};
 use crate::error::CoreResult;
 use crate::imp::json_to_rust::names::Names;
-use crate::imp::version_adjuster::adjust_mut_list::adjust_mut_inner_list;
+use crate::imp::version_adjuster::adjust_mut_list::adjust_mut_list;
 use crate::imp::structs::list_value::{ListSabValue, ListDefValue};
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::util::hash_m::{HashM, HashMt};
@@ -30,7 +30,7 @@ pub(crate) fn adjust_mut_list_item_sabun(def : &ListDefObj, old_sabun : HashM<St
                     }
                 },
                 ListDefValue::MilDef(mut_def) =>{
-                    if mut_def.undefinable(){
+                    if mut_def.undefiable(){
                         ListSabValue::Mil(None)
                     } else{
                         continue;
@@ -49,7 +49,7 @@ pub(crate) fn adjust_mut_list_item_sabun(def : &ListDefObj, old_sabun : HashM<St
             ListSabValue::Mil(op) =>{
                 match op{
                     Some(im) =>{
-                        let new = adjust_mut_inner_list(def, im, &names.append(def_key))?;
+                        let new = adjust_mut_list(def, im, &names.append(def_key))?;
                         result.insert(def_key.to_string(), ListSabValue::Mil(Some(new)));
                     },
                     None =>{

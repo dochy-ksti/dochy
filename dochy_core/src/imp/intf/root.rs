@@ -10,7 +10,7 @@ use crate::imp::intf::table::TablePtr;
 use crate::imp::intf::mitem::MItemPtr;
 use crate::imp::intf::citem::CItemPtr;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
-use crate::structs::RustBinary;
+use crate::structs::{RustBinary, ListSabValue};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct RootObjectPtr{
@@ -255,7 +255,7 @@ pub fn get_param<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustParam> {
         Some(p)
     } else { None }
 }
-pub fn get_param_mut<'a>(sab : &'a mut HashM<String, RustParam>, name : &str) -> Option<&'a mut RustParam> {
+pub fn get_param_mut<'a>(sab : &'a mut HashM<String, ListSabValue>, name : &str) -> Option<&'a mut RustParam> {
     if let Some(p) = sab.get_mut(name) {
         Some(p)
     } else { None }
@@ -270,7 +270,7 @@ pub fn get_param_def<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustPara
 
 pub fn set_sabun(root : RootObjectPtr, name : &str, val : RustParam) -> bool{
     let root = unsafe{ &mut *root.ptr };
-    match root.set_sabun(name.to_string(), val){
+    match root.set_sabun_param(name.to_string(), val){
         Ok(_) => true,
         Err(_) => false,
     }

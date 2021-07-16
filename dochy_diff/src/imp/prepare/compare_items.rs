@@ -36,7 +36,7 @@ pub(crate) fn compare_items<'a, 'b>(from : &'a MutItem, to : &'b MutItem, def : 
                         }
                         if let Some(from_mil) = from_mil {
                             if let Some(mil) = mil {
-                                if let Some(diff) = get_mlist_diff(from_mil.list(), mil.list(), mil_def.list_def(), meta) {
+                                if let Some(diff) = get_mlist_diff(from_mil.list(), mil.list(), mil_def.default(), meta) {
                                     lists.insert(id, Some(diff));
                                 }
                             } else{
@@ -46,13 +46,13 @@ pub(crate) fn compare_items<'a, 'b>(from : &'a MutItem, to : &'b MutItem, def : 
                         } else{
                             if let Some(mil) = mil {
                                 lists.insert(id, Some(new_list(mil,
-                                                               mil_def.list_def(), meta)));
+                                                               mil_def.default(), meta)));
                             }
                         }
                     } else{
                         if let Some(mil) = mil {
                             lists.insert(id, Some(new_list(mil,
-                                                           mil_def.list_def(), meta)));
+                                                           mil_def.default(), meta)));
                         } else{
                             lists.insert(id, None);
                         }

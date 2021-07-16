@@ -43,10 +43,10 @@ pub(crate) fn validate_list_item(def : &ListDefObj, sabun_values : &HashM<String
                 let list = if let ListSabValue::Mil(list) = val { list } else { unreachable!() };
                 match list {
                     Some(list) => {
-                        validate_mut_list(def.list_def(), list.list(), root, can_use_old, &names.append(name))?
+                        validate_mut_list(def.default(), list.list(), root, can_use_old, &names.append(name))?
                     },
                     None => {
-                        if def.undefinable() == false {
+                        if def.undefiable() == false {
                             Err(format!("{} {} can't be undefined", names, name))?
                         }
                     }

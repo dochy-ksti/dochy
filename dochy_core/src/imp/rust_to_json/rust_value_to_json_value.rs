@@ -29,7 +29,7 @@ pub(crate) fn rust_value_to_json_value(v : &RustValue, name : &str) -> (String, 
         RustValue::CilDef(d) =>{ inner_def_to_json(d, ListType::CilDef) },
         RustValue::MilDef(obj) =>{
             let val = inner_mut_def_to_json(obj);
-            if obj.undefinable(){
+            if obj.undefiable(){
                 return (name_with_suffix(name, VarType::Undefiable), val);
             } else{
                 val

@@ -35,7 +35,7 @@ pub fn get_mil<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
         if let Some(ListSabValue::Mil(data)) = item.values_mut().get_mut(name) {
             if let Some(inner) = data {
-                return Some(Some(MListPtr::new(inner.list_mut(), md.list_def(), ps.root)))
+                return Some(Some(MListPtr::new(inner.list_mut(), md.default(), ps.root)))
             } else {
                 return Some(None)
             }

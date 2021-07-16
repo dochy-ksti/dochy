@@ -10,7 +10,7 @@ pub(crate) fn inner_mut_def_to_json(d : &MutListDef) -> Value{
     //     result.push(string_set_to_json("Compatible", &btree_set(d.compatible())));
     // }
 
-    result.push(Value::Array(vec![default_to_json(d.list_def())]));
+    result.push(Value::Array(vec![default_to_json(d.default())]));
 
 
     return Value::Array(result);

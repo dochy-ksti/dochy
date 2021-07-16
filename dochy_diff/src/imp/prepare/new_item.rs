@@ -21,7 +21,7 @@ pub(crate) fn new_item<'a>(item : &'a MutItem, def : &'a ListDefObj, meta : &'a 
                 if let Some((id, ListDefValue::MilDef(mil_def))) = def.get_with_id(key) {
                     if let Some(mil) = mil {
                         if let Some(tables) = meta.items().get_tables(id) {
-                            lists.insert(id, Some(new_list(mil, mil_def.list_def(), tables)));
+                            lists.insert(id, Some(new_list(mil, mil_def.default(), tables)));
                         } else{
                             panic!("invalid meta");
                         }

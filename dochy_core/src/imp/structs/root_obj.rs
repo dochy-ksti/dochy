@@ -77,12 +77,20 @@ impl RootObject{
     pub fn sabun(&self) -> &HashM<String, ListSabValue>{ self.sabun.as_ref() }
     pub fn sabun_mut(&mut self) -> &mut HashM<String, ListSabValue>{ self.sabun.as_mut() }
     pub(crate) fn old(&self) -> &HashS<String>{ self.old.as_ref() }
-    pub fn set_sabun(&mut self, name : String, param : RustParam) -> Result<Option<RustParam>, SetSabunError> {
+    pub fn set_sabun_param(&mut self, name : String, param : RustParam) -> Result<Option<RustParam>, SetSabunError> {
         let (p, vt) = if let Some((_,RootValue::Param(p, vt))) = self.default().get(&name) { (p, vt) } else {
             return Err(SetSabunError::ParamNotFound);
         };
         verify_set_sabun(p, vt, &param)?;
-        Ok(self.sabun.insert(name, param))
+        if let Some(sab) = self.sabun.insert(name, ListSabValue::Param(param)){
+            if let ListSabValue::Param(p) = sab {
+                Ok(Some(p))
+            } else{
+                Err(SetSabunError::ParamNotFound)
+            }
+        } else{
+            Ok(None)
+        }
     }
 
     /// Use some shortcuts to compare data

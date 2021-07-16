@@ -6,6 +6,7 @@ use crate::IdentityEqual;
 use crate::imp::structs::mut_list_def::MutListDef;
 use crate::imp::structs::list_value::ListSabValue;
 use crate::imp::structs::list_def_obj::ListDefObj;
+use crate::error::CoreResult;
 
 #[derive(Debug, Clone)]
 pub enum RootValue{
@@ -17,19 +18,22 @@ pub enum RootValue{
 
 impl RootValue{
 
-    pub fn into_rust_value(self, sabValue : ListSabValue) -> RustValue{
+    pub fn into_rust_value(self, sabValue : ListSabValue) -> CoreResult<RustValue>{
         match self{
-            RootValue::Param(p,v) => RustValue::Param(p,v),
-            RootValue::Table(d) => RustValue::Table(d),
+            RootValue::Param(p,v) => Ok(RustValue::Param(p,v)),
+            RootValue::Table(d) => Ok(RustValue::Table(d)),
             RootValue::CList(d) =>{
                 if let ListSabValue::Cil(c) = sabValue{
-                    RustValue::CList((d,c))
+                    Ok(RustValue::CList((d,c)))
+                }  else{
+                    Err("unmatched Const List")?
                 }
             },
-
             RootValue::MList(d) =>{
                 if let ListSabValue::Mil(m) = sabValue {
-                    RustValue::MList((d, m))
+                    Ok(RustValue::MList((d, m)))
+                } else{
+                    Err("unmatched Mut List")?
                 }
             }
         }
@@ -38,9 +42,10 @@ impl RootValue{
 
 impl IdentityEqual for RootValue{
     fn identity_eq(&self, other: &Self) -> bool {
+        //todo: rootvalue に　identity_eq 必要ないからちゃんとけして
         match self{
-            RootValue::Param(p, _) => if let RootValue::Param(p2, _) = other{ p.identity_eq(p2) } else{ false },
-            RootValue::MList(m) => if let RootValue::MList(m2) = other{ m.identity_eq(m2)} else{ false },
+            //RootValue::Param(p, _) => if let RootValue::Param(p2, _) = other{ p.identity_eq(p2) } else{ false },
+            //RootValue::MList(m) => if let RootValue::MList(m2) = other{ m.identity_eq(m2)} else{ false },
             _ => true, //constのものが違う可能性は考えない。それはバージョンが違うということでありidentity_eqはそれを考えない
         }
     }

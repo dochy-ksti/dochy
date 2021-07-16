@@ -12,6 +12,8 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::json_file::{JsonFile, JsonFileImpl};
 use crate::imp::structs::root_value::RootValue;
 use std::path::Path;
+use crate::imp::structs::list_value::ListSabValue;
+use crate::imp::structs::var_type::VarType;
 
 /// Converts Dochy source files to RootObject
 /// Does extra checks when validation=true
@@ -54,6 +56,7 @@ pub fn json_dir_to_root<P : AsRef<Path>>(dir_path : P, validation : bool) -> Cor
 /// Does extra checks when validation=true
 pub fn json_files_to_root<T : JsonFile>(ite : impl Iterator<Item = T>, validation : bool) -> CoreResult<RootObject>{
     let mut map : HashM<String, RootValue> = HashMt::new();
+    let mut sabun : HashM<String, ListSabValue> = HashMt::new();
     let mut root= None;
 
     for file in ite{
@@ -65,8 +68,19 @@ pub fn json_files_to_root<T : JsonFile>(ite : impl Iterator<Item = T>, validatio
                 Err("There's two 'root.json5's in the directory")? //unreachableだけど一応
             }
         } else{
-            match json_item_str_to_rust(file.json(), name){
-                Ok(val) =>{ map.insert(name.to_string(), val.into_root_value2(name)?); }
+            let (name, var_type) = if name.ends_with("?"){
+                (&name[0..name.len()-1], VarType::Undefiable)
+            } else{
+                (name, VarType::Normal)
+            };
+            match json_item_str_to_rust(file.json(), name, var_type){
+                Ok(val) =>{
+                    let (d,v) = val.into_root_value2(name)?;
+                    map.insert(name.to_string(), d);
+                    if let Some(sab) = v{
+                        sabun.insert(name.to_string(), sab);
+                    }
+                },
                 Err(e) =>{ Err(format!("filename {}, {}", name, e.to_string()))? }
             }
         }

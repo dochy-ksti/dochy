@@ -126,8 +126,8 @@ impl MetaTable{
                     vec[id] = Some((key, val));
                 },
                 ListDefValue::MilDef(mil) =>{
-                    let def = mil.list_def();
-                    if mil.undefinable(){
+                    let def = mil.default();
+                    if mil.undefiable(){
                         vec[id] = Some((key, MetaValue::OptMil(MetaTables::new(
                             Self::from_list_def(def.default()),
                             Self::from_ref_def(def.refs().refs())))));

@@ -21,16 +21,15 @@ pub(crate) fn adjust_mut(def : &ListDefObj, old_list : LinkedMap<MutItem>, names
     return Ok(LinkedMap::construct(result, next_id));
 }
 
-pub(crate) fn adjust_mut_list(new : MutList, old : MutList, names : &Names) -> CoreResult<MutList>{
-    let (_,old_list) = old.deconstruct();
+// pub(crate) fn adjust_mut_list(new : &ListDefObj, old : MutListVal, names : &Names) -> CoreResult<MutListVal>{
+//     let old_list = old.deconstruct();
+//
+//     let new_list = adjust_mut(new, old_list, names)?;
+//
+//     Ok(MutListVal::new(new_list))
+// }
 
-    let new_list = adjust_mut(new.default(), old_list, names)?;
-    //let next_id = new_list.len() as u64;
-    let(default,_) = new.deconstruct();
-    Ok(MutList::new(default, new_list))
-}
-
-pub(crate) fn adjust_mut_inner_list(def : &ListDefObj, old : MutListVal, names : &Names) -> CoreResult<MutListVal>{
+pub(crate) fn adjust_mut_list(def : &ListDefObj, old : MutListVal, names : &Names) -> CoreResult<MutListVal>{
     let old_list = old.deconstruct();
 
     let new_list = adjust_mut(def, old_list, names)?;

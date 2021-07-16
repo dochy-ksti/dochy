@@ -76,8 +76,8 @@ pub fn get_member_desc(root_ptr : *mut RootObject) -> Vec<MemberDesc>{
                 vec.push(MemberDesc::new(mem, VarType::Normal, RustMemberType::Table, is_old, Some(descs)))
             },
             RootValue::CList(l) =>{
-                let children = get_list_def_desc(l.default());
-                let refs = get_ref_def_desc(l.default().refs());
+                let children = get_list_def_desc(l);
+                let refs = get_ref_def_desc(l.refs());
                 let descs = MemberDescs::new(children, refs);
                 vec.push(MemberDesc::new(mem, VarType::Normal, RustMemberType::CList, is_old, Some(descs)))
             },
@@ -117,9 +117,9 @@ pub fn get_list_def_desc(def : &ListDefObj) -> Vec<MemberDesc>{
                     is_old, Some(MemberDescs::new(ld, rd))));
             },
             ListDefValue::MilDef(d) =>{
-                let ld = get_list_def_desc(d.list_def());
-                let rd = get_ref_def_desc(d.list_def().refs());
-                let vt = if d.undefinable(){ VarType::Undefiable } else{ VarType::Normal };
+                let ld = get_list_def_desc(d.default());
+                let rd = get_ref_def_desc(d.default().refs());
+                let vt = if d.undefiable(){ VarType::Undefiable } else{ VarType::Normal };
                 vec.push(MemberDesc::new(
                     mem, vt, RustMemberType::Mil,
                     is_old, Some(MemberDescs::new(ld, rd))));

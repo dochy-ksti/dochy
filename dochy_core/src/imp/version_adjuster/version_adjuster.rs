@@ -15,22 +15,22 @@ use crate::imp::structs::list_value::ListSabValue;
 // 基本的に、新バージョンのjsonと旧バージョンのデータが有り、旧バージョンのデータはRootのsabunとMutListには変更が加えられているだろう
 // Defaultが更新されるので、undefinedが設定される。
 
-/// Adjust old data to be compatible with new version.
+/// Adjust old data to be compatible with the new version.
+/// The strategy of the adjustment is described in the manual.
 pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) -> CoreResult<RootObject>{
 
-    let (def, sabun, old_hash, _meta) = new.deconstruct();
+    let (def, sabun, old_hash, meta) = new.deconstruct();
     let mut sabun = sabun;
-    let mut new_map :HashM<String, (usize, RootValue)> = HashMt::with_capacity(def.len());
+    //let mut new_map :HashM<String, (usize, RootValue)> = HashMt::with_capacity(def.len());
 
     let (old_def,old_sabun, _, _) = old.deconstruct();
     let mut old_sabun = old_sabun;
-    let mut old_def = old_def;
 
-    for (def_key, (id, def_value)) in *def{
+    for (def_key, (id, def_value)) in def.as_ref(){
         match def_value{
             RootValue::Param(p,v) =>{
                 let undef = if v.undefiable(){
-                    if old_def.contains_key(&def_key) == false{
+                    if old_def.contains_key(def_key) == false{
                         sabun.insert(def_key.to_string(),ListSabValue::Param(p.to_undefined()));
                         true
                     } else {
@@ -41,29 +41,41 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
                 };
 
                 if undef == false {
-                    if let Some(param) = old_sabun.remove(&def_key) {
+                    if let Some(param) = old_sabun.remove(def_key) {
                         sabun.insert(def_key.to_string(), param);
                     }
                 }
-                new_map.insert(def_key,(id, RootValue::Param(p,v)));
             },
             RootValue::MList(m) =>{
-                if let Some((_,RootValue::MList(old_m))) = old_def.remove(&def_key){
-                    let new_m = adjust_mut_list(m, old_m, &Names::new(&def_key))?;
-                    new_map.insert(def_key, (id, RootValue::MList(new_m)));
+                let undef = if m.undefiable(){
+                    if old_def.contains_key(def_key) == false{
+                        sabun.insert(def_key.to_string(),ListSabValue::Mil(None));
+                        true
+                    } else {
+                        false
+                    }
                 } else{
-                    new_map.insert(def_key, (id, RootValue::MList(m)));
+                    false
+                };
+
+                if undef == false {
+                    if let Some(ListSabValue::Mil(m_val)) = old_sabun.remove(def_key) {
+                        if let Some(m_val) = m_val {
+                            let new_m = adjust_mut_list(m.default(), m_val, &Names::new(def_key))?;
+                            sabun.insert(def_key.to_string(),ListSabValue::Mil(Some(new_m)));
+                        } else{
+                            sabun.insert(def_key.to_string(),ListSabValue::Mil(None));
+                        }
+                    }
                 }
             },
             _ =>{
                 //MutとParam以外にadjustする対象はないはず
-                new_map.insert(def_key, (id, def_value));
             },
         }
     }
-    let new_def = Box::new(new_map);
-    let new_meta = MetaTable::from_root(new_def.as_ref());
-    let new = RootObject::construct(new_def, sabun, old_hash, Box::new(new_meta));
+
+    let new = RootObject::construct(def, sabun, old_hash, meta);
 
     if validation{
         validate_root(&new, true)?

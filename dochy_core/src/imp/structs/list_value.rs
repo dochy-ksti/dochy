@@ -56,7 +56,7 @@ impl ListDefValue{
     pub(crate) fn value_type(&self) -> VarType {
         match self{
             ListDefValue::Param(_param, vt) => vt.clone(),
-            ListDefValue::MilDef(obj) => if obj.undefinable() { VarType::Undefiable } else{ VarType::Normal }
+            ListDefValue::MilDef(obj) => if obj.undefiable() { VarType::Undefiable } else{ VarType::Normal }
             _ => VarType::Normal,
         }
     }

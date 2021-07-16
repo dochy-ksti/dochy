@@ -11,7 +11,7 @@ use crate::imp::structs::qv::Qv;
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::rust_array::RustArray;
 
-pub(crate) fn json_array_to_rust(array : &Vec<JVal>, value_type : VarType, span : &Span, names : &Names) -> CoreResult<RustValue>{
+pub(crate) fn json_array_to_rust(array : &Vec<JVal>, var_type: VarType, span : &Span, names : &Names) -> CoreResult<RustValue>{
     use GatResult::*;
     let gat = get_array_type(array);
     return match gat{
@@ -19,14 +19,14 @@ pub(crate) fn json_array_to_rust(array : &Vec<JVal>, value_type : VarType, span 
             let array = get_array(&array[1..], &array_type, names)?;
             Ok(RustValue::Param(array.to_param(&array_type).or_else(|e| {
                 Err(format!(r#"{} {}: {}"#, span.line_str(), names, e.to_string()))
-            })?, value_type))
+            })?, var_type))
         },
         NoTagInt =>{
             let array = get_array(&array, &ArrayType::Int, names)?;
-            Ok(RustValue::Param(array.to_param(&ArrayType::Int).unwrap(), value_type))
+            Ok(RustValue::Param(array.to_param(&ArrayType::Int).unwrap(), var_type))
         }
         Float | Int | Str | Bool =>{
-            array_null_or_undefined(&array[1..], gat, value_type, span, names)
+            array_null_or_undefined(&array[1..], gat, var_type, span, names)
         },
         InnerMutUndefined =>{
             Ok(RustValue::Mil(None))
@@ -35,7 +35,7 @@ pub(crate) fn json_array_to_rust(array : &Vec<JVal>, value_type : VarType, span 
         CList | Table | MList | Cil | //InnerData |
         Mil | CilDef | //InnerDataDef |
         MilDef  =>{
-            match value_type{
+            match var_type {
                 VarType::Normal =>{
                     let tmp = json_list_to_rust(&array[1..], span, names)?;
                     match gat{

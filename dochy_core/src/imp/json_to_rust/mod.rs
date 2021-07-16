@@ -33,8 +33,8 @@ pub(crate) fn json_root_to_rust(json : &str) -> CoreResult<RootObject>{
     };
 }
 
-pub(crate) fn json_item_str_to_rust(json : &str, item_name : &str) -> CoreResult<RustValue>{
+pub(crate) fn json_item_str_to_rust(json : &str, item_name : &str, var_type : VarType) -> CoreResult<RustValue>{
     let jval = dochy_json5::from_str(json)?;
 
-    json_item_to_rust::json_item_to_rust(item_name, VarType::Normal, &jval, &Names::new(""))
+    json_item_to_rust::json_item_to_rust(item_name, var_type, &jval, &Names::new(""))
 }
