@@ -27,56 +27,56 @@ impl ConstTable {
     pub(crate) fn old(&self) -> &HashS<String>{ self.old.as_ref() }
 }
 
-///IDを持たず、参照できない。バージョン違い読み出し時の動作の違いが一番大きな違いで、それが存在理由。
-/// MutListは旧バージョンのアイテムが残り新バージョンの初期値が消えるが、ConstListでは新バージョンのアイテムが残り旧バージョンは消える。
-/// Constなので当然といえるだろう・・・
-#[derive(Debug, Clone)]
-pub struct ConstList {
-    default : Box<ListDefObj>,
-    list : Box<Vec<ConstItem>>,
-}
+// ///IDを持たず、参照できない。バージョン違い読み出し時の動作の違いが一番大きな違いで、それが存在理由。
+// /// MutListは旧バージョンのアイテムが残り新バージョンの初期値が消えるが、ConstListでは新バージョンのアイテムが残り旧バージョンは消える。
+// /// Constなので当然といえるだろう・・・
+// #[derive(Debug, Clone)]
+// pub struct ConstList {
+//     default : Box<ListDefObj>,
+//     list : Box<Vec<ConstItem>>,
+// }
+//
+// impl ConstList {
+//     pub(crate) fn new(default : ListDefObj, list : Vec<ConstItem>) -> ConstList { ConstList { default : Box::new(default), list : Box::new(list) } }
+//     pub(crate) fn default(&self) -> &ListDefObj{ self.default.as_ref() }
+//     pub(crate) fn list(&self) -> &Vec<ConstItem>{ self.list.as_ref() }
+// }
 
-impl ConstList {
-    pub(crate) fn new(default : ListDefObj, list : Vec<ConstItem>) -> ConstList { ConstList { default : Box::new(default), list : Box::new(list) } }
-    pub(crate) fn default(&self) -> &ListDefObj{ self.default.as_ref() }
-    pub(crate) fn list(&self) -> &Vec<ConstItem>{ self.list.as_ref() }
-}
+// ///追加、削除、順番の変更等ができるリスト
+// /// ConstListとMutListはstruct定義を見ると近い存在なので、まとめてもいいように思うかもしれないけれど、意味が全く別ものなので型を分けたほうが混乱が少ない。
+// #[derive(Debug, Clone)]
+// pub struct MutList{
+//     default : Box<ListDefObj>,
+//     list : Box<LinkedMap<MutItem>>,
+//     //compatible : Box<HashS<String>>,
+// }
 
-///追加、削除、順番の変更等ができるリスト
-/// ConstListとMutListはstruct定義を見ると近い存在なので、まとめてもいいように思うかもしれないけれど、意味が全く別ものなので型を分けたほうが混乱が少ない。
-#[derive(Debug, Clone)]
-pub struct MutList{
-    default : Box<ListDefObj>,
-    list : Box<LinkedMap<MutItem>>,
-    //compatible : Box<HashS<String>>,
-}
-
-impl MutList{
-    pub(crate) fn new(default : ListDefObj, list : LinkedMap<MutItem>) -> MutList{
-        MutList{ default : Box::new(default), list : Box::new(list) }
-    }
-    pub fn default(&self) -> &ListDefObj{ self.default.as_ref() }
-    pub fn list(&self) -> &LinkedMap<MutItem>{ self.list.as_ref() }
-    pub fn list_mut(&mut self) -> &mut LinkedMap<MutItem>{ self.list.as_mut() }
-    //pub(crate) fn distribute_mut(&mut self) -> (&mut ListDefObj, &mut LinkedMap<MutListItem>, &mut HashS<String>){ (self.default.as_mut(), self.list.as_mut(), self.compatible.as_mut()) }
-    pub(crate) fn next_id(&self) -> u64{ self.list.as_ref().next_id() }
-    //pub(crate) fn list_mut(&mut self) -> &mut LinkedHashM<u64, MutListItem>{ self.list.as_mut() }
-    //pub(crate) fn increment_next_id(&mut self){ self.prop.next_id += 1 }
-    // pub(crate) fn append_new_item(&mut self) -> u64{
-    //     self.list.insert(MutListItem::construct(HashMt::new(), HashMt::new()))
-    // }
-
-    //pub(crate) fn compatible(&self) -> &HashS<String>{ self.compatible.as_ref() }
-    pub(crate) fn deconstruct(self) -> (ListDefObj, LinkedMap<MutItem>){
-        (*self.default, *self.list)
-    }
-}
-
-impl IdentityEqual for MutList{
-    fn identity_eq(&self, other: &Self) -> bool {
-        self.list.identity_eq(other.list())
-    }
-}
+// impl MutList{
+//     pub(crate) fn new(default : ListDefObj, list : LinkedMap<MutItem>) -> MutList{
+//         MutList{ default : Box::new(default), list : Box::new(list) }
+//     }
+//     pub fn default(&self) -> &ListDefObj{ self.default.as_ref() }
+//     pub fn list(&self) -> &LinkedMap<MutItem>{ self.list.as_ref() }
+//     pub fn list_mut(&mut self) -> &mut LinkedMap<MutItem>{ self.list.as_mut() }
+//     //pub(crate) fn distribute_mut(&mut self) -> (&mut ListDefObj, &mut LinkedMap<MutListItem>, &mut HashS<String>){ (self.default.as_mut(), self.list.as_mut(), self.compatible.as_mut()) }
+//     pub(crate) fn next_id(&self) -> u64{ self.list.as_ref().next_id() }
+//     //pub(crate) fn list_mut(&mut self) -> &mut LinkedHashM<u64, MutListItem>{ self.list.as_mut() }
+//     //pub(crate) fn increment_next_id(&mut self){ self.prop.next_id += 1 }
+//     // pub(crate) fn append_new_item(&mut self) -> u64{
+//     //     self.list.insert(MutListItem::construct(HashMt::new(), HashMt::new()))
+//     // }
+//
+//     //pub(crate) fn compatible(&self) -> &HashS<String>{ self.compatible.as_ref() }
+//     pub(crate) fn deconstruct(self) -> (ListDefObj, LinkedMap<MutItem>){
+//         (*self.default, *self.list)
+//     }
+// }
+//
+// impl IdentityEqual for MutList{
+//     fn identity_eq(&self, other: &Self) -> bool {
+//         self.list.identity_eq(other.list())
+//     }
+// }
 
 ///Table or CListの内部に作るList。ListDefObjの内部にはDefaultだけ書き、CItemの内部にはListのItemの羅列のみを書く。
 #[derive(Debug, Clone)]

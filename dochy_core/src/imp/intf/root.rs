@@ -233,15 +233,25 @@ pub fn get_table(root_ptr : RootObjectPtr, name : &str) -> Option<TablePtr>{
 pub fn get_clist<T : From<CItemPtr>>(root_ptr : RootObjectPtr, name : &str) -> Option<CListPtr<T>>{
     let root = unsafe{ &*root_ptr.ptr };
     if let Some((_,RootValue::CList(l))) = root.default().get(name){
-        Some(CListPtr::new(l.list(),l.default(), root_ptr.ptr))
-    } else{ None }
+        if let Some(ListSabValue::Cil(sab)) = root.sabun().get(name) {
+            return Some(CListPtr::new(sab.list(), l, root_ptr.ptr));
+        }
+    }
+    None
 }
 
-pub fn get_mlist<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<MListPtr<T>>{
-    let root = unsafe{ &mut *root.ptr };
-    if let Some((_,RootValue::MList(l))) = root.default_mut().get_mut(name){
-        Some(MListPtr::new(l.list_mut(), l.default(), root))
-    } else{ None }
+pub fn get_mlist<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
+    let (def, sabun, _, _) = unsafe{  (*root.ptr).mut_refs() };
+    if let Some((_,RootValue::MList(l))) = def.get(name){
+        if let Some(ListSabValue::Mil(m)) = sabun.get_mut(name) {
+            if let Some(m) = m {
+                return Some(Some(MListPtr::new(m.list_mut(), l.default(), unsafe{ &mut *root.ptr })));
+            } else{
+                return Some(None);
+            }
+        }
+    }
+    return None;
 }
 
 pub fn get_param<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustParam> {
@@ -249,14 +259,14 @@ pub fn get_param<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustParam> {
     let def = ptr.default();
     let sab = ptr.sabun();
 
-    if let Some(p) = sab.get(name) {
+    if let Some(ListSabValue::Param(p)) = sab.get(name) {
         Some(p)
     } else if let Some((_, RootValue::Param(p, _v))) = def.get(name) {
         Some(p)
     } else { None }
 }
 pub fn get_param_mut<'a>(sab : &'a mut HashM<String, ListSabValue>, name : &str) -> Option<&'a mut RustParam> {
-    if let Some(p) = sab.get_mut(name) {
+    if let Some(ListSabValue::Param(p)) = sab.get_mut(name) {
         Some(p)
     } else { None }
 }
@@ -299,12 +309,12 @@ pub fn set_binary(root : RootObjectPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
 }
 /// Sets itinital value(0, empty string, zero-filled vec) to the parameter.
 /// len is ignored except for vec-types.
-/// This should be needed in the C interface.
+/// This will be needed in the C interface.
 pub fn set_initial_value<'a>(ps : RootObjectPtr, name : &str, len : usize) -> bool{
     let (def,sabun, _,_) =  unsafe{ &mut *ps.ptr }.mut_refs();
 
     if let Some((_, RootValue::Param(p, _))) = def.get(name) {
-        sabun.insert(name.to_string(),p.to_default_value(len));
+        sabun.insert(name.to_string(),ListSabValue::Param(p.to_default_value(len)));
         return true;
     } else{
         return false;

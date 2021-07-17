@@ -5,11 +5,8 @@ use crate::error::CoreResult;
 use crate::imp::json_to_rust::names::Names;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
-use crate::structs::{MetaTable};
-use crate::imp::structs::util::hash_m::{HashM, HashMt};
 use crate::imp::structs::list_value::ListSabValue;
 
-//TODO: ここ
 
 // paramのsabunがあれば上書き、mut_listはoldのものを全部入れ、（あるなら）newの方のものは全削除して入れ替える
 // 基本的に、新バージョンのjsonと旧バージョンのデータが有り、旧バージョンのデータはRootのsabunとMutListには変更が加えられているだろう
@@ -26,7 +23,7 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
     let (old_def,old_sabun, _, _) = old.deconstruct();
     let mut old_sabun = old_sabun;
 
-    for (def_key, (id, def_value)) in def.as_ref(){
+    for (def_key, (_id, def_value)) in def.as_ref(){
         match def_value{
             RootValue::Param(p,v) =>{
                 let undef = if v.undefiable(){

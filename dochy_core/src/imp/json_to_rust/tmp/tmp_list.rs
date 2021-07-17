@@ -2,7 +2,7 @@ use crate::imp::json_to_rust::tmp::tmp_obj::TmpObj;
 use crate::{HashM, HashMt};
 use dochy_json5::Span;
 use crate::error::CoreResult;
-use crate::imp::structs::rust_list::{ConstList, ConstListVal, ConstTable, MutList, MutListVal, ConstItem, MutItem};
+use crate::imp::structs::rust_list::{ConstListVal, ConstTable, MutListVal, ConstItem, MutItem};
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::mut_list_def::MutListDef;
 use crate::imp::structs::linked_m::LinkedMap;

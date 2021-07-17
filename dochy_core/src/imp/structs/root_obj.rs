@@ -54,8 +54,8 @@ impl RootObject{
 
     pub fn meta_table(&self) -> &MetaTable{ self.meta_table.as_ref() }
 
-    ///mlistがdefaultにある都合上、書き換える必要性が生じている。HashMのKeyはmetatableからポインタ参照されているので、ハッシュ再構成が起きてはならない
-    pub(crate) fn default_mut(&mut self) -> &mut HashM<String, (usize, RootValue)>{ self.default.as_mut() }
+    /////mlistがdefaultにある都合上、書き換える必要性が生じている。HashMのKeyはmetatableからポインタ参照されているので、ハッシュ再構成が起きてはならない
+    //pub(crate) fn default_mut(&mut self) -> &mut HashM<String, (usize, RootValue)>{ self.default.as_mut() }
 
     pub fn mut_refs(&mut self) -> (&mut HashM<String, (usize, RootValue)>,
                                    &mut HashM<String, ListSabValue>,

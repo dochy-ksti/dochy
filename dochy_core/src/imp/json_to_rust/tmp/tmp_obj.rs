@@ -64,9 +64,9 @@ impl TmpObj{
             for (key, (id, value)) in map{
                 match value.into_root_value(){
                     Ok((def, val)) =>{
-                        result.insert(key, (id, def));
+                        result.insert(key.to_string(), (id, def));
                         if let Some(val) = val{
-                            sabun.insert(key.to_string(), val);
+                            sabun.insert(key, val);
                         }
                     },
                     Err(type_s) => Err(format!("{} root object can't have {}", key, type_s))?,

@@ -1,6 +1,6 @@
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::var_type::VarType;
-use crate::imp::structs::rust_list::{ConstTable, ConstList, MutList};
+use crate::imp::structs::rust_list::{ConstTable};
 use crate::imp::structs::rust_value::RustValue;
 use crate::IdentityEqual;
 use crate::imp::structs::mut_list_def::MutListDef;
@@ -18,19 +18,19 @@ pub enum RootValue{
 
 impl RootValue{
 
-    pub fn into_rust_value(self, sabValue : ListSabValue) -> CoreResult<RustValue>{
+    pub fn into_rust_value(self, sab : ListSabValue) -> CoreResult<RustValue>{
         match self{
             RootValue::Param(p,v) => Ok(RustValue::Param(p,v)),
             RootValue::Table(d) => Ok(RustValue::Table(d)),
             RootValue::CList(d) =>{
-                if let ListSabValue::Cil(c) = sabValue{
+                if let ListSabValue::Cil(c) = sab{
                     Ok(RustValue::CList((d,c)))
                 }  else{
                     Err("unmatched Const List")?
                 }
             },
             RootValue::MList(d) =>{
-                if let ListSabValue::Mil(m) = sabValue {
+                if let ListSabValue::Mil(m) = sab {
                     Ok(RustValue::MList((d, m)))
                 } else{
                     Err("unmatched Mut List")?
@@ -41,7 +41,7 @@ impl RootValue{
 }
 
 impl IdentityEqual for RootValue{
-    fn identity_eq(&self, other: &Self) -> bool {
+    fn identity_eq(&self, _other: &Self) -> bool {
         //todo: rootvalue に　identity_eq 必要ないからちゃんとけして
         match self{
             //RootValue::Param(p, _) => if let RootValue::Param(p2, _) = other{ p.identity_eq(p2) } else{ false },
