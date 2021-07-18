@@ -7,7 +7,7 @@ use crate::imp::json_to_rust::validation::validate_list_def::validate_list_def;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::json_to_rust::validation::validate_old_def_mem::validate_old_root_def_mem;
-use crate::imp::structs::list_value::ListSabValue;
+use crate::imp::structs::list_sab_value::ListSabValue;
 
 /// json読み出し時のチェックがあり、adjust時のチェックもある。
 /// それらでは補足しきれないチェックをするのがこれの役割。

@@ -1,12 +1,13 @@
 
 use crate::{HashM, HashMt, IdentityEqual};
 use crate::imp::structs::ref_value::RefSabValue;
-use crate::imp::structs::list_value::{ListSabValue, ListDefValue};
+use crate::imp::structs::list_value::{ListDefValue};
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::util::set_sabun::{SetSabunError, verify_set_sabun};
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::linked_m::LinkedMap;
 use crate::imp::structs::util::hash_m::{HashS};
+use crate::imp::structs::list_sab_value::ListSabValue;
 
 
 ///アイテムごとにIDをもち、Refで参照することが可能である
@@ -27,20 +28,20 @@ impl ConstTable {
     pub(crate) fn old(&self) -> &HashS<String>{ self.old.as_ref() }
 }
 
-// ///IDを持たず、参照できない。バージョン違い読み出し時の動作の違いが一番大きな違いで、それが存在理由。
-// /// MutListは旧バージョンのアイテムが残り新バージョンの初期値が消えるが、ConstListでは新バージョンのアイテムが残り旧バージョンは消える。
-// /// Constなので当然といえるだろう・・・
-// #[derive(Debug, Clone)]
-// pub struct ConstList {
-//     default : Box<ListDefObj>,
-//     list : Box<Vec<ConstItem>>,
-// }
-//
-// impl ConstList {
-//     pub(crate) fn new(default : ListDefObj, list : Vec<ConstItem>) -> ConstList { ConstList { default : Box::new(default), list : Box::new(list) } }
-//     pub(crate) fn default(&self) -> &ListDefObj{ self.default.as_ref() }
-//     pub(crate) fn list(&self) -> &Vec<ConstItem>{ self.list.as_ref() }
-// }
+///IDを持たず、参照できない。バージョン違い読み出し時の動作の違いが一番大きな違いで、それが存在理由。
+/// MutListは旧バージョンのアイテムが残り新バージョンの初期値が消えるが、ConstListでは新バージョンのアイテムが残り旧バージョンは消える。
+/// Constなので当然といえるだろう・・・
+#[derive(Debug, Clone)]
+pub struct ConstList {
+    default : Box<ListDefObj>,
+    list : Box<Vec<ConstItem>>,
+}
+
+impl ConstList {
+    pub(crate) fn new(default : ListDefObj, list : Vec<ConstItem>) -> ConstList { ConstList { default : Box::new(default), list : Box::new(list) } }
+    pub(crate) fn default(&self) -> &ListDefObj{ self.default.as_ref() }
+    pub(crate) fn list(&self) -> &Vec<ConstItem>{ self.list.as_ref() }
+}
 
 // ///追加、削除、順番の変更等ができるリスト
 // /// ConstListとMutListはstruct定義を見ると近い存在なので、まとめてもいいように思うかもしれないけれど、意味が全く別ものなので型を分けたほうが混乱が少ない。

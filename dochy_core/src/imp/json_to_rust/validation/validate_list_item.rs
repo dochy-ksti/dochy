@@ -5,9 +5,10 @@ use crate::imp::json_to_rust::validation::validate_refs::validate_refs;
 use crate::imp::json_to_rust::validation::validate_mut_list::validate_mut_list;
 use crate::imp::structs::ref_value::RefSabValue;
 use crate::imp::structs::root_obj::RootObject;
-use crate::imp::structs::list_value::{ListDefValue, ListSabValue};
+use crate::imp::structs::list_value::{ListDefValue};
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::util::hash_m::HashM;
+use crate::imp::structs::list_sab_value::ListSabValue;
 
 pub(crate) fn validate_list_item(def : &ListDefObj, sabun_values : &HashM<String, ListSabValue>,
                           ref_values : &HashM<String, RefSabValue>, root : &RootObject,

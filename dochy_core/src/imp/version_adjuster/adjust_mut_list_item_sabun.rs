@@ -2,9 +2,10 @@
 use crate::error::CoreResult;
 use crate::imp::json_to_rust::names::Names;
 use crate::imp::version_adjuster::adjust_mut_list::adjust_mut_list;
-use crate::imp::structs::list_value::{ListSabValue, ListDefValue};
+use crate::imp::structs::list_value::{ListDefValue};
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::util::hash_m::{HashM, HashMt};
+use crate::imp::structs::list_sab_value::ListSabValue;
 
 pub(crate) fn adjust_mut_list_item_sabun(def : &ListDefObj, old_sabun : HashM<String, ListSabValue>, names : &Names) -> CoreResult<HashM<String, ListSabValue>>{
     let mut old_sabun = old_sabun;
