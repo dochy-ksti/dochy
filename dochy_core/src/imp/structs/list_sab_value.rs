@@ -26,14 +26,12 @@ impl ListSabValue{
         }
     }
 
-    ///ValueType::NormalとしてRustValue化する。これをjsonにすると、param_name : ["Num",null]とか言った感じになって、
-    /// nullなのに?がない形だが、ListSabでは名前に?をつけるのは必須ではなく、むしろノイズになるので?は消す方が良いのでこうする
-    /// nullの場合は"param_name?":["Num",null]のように?を補う実装があってもいいとは思うが、使いみちが今の所ない
+    ///VarType::NormalとしてRustValue化する。nullの場合jsonにすると、param_name : ["Num",null]とか言った感じになって、
+    /// nullなのに?がない形になるが、ListSabでは名前に?をつけるのは必須ではなく、むしろノイズになるので?は消す方が良いと考えこうする
     pub(crate) fn into_rust_value_for_json(self) -> RustValue{
         match self{
-            //value側は名前に?とか!とかつけなくてよいのでValueType::Normal
+            //value側は名前に?とか!とかつけなくてよいのでVarType::Normal
             ListSabValue::Param(p) => RustValue::Param(p, VarType::Normal),
-            //ListSabValue::InnerData(d) => RustValue::InnerData(d),
             ListSabValue::Cil(l) => RustValue::Cil(l),
             ListSabValue::Mil(m) => RustValue::Mil(m),
         }

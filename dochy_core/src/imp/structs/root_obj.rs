@@ -6,6 +6,7 @@ use crate::imp::structs::meta_table::MetaTable;
 use crate::imp::structs::util::hash_m::HashS;
 use std::sync::{Arc, Weak};
 use crate::imp::structs::list_sab_value::ListSabValue;
+use crate::imp::structs::root_sab_value::RootSabValue;
 
 #[derive(Debug)]
 pub struct RootObject{
@@ -13,7 +14,7 @@ pub struct RootObject{
     default : Box<HashM<String, (usize, RootValue)>>,
     ///変更されたものを記録
     ///listの変更はMutListが直接上書きされるので、sabunには入らない。よってparamだけ記録される
-    sabun : Box<HashM<String, ListSabValue>>,
+    sabun : Box<HashM<String, RootSabValue>>,
 
     ///oldに設定されたメンバは、_Oldを付けなければプログラムから使用できず、
     ///ConstTableである場合、jsonで Refできない
@@ -46,7 +47,7 @@ impl Clone for RootObject{
 }
 
 impl RootObject{
-    pub fn new(default : HashM<String, (usize, RootValue)>, sabun : HashM<String, ListSabValue>, old : HashS<String>) -> RootObject{
+    pub fn new(default : HashM<String, (usize, RootValue)>, sabun : HashM<String, RootSabValue>, old : HashS<String>) -> RootObject{
         let meta_table = MetaTable::from_root(&default);
         RootObject{ default: Box::new(default), sabun : Box::new(sabun), old : Box::new(old), meta_table : Box::new(meta_table), id : Arc::new(()) }
     }
@@ -58,7 +59,7 @@ impl RootObject{
     //pub(crate) fn default_mut(&mut self) -> &mut HashM<String, (usize, RootValue)>{ self.default.as_mut() }
 
     pub fn mut_refs(&mut self) -> (&mut HashM<String, (usize, RootValue)>,
-                                   &mut HashM<String, ListSabValue>,
+                                   &mut HashM<String, RootSabValue>,
                                    &mut HashS<String>, &mut MetaTable){
         (self.default.as_mut(), self.sabun.as_mut(), self.old.as_mut(), self.meta_table.as_mut())
     }

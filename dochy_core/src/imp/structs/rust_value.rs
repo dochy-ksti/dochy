@@ -1,5 +1,5 @@
 use crate::imp::structs::var_type::VarType;
-use crate::imp::structs::rust_list::{ConstTable, ConstListVal, MutListVal};
+use crate::imp::structs::rust_list::{ConstTable, ConstListVal, MutListVal, ConstList};
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::list_value::{ListDefValue};
 use crate::imp::structs::rust_param::RustParam;
@@ -12,7 +12,7 @@ use crate::imp::structs::list_sab_value::ListSabValue;
 pub enum RustValue{
     Param(RustParam, VarType),
     Table(ConstTable),
-    CList((ListDefObj, ConstListVal)),
+    CList(ConstList),
     MList((MutListDef, Option<MutListVal>)),
     Cil(ConstListVal),
     ///MutInnerListだけundefinedになりうる
@@ -30,7 +30,7 @@ pub enum RustMemberType {
 }
 
 impl RustValue{
-    pub(crate) fn into_root_value(self) -> Result<(RootValue, Option<ListSabValue>), String>{
+    pub(crate) fn into_root_value(self) -> Result<(RootValue, Option<RootSabValue>), String>{
         let v = match self{
             RustValue::Param(p,v) => (RootValue::Param(p,v), None),
             RustValue::Table(d) => (RootValue::Table(d), None),
