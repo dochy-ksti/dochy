@@ -6,6 +6,7 @@ use crate::imp::json_to_rust::names::Names;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::list_sab_value::ListSabValue;
+use crate::imp::structs::root_sab_value::RootSabValue;
 
 
 // paramのsabunがあれば上書き、mut_listはoldのものを全部入れ、（あるなら）newの方のものは全削除して入れ替える
@@ -28,7 +29,7 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
             RootValue::Param(p,v) =>{
                 let undef = if v.undefiable(){
                     if old_def.contains_key(def_key) == false{
-                        sabun.insert(def_key.to_string(),ListSabValue::Param(p.to_undefined()));
+                        sabun.insert(def_key.to_string(),RootSabValue::Param(p.to_undefined()));
                         true
                     } else {
                         false
@@ -46,7 +47,7 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
             RootValue::MList(m) =>{
                 let undef = if m.undefiable(){
                     if old_def.contains_key(def_key) == false{
-                        sabun.insert(def_key.to_string(),ListSabValue::Mil(None));
+                        sabun.insert(def_key.to_string(),RootSabValue::Mut(None));
                         true
                     } else {
                         false
@@ -56,12 +57,12 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
                 };
 
                 if undef == false {
-                    if let Some(ListSabValue::Mil(m_val)) = old_sabun.remove(def_key) {
+                    if let Some(RootSabValue::Mut(m_val)) = old_sabun.remove(def_key) {
                         if let Some(m_val) = m_val {
                             let new_m = adjust_mut_list(m.default(), m_val, &Names::new(def_key))?;
-                            sabun.insert(def_key.to_string(),ListSabValue::Mil(Some(new_m)));
+                            sabun.insert(def_key.to_string(),RootSabValue::Mut(Some(new_m)));
                         } else{
-                            sabun.insert(def_key.to_string(),ListSabValue::Mil(None));
+                            sabun.insert(def_key.to_string(),RootSabValue::Mut(None));
                         }
                     }
                 }

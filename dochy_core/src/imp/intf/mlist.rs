@@ -20,6 +20,7 @@ use crate::imp::intf::mitem::MItemPtr;
 pub struct MListPtr<V : From<MItemPtr>>{
     map : *mut LinkedMap<MutItem>,
     list_def : *const ListDefObj,
+    //TODO: rootのdefへのconstなポインタでよい
     root : *mut RootObject,
     phantom : PhantomData<*const V>,
 }

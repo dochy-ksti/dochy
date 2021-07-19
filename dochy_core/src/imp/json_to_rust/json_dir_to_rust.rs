@@ -14,6 +14,7 @@ use crate::imp::structs::root_value::RootValue;
 use std::path::Path;
 use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::list_sab_value::ListSabValue;
+use crate::imp::structs::root_sab_value::RootSabValue;
 
 /// Converts Dochy source files to RootObject
 /// Does extra checks when validation=true
@@ -56,7 +57,7 @@ pub fn json_dir_to_root<P : AsRef<Path>>(dir_path : P, validation : bool) -> Cor
 /// Does extra checks when validation=true
 pub fn json_files_to_root<T : JsonFile>(ite : impl Iterator<Item = T>, validation : bool) -> CoreResult<RootObject>{
     let mut map : HashM<String, RootValue> = HashMt::new();
-    let mut sabun : HashM<String, ListSabValue> = HashMt::new();
+    let mut sabun : HashM<String, RootSabValue> = HashMt::new();
     let mut root= None;
 
     for file in ite{

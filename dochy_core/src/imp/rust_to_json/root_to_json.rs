@@ -8,6 +8,7 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::my_json::Value;
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::list_sab_value::ListSabValue;
+use crate::imp::structs::root_sab_value::RootSabValue;
 
 //本来デフォルト値と差分が保存されているのだが、見やすくするためにまとめてデフォルト値にしてしまう。
 //デフォルト値も差分も全部Json化したいユースケースもあるかもしれない・・・？
@@ -24,7 +25,7 @@ pub fn root_to_json_new_default(obj : &RootObject) -> CoreResult<Value> {
 
     for (name, (_id, val)) in default{
         if let RootValue::Param(p,vt) = val{
-            if let Some(ListSabValue::Param(sab_param)) = sabun.remove(&name){
+            if let Some(RootSabValue::Param(sab_param)) = sabun.remove(&name){
                 result.insert(name, RustValue::Param(sab_param, vt));
             } else{
                 result.insert(name, RustValue::Param(p, vt));

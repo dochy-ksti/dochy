@@ -15,7 +15,7 @@ pub(crate) fn rust_value_to_json_value(v : &RustValue, name : &str) -> (String, 
             return (name_with_suffix(name, *vt), get_param(param))
         },
         RustValue::Table(l) => { rust_list_to_json(&TmpJsonList::from_const_data(l), ListType::Table) },
-        RustValue::CList((d,c)) => { rust_list_to_json(&TmpJsonList::from_const_list(d, c), ListType::CList) },
+        RustValue::CList(l) => { rust_list_to_json(&TmpJsonList::from_const_list(l), ListType::CList) },
         RustValue::MList((d, m)) => { rust_list_to_json(&TmpJsonList::from_mut_list(d, m), ListType::MList) },
         //RustValue::InnerData(l) => { rust_list_to_json(&TmpJsonList::from_inner_data(l), ListType::InnerData) },
         RustValue::Cil(l) => { rust_list_to_json(&TmpJsonList::from_inner_list(l), ListType::Cil) },

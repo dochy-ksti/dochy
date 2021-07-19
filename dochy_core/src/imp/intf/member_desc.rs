@@ -76,8 +76,8 @@ pub fn get_member_desc(root_ptr : *mut RootObject) -> Vec<MemberDesc>{
                 vec.push(MemberDesc::new(mem, VarType::Normal, RustMemberType::Table, is_old, Some(descs)))
             },
             RootValue::CList(l) =>{
-                let children = get_list_def_desc(l);
-                let refs = get_ref_def_desc(l.refs());
+                let children = get_list_def_desc(l.default());
+                let refs = get_ref_def_desc(l.default().refs());
                 let descs = MemberDescs::new(children, refs);
                 vec.push(MemberDesc::new(mem, VarType::Normal, RustMemberType::CList, is_old, Some(descs)))
             },

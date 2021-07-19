@@ -2,7 +2,7 @@ use crate::imp::json_to_rust::tmp::tmp_obj::TmpObj;
 use crate::{HashM, HashMt};
 use dochy_json5::Span;
 use crate::error::CoreResult;
-use crate::imp::structs::rust_list::{ConstListVal, ConstTable, MutListVal, ConstItem, MutItem};
+use crate::imp::structs::rust_list::{ConstListVal, ConstTable, MutListVal, ConstItem, MutItem, ConstList};
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::mut_list_def::MutListDef;
 use crate::imp::structs::linked_m::LinkedMap;
@@ -23,7 +23,7 @@ impl TmpList{
         TmpList{ vec : Vec::with_capacity(capacity), old : None, default : None,  next_id : None, span }
     }
 
-    pub(crate) fn into_const_list(self) -> CoreResult<(ListDefObj, ConstListVal)>{
+    pub(crate) fn into_const_list(self) -> CoreResult<ConstList>{
         // if self.compatible.is_some(){
         //     Err(format!("{} Compatible is not needed for a List {}", self.span.line_str(), self.span.slice()))?
         // }
@@ -38,7 +38,7 @@ impl TmpList{
         }
         let list_item = to_list_items(self.vec)?;
 
-        Ok((self.default.unwrap(), ConstListVal::new(list_item)))
+        Ok(ConstList::new(self.default.unwrap(), list_item))
     }
 
 

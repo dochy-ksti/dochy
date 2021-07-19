@@ -2,7 +2,7 @@ use crate::imp::json_to_rust::tmp::tmp_obj::{ IdValue};
 //use crate::{HashM};
 use std::collections::{BTreeSet, BTreeMap};
 use crate::imp::structs::rust_value::RustValue;
-use crate::imp::structs::rust_list::{ConstItem, MutItem, ConstTable, ConstListVal, MutListVal};
+use crate::imp::structs::rust_list::{ConstItem, MutItem, ConstTable, ConstListVal, MutListVal, ConstList};
 use crate::imp::structs::ref_value::RefValue;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::util::hash_m::{HashS, HashM};
@@ -77,9 +77,9 @@ impl TmpJsonList{
              next_id: None, old : get_from_set(l.old()), default : Some(l.default().clone()) }
     }
 
-    pub(crate) fn from_const_list(d : &ListDefObj, l : &ConstListVal) -> TmpJsonList{
+    pub(crate) fn from_const_list(l : &ConstList) -> TmpJsonList{
         TmpJsonList{ vec: l.list().iter().map(|item| TmpJsonObj::from_list_item(item, None)).collect(),
-            next_id: None, old : None, default : Some(d.clone()) }
+            next_id: None, old : None, default : Some(l.default().clone()) }
     }
 
     pub(crate) fn from_mut_list(d : &MutListDef, l : &Option<MutListVal>) -> TmpJsonList{

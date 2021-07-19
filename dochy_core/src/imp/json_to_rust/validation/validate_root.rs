@@ -8,6 +8,7 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::json_to_rust::validation::validate_old_def_mem::validate_old_root_def_mem;
 use crate::imp::structs::list_sab_value::ListSabValue;
+use crate::imp::structs::root_sab_value::RootSabValue;
 
 /// json読み出し時のチェックがあり、adjust時のチェックもある。
 /// それらでは補足しきれないチェックをするのがこれの役割。
@@ -35,7 +36,7 @@ pub(crate) fn validate_root(root : &RootObject, can_use_old: bool) -> CoreResult
         match val {
             RootValue::Param(p, _) => {
                 if let Some(sab) = root.sabun().get(name) {
-                    if let ListSabValue::Param(sab) = sab {
+                    if let RootSabValue::Param(sab) = sab {
                         if p.acceptable(sab) == false {
                             Err(format!("Root's member {}'s sabun is invalid", name))?
                         }
@@ -49,21 +50,13 @@ pub(crate) fn validate_root(root : &RootObject, can_use_old: bool) -> CoreResult
                 validate_table(data.default(), data.list(), root, data.old(), can_use_old, names)?
             },
             RootValue::CList(list) =>{
-                validate_list_def(list, root, can_use_old, false, names)?;
-
-                if let Some(sab) = root.sabun().get(name) {
-                    if let ListSabValue::Cil(sab) = sab {
-                        validate_const_list(list, sab.list(), root, can_use_old, names)?
-                    } else{
-                        //const listにはadjustmentが入らないのでここに来るのは不可能だと思うが・・・
-                        Err(format!("Root's member {} is not a const list", name))?
-                    }
-                }
+                validate_list_def(list.default(), root, can_use_old, false, names)?;
+                validate_const_list(list.default(),list.list(), root, can_use_old, names)?
             },
             RootValue::MList(m) =>{
                 validate_list_def(m.default(), root, can_use_old, true, names)?;
                 if let Some(sab) = root.sabun().get(name) {
-                    if let ListSabValue::Mil(sab) = sab {
+                    if let RootSabValue::Mut(sab) = sab {
                         if let Some(list) = sab {
                             validate_mut_list(m.default(), list.list(), root, can_use_old, names)?
                         } else {

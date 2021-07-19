@@ -6,6 +6,7 @@ use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::mut_list_def::MutListDef;
 use crate::imp::structs::list_sab_value::ListSabValue;
+use crate::imp::structs::root_sab_value::RootSabValue;
 
 
 #[derive(Debug, Clone)]
@@ -34,14 +35,14 @@ impl RustValue{
         let v = match self{
             RustValue::Param(p,v) => (RootValue::Param(p,v), None),
             RustValue::Table(d) => (RootValue::Table(d), None),
-            RustValue::CList((def, val)) => (RootValue::CList(def), Some(ListSabValue::Cil(val))),
-            RustValue::MList((def, val)) => (RootValue::MList(def), Some(ListSabValue::Mil(val))),
+            RustValue::CList(d) => (RootValue::CList(d), None),
+            RustValue::MList((def, val)) => (RootValue::MList(def), Some(RootSabValue::Mut(val))),
             _ =>{ return Err(self.type_string()); },
         };
         Ok(v)
     }
 
-    pub(crate) fn into_root_value2(self, name : &str) -> crate::error::CoreResult<(RootValue, Option<ListSabValue>)>{
+    pub(crate) fn into_root_value2(self, name : &str) -> crate::error::CoreResult<(RootValue, Option<RootSabValue>)>{
         match self.into_root_value(){
             Ok(a) => Ok(a),
             Err(s) =>{ Err(format!("{} the root obj can't have {}", name, s))? }

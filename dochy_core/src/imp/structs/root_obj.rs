@@ -65,26 +65,26 @@ impl RootObject{
     }
 
     pub fn deconstruct(self)
-        -> (Box<HashM<String, (usize, RootValue)>>, Box<HashM<String, ListSabValue>>,
+        -> (Box<HashM<String, (usize, RootValue)>>, Box<HashM<String, RootSabValue>>,
             Box<HashS<String>>, Box<MetaTable>){
         (self.default, self.sabun, self.old, self.meta_table)
     }
     pub fn construct(default : Box<HashM<String, (usize, RootValue)>>,
-                     sabun : Box<HashM<String, ListSabValue>>,
+                     sabun : Box<HashM<String, RootSabValue>>,
                      old : Box<HashS<String>>,
                      meta_table : Box<MetaTable>) -> RootObject{
         RootObject{ default, sabun, old, meta_table, id : Arc::new(()) }
     }
-    pub fn sabun(&self) -> &HashM<String, ListSabValue>{ self.sabun.as_ref() }
-    pub fn sabun_mut(&mut self) -> &mut HashM<String, ListSabValue>{ self.sabun.as_mut() }
+    pub fn sabun(&self) -> &HashM<String, RootSabValue>{ self.sabun.as_ref() }
+    pub fn sabun_mut(&mut self) -> &mut HashM<String, RootSabValue>{ self.sabun.as_mut() }
     pub(crate) fn old(&self) -> &HashS<String>{ self.old.as_ref() }
     pub fn set_sabun_param(&mut self, name : String, param : RustParam) -> Result<Option<RustParam>, SetSabunError> {
         let (p, vt) = if let Some((_,RootValue::Param(p, vt))) = self.default().get(&name) { (p, vt) } else {
             return Err(SetSabunError::ParamNotFound);
         };
         verify_set_sabun(p, vt, &param)?;
-        if let Some(sab) = self.sabun.insert(name, ListSabValue::Param(param)){
-            if let ListSabValue::Param(p) = sab {
+        if let Some(sab) = self.sabun.insert(name, RootSabValue::Param(param)){
+            if let RootSabValue::Param(p) = sab {
                 Ok(Some(p))
             } else{
                 Err(SetSabunError::ParamNotFound)
@@ -113,6 +113,7 @@ impl RootObject{
 }
 
 impl IdentityEqual for (usize, RootValue){
+    //TODO: ここもいらない？　いやいるか
     fn identity_eq(&self, other: &Self) -> bool {
         self.0 == other.0 && self.1.identity_eq(&other.1)
     }
