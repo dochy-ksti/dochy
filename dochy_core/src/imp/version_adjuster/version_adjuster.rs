@@ -7,6 +7,7 @@ use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
+use std::sync::Arc;
 
 
 // paramのsabunがあれば上書き、mut_listはoldのものを全部入れ、（あるなら）newの方のものは全削除して入れ替える
@@ -17,14 +18,16 @@ use crate::imp::structs::root_sab_value::RootSabValue;
 /// The strategy of the adjustment is described in the manual.
 pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) -> CoreResult<RootObject>{
 
-    let (def, sabun, old_hash, meta) = new.deconstruct();
-    let mut sabun = sabun;
+    let (def, mut sabun_v, old_hash, meta) = new.deconstruct();
+
+    let mut sabun = Arc::make_mut(&mut sabun_v);
     //let mut new_map :HashM<String, (usize, RootValue)> = HashMt::with_capacity(def.len());
 
-    let (old_def,old_sabun, _, _) = old.deconstruct();
-    let mut old_sabun = old_sabun;
+    let (old_def,mut old_sabun, _, _) = old.deconstruct();
 
-    for (def_key, (_id, def_value)) in def.as_ref(){
+    let mut old_sabun = Arc::make_mut(&mut old_sabun);
+
+    for (def_key, (_id, def_value)) in def.def(){
         match def_value{
             RootValue::Param(p,v) =>{
                 let undef = if v.undefiable(){
@@ -73,7 +76,7 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
         }
     }
 
-    let new = RootObject::construct(def, sabun, old_hash, meta);
+    let new = RootObject::construct(def, sabun_v, old_hash, meta);
 
     if validation{
         validate_root(&new, true)?

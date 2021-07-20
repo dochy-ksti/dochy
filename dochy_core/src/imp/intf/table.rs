@@ -4,6 +4,8 @@ use crate::imp::intf::citem::CItemPtr;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::util::hash_m::HashS;
+use crate::imp::structs::root_value::RootValue;
+use crate::imp::structs::root_def_obj::RootDefObj;
 
 // pub fn get_member_desc(root : *const ConstData) -> MemberDescs{
 //     let root = unsafe{ root.as_ref().unwrap() };
@@ -18,10 +20,10 @@ use crate::imp::structs::util::hash_m::HashS;
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct TablePtr {
     ptr : *const ConstTable,
-    root : *mut RootObject,
+    root : *const RootDefObj,
 }
 impl TablePtr {
-    pub fn new(ptr : *const ConstTable, root : *mut RootObject) -> TablePtr { TablePtr { ptr, root } }
+    pub fn new(ptr : *const ConstTable, root : *const RootDefObj) -> TablePtr { TablePtr { ptr, root } }
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -66,7 +68,7 @@ pub fn get_value(data : TablePtr, id : &str) -> Option<CItemPtr>{
     get_value_impl(d.list(), d.default(), id, data.root)
 }
 
-pub fn get_value_impl(data : &HashM<String, ConstItem>, list_def : &ListDefObj, id : &str, root : *mut RootObject) -> Option<CItemPtr>{
-    data.get(id).map(|i| CItemPtr::new(i, list_def, root))
+pub fn get_value_impl(data : &HashM<String, ConstItem>, list_def : &ListDefObj, id : &str, root_def : *const RootDefObj) -> Option<CItemPtr>{
+    data.get(id).map(|i| CItemPtr::new(i, list_def, root_def))
 }
 

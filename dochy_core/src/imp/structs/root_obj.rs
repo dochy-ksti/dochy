@@ -7,22 +7,23 @@ use crate::imp::structs::util::hash_m::HashS;
 use std::sync::{Arc, Weak};
 use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
+use crate::imp::structs::root_def_obj::RootDefObj;
 
 #[derive(Debug)]
 pub struct RootObject{
     ///listのobjectの場合、defaultはlist側にあるが、ここには初期値が入る。
-    default : Box<HashM<String, (usize, RootValue)>>,
+    default : Arc<RootDefObj>,
     ///変更されたものを記録
     ///listの変更はMutListが直接上書きされるので、sabunには入らない。よってparamだけ記録される
-    sabun : Box<HashM<String, RootSabValue>>,
+    sabun : Arc<HashM<String, RootSabValue>>,
 
     ///oldに設定されたメンバは、_Oldを付けなければプログラムから使用できず、
     ///ConstTableである場合、jsonで Refできない
-    old : Box<HashS<String>>,
+    old : Arc<HashS<String>>,
 
     id : Arc<()>,
 
-    meta_table : Box<MetaTable>,
+    meta_table : Arc<MetaTable>,
 
 }
 
@@ -38,52 +39,52 @@ impl Clone for RootObject{
         let default = self.default.clone();
         let sabun = self.sabun.clone();
         let old  = self.old.clone();
-        let meta_table = MetaTable::from_root(default.as_ref());
+        let meta_table = self.meta_table.clone();
 
         //idはclone時も新調する
         let id = Arc::new(());
-        Self{ default, sabun, old, meta_table : Box::new(meta_table), id }
+        Self{ default, sabun, old, meta_table, id }
     }
 }
 
 impl RootObject{
-    pub fn new(default : HashM<String, (usize, RootValue)>, sabun : HashM<String, RootSabValue>, old : HashS<String>) -> RootObject{
-        let meta_table = MetaTable::from_root(&default);
-        RootObject{ default: Box::new(default), sabun : Box::new(sabun), old : Box::new(old), meta_table : Box::new(meta_table), id : Arc::new(()) }
+    pub fn new(default : RootDefObj, sabun : HashM<String, RootSabValue>, old : HashS<String>) -> RootObject{
+        let meta_table = MetaTable::from_root(default.def());
+        RootObject{ default: Arc::new(default), sabun : Arc::new(sabun), old : Arc::new(old), meta_table : Arc::new(meta_table), id : Arc::new(()) }
     }
-    pub fn default(&self) -> &HashM<String, (usize, RootValue)>{ self.default.as_ref() }
+    pub fn default(&self) -> &RootDefObj{ self.default.as_ref() }
 
     pub fn meta_table(&self) -> &MetaTable{ self.meta_table.as_ref() }
 
     /////mlistがdefaultにある都合上、書き換える必要性が生じている。HashMのKeyはmetatableからポインタ参照されているので、ハッシュ再構成が起きてはならない
     //pub(crate) fn default_mut(&mut self) -> &mut HashM<String, (usize, RootValue)>{ self.default.as_mut() }
 
-    pub fn mut_refs(&mut self) -> (&mut HashM<String, (usize, RootValue)>,
-                                   &mut HashM<String, RootSabValue>,
-                                   &mut HashS<String>, &mut MetaTable){
-        (self.default.as_mut(), self.sabun.as_mut(), self.old.as_mut(), self.meta_table.as_mut())
+    pub(crate) fn def_and_mut_sab(&mut self) -> (&RootDefObj,
+                                    &mut HashM<String, RootSabValue>){
+         (&self.default, Arc::make_mut(&mut self.sabun))
     }
 
     pub fn deconstruct(self)
-        -> (Box<HashM<String, (usize, RootValue)>>, Box<HashM<String, RootSabValue>>,
-            Box<HashS<String>>, Box<MetaTable>){
+        -> (Arc<RootDefObj>, Arc<HashM<String, RootSabValue>>,
+            Arc<HashS<String>>, Arc<MetaTable>){
         (self.default, self.sabun, self.old, self.meta_table)
     }
-    pub fn construct(default : Box<HashM<String, (usize, RootValue)>>,
-                     sabun : Box<HashM<String, RootSabValue>>,
-                     old : Box<HashS<String>>,
-                     meta_table : Box<MetaTable>) -> RootObject{
+    pub fn construct(default : Arc<RootDefObj>,
+                     sabun : Arc<HashM<String, RootSabValue>>,
+                     old : Arc<HashS<String>>,
+                     meta_table : Arc<MetaTable>) -> RootObject{
         RootObject{ default, sabun, old, meta_table, id : Arc::new(()) }
     }
     pub fn sabun(&self) -> &HashM<String, RootSabValue>{ self.sabun.as_ref() }
-    pub fn sabun_mut(&mut self) -> &mut HashM<String, RootSabValue>{ self.sabun.as_mut() }
+    pub fn sabun_mut(&mut self) -> &mut HashM<String, RootSabValue>{ Arc::make_mut(&mut self.sabun) }
     pub(crate) fn old(&self) -> &HashS<String>{ self.old.as_ref() }
     pub fn set_sabun_param(&mut self, name : String, param : RustParam) -> Result<Option<RustParam>, SetSabunError> {
-        let (p, vt) = if let Some((_,RootValue::Param(p, vt))) = self.default().get(&name) { (p, vt) } else {
+        let (p, vt) = if let Some(RootValue::Param(p, vt)) = self.default().get(&name) { (p, vt) } else {
             return Err(SetSabunError::ParamNotFound);
         };
         verify_set_sabun(p, vt, &param)?;
-        if let Some(sab) = self.sabun.insert(name, RootSabValue::Param(param)){
+        let sabun = Arc::make_mut(&mut self.sabun);
+        if let Some(sab) = sabun.insert(name, RootSabValue::Param(param)){
             if let RootSabValue::Param(p) = sab {
                 Ok(Some(p))
             } else{
@@ -94,13 +95,10 @@ impl RootObject{
         }
     }
 
-    /// Use some shortcuts to compare data
-    /// If the type is the same(created from the same source JSON5),
-    /// returning false results is near impossible
-    pub fn contents_eq(&self, other : &Self) -> bool{
-         self.default().identity_eq(other.default()) &&
-             self.sabun().identity_eq(other.sabun())
-    }
+    // /// checks any sabun has been modified
+    // pub fn contents_eq(&self, other : &Self) -> bool{
+    //     Arc::ptr_eq(self.sabun(), other.sabun())
+    // }
 
     pub fn id(&self) -> Weak<()>{
         Arc::downgrade(&self.id)

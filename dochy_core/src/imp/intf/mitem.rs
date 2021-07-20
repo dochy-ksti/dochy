@@ -13,19 +13,22 @@ use crate::imp::structs::rust_string::RustString;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
 use crate::structs::RustBinary;
 use crate::imp::structs::list_sab_value::ListSabValue;
+use crate::HashM;
+use crate::imp::structs::root_value::RootValue;
+use crate::imp::structs::root_def_obj::RootDefObj;
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct MItemPtr {
     item : *mut MutItem,
     list_def : *const ListDefObj,
-    root : *mut RootObject,
+    root_def: *const RootDefObj,
 }
 
 impl MItemPtr {
     ///getだけなら &MutListItemからのポインタでもOKである。その場合setするとundefined behaviorなので、&mut からのポインタを得る必要がある
-    pub fn new(item : *mut MutItem, list_def : *const ListDefObj, root : *mut RootObject) -> MItemPtr {
-        MItemPtr { item, list_def, root }
+    pub fn new(item : *mut MutItem, list_def : *const ListDefObj, root_def : *const RootDefObj) -> MItemPtr {
+        MItemPtr { item, list_def, root_def }
     }
     pub fn item(&self) -> *mut MutItem { self.item }
     pub fn list_def(&self) -> *const ListDefObj{ self.list_def }
@@ -36,7 +39,7 @@ pub fn get_mil<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
         if let Some(ListSabValue::Mil(data)) = item.values_mut().get_mut(name) {
             if let Some(inner) = data {
-                return Some(Some(MListPtr::new(inner.list_mut(), md.default(), ps.root)))
+                return Some(Some(MListPtr::new(inner.list_mut(), md.default(), ps.root_def)))
             } else {
                 return Some(None)
             }
@@ -324,7 +327,7 @@ pub fn set_ref(ps : MItemPtr, list_name : &str, id : Qv<String>) -> bool{
 pub fn get_ref(ps : MItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
     let qv = get_ref_id(ps, list_name)?;
     qv.opt_map(|id|{
-        let data = super::root::get_table(RootObjectPtr::new(ps.root), list_name).unwrap();
+        let data = super::root::get_table(ps.root_def, list_name).unwrap();
         super::table::get_value(data, id)
     })
 }

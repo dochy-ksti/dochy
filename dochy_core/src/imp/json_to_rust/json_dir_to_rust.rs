@@ -15,6 +15,7 @@ use std::path::Path;
 use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
+use crate::imp::json_to_rust::json_name::{json_name, NameType};
 
 /// Converts Dochy source files to RootObject
 /// Does extra checks when validation=true
@@ -56,8 +57,8 @@ pub fn json_dir_to_root<P : AsRef<Path>>(dir_path : P, validation : bool) -> Cor
 /// Converts Dochy source files to RootObject
 /// Does extra checks when validation=true
 pub fn json_files_to_root<T : JsonFile>(ite : impl Iterator<Item = T>, validation : bool) -> CoreResult<RootObject>{
-    let mut map : HashM<String, RootValue> = HashMt::new();
-    let mut sabun : HashM<String, RootSabValue> = HashMt::new();
+    let mut vec : Vec<(String, RootValue, Option<RootSabValue>)> = Vec::new();
+    //let mut sabun : HashM<String, RootSabValue> = HashMt::new();
     let mut root= None;
 
     for file in ite{
@@ -69,20 +70,20 @@ pub fn json_files_to_root<T : JsonFile>(ite : impl Iterator<Item = T>, validatio
                 Err("There's two 'root.json5's in the directory")? //unreachableだけど一応
             }
         } else{
-            let (name, var_type) = if name.ends_with("?"){
-                (&name[0..name.len()-1], VarType::Undefiable)
-            } else{
-                (name, VarType::Normal)
-            };
-            match json_item_str_to_rust(file.json(), name, var_type){
-                Ok(val) =>{
-                    let (d,v) = val.into_root_value2(name)?;
-                    map.insert(name.to_string(), d);
-                    if let Some(sab) = v{
-                        sabun.insert(name.to_string(), sab);
+            let name_type = json_name(name).ok_or_else(|| format!("filename:{} is not a valid name", name))?;
+            match name_type {
+                NameType::Name(name, var_type) => {
+                    match json_item_str_to_rust(file.json(), &name, var_type.clone()) {
+                        Ok(val) => {
+                            let (v, sab) = val.into_root_value2(&name)?;
+                            vec.push((name, v, sab));
+                        },
+                        Err(e) => { Err(format!("filename {}, {}", name, e.to_string()))? }
                     }
                 },
-                Err(e) =>{ Err(format!("filename {}, {}", name, e.to_string()))? }
+                NameType::SystemName(s) =>{
+                    Err(format!("filename {} can't be used", name))?
+                }
             }
         }
     }
@@ -91,5 +92,5 @@ pub fn json_files_to_root<T : JsonFile>(ite : impl Iterator<Item = T>, validatio
         Err("root.json5 is needed")?
     }
 
-    return construct_root(root.unwrap(), map, validation);
+    return construct_root(root.unwrap(), vec, validation);
 }

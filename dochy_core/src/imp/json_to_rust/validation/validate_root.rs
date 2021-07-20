@@ -27,9 +27,9 @@ use crate::imp::structs::root_sab_value::RootSabValue;
 /// can_use_oldがtrueだとoldでも気にしなくなる。Jsonで初期値を読み込んだ後はcan_use_old=false,
 /// 旧バージョンから以降した場合はcan_use_old=trueでやるとよかろうと思う
 pub(crate) fn validate_root(root : &RootObject, can_use_old: bool) -> CoreResult<()>{
-    validate_old_root_def_mem(root.old(), root.default(), &Names::new("."))?;
+    validate_old_root_def_mem(root.old(), root.default().def(), &Names::new("."))?;
 
-    for (name, (_id, val)) in root.default(){
+    for (name, (_id, val)) in root.default().def(){
         let names = &Names::new(name);
         //RootはOldでも値を入れざるを得ないので入れて良い
         //なのでここではOldは無視

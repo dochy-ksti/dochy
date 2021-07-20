@@ -19,7 +19,7 @@ use crate::imp::structs::root_sab_value::RootSabValue;
 /// but converting data to human readable text is good
 pub fn root_to_json_new_default(obj : &RootObject) -> CoreResult<Value> {
     let mut result : HashM<String,RustValue> = HashMt::with_capacity(obj.default().len());
-    let default = obj.default().clone();
+    let default = obj.default().def().clone();
     let mut sabun = obj.sabun().clone();
     let old = obj.old().clone();
 

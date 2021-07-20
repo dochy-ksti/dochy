@@ -43,7 +43,7 @@ pub(crate) fn validate_refs(def : &RefDefObj, sabun : &HashM<String, RefSabValue
                             Err(format!("{} ref {} is empty", names, name))?
                         }
                         match root.default().get(name) {
-                            Some((_,RootValue::Table(d))) => {
+                            Some(RootValue::Table(d)) => {
                                 if d.list().get(id).is_none() {
                                     Err(format!("{}'s {} was not found {}", name, id, names))?
                                 }

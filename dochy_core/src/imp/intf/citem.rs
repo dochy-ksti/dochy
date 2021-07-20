@@ -10,17 +10,18 @@ use crate::imp::intf::clist::CListPtr;
 use crate::imp::structs::ref_value::RefSabValue;
 use crate::HashM;
 use crate::imp::structs::list_sab_value::ListSabValue;
+use crate::imp::structs::root_def_obj::RootDefObj;
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct CItemPtr {
     item : *const ConstItem,
     list_def : *const ListDefObj,
-    root : *mut RootObject,
+    root_def : *const RootDefObj,
 }
 
 impl CItemPtr {
-    pub fn new(item : *const ConstItem, list_def : *const ListDefObj, root : *mut RootObject) -> CItemPtr { CItemPtr { item, list_def, root }}
+    pub fn new(item : *const ConstItem, list_def : *const ListDefObj, root_def : *const RootDefObj) -> CItemPtr { CItemPtr { item, list_def, root_def }}
     pub fn item(&self) -> *const ConstItem { self.item }
     pub fn list_def(&self) -> *const ListDefObj{ self.list_def }
 }
@@ -29,7 +30,7 @@ pub fn get_cil<T : From<CItemPtr>>(ps : CItemPtr, name : &str) -> Option<CListPt
     let (item, list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
     if let Some(ListDefValue::CilDef(def)) = list_def.default().get(name){
         if let Some(ListSabValue::Cil(data)) = item.values().get(name){
-            return Some(CListPtr::new(data.list(), def, ps.root))
+            return Some(CListPtr::new(data.list(), def, ps.root_def))
         }
     }
     None
@@ -193,7 +194,7 @@ pub fn get_param_def<'a, 'b>(def : CItemPtr, name : &'a str) -> Option<&'b RustP
 pub fn get_ref(ps : CItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
     let qv = get_ref_id(ps, list_name)?;
     qv.opt_map(|id|{
-        let data = super::root::get_table(RootObjectPtr::new(ps.root), list_name).unwrap();
+        let data = super::root::get_table(ps.root_def, list_name).unwrap();
         super::table::get_value(data, id)
     })
 }

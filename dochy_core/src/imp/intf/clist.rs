@@ -3,24 +3,25 @@ use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::root_obj::RootObject;
 use std::marker::PhantomData;
 use crate::imp::structs::rust_list::ConstItem;
+use crate::imp::structs::root_def_obj::RootDefObj;
 
 /// CList's internal structure is Vec
 #[derive(Debug, PartialEq)]
 pub struct CListPtr<T : From<CItemPtr>> {
     ptr : *const Vec<ConstItem>,
     list_def : *const ListDefObj,
-    root : *mut RootObject,
+    root_def : *const RootDefObj,
     phantom : PhantomData<*mut T>,
 }
 impl<T : From<CItemPtr>> Clone for CListPtr<T>{
     fn clone(&self) -> Self {
-        CListPtr::new(self.ptr, self.list_def, self.root)
+        CListPtr::new(self.ptr, self.list_def, self.root_def)
     }
 }
 impl<T : From<CItemPtr>> Copy for CListPtr<T>{}
 
 impl<T : From<CItemPtr>> CListPtr<T> {
-    pub fn new(ptr : *const Vec<ConstItem>, list_def : *const ListDefObj, root : *mut RootObject) -> CListPtr<T> { CListPtr { ptr, list_def, root, phantom : PhantomData } }
+    pub fn new(ptr : *const Vec<ConstItem>, list_def : *const ListDefObj, root_def : *const RootDefObj) -> CListPtr<T> { CListPtr { ptr, list_def, root_def, phantom : PhantomData } }
     pub fn len(&self) -> usize{ get_len(self.clone()) }
     pub fn value(&self, idx : usize) -> T{ get_value(self.clone(), idx) }
     pub fn iter(&self) -> CListPtrIter<T>{ get_iter(self.clone()) }
@@ -33,17 +34,17 @@ pub fn get_len<T : From<CItemPtr>>(list: CListPtr<T>) -> usize{
 
 pub fn get_value<T : From<CItemPtr>>(list: CListPtr<T>, idx : usize) -> T{
     let vec = unsafe{ list.ptr.as_ref().unwrap()};
-    T::from(CItemPtr::new(&vec[idx], list.list_def, list.root))
+    T::from(CItemPtr::new(&vec[idx], list.list_def, list.root_def))
 }
 
 pub fn get_iter<T : From<CItemPtr>>(list: CListPtr<T>) -> CListPtrIter<T>{
-    CListPtrIter::new(list.ptr, list.list_def, list.root)
+    CListPtrIter::new(list.ptr, list.list_def, list.root_def)
 }
 
 pub struct CListPtrIter<V : From<CItemPtr>>{
     vec : *const Vec<ConstItem>,
     list_def : *const ListDefObj,
-    root : *mut RootObject,
+    root_def : *const RootDefObj,
     index : usize,
     phantom : PhantomData<*mut V>,
 }
@@ -55,7 +56,7 @@ impl<V : From<CItemPtr>> Iterator for CListPtrIter<V>{
         if self.index < vec.len(){
             let index = self.index;
             self.index += 1;
-            Some(V::from(CItemPtr::new(vec.get(index).unwrap(), self.list_def, self.root)))
+            Some(V::from(CItemPtr::new(vec.get(index).unwrap(), self.list_def, self.root_def)))
         } else{
             None
         }
@@ -63,7 +64,7 @@ impl<V : From<CItemPtr>> Iterator for CListPtrIter<V>{
     }
 }
 impl<V : From<CItemPtr>> CListPtrIter<V>{
-    pub fn new(vec : *const Vec<ConstItem>, list_def : *const ListDefObj, root : *mut RootObject) -> CListPtrIter<V>{
-        CListPtrIter { vec, list_def, root, index : 0, phantom : PhantomData }
+    pub fn new(vec : *const Vec<ConstItem>, list_def : *const ListDefObj, root_def : *const RootDefObj) -> CListPtrIter<V>{
+        CListPtrIter { vec, list_def, root_def, index : 0, phantom : PhantomData }
     }
 }

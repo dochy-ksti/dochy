@@ -13,6 +13,7 @@ use crate::imp::structs::util::hash_m::{HashS, HashSt, HashM};
 use crate::HashMt;
 use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
+use crate::imp::structs::root_def_obj::RootDefObj;
 
 pub(crate) struct TmpObj{
     pub(crate) default : HashM<String, (usize, RustValue)>,
@@ -85,7 +86,7 @@ impl TmpObj{
         }
 
         let (def, sabun) = to_root_hash(self.default)?;
-        Ok(RootObject::new(def, sabun, self.old))
+        Ok(RootObject::new(RootDefObj::new(def), sabun, self.old))
     }
 
     pub fn into_list_def_obj(self) -> CoreResult<ListDefObj>{

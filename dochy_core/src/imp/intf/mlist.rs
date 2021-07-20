@@ -4,6 +4,9 @@ use std::marker::PhantomData;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::intf::mitem::MItemPtr;
+use crate::HashM;
+use crate::structs::RootValue;
+use crate::imp::structs::root_def_obj::RootDefObj;
 
 /// This uses pointers so every method is basically unsafe.
 /// You can get this ptr, and create an immutable reference,
@@ -20,16 +23,16 @@ use crate::imp::intf::mitem::MItemPtr;
 pub struct MListPtr<V : From<MItemPtr>>{
     map : *mut LinkedMap<MutItem>,
     list_def : *const ListDefObj,
-    //TODO: rootのdefへのconstなポインタでよい
-    root : *mut RootObject,
+    root_def : *const RootDefObj,
     phantom : PhantomData<*const V>,
 }
 
 impl<V : From<MItemPtr>> MListPtr<V>{
-    pub fn new(map : *mut LinkedMap<MutItem>, list_def : *const ListDefObj, root : *mut RootObject) -> MListPtr<V>{ MListPtr { map, list_def, root, phantom : PhantomData } }
+    pub fn new(map : *mut LinkedMap<MutItem>, list_def : *const ListDefObj, root_def : *const RootDefObj)
+        -> MListPtr<V>{ MListPtr { map, list_def, root_def, phantom : PhantomData } }
 
     fn from(&self, item : *mut MutItem) -> V{
-        V::from(MItemPtr::new(item, self.list_def, self.root))
+        V::from(MItemPtr::new(item, self.list_def, self.root_def))
     }
 
     pub fn first(&mut self) -> Option<V> {
@@ -148,7 +151,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
 
     pub unsafe fn iter_const(&self) -> MListPtrIter<V> {
         let map = &mut *self.map;
-        MListPtrIter::new(map.iter_unsafe(), self.list_def, self.root)
+        MListPtrIter::new(map.iter_unsafe(), self.list_def, self.root_def)
     }
     pub fn iter(&mut self) -> MListPtrIter<V> {
         unsafe{ self.iter_const() }
@@ -156,7 +159,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
 
     pub unsafe fn iter_from_last_const(&self) -> MListPtrIter<V> {
         let map = &mut *self.map;
-        MListPtrIter::new(map.iter_from_last_unsafe(), self.list_def, self.root)
+        MListPtrIter::new(map.iter_from_last_unsafe(), self.list_def, self.root_def)
     }
     pub fn iter_from_last(&mut self) -> MListPtrIter<V>{
         unsafe{ self.iter_from_last_const() }
@@ -164,7 +167,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
 
     pub unsafe fn iter_from_id_const(&self, id : u64) -> Option<MListPtrIter<V>> {
         let map = &mut *self.map;
-        map.iter_from_id_unsafe(id).map(|iter| MListPtrIter::new(iter, self.list_def, self.root))
+        map.iter_from_id_unsafe(id).map(|iter| MListPtrIter::new(iter, self.list_def, self.root_def))
     }
     pub fn iter_from_id(&mut self, id : u64)-> Option<MListPtrIter<V>> {
         unsafe{ self.iter_from_id_const(id) }
@@ -175,23 +178,23 @@ impl<V : From<MItemPtr>> MListPtr<V>{
 pub struct MListPtrIter<V : From<MItemPtr>>{
     iter : LinkedMapUnsafeIter<MutItem>,
     list_def : *const ListDefObj,
-    root : *mut RootObject,
+    root_def : *const RootDefObj,
     phantom : PhantomData<*mut V>,
 }
 impl<V : From<MItemPtr>> Iterator for MListPtrIter<V>{
     type Item = (u64, V);
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.iter.next_mut().map(|(k,v)| (*k, V::from(MItemPtr::new(v, self.list_def, self.root))))
+        self.iter.next_mut().map(|(k,v)| (*k, V::from(MItemPtr::new(v, self.list_def, self.root_def))))
     }
 }
 impl<V : From<MItemPtr>> MListPtrIter<V>{
-    pub(crate) fn new(iter : LinkedMapUnsafeIter<MutItem>, list_def : *const ListDefObj, root : *mut RootObject) -> MListPtrIter<V>{
-        MListPtrIter { iter, list_def, root, phantom : PhantomData }
+    pub(crate) fn new(iter : LinkedMapUnsafeIter<MutItem>, list_def : *const ListDefObj, root_def : *const RootDefObj) -> MListPtrIter<V>{
+        MListPtrIter { iter, list_def, root_def, phantom : PhantomData }
     }
 
     fn from(&self, item : *mut MutItem) -> V{
-        V::from(MItemPtr::new(item, self.list_def, self.root))
+        V::from(MItemPtr::new(item, self.list_def, self.root_def))
     }
     ///現在のカーソルにあるアイテムを返し、カーソルを進める
     pub fn next(&mut self) -> Option<(u64, V)> {
