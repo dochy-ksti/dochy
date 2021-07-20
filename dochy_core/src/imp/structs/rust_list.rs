@@ -8,6 +8,7 @@ use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::linked_m::LinkedMap;
 use crate::imp::structs::util::hash_m::{HashS};
 use crate::imp::structs::list_sab_value::ListSabValue;
+use std::sync::Arc;
 
 
 ///アイテムごとにIDをもち、Refで参照することが可能である
@@ -92,14 +93,14 @@ impl ConstListVal {
 
 #[derive(Debug,  Clone)]
 pub struct MutListVal {
-    list : Box<LinkedMap<MutItem>>,
+    list : Arc<LinkedMap<MutItem>>,
 }
 
 impl MutListVal {
-    pub fn new(list : LinkedMap<MutItem>,) -> MutListVal { MutListVal { list : Box::new(list) } }
-    pub(crate) fn deconstruct(self) -> LinkedMap<MutItem>{ *self.list }
+    pub fn new(list : LinkedMap<MutItem>,) -> MutListVal { MutListVal { list : Arc::new(list) } }
+    pub(crate) fn deconstruct(self) -> Arc<LinkedMap<MutItem>>{ self.list }
     pub fn list(&self) -> &LinkedMap<MutItem>{ self.list.as_ref() }
-    pub fn list_mut(&mut self) -> &mut LinkedMap<MutItem>{ self.list.as_mut() }
+    pub fn list_mut(&mut self) -> &mut LinkedMap<MutItem>{ Arc::make_mut(&mut self.list) }
 }
 
 impl IdentityEqual for MutListVal {
@@ -146,31 +147,31 @@ impl ConstItem {
 #[derive(Debug, Clone)]
 pub struct MutItem {
     ///ListItemの値は常にDefaultからの差分である
-    values : Box<HashM<String, ListSabValue>>,
+    values : Arc<HashM<String, ListSabValue>>,
     ///ListItemの値はRefでも常にDefaultからの差分である
-    refs : Box<HashM<String, RefSabValue>>,
+    refs : Arc<HashM<String, RefSabValue>>,
 }
 
 impl MutItem {
     pub fn new(values : HashM<String, ListSabValue>, refs : HashM<String, RefSabValue>) -> MutItem {
-        MutItem { values : Box::new(values), refs : Box::new(refs) }
+        MutItem { values : Arc::new(values), refs : Arc::new(refs) }
     }
     pub(crate) fn default() -> MutItem {
-        MutItem { values : Box::new(HashMt::new()), refs : Box::new(HashMt::new()) }
+        MutItem { values : Arc::new(HashMt::new()), refs : Arc::new(HashMt::new()) }
     }
-    pub fn deconstruct(self) -> (Box<HashM<String, ListSabValue>>,
-                                 Box<HashM<String, RefSabValue>>){
-        (self.values, self.refs)
-    }
-    pub fn construct(values : Box<HashM<String, ListSabValue>>,
-                     refs : Box<HashM<String, RefSabValue>>) -> MutItem{
+    // pub fn deconstruct(self) -> (Arc<HashM<String, ListSabValue>>,
+    //                              Arc<HashM<String, RefSabValue>>){
+    //     (self.values, self.refs)
+    // }
+    pub fn construct(values : Arc<HashM<String, ListSabValue>>,
+                     refs : Arc<HashM<String, RefSabValue>>) -> MutItem{
         MutItem{ values, refs }
     }
 
     pub fn values(&self) -> &HashM<String, ListSabValue>{ self.values.as_ref() }
-    pub fn values_mut(&mut self) -> &mut HashM<String, ListSabValue>{ self.values.as_mut() }
+    pub fn values_mut(&mut self) -> &mut HashM<String, ListSabValue>{ Arc::make_mut(&mut self.values) }
     pub fn refs(&self) -> &HashM<String, RefSabValue>{ self.refs.as_ref() }
-    pub fn refs_mut(&mut self) -> &mut HashM<String, RefSabValue>{ self.refs.as_mut() }
+    pub fn refs_mut(&mut self) -> &mut HashM<String, RefSabValue>{ Arc::make_mut(&mut self.refs) }
     pub(crate) fn set_sabun(&mut self, def :&ListDefObj, name : String, param : RustParam) -> Result<Option<RustParam>, SetSabunError> {
         let (p, vt) =
             if let Some(ListDefValue::Param(p, vt)) = def.default().get(&name) {
@@ -179,7 +180,7 @@ impl MutItem {
                 return Err(SetSabunError::ParamNotFound);
             };
         verify_set_sabun(p, vt, &param)?;
-        let op = self.values.insert(name, ListSabValue::Param(param));
+        let op = self.values_mut().insert(name, ListSabValue::Param(param));
         Ok(op.map(|v| match v{
             ListSabValue::Param(p) => p,
             _ => unreachable!(),

@@ -7,8 +7,8 @@ use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::util::hash_m::{HashM, HashMt};
 use crate::imp::structs::list_sab_value::ListSabValue;
 
-pub(crate) fn adjust_mut_list_item_sabun(def : &ListDefObj, old_sabun : HashM<String, ListSabValue>, names : &Names) -> CoreResult<HashM<String, ListSabValue>>{
-    let mut old_sabun = old_sabun;
+pub(crate) fn adjust_mut_list_item_sabun(def : &ListDefObj, old_sabun : &mut HashM<String, ListSabValue>, names : &Names) -> CoreResult<HashM<String, ListSabValue>>{
+
 
     //デフォルトから変化しない場合はsabunには加わらないが、sabun.len()だと、
     //undefinedで一個増えただけでテーブル再構成＆cap2倍にされてしまう可能性がある
