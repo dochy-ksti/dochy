@@ -6,8 +6,7 @@ use crate::imp::structs::ref_value::RefSabValue;
 use crate::imp::structs::qv::Qv;
 use crate::imp::structs::util::hash_m::{HashM, HashMt};
 
-pub(crate) fn adjust_mut_list_item_ref(def : &RefDefObj, old_ref : HashM<String, RefSabValue>, _names : &Names) -> CoreResult<HashM<String, RefSabValue>>{
-    let mut old_ref = old_ref;
+pub(crate) fn adjust_mut_list_item_ref(def : &RefDefObj, old_ref : &mut HashM<String, RefSabValue>, _names : &Names) -> CoreResult<HashM<String, RefSabValue>>{
 
     //事前に大きさが決定できないが、refのusecaseだとundefinedは少なく、default値のままが多いと思うので、sabunのlenを使う
     let mut result : HashM<String, RefSabValue> = HashMt::with_capacity(old_ref.len());

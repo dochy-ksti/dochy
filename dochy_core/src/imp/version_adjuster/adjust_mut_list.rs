@@ -9,17 +9,14 @@ use std::sync::Arc;
 
 
 pub(crate) fn adjust_mut(def : &ListDefObj, old_list : &mut LinkedMap<MutItem>, names : &Names) -> CoreResult<LinkedMap<MutItem>>{
-    //let mut counter : u64 = 0;
-    //let mut result : HashM<u64, Box<MutListItem>> = HashMt::with_capacity(old_list.len());
     let mut result : Vec<(u64, MutItem)> = Vec::with_capacity(old_list.len());
     let next_id = old_list.next_id();
     for (id, value) in old_list{
-        let (mut sabun, mut refs) = value.deconstruct();
-        let sabun = Arc::make_mut(&mut sabun);
-        let
-        let new_sabun = adjust_mut_list_item_sabun(def, *sabun, names)?;
-        let new_refs = adjust_mut_list_item_ref(def.refs(), *refs, names)?;
-        result.push((id, MutItem::new(new_sabun, new_refs)));
+        let (sabun, refs) = value.muts();
+
+        let new_sabun = adjust_mut_list_item_sabun(def, sabun, names)?;
+        let new_refs = adjust_mut_list_item_ref(def.refs(), refs, names)?;
+        result.push((*id, MutItem::new(new_sabun, new_refs)));
     }
     return Ok(LinkedMap::construct(result, next_id));
 }
@@ -33,7 +30,8 @@ pub(crate) fn adjust_mut(def : &ListDefObj, old_list : &mut LinkedMap<MutItem>, 
 // }
 
 pub(crate) fn adjust_mut_list(def : &ListDefObj, old : MutListVal, names : &Names) -> CoreResult<MutListVal>{
-    let old_list = old.deconstruct();
+    let mut old_list = old.deconstruct();
+    let old_list = Arc::make_mut(&mut old_list);
 
     let new_list = adjust_mut(def, old_list, names)?;
     //let next_id = new_list.len() as u64;

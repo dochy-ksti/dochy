@@ -83,12 +83,12 @@ impl ConstList {
 ///Table or CListの内部に作るList。ListDefObjの内部にはDefaultだけ書き、CItemの内部にはListのItemの羅列のみを書く。
 #[derive(Debug, Clone)]
 pub struct ConstListVal {
-    list : Vec<ConstItem>,
+    list : Arc<Vec<ConstItem>>,
 }
 
 impl ConstListVal {
-    pub(crate) fn new(list : Vec<ConstItem>) -> ConstListVal { ConstListVal { list }}
-    pub(crate) fn list(&self) -> &Vec<ConstItem>{ &self.list }
+    pub(crate) fn new(list : Vec<ConstItem>) -> ConstListVal { ConstListVal { list : Arc::new(list) }}
+    pub(crate) fn list(&self) -> &Vec<ConstItem>{ self.list.as_ref() }
 }
 
 #[derive(Debug,  Clone)]
@@ -159,10 +159,10 @@ impl MutItem {
     pub(crate) fn default() -> MutItem {
         MutItem { values : Arc::new(HashMt::new()), refs : Arc::new(HashMt::new()) }
     }
-    // pub fn deconstruct(self) -> (Arc<HashM<String, ListSabValue>>,
-    //                              Arc<HashM<String, RefSabValue>>){
-    //     (self.values, self.refs)
-    // }
+    pub fn muts(&mut self) -> (&mut HashM<String, ListSabValue>,
+                                  &mut HashM<String, RefSabValue>){
+         (Arc::make_mut(&mut self.values), Arc::make_mut(&mut self.refs))
+    }
     pub fn construct(values : Arc<HashM<String, ListSabValue>>,
                      refs : Arc<HashM<String, RefSabValue>>) -> MutItem{
         MutItem{ values, refs }
