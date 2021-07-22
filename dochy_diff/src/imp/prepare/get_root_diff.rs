@@ -17,7 +17,7 @@ pub(crate) fn get_root_diff<'a, 'b>(from : &'a RootObject, to : &'b RootObject) 
     for (key,to_val) in t {
         if let Some(from_val) = f.get(key) {
             if from_val.identity_eq(to_val) == false{
-                if let Some((id,_v)) = def.get(key) {
+                if let Some((id,_v)) = def.def().get(key) {
                     params.insert(*id, to_val);
                 } else{
                     panic!("invalid def")

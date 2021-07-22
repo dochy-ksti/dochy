@@ -243,7 +243,7 @@ pub fn get_clist<T : From<CItemPtr>>(root_ptr : RootObjectPtr, name : &str) -> O
 }
 
 pub fn get_mlist<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
-    let (def, sabun) = unsafe{  (*root.ptr).def_and_mut_sab() };
+    let (def, sabun, _meta) = unsafe{  (*root.ptr).def_and_mut_sab() };
     if let Some(RootValue::MList(l)) = def.get(name){
         if let Some(RootSabValue::Mut(m)) = sabun.get_mut(name) {
             if let Some(m) = m {
@@ -313,7 +313,7 @@ pub fn set_binary(root : RootObjectPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
 /// len is ignored except for vec-types.
 /// This will be needed in the C interface.
 pub fn set_initial_value<'a>(ps : RootObjectPtr, name : &str, len : usize) -> bool{
-    let (def,sabun) =  unsafe{ &mut *ps.ptr }.def_and_mut_sab();
+    let (def,sabun, _meta) =  unsafe{ &mut *ps.ptr }.def_and_mut_sab();
 
     if let Some(RootValue::Param(p, _)) = def.get(name) {
         sabun.insert(name.to_string(),RootSabValue::Param(p.to_default_value(len)));

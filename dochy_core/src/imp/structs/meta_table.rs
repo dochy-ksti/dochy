@@ -105,9 +105,15 @@ impl MetaTable{
                 },
                 RootValue::MList(l) =>{
                     let def = l.default();
-                    let val = MetaValue::MList(MetaTables::new(
-                        Self::from_list_def(def.default()),
-                        Self::from_ref_def(def.refs().refs())));
+                    let val = if l.undefiable() {
+                        MetaValue::OptMil(MetaTables::new(
+                            Self::from_list_def(def.default()),
+                            Self::from_ref_def(def.refs().refs())))
+                    } else{
+                        MetaValue::MList(MetaTables::new(
+                            Self::from_list_def(def.default()),
+                            Self::from_ref_def(def.refs().refs())))
+                    };
                     vec[*id] = Some((key, val));
                 },
                 _ =>{},

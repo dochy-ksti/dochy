@@ -23,6 +23,7 @@ pub(crate) fn apply_lists(lists : Vec<(usize, Option<ListDiffR>)>, meta : &MetaT
                             Some(diff_to_new_list(list_diff, tables)?)));
                     }
                 } else{
+                    //ListSabValue::Noneを入れることが可能になっている・・・必要なんだろうか？
                     r.insert(key.to_string(),ListSabValue::Mil(None));
                 }
             },

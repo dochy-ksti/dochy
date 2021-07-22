@@ -59,9 +59,10 @@ impl RootObject{
     /////mlistがdefaultにある都合上、書き換える必要性が生じている。HashMのKeyはmetatableからポインタ参照されているので、ハッシュ再構成が起きてはならない
     //pub(crate) fn default_mut(&mut self) -> &mut HashM<String, (usize, RootValue)>{ self.default.as_mut() }
 
-    pub(crate) fn def_and_mut_sab(&mut self) -> (&RootDefObj,
-                                    &mut HashM<String, RootSabValue>){
-         (&self.default, Arc::make_mut(&mut self.sabun))
+    pub fn def_and_mut_sab(&mut self) -> (&RootDefObj,
+                                          &mut HashM<String, RootSabValue>,
+                                          &MetaTable){
+         (&self.default, Arc::make_mut(&mut self.sabun), &self.meta_table)
     }
 
     pub fn deconstruct(self)
