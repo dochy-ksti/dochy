@@ -4,15 +4,15 @@ use std::collections::BTreeMap;
 #[derive(Debug)]
 pub(crate) struct RootDiffW<'a>{
     params : BTreeMap<usize, &'a RustParam>,
-    lists : BTreeMap<usize, ListDiffW<'a>>,
+    lists : BTreeMap<usize, Option<ListDiffW<'a>>>,
     meta_table : &'a MetaTable,
 }
 impl<'a> RootDiffW<'a>{
-    pub(crate) fn new(params : BTreeMap<usize, &'a RustParam>, lists : BTreeMap<usize, ListDiffW<'a>>, meta_table : &'a MetaTable) -> RootDiffW<'a>{
+    pub(crate) fn new(params : BTreeMap<usize, &'a RustParam>, lists : BTreeMap<usize, Option<ListDiffW<'a>>>, meta_table : &'a MetaTable) -> RootDiffW<'a>{
         RootDiffW { params, lists, meta_table }
     }
     pub fn params(&self) -> &BTreeMap<usize, &'a RustParam>{ &self.params }
-    pub fn lists(&self) -> &BTreeMap<usize, ListDiffW<'a>>{ &self.lists }
+    pub fn lists(&self) -> &BTreeMap<usize, Option<ListDiffW<'a>>>{ &self.lists }
     pub fn meta_table(&self) -> &MetaTable{ self.meta_table }
 }
 

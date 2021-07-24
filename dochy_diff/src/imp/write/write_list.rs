@@ -71,7 +71,7 @@ fn write_list_item2(ld : &ListItemDiffW, meta : &MetaTables, r : &mut Vec<KVal>)
     }
 }
 
-fn write_ld_lists(lists : &BTreeMap<usize, Option<ListDiffW>>, meta : &MetaTable, r : &mut Vec<KVal>) -> Result<(), DiffError> {
+pub(crate) fn write_ld_lists(lists : &BTreeMap<usize, Option<ListDiffW>>, meta : &MetaTable, r : &mut Vec<KVal>) -> Result<(), DiffError> {
     for (&id, op) in lists {
         let mv = if let Some((_, mv)) = meta.get(id) { mv } else { unreachable!("meta is invalid") };
         match mv {

@@ -4,7 +4,7 @@ use crate::imp::write::store_ids::{StoredIDs, store_ids};
 use dochy_core::structs::{RustParam, MetaTable, MetaValue};
 use crate::imp::write::write_param::write_param;
 use std::collections::BTreeMap;
-use crate::imp::write::write_list::write_list;
+use crate::imp::write::write_list::{write_list, write_ld_lists};
 use crate::diff_error::DiffError;
 use crate::imp::write::write_store_ids::write_stored_ids;
 
@@ -36,7 +36,7 @@ pub(crate) fn write_root(root : RootDiffW) -> Result<Vec<KVal>, DiffError>{
         },
         _ =>{
             write_params(params, meta, &mut r)?;
-            write_lists(lists, &mut r)?;
+            write_ld_lists(lists,meta, &mut r)?;
             Ok(r)
         },
     }
