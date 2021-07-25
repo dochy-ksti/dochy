@@ -1,8 +1,5 @@
 use crate::imp::structs::rust_param::RustParam;
-use crate::imp::structs::rust_list::{ConstListVal, MutListVal};
-use crate::imp::structs::rust_value::{RustMemberType, RustValue};
-use crate::imp::structs::var_type::VarType;
-use crate::imp::structs::qv::QvType;
+use crate::imp::structs::rust_list::{ MutListVal};
 use crate::IdentityEqual;
 
 #[derive(Debug, Clone)]
@@ -12,14 +9,14 @@ pub enum RootSabValue{
 }
 
 impl RootSabValue{
-    pub(crate) fn type_num(&self) -> RustMemberType {
-        use RustMemberType::*;
-
-        match self{
-            RootSabValue::Param(param) => param.type_num(),
-            RootSabValue::Mut(_) => Mil,
-        }
-    }
+    // pub(crate) fn type_num(&self) -> RustMemberType {
+    //     use RustMemberType::*;
+    //
+    //     match self{
+    //         RootSabValue::Param(param) => param.type_num(),
+    //         RootSabValue::Mut(_) => Mil,
+    //     }
+    // }
 
     // pub(crate) fn into_rust_value_for_json(self) -> RustValue{
     //     match self{
@@ -28,12 +25,12 @@ impl RootSabValue{
     //     }
     // }
 
-    pub(crate) fn qv_type(&self) -> QvType{
-        match self{
-            RootSabValue::Param(p) => p.qv_type(),
-            RootSabValue::Mut(m) => if m.is_some(){ QvType::Val } else{ QvType::Undefined },
-        }
-    }
+    // pub(crate) fn qv_type(&self) -> QvType{
+    //     match self{
+    //         RootSabValue::Param(p) => p.qv_type(),
+    //         RootSabValue::Mut(m) => if m.is_some(){ QvType::Val } else{ QvType::Undefined },
+    //     }
+    // }
 }
 
 impl IdentityEqual for RootSabValue{

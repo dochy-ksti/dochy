@@ -5,7 +5,6 @@ use crate::error::CoreResult;
 use crate::imp::json_to_rust::names::Names;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
-use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
 use std::sync::Arc;
 
@@ -20,12 +19,12 @@ pub fn adjust_versions(new : RootObject, old : RootObject, validation : bool) ->
 
     let (def, mut sabun_v, old_hash, meta) = new.deconstruct();
 
-    let mut sabun = Arc::make_mut(&mut sabun_v);
+    let sabun = Arc::make_mut(&mut sabun_v);
     //let mut new_map :HashM<String, (usize, RootValue)> = HashMt::with_capacity(def.len());
 
     let (old_def,mut old_sabun, _, _) = old.deconstruct();
 
-    let mut old_sabun = Arc::make_mut(&mut old_sabun);
+    let old_sabun = Arc::make_mut(&mut old_sabun);
 
     for (def_key, (_id, def_value)) in def.def(){
         match def_value{

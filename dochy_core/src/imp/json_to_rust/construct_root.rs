@@ -1,13 +1,8 @@
-use crate::imp::json_to_rust::json_name::{json_name, NameType};
-//use crate::HashM;
 use crate::error::CoreResult;
 use crate::imp::json_to_rust::validation::validate_root::validate_root;
-use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::root_value::RootValue;
-use crate::imp::structs::util::hash_m::HashM;
 use crate::imp::structs::root_sab_value::RootSabValue;
-use crate::imp::structs::root_def_obj::RootDefObj;
 use std::sync::Arc;
 use crate::imp::structs::meta_table::MetaTable;
 
@@ -17,7 +12,7 @@ pub(crate) fn construct_root(root : RootObject, vec : Vec<(String, RootValue, Op
     let mut default_v = default_v;
     let default = Arc::make_mut(&mut default_v).def_mut();
     let mut sabun_v = sabun_v;
-    let mut sabun = Arc::make_mut(&mut sabun_v);
+    let sabun = Arc::make_mut(&mut sabun_v);
     let mut vec = vec;
     vec.sort_by(|(a,_,_),(b,_,_)| a.cmp(b));
     for (name, value, sab) in vec {

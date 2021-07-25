@@ -1,4 +1,4 @@
-use dochy_core::structs::{RootObject, RootValue, MetaValue, RootSabValue};
+use dochy_core::structs::{RootObject, MetaValue, RootSabValue};
 use crate::imp::structs_read::RootDiffR;
 use crate::imp::apply::apply_list_diff::apply_list_diff;
 use crate::diff_error::DiffError;
@@ -6,7 +6,7 @@ use crate::imp::apply::diff_to_new_list::diff_to_new_list;
 
 pub(crate) fn apply_root_diff(root : &mut RootObject, diff : RootDiffR) -> Result<(), DiffError>{
     let (params, lists) = diff.deconstruct();
-    let (default, sabun, meta)
+    let (_default, sabun, meta)
         = root.def_and_mut_sab();
     //let (mut default, mut sabun, old, meta) = root.deconstruct();
     for (id, p) in params{
@@ -19,9 +19,9 @@ pub(crate) fn apply_root_diff(root : &mut RootObject, diff : RootDiffR) -> Resul
         let (key, meta_val) = if let Some(v) = meta.get(id){ v } else{
             unreachable!("list meta is not valid apply_root_diff")
         };
-        let v = if let Some(v) = default.get(key){ v } else{
-            unreachable!("invalid default apply_root_diff")
-        };
+        // let v = if let Some(v) = default.get(key){ v } else{
+        //     unreachable!("invalid default apply_root_diff")
+        // };
         match meta_val{
             MetaValue::MList(tables) | MetaValue::OptMil(tables) =>{
                 if let Some(RootSabValue::Mut(m)) = sabun.get_mut(key){

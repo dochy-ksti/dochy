@@ -13,7 +13,7 @@ pub(crate) fn get_root_diff<'a, 'b>(from : &'a RootObject, to : &'b RootObject) 
 
     let mut params : BTreeMap<usize, &RustParam> = BTreeMap::new();
     let mut lists : BTreeMap<usize, Option<ListDiffW>> = BTreeMap::new();
-    let from_def = from.default();
+
     let meta = to.meta_table();
 
 

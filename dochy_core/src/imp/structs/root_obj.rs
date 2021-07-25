@@ -5,7 +5,6 @@ use crate::imp::structs::util::set_sabun::{SetSabunError, verify_set_sabun};
 use crate::imp::structs::meta_table::MetaTable;
 use crate::imp::structs::util::hash_m::HashS;
 use std::sync::{Arc, Weak};
-use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
 use crate::imp::structs::root_def_obj::RootDefObj;
 
@@ -109,11 +108,14 @@ impl RootObject{
         //WeakもArcも生きている。勝手にdropしたりしない
         id.as_ptr() == Arc::as_ptr(&self.id)
     }
-}
 
-impl IdentityEqual for (usize, RootValue){
-    //TODO: ここもいらない？　いやいるか
-    fn identity_eq(&self, other: &Self) -> bool {
-        self.0 == other.0 && self.1.identity_eq(&other.1)
+    pub fn contents_ptr_eq(&self, other : &Self) -> bool{
+        Arc::ptr_eq(&self.sabun, &other.sabun)
+    }
+
+    pub fn contents_eq(&self, other : &Self) -> bool{
+        self.sabun.identity_eq(&other.sabun)
     }
 }
+
+

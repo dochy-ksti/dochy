@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::hash::{Hash, BuildHasher};
 use crate::imp::structs::linked_m::LinkedMap;
+use std::sync::Arc;
 
 /// When items have identity objects, compare identity objects, otherwise compare items directly.
 /// This can shortcut comparing and make it faster.
@@ -18,6 +19,13 @@ impl<K,  V : IdentityEqual, S> IdentityEqual for HashMap<K,V,S>
         }
 
         self.iter().all(move |(key, value)| other.get(key).map_or(false, |v| value.identity_eq(v)))
+    }
+}
+
+impl<T : IdentityEqual> IdentityEqual for Arc<T>{
+    fn identity_eq(&self, other: &Self) -> bool {
+        if Arc::ptr_eq(self, other){ true }
+        else{ self.as_ref().identity_eq(other.as_ref())}
     }
 }
 

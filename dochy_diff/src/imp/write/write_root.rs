@@ -1,10 +1,10 @@
-use crate::imp::structs_write::{RootDiffW, ListDiffW};
+use crate::imp::structs_write::{RootDiffW};
 use dochy_compaction::kval_enum::KVal;
 use crate::imp::write::store_ids::{StoredIDs, store_ids};
 use dochy_core::structs::{RustParam, MetaTable, MetaValue};
 use crate::imp::write::write_param::write_param;
 use std::collections::BTreeMap;
-use crate::imp::write::write_list::{write_list, write_ld_lists};
+use crate::imp::write::write_list::{write_ld_lists};
 use crate::diff_error::DiffError;
 use crate::imp::write::write_store_ids::write_stored_ids;
 
@@ -53,10 +53,10 @@ pub(crate ) fn write_params(params : &BTreeMap<usize, &RustParam>, meta : &MetaT
     Ok(())
 }
 
-fn write_lists(lists : &BTreeMap<usize, ListDiffW>, r : &mut Vec<KVal>) -> Result<(), DiffError>{
-    for (_id, ld) in lists {
-        write_list(ld, r)?
-    }
-    Ok(())
-}
-
+// fn write_lists(lists : &BTreeMap<usize, ListDiffW>, r : &mut Vec<KVal>) -> Result<(), DiffError>{
+//     for (_id, ld) in lists {
+//         write_list(ld, r)?
+//     }
+//     Ok(())
+// }
+//

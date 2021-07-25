@@ -5,15 +5,12 @@ use std::io::prelude::*;
 use crate::error::CoreResult;
 use std::ffi::{OsStr};
 use crate::imp::json_to_rust::{json_root_to_rust, json_item_str_to_rust};
-use crate::{HashM, HashMt};
 
 use crate::imp::json_to_rust::construct_root::construct_root;
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::json_file::{JsonFile, JsonFileImpl};
 use crate::imp::structs::root_value::RootValue;
 use std::path::Path;
-use crate::imp::structs::var_type::VarType;
-use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
 use crate::imp::json_to_rust::json_name::{json_name, NameType};
 
@@ -81,7 +78,7 @@ pub fn json_files_to_root<T : JsonFile>(ite : impl Iterator<Item = T>, validatio
                         Err(e) => { Err(format!("filename {}, {}", name, e.to_string()))? }
                     }
                 },
-                NameType::SystemName(s) =>{
+                NameType::SystemName(_s) =>{
                     Err(format!("filename {} can't be used", name))?
                 }
             }

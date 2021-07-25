@@ -105,7 +105,7 @@ impl MutListVal {
 
 impl IdentityEqual for MutListVal {
     fn identity_eq(&self, other: &Self) -> bool {
-        self.list.as_ref().identity_eq(other.list.as_ref())
+        self.list.identity_eq(&other.list)
     }
 }
 
@@ -190,7 +190,7 @@ impl MutItem {
 
 impl IdentityEqual for MutItem{
     fn identity_eq(&self, other: &Self) -> bool {
-        self.values.identity_eq(other.values()) &&
-            self.refs.identity_eq(other.refs())
+        self.values.identity_eq(&other.values) &&
+            self.refs.identity_eq(&other.refs)
     }
 }
