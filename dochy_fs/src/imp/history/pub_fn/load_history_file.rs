@@ -1,7 +1,6 @@
 use crate::error::FsResult;
 use dochy_core::structs::RootObject;
 use crate::imp::history::fs::load::load;
-use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 use crate::history::{FileHistory, HistoryOptions};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use std::path::Path;
@@ -11,6 +10,7 @@ use dochy_core::{json_dir_to_root, adjust_versions};
 use crate::imp::common::archive::load_archive::load_archive;
 use crate::imp::history::file_hist::history_file_data::HistoryFileData;
 use crate::imp::history::latest_file_info::latest_file_info::{set_current_root_obj_info, CurrentRootObjInfo};
+use crate::imp::common::dochy_cache::DochyCache;
 
 /// Loads a history file.
 /// Concurrent access to a history_dir is not supported.

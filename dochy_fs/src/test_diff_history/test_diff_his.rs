@@ -3,11 +3,12 @@ use dochy_core::structs::Qv;
 use tempfile::tempdir;
 use crate::error::FsResult;
 use crate::imp::common::current_src::CurrentSrc;
-use crate::history::{DochyCache, HistoryOptions, HistoryOptionsBuilder, list_histories, CumulativeOptionsBuilder, load_history_file_data, save_history_file};
+use crate::history::{HistoryOptions, HistoryOptionsBuilder, list_histories, CumulativeOptionsBuilder, load_history_file_data, save_history_file};
 use dochy_core::intf::root::set_int;
 use crate::test_fs::copy_dir_all::copy_dir_all;
 use dochy_core::json_dir_to_root;
 use crate::test_diff_history::show_dir_contents_diff_history::show_dir_contents_diff_history;
+use crate::imp::common::dochy_cache::DochyCache;
 
 ///途中でソースを変えるテスト
 //#[test]

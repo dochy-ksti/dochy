@@ -3,12 +3,12 @@ use std::path::Path;
 use crate::history::HistoryOptions;
 use dochy_core::structs::RootObject;
 use crate::imp::history::file_hist::prepare_history_hash_dir::prepare_history_hash_dir;
-use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
 use crate::imp::history::latest_file_info::latest_file_info::{get_current_root_obj_info, set_current_root_obj_info, CurrentRootObjInfo};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::derive_impl::derive_impl;
+use crate::imp::common::dochy_cache::DochyCache;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 /// If the 'root' is not derived from the latest save file, calculate diff from the source JSON5 and save it.

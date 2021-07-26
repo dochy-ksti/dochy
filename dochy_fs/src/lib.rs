@@ -45,7 +45,6 @@ pub mod history{
     pub use crate::imp::history::algo::history_options::HistoryOptionsBuilder;
     pub use crate::imp::history::algo::history_options::CumulativeOptionsBuilder;
 
-    pub use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 
     pub use crate::imp::history::file_hist::file_history::FileHistory;
     pub use crate::imp::history::remove::history_remover::HistoryRemover;
