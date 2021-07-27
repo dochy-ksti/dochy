@@ -37,7 +37,7 @@ impl From<MItemPtr> for MlistMItem {
 }
 impl MlistMItem {
 	pub unsafe fn in_list_us(&self) -> MListPtr<InListMItem>{
-		mitem::get_mil(self.ptr, "inList").unwrap().unwrap()
+		mitem_ptr::get_mil(self.ptr, "inList").unwrap().unwrap()
 	}
 	pub fn in_list(&self) -> MListConst<InListMItem>{
 		MListConst::new(unsafe{ self.in_list_us() }, self)
@@ -46,26 +46,26 @@ impl MlistMItem {
 		MListMut::new(unsafe{ self.in_list_us() }, self)
 	}
 	pub fn bar(&self) -> i64{
-		let qv = mitem::get_int(self.ptr, "bar").unwrap();
+		let qv = mitem_ptr::get_int(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn bar_def_val(&self) -> i64{
-		let qv = mitem::get_int_def(self.ptr, "bar").unwrap();
+		let qv = mitem_ptr::get_int_def(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_bar(&mut self, bar : i64){
-		mitem::set_int(self.ptr, "bar", Qv::Val(bar));
+		mitem_ptr::set_int(self.ptr, "bar", Qv::Val(bar));
 	}
 	pub fn baz(&self) -> i64{
-		let qv = mitem::get_int(self.ptr, "baz").unwrap();
+		let qv = mitem_ptr::get_int(self.ptr, "baz").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn baz_def_val(&self) -> i64{
-		let qv = mitem::get_int_def(self.ptr, "baz").unwrap();
+		let qv = mitem_ptr::get_int_def(self.ptr, "baz").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_baz(&mut self, baz : i64){
-		mitem::set_int(self.ptr, "baz", Qv::Val(baz));
+		mitem_ptr::set_int(self.ptr, "baz", Qv::Val(baz));
 	}
 	
 	
@@ -81,15 +81,15 @@ impl From<MItemPtr> for InListMItem {
 }
 impl InListMItem {
 	pub fn a(&self) -> i64{
-		let qv = mitem::get_int(self.ptr, "a").unwrap();
+		let qv = mitem_ptr::get_int(self.ptr, "a").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn a_def_val(&self) -> i64{
-		let qv = mitem::get_int_def(self.ptr, "a").unwrap();
+		let qv = mitem_ptr::get_int_def(self.ptr, "a").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_a(&mut self, a : i64){
-		mitem::set_int(self.ptr, "a", Qv::Val(a));
+		mitem_ptr::set_int(self.ptr, "a", Qv::Val(a));
 	}
 	
 	

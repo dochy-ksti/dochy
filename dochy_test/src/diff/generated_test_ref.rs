@@ -84,48 +84,48 @@
 	}
 	impl List1MItem {
 		pub fn ref_refed1(&self) -> Refed1CItem{
-			let qv = mitem::get_ref(self.ptr, "refed1").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed1").unwrap();
 			Refed1CItem::from(qv.into_value().unwrap())
 		}
 		pub fn ref_id_refed1(&self) -> String{
-			let qv = mitem::get_ref_id(self.ptr, "refed1").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed1").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn ref_refed2(&self) -> NullOr<Refed2CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed2").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed2").unwrap();
 			NullOr::from_qv(qv).unwrap().map(|p| Refed2CItem::from(*p))
 		}
 		pub fn ref_id_refed2(&self) -> NullOr<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed2").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed2").unwrap();
 			NullOr::from_qv(qv).unwrap()
 		}
 		pub fn ref_refed3(&self) -> UndefOr<Refed3CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed3").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed3").unwrap();
 			UndefOr::from_qv(qv).unwrap().map(|p| Refed3CItem::from(*p))
 		}
 		pub fn ref_id_refed3(&self) -> UndefOr<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed3").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed3").unwrap();
 			UndefOr::from_qv(qv).unwrap()
 		}
 		pub fn ref_refed4(&self) -> Qv<Refed4CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed4").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed4").unwrap();
 			qv.map(|p| Refed4CItem::from(*p))
 		}
 		pub fn ref_id_refed4(&self) -> Qv<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed4").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed4").unwrap();
 			qv
 		}
 		pub fn set_ref_refed1(&mut self, id : Refed1TableID){
-			mitem::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
 		}
 		pub fn set_ref_refed2(&mut self, id : NullOr<Refed2TableID>){
-			mitem::set_ref(self.ptr, "refed2", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed2", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 		pub fn set_ref_refed3(&mut self, id : UndefOr<Refed3TableID>){
-			mitem::set_ref(self.ptr, "refed3", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed3", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 		pub fn set_ref_refed4(&mut self, id : Qv<Refed4TableID>){
-			mitem::set_ref(self.ptr, "refed4", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed4", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 	}
 	
@@ -140,48 +140,48 @@
 	}
 	impl List2MItem {
 		pub fn ref_refed1(&self) -> Refed1CItem{
-			let qv = mitem::get_ref(self.ptr, "refed1").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed1").unwrap();
 			Refed1CItem::from(qv.into_value().unwrap())
 		}
 		pub fn ref_id_refed1(&self) -> String{
-			let qv = mitem::get_ref_id(self.ptr, "refed1").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed1").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn ref_refed2(&self) -> NullOr<Refed2CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed2").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed2").unwrap();
 			NullOr::from_qv(qv).unwrap().map(|p| Refed2CItem::from(*p))
 		}
 		pub fn ref_id_refed2(&self) -> NullOr<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed2").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed2").unwrap();
 			NullOr::from_qv(qv).unwrap()
 		}
 		pub fn ref_refed3(&self) -> UndefOr<Refed3CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed3").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed3").unwrap();
 			UndefOr::from_qv(qv).unwrap().map(|p| Refed3CItem::from(*p))
 		}
 		pub fn ref_id_refed3(&self) -> UndefOr<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed3").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed3").unwrap();
 			UndefOr::from_qv(qv).unwrap()
 		}
 		pub fn ref_refed4(&self) -> Qv<Refed4CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed4").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed4").unwrap();
 			qv.map(|p| Refed4CItem::from(*p))
 		}
 		pub fn ref_id_refed4(&self) -> Qv<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed4").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed4").unwrap();
 			qv
 		}
 		pub fn set_ref_refed1(&mut self, id : Refed1TableID){
-			mitem::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
 		}
 		pub fn set_ref_refed2(&mut self, id : NullOr<Refed2TableID>){
-			mitem::set_ref(self.ptr, "refed2", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed2", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 		pub fn set_ref_refed3(&mut self, id : UndefOr<Refed3TableID>){
-			mitem::set_ref(self.ptr, "refed3", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed3", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 		pub fn set_ref_refed4(&mut self, id : Qv<Refed4TableID>){
-			mitem::set_ref(self.ptr, "refed4", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed4", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 	}
 	
@@ -196,48 +196,48 @@
 	}
 	impl List3MItem {
 		pub fn ref_refed1(&self) -> Refed1CItem{
-			let qv = mitem::get_ref(self.ptr, "refed1").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed1").unwrap();
 			Refed1CItem::from(qv.into_value().unwrap())
 		}
 		pub fn ref_id_refed1(&self) -> String{
-			let qv = mitem::get_ref_id(self.ptr, "refed1").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed1").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn ref_refed2(&self) -> NullOr<Refed2CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed2").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed2").unwrap();
 			NullOr::from_qv(qv).unwrap().map(|p| Refed2CItem::from(*p))
 		}
 		pub fn ref_id_refed2(&self) -> NullOr<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed2").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed2").unwrap();
 			NullOr::from_qv(qv).unwrap()
 		}
 		pub fn ref_refed3(&self) -> UndefOr<Refed3CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed3").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed3").unwrap();
 			UndefOr::from_qv(qv).unwrap().map(|p| Refed3CItem::from(*p))
 		}
 		pub fn ref_id_refed3(&self) -> UndefOr<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed3").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed3").unwrap();
 			UndefOr::from_qv(qv).unwrap()
 		}
 		pub fn ref_refed4(&self) -> Qv<Refed4CItem>{
-			let qv = mitem::get_ref(self.ptr, "refed4").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed4").unwrap();
 			qv.map(|p| Refed4CItem::from(*p))
 		}
 		pub fn ref_id_refed4(&self) -> Qv<String>{
-			let qv = mitem::get_ref_id(self.ptr, "refed4").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed4").unwrap();
 			qv
 		}
 		pub fn set_ref_refed1(&mut self, id : Refed1TableID){
-			mitem::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
 		}
 		pub fn set_ref_refed2(&mut self, id : NullOr<Refed2TableID>){
-			mitem::set_ref(self.ptr, "refed2", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed2", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 		pub fn set_ref_refed3(&mut self, id : UndefOr<Refed3TableID>){
-			mitem::set_ref(self.ptr, "refed3", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed3", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 		pub fn set_ref_refed4(&mut self, id : Qv<Refed4TableID>){
-			mitem::set_ref(self.ptr, "refed4", id.into_qv().map(|v| v.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed4", id.into_qv().map(|v| v.to_str().to_string()));
 		}
 	}
 	

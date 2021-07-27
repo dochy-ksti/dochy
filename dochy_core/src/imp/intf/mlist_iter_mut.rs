@@ -1,5 +1,5 @@
 use crate::imp::intf::MItemPtr;
-use crate::imp::intf::mlist::MListPtrIter;
+use crate::imp::intf::mlist_ptr::MListPtrIter;
 use std::marker::PhantomData;
 use crate::intf::mlist_mut::MItemMut;
 

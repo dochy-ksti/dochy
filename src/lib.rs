@@ -24,6 +24,7 @@ pub mod error;
 //TODO: フォルダ削除時に途中で強制終了があると中途半端なファイルだけ残り不正な状態になる可能性があるので、まずフォルダ名を変更しフォルダ内のファイルを無効にしてから削除するようにする
 //TODO: RootのMutListも内部でDefと実Listに分け、Defを完全にimmutableにした上でRcにくるむ
 //TODO: ロード処理をマルチスレッド化する(2スレッドがバランスがいいか？)
+//TODO: CopySaveFileToPhase0を作る
 
 //TODO: 全部documentationする
 //TODO: Redditに出して反応を見る このペースだと何ヶ月かかるんじゃあ・・・

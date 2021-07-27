@@ -1,5 +1,5 @@
 use dochy::core::intf::{RootObjectPtr, MListPtr, MItemPtr};
-use dochy::core::intf::{mitem};
+use dochy::core::intf::{mitem_ptr};
 use dochy::core::structs::Qv;
 use dochy::core::root_to_json_new_default;
 use dochy_diff::apply_diff;
@@ -19,39 +19,39 @@ fn users() -> DpResult<()>{
     let mut ml : MListPtr<MItemPtr> = dochy::core::intf::root::get_mlist(
         rp, "users")?;
     let item = ml.insert();
-    mitem::set_int(item, "id", Qv::Val(1));
-    mitem::set_str(item, "name", Qv::Val("Holt Gianuzzi".to_string()));
-    mitem::set_str(item, "created", Qv::Val("2/24/2021".to_string()));
-    mitem::set_bool(item, "is_active", Qv::Val(false));
-    mitem::set_str(item, "thumbnail", Qv::Null);
+    mitem_ptr::set_int(item, "id", Qv::Val(1));
+    mitem_ptr::set_str(item, "name", Qv::Val("Holt Gianuzzi".to_string()));
+    mitem_ptr::set_str(item, "created", Qv::Val("2/24/2021".to_string()));
+    mitem_ptr::set_bool(item, "is_active", Qv::Val(false));
+    mitem_ptr::set_str(item, "thumbnail", Qv::Null);
 
     let item = ml.insert();
-    mitem::set_int(item, "id", Qv::Val(2));
-    mitem::set_str(item, "name", Qv::Val("Sansone Gerard".to_string()));
-    mitem::set_str(item, "created", Qv::Val("5/28/2020".to_string()));
-    mitem::set_bool(item, "is_active", Qv::Val(true));
-    mitem::set_str(item, "thumbnail", Qv::Null);
+    mitem_ptr::set_int(item, "id", Qv::Val(2));
+    mitem_ptr::set_str(item, "name", Qv::Val("Sansone Gerard".to_string()));
+    mitem_ptr::set_str(item, "created", Qv::Val("5/28/2020".to_string()));
+    mitem_ptr::set_bool(item, "is_active", Qv::Val(true));
+    mitem_ptr::set_str(item, "thumbnail", Qv::Null);
 
     let item = ml.insert();
-    mitem::set_int(item, "id", Qv::Val(3));
-    mitem::set_str(item, "name", Qv::Val("Max Mangan".to_string()));
-    mitem::set_str(item, "created", Qv::Val("3/14/2020".to_string()));
-    mitem::set_bool(item, "is_active", Qv::Val(false));
-    mitem::set_str(item, "thumbnail", Qv::Null);
+    mitem_ptr::set_int(item, "id", Qv::Val(3));
+    mitem_ptr::set_str(item, "name", Qv::Val("Max Mangan".to_string()));
+    mitem_ptr::set_str(item, "created", Qv::Val("3/14/2020".to_string()));
+    mitem_ptr::set_bool(item, "is_active", Qv::Val(false));
+    mitem_ptr::set_str(item, "thumbnail", Qv::Null);
 
     let item = ml.insert();
-    mitem::set_int(item, "id", Qv::Val(4));
-    mitem::set_str(item, "name", Qv::Val("Brice Bartosch".to_string()));
-    mitem::set_str(item, "created", Qv::Val("11/24/2020".to_string()));
-    mitem::set_bool(item, "is_active", Qv::Val(false));
-    mitem::set_str(item, "thumbnail", Qv::Null);
+    mitem_ptr::set_int(item, "id", Qv::Val(4));
+    mitem_ptr::set_str(item, "name", Qv::Val("Brice Bartosch".to_string()));
+    mitem_ptr::set_str(item, "created", Qv::Val("11/24/2020".to_string()));
+    mitem_ptr::set_bool(item, "is_active", Qv::Val(false));
+    mitem_ptr::set_str(item, "thumbnail", Qv::Null);
 
     let item = ml.insert();
-    mitem::set_int(item, "id", Qv::Val(5));
-    mitem::set_str(item, "name", Qv::Val("Lauretta Tyt".to_string()));
-    mitem::set_str(item, "created", Qv::Val("4/26/2020".to_string()));
-    mitem::set_bool(item, "is_active", Qv::Val(true));
-    mitem::set_str(item, "thumbnail", Qv::Null);
+    mitem_ptr::set_int(item, "id", Qv::Val(5));
+    mitem_ptr::set_str(item, "name", Qv::Val("Lauretta Tyt".to_string()));
+    mitem_ptr::set_str(item, "created", Qv::Val("4/26/2020".to_string()));
+    mitem_ptr::set_bool(item, "is_active", Qv::Val(true));
+    mitem_ptr::set_str(item, "thumbnail", Qv::Null);
 
     //let hoge = rust_to_json_new_default(&r)?;
     //println!("{}", hoge.to_string_pretty());

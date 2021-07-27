@@ -2,7 +2,7 @@ use crate::imp::structs::linked_m::{LinkedMap, LinkedMapUnsafeIter};
 use crate::imp::structs::rust_list::MutItem;
 use std::marker::PhantomData;
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::intf::mitem::MItemPtr;
+use crate::imp::intf::mitem_ptr::MItemPtr;
 use crate::imp::structs::root_def_obj::RootDefObj;
 
 /// This uses pointers so every method is basically unsafe.

@@ -131,18 +131,18 @@
 	}
 	impl ListMItem {
 		pub fn mem(&self) -> i64{
-			let qv = mitem::get_int(self.ptr, "mem").unwrap();
+			let qv = mitem_ptr::get_int(self.ptr, "mem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn mem_def_val(&self) -> i64{
-			let qv = mitem::get_int_def(self.ptr, "mem").unwrap();
+			let qv = mitem_ptr::get_int_def(self.ptr, "mem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_mem(&mut self, mem : i64){
-			mitem::set_int(self.ptr, "mem", Qv::Val(mem));
+			mitem_ptr::set_int(self.ptr, "mem", Qv::Val(mem));
 		}
 		pub unsafe fn in_list_us(&self) -> MListPtr<InListMItem>{
-			mitem::get_mil(self.ptr, "inList").unwrap().unwrap()
+			mitem_ptr::get_mil(self.ptr, "inList").unwrap().unwrap()
 		}
 		pub fn in_list(&self) -> MListConst<InListMItem>{
 			MListConst::new(unsafe{ self.in_list_us() }, self)
@@ -151,15 +151,15 @@
 			MListMut::new(unsafe{ self.in_list_us() }, self)
 		}
 		pub fn ref_refed1(&self) -> Refed1CItem{
-			let qv = mitem::get_ref(self.ptr, "refed1").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed1").unwrap();
 			Refed1CItem::from(qv.into_value().unwrap())
 		}
 		pub fn ref_id_refed1(&self) -> String{
-			let qv = mitem::get_ref_id(self.ptr, "refed1").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed1").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_ref_refed1(&mut self, id : Refed1TableID){
-			mitem::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
 		}
 	}
 	#[derive(Debug, PartialEq, Clone, Copy)]
@@ -173,18 +173,18 @@
 	}
 	impl InListMItem {
 		pub fn in_mem(&self) -> i64{
-			let qv = mitem::get_int(self.ptr, "inMem").unwrap();
+			let qv = mitem_ptr::get_int(self.ptr, "inMem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn in_mem_def_val(&self) -> i64{
-			let qv = mitem::get_int_def(self.ptr, "inMem").unwrap();
+			let qv = mitem_ptr::get_int_def(self.ptr, "inMem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_in_mem(&mut self, in_mem : i64){
-			mitem::set_int(self.ptr, "inMem", Qv::Val(in_mem));
+			mitem_ptr::set_int(self.ptr, "inMem", Qv::Val(in_mem));
 		}
 		pub unsafe fn in_list2_us(&self) -> MListPtr<InList2MItem>{
-			mitem::get_mil(self.ptr, "inList2").unwrap().unwrap()
+			mitem_ptr::get_mil(self.ptr, "inList2").unwrap().unwrap()
 		}
 		pub fn in_list2(&self) -> MListConst<InList2MItem>{
 			MListConst::new(unsafe{ self.in_list2_us() }, self)
@@ -193,15 +193,15 @@
 			MListMut::new(unsafe{ self.in_list2_us() }, self)
 		}
 		pub fn ref_refed2(&self) -> Refed2CItem{
-			let qv = mitem::get_ref(self.ptr, "refed2").unwrap();
+			let qv = mitem_ptr::get_ref(self.ptr, "refed2").unwrap();
 			Refed2CItem::from(qv.into_value().unwrap())
 		}
 		pub fn ref_id_refed2(&self) -> String{
-			let qv = mitem::get_ref_id(self.ptr, "refed2").unwrap();
+			let qv = mitem_ptr::get_ref_id(self.ptr, "refed2").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_ref_refed2(&mut self, id : Refed2TableID){
-			mitem::set_ref(self.ptr, "refed2", Qv::Val(id.to_str().to_string()));
+			mitem_ptr::set_ref(self.ptr, "refed2", Qv::Val(id.to_str().to_string()));
 		}
 	}
 	#[derive(Debug, PartialEq, Clone, Copy)]
@@ -215,15 +215,15 @@
 	}
 	impl InList2MItem {
 		pub fn in_mem2(&self) -> i64{
-			let qv = mitem::get_int(self.ptr, "inMem2").unwrap();
+			let qv = mitem_ptr::get_int(self.ptr, "inMem2").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn in_mem2_def_val(&self) -> i64{
-			let qv = mitem::get_int_def(self.ptr, "inMem2").unwrap();
+			let qv = mitem_ptr::get_int_def(self.ptr, "inMem2").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_in_mem2(&mut self, in_mem2 : i64){
-			mitem::set_int(self.ptr, "inMem2", Qv::Val(in_mem2));
+			mitem_ptr::set_int(self.ptr, "inMem2", Qv::Val(in_mem2));
 		}
 		
 		

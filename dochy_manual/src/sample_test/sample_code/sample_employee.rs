@@ -1,5 +1,5 @@
 use dochy::core::intf::{RootObjectPtr, MListPtr, MItemPtr};
-use dochy::core::intf::{mitem};
+use dochy::core::intf::{mitem_ptr};
 use dochy::core::structs::Qv;
 use dochy::core::root_to_json_new_default;
 use dochy_diff::apply_diff;
@@ -17,23 +17,23 @@ fn sample_employee() -> DpResult<()>{
         rp, "@Employees")?;
     ml.insert();
     let item = ml.insert();
-    mitem::set_str(item, "userId", Qv::Val("devid".to_string()));
-    mitem::set_str(item, "firstName", Qv::Val("Devid".to_string()));
-    mitem::set_str(item, "lastName", Qv::Val("Rome".to_string()));
-    mitem::set_str(item, "employeeCode", Qv::Val("E2".to_string()));
-    mitem::set_str(item, "phoneNumber", Qv::Val("1111111".to_string()));
-    mitem::set_str(item, "emailAddress",
-                   Qv::Val("devid.rome@learningcontainer.com".to_string()));
+    mitem_ptr::set_str(item, "userId", Qv::Val("devid".to_string()));
+    mitem_ptr::set_str(item, "firstName", Qv::Val("Devid".to_string()));
+    mitem_ptr::set_str(item, "lastName", Qv::Val("Rome".to_string()));
+    mitem_ptr::set_str(item, "employeeCode", Qv::Val("E2".to_string()));
+    mitem_ptr::set_str(item, "phoneNumber", Qv::Val("1111111".to_string()));
+    mitem_ptr::set_str(item, "emailAddress",
+                       Qv::Val("devid.rome@learningcontainer.com".to_string()));
 
     let item = ml.insert();
-    mitem::set_str(item, "userId", Qv::Val("tin".to_string()));
-    mitem::set_str(item, "jobTitle", Qv::Val("Program Directory".to_string()));
-    mitem::set_str(item, "firstName", Qv::Val("tin".to_string()));
-    mitem::set_str(item, "lastName", Qv::Val("jonson".to_string()));
-    mitem::set_str(item, "employeeCode", Qv::Val("E3".to_string()));
-    mitem::set_str(item, "phoneNumber", Qv::Val("2222222".to_string()));
-    mitem::set_str(item, "emailAddress",
-                   Qv::Val("tin.jonson@learningcontainer.com".to_string()));
+    mitem_ptr::set_str(item, "userId", Qv::Val("tin".to_string()));
+    mitem_ptr::set_str(item, "jobTitle", Qv::Val("Program Directory".to_string()));
+    mitem_ptr::set_str(item, "firstName", Qv::Val("tin".to_string()));
+    mitem_ptr::set_str(item, "lastName", Qv::Val("jonson".to_string()));
+    mitem_ptr::set_str(item, "employeeCode", Qv::Val("E3".to_string()));
+    mitem_ptr::set_str(item, "phoneNumber", Qv::Val("2222222".to_string()));
+    mitem_ptr::set_str(item, "emailAddress",
+                       Qv::Val("tin.jonson@learningcontainer.com".to_string()));
     //let hoge = rust_to_json_new_default(&r)?;
     //println!("{}", hoge.to_string_pretty());
 

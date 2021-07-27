@@ -37,26 +37,26 @@ impl From<MItemPtr> for MlistMItem {
 }
 impl MlistMItem {
 	pub fn bar(&self) -> i64{
-		let qv = mitem::get_int(self.ptr, "bar").unwrap();
+		let qv = mitem_ptr::get_int(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn bar_def_val(&self) -> i64{
-		let qv = mitem::get_int_def(self.ptr, "bar").unwrap();
+		let qv = mitem_ptr::get_int_def(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_bar(&mut self, bar : i64){
-		mitem::set_int(self.ptr, "bar", Qv::Val(bar));
+		mitem_ptr::set_int(self.ptr, "bar", Qv::Val(bar));
 	}
 	pub fn baz(&self) -> i64{
-		let qv = mitem::get_int(self.ptr, "baz").unwrap();
+		let qv = mitem_ptr::get_int(self.ptr, "baz").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn baz_def_val(&self) -> i64{
-		let qv = mitem::get_int_def(self.ptr, "baz").unwrap();
+		let qv = mitem_ptr::get_int_def(self.ptr, "baz").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_baz(&mut self, baz : i64){
-		mitem::set_int(self.ptr, "baz", Qv::Val(baz));
+		mitem_ptr::set_int(self.ptr, "baz", Qv::Val(baz));
 	}
 	
 	
