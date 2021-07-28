@@ -1,11 +1,46 @@
-use crate::imp::structs::linked_m::{LinkedMap, LinkedMapUnsafeIter};
+use crate::imp::structs::linked_m::{LinkedMap};
 use crate::imp::structs::rust_list::MutItem;
 use std::marker::PhantomData;
 use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::intf::mitem_ptr::MItemPtr;
 use crate::imp::structs::root_def_obj::RootDefObj;
 use crate::imp::intf::mitem_cptr::MItemCPtr;
+use crate::imp::structs::linked_map_unsafe_citer::LinkedMapUnsafeCIter;
+use crate::imp::intf::mlist_cptr_iter::MListCPtrIter;
 
+
+/// &参照から得られたポインタを*constを経て&mut参照にする行為の安全性に確信が持てなかった。
+/// 最初に&mutから*mutを取り、*mutから&参照を取得、*constから*mutにキャストして&mutを取り出す行為は安全だろうか。
+/// たとえmutationを伴わなくても、&mut参照に対して aliasing を行えばUBになる。https://stackoverflow.com/questions/54237610/is-there-a-way-to-make-an-immutable-reference-mutable
+///
+/// このシステムでは参照を露出しないので、シングルスレッドアクセスでは1つのメモリアドレスへの2つの参照が同時に存在することはないようになっている（はず
+/// しかし、パフォーマンス上の利益が非常に大きいため、Arcのmake_mutを介して、マルチスレッドアクセスを解禁することになった。
+/// Arcを介しているので、mut参照と&参照が同時に存在することはできないはず
+///
+/// MListPtrは&mutから*mutを取り出すことで作成されるが、Arc::make_mutを起動してしまう。
+/// これではパフォーマンス上のメリットがほとんど受けられない
+/// &から得た*constポインタを*mutポインタにして無理やりMListPtrにしても別に問題はない気はする。
+/// ただArcの制限をかいくぐってしまう。そして、たとえmutateしないとしても、
+/// &mut self呼び出しのときなんかに一時的に&mutが作られてしまう可能性がある（あるか？
+/// マルチスレッドアクセスにより、&mutと&参照が同時に存在することがありうるように思う
+///
+/// 一つの関数が２つの引数をとり、その２つが&mut T と &Tだったとき、2つは同一のアドレスを指していないと仮定されるはず
+/// mutateしないという条件でもそれが問題になる可能性もないわけではないように思う（わからん・・・
+/// しかし一つの関数内ではなくマルチスレッドの話なので、それが問題になることはないはずだ。
+/// &参照が生きてる間にmutationが行われればもちろんUBだし、Arcの中身をmake_mutを介さずmutateすればすべてが崩壊するのは確かだ
+/// そしてMListPtrを&から得ればそれらへの扉がガバっと開いてしまうので、冷静に考えて許容できない
+/// しかし、mutateなしでのMListPtrの作成がUBなのかはいまだ判然としない。
+/// とにかく、UBかどうかは知らないが、mutateがなしえないバージョンのMListPtrを作ることになった。それがMListCPtr
+///
+/// 考えなければいけないのは、MListCPtrが生きている間にArc::make_mutが起きて、クローンされてないと判定されること。
+/// 通常&参照が生きている間はmake_mutは呼び出せないが、ポインタしか取らないMListCPtrではその制限は発生しない。
+/// マルチスレッドアクセスにより書き換え途中の不正な値がgetされてしまう可能性を考慮する必要があるように見える
+///
+/// また、MlistCPtrが存在している間にArc::make_mutが発生し、クローンされたと判定される場合、make_mutで新しく作られた方ではなく、
+/// 古い方のデータを参照してしまうことになる。それはMListPtrの場合は、MListPtrを作ろうとした瞬間
+/// Arc::make_mutが起きて新しい方になるので、その問題は起こらないだろう
+///
+/// Safe Wrapperを介していればこれらの問題は起こらないはずだが、それ以外の場合はMListCPtrの参照先がmutateされないようにしなければならない
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct MListCPtr<V : From<MItemCPtr>>{
@@ -24,7 +59,7 @@ impl<V : From<MItemCPtr>> MListCPtr<V>{
     }
 
     pub fn first(&self) -> Option<V> {
-        let map = &mut *self.map;
+        let map = unsafe{ &*self.map };
         map.first().map(|r| self.from(r))
     }
     pub fn first_id(&self) -> Option<u64> {
@@ -67,68 +102,17 @@ impl<V : From<MItemCPtr>> MListCPtr<V>{
 
     pub fn iter(&self) -> MListCPtrIter<V> {
         let map = unsafe{ &*self.map };
-        MListCPtrIter::new(map.iter_unsafe(), self.list_def, self.root_def)
+        MListCPtrIter::new(unsafe{ map.citer_unsafe() }, self.list_def, self.root_def)
     }
 
 
     pub fn iter_from_last(&self) -> MListCPtrIter<V> {
         let map = unsafe{ &*self.map };
-        MListCPtrIter::new(map.iter_from_last_unsafe(), self.list_def, self.root_def)
+        MListCPtrIter::new(unsafe{ map.citer_from_last_unsafe() }, self.list_def, self.root_def)
     }
 
     pub fn iter_from_id(&self, id : u64) -> Option<MListCPtrIter<V>> {
         let map = unsafe{ &*self.map };
-        map.iter_from_id_unsafe(id).map(|iter| MListCPtrIter::new(iter, self.list_def, self.root_def))
-    }
-}
-
-#[derive(Debug)]
-pub struct MListCPtrIter<V : From<MItemCPtr>>{
-    iter : LinkedMapUnsafeIter<MutItem>,
-    list_def : *const ListDefObj,
-    root_def : *const RootDefObj,
-    phantom : PhantomData<*mut V>,
-}
-impl<V : From<MItemCPtr>> Iterator for MListCPtrIter<V>{
-    type Item = (u64, V);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.iter.next_mut().map(|(k,v)| (*k, V::from(MItemCPtr::new(v, self.list_def, self.root_def))))
-    }
-}
-impl<V : From<MItemCPtr>> MListCPtrIter<V>{
-    pub(crate) fn new(iter : LinkedMapUnsafeIter<MutItem>, list_def : *const ListDefObj, root_def : *const RootDefObj) -> MListCPtrIter<V>{
-        MListCPtrIter { iter, list_def, root_def, phantom : PhantomData }
-    }
-
-    fn from(&self, item : *const MutItem) -> V{
-        V::from(MItemCPtr::new(item, self.list_def, self.root_def))
-    }
-    ///現在のカーソルにあるアイテムを返し、カーソルを進める
-    pub fn next(&mut self) -> Option<(u64, V)> {
-        self.iter.next().map(|(k,v)| (*k, self.from(v)))
-    }
-
-    ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
-    /// next2回でそれをとることも出来る。
-    ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
-    pub fn prev(&mut self) -> Option<(u64, V)> {
-        self.iter.prev().map(|(k,v)| (*k, self.from(v)))
-    }
-    
-    pub fn current(&mut self) -> Option<(u64, V)> {
-        self.iter.current().map(|(k,v)| (*k,self.from(v)))
-    }
-
-    pub fn is_available(&self) -> bool {
-        self.iter.is_available()
-    }
-
-    pub fn is_first(&self) -> bool {
-        self.iter.is_first()
-    }
-
-    pub fn is_last(&self) -> bool {
-        self.iter.is_last()
+        unsafe{ map.citer_from_id_unsafe(id) }.map(|iter| MListCPtrIter::new(iter, self.list_def, self.root_def))
     }
 }

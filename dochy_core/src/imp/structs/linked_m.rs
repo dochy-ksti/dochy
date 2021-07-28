@@ -4,6 +4,7 @@ use std::marker::PhantomData;
 use std::collections::VecDeque;
 use crate::imp::structs::util::hash_m::{HashM, HashMt};
 use crate::imp::structs::linked_map_unsafe_iter::LinkedMapUnsafeIter;
+use crate::imp::structs::linked_map_unsafe_citer::LinkedMapUnsafeCIter;
 
 
 unsafe impl<V> Send for LinkedMap<V> {}
@@ -41,7 +42,7 @@ impl<V> MutNode<V>{
         MutNode{ item, prev : null_mut(), next : null_mut(), id }
     }
 }
-fn get_next<V>(this : *const MutNode<V>) ->*mut MutNode<V>{
+pub(crate) fn get_next<V>(this : *const MutNode<V>) ->*mut MutNode<V>{
     let node = unsafe{ &*this };
     node.next
 }
@@ -49,7 +50,7 @@ fn set_next<V>(this : *mut MutNode<V>, next : *mut MutNode<V>){
     let node = unsafe{ this.as_mut().unwrap() };
     node.next = next;
 }
-fn get_prev<V>(this : *const MutNode<V>) -> *mut MutNode<V>{
+pub(crate) fn get_prev<V>(this : *const MutNode<V>) -> *mut MutNode<V>{
     let node = unsafe{ &*this };
     node.prev
 }
@@ -71,7 +72,7 @@ fn get_item_mut<'a, V>(this : *mut MutNode<V>) ->&'a mut V{
 }
 
 
-
+pub(crate) fn ptr_eq<T>(l : *const T, r : *const T) -> bool{ std::ptr::eq(l,r) }
 
 impl<V> LinkedMap<V> {
 
@@ -375,6 +376,14 @@ impl<V> LinkedMap<V> {
 
     }
 
+    pub unsafe fn citer_unsafe(&self) -> LinkedMapUnsafeCIter<V>{ LinkedMapUnsafeCIter::new(self, self.first) }
+    pub unsafe fn citer_from_last_unsafe(&self) -> LinkedMapUnsafeCIter<V>{ LinkedMapUnsafeCIter::new(self, self.last) }
+    pub unsafe fn citer_from_id_unsafe(&self, id : u64) -> Option<LinkedMapUnsafeCIter<V>>{
+        let node = if let Some(node) = self.node_from_id(id){ node as *const MutNode<V> } else{ return None; };
+        Some(LinkedMapUnsafeCIter::new(self, node))
+
+    }
+
     pub fn into_iter(self) -> LinkedMapIntoIter<V>{ LinkedMapIntoIter::new(self) }
 }
 
@@ -418,7 +427,7 @@ pub struct LinkedMapIter<'a, V>{
 impl<'a, V> LinkedMapIter<'a, V>{
     fn new(map : &'a LinkedMap<V>, node : *const MutNode<V>) -> LinkedMapIter<'a, V>{
         //LinkedMapIterが有効な間に書き換えるとアウトだが、&が有効なはずなので大丈夫だろう
-        LinkedMapIter{ iter : LinkedMapUnsafeIter{ map : map as *const _ as *mut _, node : node as *mut _ }, phantom : PhantomData::default() }
+        LinkedMapIter{ iter : LinkedMapUnsafeIter::new(map as *const _ as *mut _, node as *mut _), phantom : PhantomData::default() }
     }
 
     ///現在のカーソルにあるアイテムを返し、カーソルを進める

@@ -34,4 +34,5 @@ pub mod clist_iter_const;
 pub mod ctable_const;
 pub mod mlist_cptr;
 pub mod mitem_cptr;
+pub mod mlist_cptr_iter;
 

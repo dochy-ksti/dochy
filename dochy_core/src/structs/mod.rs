@@ -27,7 +27,7 @@ pub use crate::imp::structs::param_type::ParamType;
 pub use crate::imp::structs::linked_m::LinkedMap;
 pub use crate::imp::structs::linked_m::LinkedMapIter;
 pub use crate::imp::structs::linked_m::LinkedMapIterMut;
-pub use crate::imp::structs::linked_m::LinkedMapUnsafeIter;
+pub use crate::imp::structs::linked_map_unsafe_iter::LinkedMapUnsafeIter;
 pub use crate::imp::structs::meta_table::MetaTable;
 pub use crate::imp::structs::meta_table::MetaTables;
 pub use crate::imp::structs::meta_table::MetaValue;

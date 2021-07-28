@@ -35,9 +35,9 @@ impl MItemCPtr {
 pub fn get_mil<T : From<MItemCPtr>>(ps : MItemCPtr, name : &str) -> Option<Option<MListCPtr<T>>> {
     let (item, list_def) = unsafe { (&*ps.item, &*ps.list_def) };
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
-        if let Some(ListSabValue::Mil(data)) = item.values().get_mut(name) {
+        if let Some(ListSabValue::Mil(data)) = item.values().get(name) {
             if let Some(inner) = data {
-                return Some(Some(MListCPtr::new(inner.list_mut(), md.default(), ps.root_def)))
+                return Some(Some(MListCPtr::new(inner.list(), md.default(), ps.root_def)))
             } else {
                 return Some(None)
             }
