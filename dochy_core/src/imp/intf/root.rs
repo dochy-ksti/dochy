@@ -255,20 +255,20 @@ pub fn get_mlist<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Optio
     return None;
 }
 
-///If you modify values through this MListPtr, it's an undefined behavior, so this is very unsafe.
-pub unsafe fn get_mlist_const<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
-    let (def, sabun) = unsafe{  ((*root.ptr).default(), (*root.ptr).sabun()) };
-    if let Some(RootValue::MList(l)) = def.get(name){
-        if let Some(RootSabValue::Mut(m)) = sabun.get(name) {
-            if let Some(m) = m {
-                return Some(Some(MListPtr::new(m.list() as *const _ as *mut _, l.default(), def)));
-            } else{
-                return Some(None);
-            }
-        }
-    }
-    return None;
-}
+// ///If you modify values through this MListPtr, it's an undefined behavior, so this is very unsafe.
+// pub unsafe fn get_mlist_const<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
+//     let (def, sabun) = unsafe{  ((*root.ptr).default(), (*root.ptr).sabun()) };
+//     if let Some(RootValue::MList(l)) = def.get(name){
+//         if let Some(RootSabValue::Mut(m)) = sabun.get(name) {
+//             if let Some(m) = m {
+//                 return Some(Some(MListPtr::new(m.list() as *const _ as *mut _, l.default(), def)));
+//             } else{
+//                 return Some(None);
+//             }
+//         }
+//     }
+//     return None;
+// }
 
 
 pub fn get_param<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustParam> {

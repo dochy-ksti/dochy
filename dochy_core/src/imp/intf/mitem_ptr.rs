@@ -13,8 +13,6 @@ use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
 use crate::structs::RustBinary;
 use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_def_obj::RootDefObj;
-use crate::intf::mlist_cptr::MListCPtr;
-use crate::imp::intf::mitem_cptr::MItemCPtr;
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -47,19 +45,19 @@ pub fn get_mil<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<
     return None
 }
 
-pub unsafe fn get_mil_const<T : From<MItemCPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListCPtr<T>>> {
-    let (item, list_def) = unsafe { (&mut *ps.item, &*ps.list_def) };
-    if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
-        if let Some(ListSabValue::Mil(data)) = item.values().get(name) {
-            if let Some(inner) = data {
-                return Some(Some(MListCPtr::new(inner.list(), md.default(), ps.root_def)))
-            } else {
-                return Some(None)
-            }
-        }
-    }
-    return None
-}
+// pub unsafe fn get_mil_const<T : From<MItemCPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListCPtr<T>>> {
+//     let (item, list_def) = unsafe { (&mut *ps.item, &*ps.list_def) };
+//     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
+//         if let Some(ListSabValue::Mil(data)) = item.values().get(name) {
+//             if let Some(inner) = data {
+//                 return Some(Some(MListCPtr::new(inner.list(), md.default(), ps.root_def)))
+//             } else {
+//                 return Some(None)
+//             }
+//         }
+//     }
+//     return None
+// }
 
 pub fn get_bool(ps : MItemPtr, name : &str) -> Option<Qv<bool>>{
     if let Some(RustParam::Bool(b)) = get_param(ps, name){

@@ -1,19 +1,16 @@
-use crate::imp::structs::linked_m::{LinkedMap, MutNode, get_next, get_prev, ptr_eq};
+use crate::imp::structs::linked_m::{LinkedMap, MutNode, get_next, ptr_eq, get_prev};
 use std::ptr::null_mut;
 
-
-/// LinkedMapIterMutを作るために、unsafeイテレータとPhantomDataを使ってインチキしないとならなかった
-/// これをナマで使うのは危険だが、Safe版であるLinkedMapIterMutでライフタイム付けて使うぶんには問題ない
 #[derive(Debug)]
-pub(crate) struct LinkedMapUnsafeIter<V>{
-    map : *mut LinkedMap<V>,
-    node : *mut MutNode<V>,
+pub struct LinkedMapIter<'a, V>{
+    map : &'a LinkedMap<V>,
+    node : *const MutNode<V>,
 }
-impl<V> LinkedMapUnsafeIter<V>{
-    pub(crate) fn new(map : *mut LinkedMap<V>, node : *mut MutNode<V>) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter{ map, node } }
+impl<'a, V> LinkedMapIter<'a, V>{
+    pub(crate) fn new(map : &'a LinkedMap<V>, node : *const MutNode<V>) -> LinkedMapIter<'a, V>{ LinkedMapIter { map, node } }
 
     ///現在のカーソルにあるアイテムを返し、カーソルを進める
-    pub fn _next<'a>(&mut self) -> Option<(&'a u64, &'a V)> {
+    pub fn next(&mut self) -> Option<(&'a u64, &'a V)> {
         self.next_impl().map(|current_node| {
             //next_mutからキャストするほうが楽なんだけど、UnsafeIterが&LinkedMapから作られる場合があり、その場合&mutにした時点で（書き換えなくても)UBになる
             //https://github.com/rust-lang/rust-clippy/issues/4774#issuecomment-565651216
@@ -23,18 +20,11 @@ impl<V> LinkedMapUnsafeIter<V>{
         })
     }
 
-    ///現在のカーソルにあるアイテムを返し、カーソルを進める
-    pub fn next_mut<'a>(&mut self) -> Option<(&'a u64, &'a mut V)> {
-        self.next_impl().map(|current_node| {
-            let node = unsafe { &mut *current_node };
-            (&node.id, &mut node.item)
-        })
-    }
 
-    fn next_impl(&mut self) -> Option<*mut MutNode<V>>{
+    fn next_impl(&mut self) -> Option<*const MutNode<V>>{
         if self.node.is_null() { return None; }
-        let current_node = self.node as *mut MutNode<V>;
-        let map = unsafe{ self.map.as_ref().unwrap() };
+        let current_node = self.node as *const MutNode<V>;
+        let map = self.map;
         if ptr_eq(self.node, map.last) {
             self.node = null_mut();
         } else {
@@ -46,7 +36,7 @@ impl<V> LinkedMapUnsafeIter<V>{
     ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
     /// next2回でそれをとることも出来る。
     ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
-    pub fn _prev<'a>(&mut self) -> Option<(&'a u64, &'a V)> {
+    pub fn prev(&mut self) -> Option<(&'a u64, &'a V)> {
         self.prev_impl().map(|current_node|{
             let node = unsafe{ &*current_node };
             (&node.id, &node.item)
@@ -54,20 +44,10 @@ impl<V> LinkedMapUnsafeIter<V>{
 
     }
 
-    ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
-    /// next2回でそれをとることも出来る。
-    ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
-    pub fn prev_mut<'a>(&mut self) -> Option<(&'a u64, &'a mut V)> {
-        self.prev_impl().map(|current_node|{
-            let node = unsafe{ &mut *current_node };
-            (&node.id, &mut node.item)
-        })
-    }
-
-    fn prev_impl<'a>(&mut self) -> Option<*mut MutNode<V>> {
+    fn prev_impl(&mut self) -> Option<*const MutNode<V>> {
         if self.node.is_null(){ return None; }
-        let current_node = self.node as *mut MutNode<V>;
-        let map = unsafe{ self.map.as_ref().unwrap() };
+        let current_node = self.node;
+        let map = self.map;
         if ptr_eq(self.node, map.first){
             self.node = null_mut();
         } else {
@@ -76,15 +56,9 @@ impl<V> LinkedMapUnsafeIter<V>{
         Some(current_node)
     }
 
-    pub fn current_mut<'a>(&mut self) -> Option<(&'a u64, &'a mut V)> {
+    pub fn current(&mut self) -> Option<(&'a u64, &'a V)> {
         if self.node.is_null(){ return None; }
-        let node = unsafe{ &mut *self.node };
-        return Some((&node.id, &mut node.item))
-    }
-
-    pub fn _current<'a>(&mut self) -> Option<(&'a u64, &'a V)> {
-        if self.node.is_null(){ return None; }
-        let node = unsafe{ & *self.node };
+        let node = unsafe{ &*self.node };
         return Some((&node.id, &node.item))
     }
 
@@ -96,7 +70,7 @@ impl<V> LinkedMapUnsafeIter<V>{
 
     pub fn is_first(&self) -> bool {
         if self.node.is_null(){ return false; }
-        let map = unsafe{ &*self.map };
+        let map = self.map;
         let node = unsafe{ &*self.node };
         if let Some(id) = map.first_id(){
             return id == node.id;
@@ -107,12 +81,20 @@ impl<V> LinkedMapUnsafeIter<V>{
 
     pub fn is_last(&self) -> bool {
         if self.node.is_null(){ return false; }
-        let map = unsafe{ &*self.map };
+        let map = &*self.map;
         let node = unsafe{ &*self.node };
         if let Some(id) = map.last_id(){
             return id == node.id;
         } else{
             return false;
         }
+    }
+}
+
+impl<'a,V> Iterator for LinkedMapIter<'a, V>{
+    type Item = (&'a u64, &'a V);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next()
     }
 }

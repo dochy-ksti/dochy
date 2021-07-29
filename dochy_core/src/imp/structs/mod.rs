@@ -26,4 +26,5 @@ pub mod list_sab_value;
 pub mod root_sab_value;
 pub mod root_def_obj;
 pub mod linked_map_unsafe_iter;
-pub mod linked_map_unsafe_citer;
+pub mod linked_map_iter;
+pub mod linked_map_iter_mut;

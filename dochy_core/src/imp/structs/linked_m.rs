@@ -1,10 +1,10 @@
 //use crate::{HashM, HashMt};
 use std::ptr::{null_mut};
-use std::marker::PhantomData;
 use std::collections::VecDeque;
 use crate::imp::structs::util::hash_m::{HashM, HashMt};
 use crate::imp::structs::linked_map_unsafe_iter::LinkedMapUnsafeIter;
-use crate::imp::structs::linked_map_unsafe_citer::LinkedMapUnsafeCIter;
+use crate::imp::structs::linked_map_iter::LinkedMapIter;
+use crate::imp::structs::linked_map_iter_mut::LinkedMapIterMut;
 
 
 unsafe impl<V> Send for LinkedMap<V> {}
@@ -368,21 +368,20 @@ impl<V> LinkedMap<V> {
         Some(LinkedMapIterMut::new(self, node))
     }
 
-    pub unsafe fn iter_unsafe(&mut self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.first) }
-    pub unsafe fn iter_from_last_unsafe(&mut self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.last) }
-    pub unsafe fn iter_from_id_unsafe(&mut self, id : u64) -> Option<LinkedMapUnsafeIter<V>>{
+    pub(crate) unsafe fn iter_unsafe(&mut self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.first) }
+    pub(crate) unsafe fn iter_from_last_unsafe(&mut self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.last) }
+    pub(crate) unsafe fn iter_from_id_unsafe(&mut self, id : u64) -> Option<LinkedMapUnsafeIter<V>>{
         let node = if let Some(node) = self.node_from_id_mut(id){ node as *mut MutNode<V> } else{ return None; };
         Some(LinkedMapUnsafeIter::new(self, node))
-
     }
 
-    pub unsafe fn citer_unsafe(&self) -> LinkedMapUnsafeCIter<V>{ LinkedMapUnsafeCIter::new(self, self.first) }
-    pub unsafe fn citer_from_last_unsafe(&self) -> LinkedMapUnsafeCIter<V>{ LinkedMapUnsafeCIter::new(self, self.last) }
-    pub unsafe fn citer_from_id_unsafe(&self, id : u64) -> Option<LinkedMapUnsafeCIter<V>>{
-        let node = if let Some(node) = self.node_from_id(id){ node as *const MutNode<V> } else{ return None; };
-        Some(LinkedMapUnsafeCIter::new(self, node))
-
-    }
+    // pub unsafe fn citer_unsafe(&self) -> LinkedMapUnsafeCIter<V>{ LinkedMapUnsafeCIter::new(self, self.first) }
+    // pub unsafe fn citer_from_last_unsafe(&self) -> LinkedMapUnsafeCIter<V>{ LinkedMapUnsafeCIter::new(self, self.last) }
+    // pub unsafe fn citer_from_id_unsafe(&self, id : u64) -> Option<LinkedMapUnsafeCIter<V>>{
+    //     let node = if let Some(node) = self.node_from_id(id){ node as *const MutNode<V> } else{ return None; };
+    //     Some(LinkedMapUnsafeCIter::new(self, node))
+    //
+    // }
 
     pub fn into_iter(self) -> LinkedMapIntoIter<V>{ LinkedMapIntoIter::new(self) }
 }
@@ -408,64 +407,18 @@ impl<V : Clone> Clone for LinkedMap<V>{
 
 impl<V : PartialEq> PartialEq for LinkedMap<V>{
     fn eq(&self, other: &Self) -> bool {
-        if !self.map.eq(&other.map){ return false; }
-        if self.next_id != other.next_id{ return false; }
+        if self.map.len() != other.map.len(){ return false; }
         let l = self.iter();
         let r = other.iter();
-        for ((a,_),(b,_)) in l.zip(r){
-            if *a != *b{ return false; }
+        for ((a,v1),(b,v2)) in l.zip(r){
+             if *a != *b{ return false; }
+            if v1 != v2{ return false; }
         }
-        return true;
+         return true;
     }
 }
 
 
-pub struct LinkedMapIter<'a, V>{
-    iter : LinkedMapUnsafeIter<V>,
-    phantom : PhantomData<&'a LinkedMap<V>>,
-}
-impl<'a, V> LinkedMapIter<'a, V>{
-    fn new(map : &'a LinkedMap<V>, node : *const MutNode<V>) -> LinkedMapIter<'a, V>{
-        //LinkedMapIterが有効な間に書き換えるとアウトだが、&が有効なはずなので大丈夫だろう
-        LinkedMapIter{ iter : LinkedMapUnsafeIter::new(map as *const _ as *mut _, node as *mut _), phantom : PhantomData::default() }
-    }
-
-    ///現在のカーソルにあるアイテムを返し、カーソルを進める
-    pub fn next(&mut self) -> Option<(&'a u64, &'a V)> {
-        self.iter.next()
-    }
-
-    ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
-    /// next2回でそれをとることも出来る。Cインターフェースやunsafe iterなら
-    ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
-    pub fn prev(&mut self) -> Option<(&'a u64, &'a V)> {
-        self.iter.prev()
-    }
-
-    pub fn current(&mut self) -> Option<(&'a u64, &'a V)> {
-        self.iter.current()
-    }
-
-    ///nextもprevも現在のカーソルにあるアイテムを返す
-    ///空であるか、最後/最初まで移動してアイテムが無くなったらfalse
-    pub fn is_available(&self) -> bool {
-        self.iter.is_available()
-    }
-
-    pub fn is_first(&self) -> bool {
-        self.iter.is_first()
-    }
-    pub fn is_last(&self) -> bool {
-        self.iter.is_first()
-    }
-}
-impl<'a,V> Iterator for LinkedMapIter<'a, V>{
-    type Item = (&'a u64, &'a V);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.next()
-    }
-}
 impl<'a,V> IntoIterator for &'a LinkedMap<V>{
     type Item = (&'a u64, &'a V);
     type IntoIter = LinkedMapIter<'a, V>;
@@ -475,50 +428,7 @@ impl<'a,V> IntoIterator for &'a LinkedMap<V>{
     }
 }
 
-pub struct LinkedMapIterMut<'a, V>{
-    iter : LinkedMapUnsafeIter<V>,
-    phantom : PhantomData<&'a LinkedMap<V>>,
-}
-impl<'a, V> LinkedMapIterMut<'a, V>{
-    fn new(map : &'a mut LinkedMap<V>, node : *mut MutNode<V>) -> LinkedMapIterMut<'a, V>{
-        LinkedMapIterMut{ iter : LinkedMapUnsafeIter::new(map, node), phantom : PhantomData::default() }
-    }
 
-    ///現在のカーソルにあるアイテムを返し、カーソルを進める
-    pub fn next(&mut self) -> Option<(&'a u64, &'a mut V)> {
-        self.iter.next_mut()
-    }
-
-    ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
-    /// next2回でそれをとることも出来る。Cインターフェースやunsafe iterなら
-    ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
-    pub fn prev(&mut self) -> Option<(&'a u64, &'a mut V)> {
-        self.iter.prev_mut()
-    }
-
-    pub fn current(&mut self) -> Option<(&'a u64, &'a mut V)> {
-        self.iter.current_mut()
-    }
-
-    ///nextもprevも現在のカーソルにあるアイテムを返す
-    ///空であるか、最後/最初まで移動してアイテムが無くなったらfalse
-    pub fn is_available(&self) -> bool {
-        self.iter.is_available()
-    }
-    pub fn is_first(&self) -> bool {
-        self.iter.is_first()
-    }
-    pub fn is_last(&self) -> bool {
-        self.iter.is_first()
-    }
-}
-impl<'a,V> Iterator for LinkedMapIterMut<'a, V>{
-    type Item = (&'a u64, &'a mut V);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.next()
-    }
-}
 impl<'a,V> IntoIterator for &'a mut LinkedMap<V>{
     type Item = (&'a u64, &'a mut V);
     type IntoIter = LinkedMapIterMut<'a, V>;
