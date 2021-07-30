@@ -6,52 +6,48 @@ use crate::imp::structs::root_def_obj::RootDefObj;
 
 /// CList's internal structure is Vec
 #[derive(Debug, PartialEq)]
-pub struct CListPtr<T : From<CItemPtr>> {
-    ptr : *const Vec<ConstItem>,
-    list_def : *const ListDefObj,
-    root_def : *const RootDefObj,
+pub struct CListPtr<'a, T : From<CItemPtr>> {
+    ptr : &'a Vec<ConstItem>,
+    list_def : &'a ListDefObj,
+    root_def : &'a RootDefObj,
     phantom : PhantomData<*mut T>,
 }
-impl<T : From<CItemPtr>> Clone for CListPtr<T>{
+impl<'a, T : From<CItemPtr<'a>>> Clone for CListPtr<'a, T>{
     fn clone(&self) -> Self {
         CListPtr::new(self.ptr, self.list_def, self.root_def)
     }
 }
-impl<T : From<CItemPtr>> Copy for CListPtr<T>{}
+impl<'a, T : From<CItemPtr<'a>>> Copy for CListPtr<'a, T>{}
 
-impl<T : From<CItemPtr>> CListPtr<T> {
-    pub fn new(ptr : *const Vec<ConstItem>, list_def : *const ListDefObj, root_def : *const RootDefObj) -> CListPtr<T> { CListPtr { ptr, list_def, root_def, phantom : PhantomData } }
-    pub fn len(&self) -> usize{ get_len(self.clone()) }
+impl<'a, T : From<CItemPtr<'a>>> CListPtr<'a, T> {
+    pub fn new<'b>(ptr : &'b Vec<ConstItem>, list_def : &'b ListDefObj, root_def : &'b RootDefObj) -> CListPtr<'b, T> { CListPtr { ptr, list_def, root_def, phantom : PhantomData } }
+    pub fn len(&self) -> usize{ self.ptr.len() }
     pub fn value(&self, idx : usize) -> T{ get_value(self.clone(), idx) }
     pub fn iter(&self) -> CListPtrIter<T>{ get_iter(self.clone()) }
 }
 
-pub fn get_len<T : From<CItemPtr>>(list: CListPtr<T>) -> usize{
-    let v = unsafe{ list.ptr.as_ref().unwrap()};
-    v.len()
-}
 
-pub fn get_value<T : From<CItemPtr>>(list: CListPtr<T>, idx : usize) -> T{
-    let vec = unsafe{ list.ptr.as_ref().unwrap()};
+pub fn get_value<'a, T: From<CItemPtr<'a>>>(list: CListPtr<T>, idx : usize) -> T{
+    let vec = list.ptr;
     T::from(CItemPtr::new(&vec[idx], list.list_def, list.root_def))
 }
 
-pub fn get_iter<T : From<CItemPtr>>(list: CListPtr<T>) -> CListPtrIter<T>{
+pub fn get_iter<'a, T : From<CItemPtr<'a>>>(list: CListPtr<T>) -> CListPtrIter<T>{
     CListPtrIter::new(list.ptr, list.list_def, list.root_def)
 }
 
-pub struct CListPtrIter<V : From<CItemPtr>>{
-    vec : *const Vec<ConstItem>,
-    list_def : *const ListDefObj,
-    root_def : *const RootDefObj,
+pub struct CListPtrIter<'a, V : From<CItemPtr<'a>>>{
+    vec : &'a Vec<ConstItem>,
+    list_def : &'a ListDefObj,
+    root_def : &'a RootDefObj,
     index : usize,
     phantom : PhantomData<*mut V>,
 }
-impl<V : From<CItemPtr>> Iterator for CListPtrIter<V>{
+impl<'a, V : From<CItemPtr<'a>>> Iterator for CListPtrIter<'a, V>{
     type Item = V;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let vec = unsafe{ &*self.vec };
+        let vec = self.vec;
         if self.index < vec.len(){
             let index = self.index;
             self.index += 1;
@@ -62,8 +58,8 @@ impl<V : From<CItemPtr>> Iterator for CListPtrIter<V>{
 
     }
 }
-impl<V : From<CItemPtr>> CListPtrIter<V>{
-    pub fn new(vec : *const Vec<ConstItem>, list_def : *const ListDefObj, root_def : *const RootDefObj) -> CListPtrIter<V>{
+impl<'a, V : From<CItemPtr<'a>>> CListPtrIter<'a, V>{
+    pub fn new<'b>(vec : &'b Vec<ConstItem>, list_def : &'b ListDefObj, root_def : &'b RootDefObj) -> CListPtrIter<'b, V>{
         CListPtrIter { vec, list_def, root_def, index : 0, phantom : PhantomData }
     }
 }
