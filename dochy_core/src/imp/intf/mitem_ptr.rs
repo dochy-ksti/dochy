@@ -1,11 +1,9 @@
 use crate::imp::structs::rust_list::MutItem;
-//use crate::imp::intf::inner_data::InnerDataPtr;
 use crate::imp::structs::list_value::{ListDefValue};
 use crate::imp::structs::qv::{Qv};
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::intf::mlist::MListPtr;
-use crate::imp::intf::{CItemPtr};
+use crate::imp::intf::{CItemPtr, MListPtr};
 use crate::imp::structs::ref_value::RefSabValue;
 use crate::imp::intf::citem::{get_enum_impl, get_ref_id_impl};
 use crate::imp::structs::rust_string::RustString;
@@ -24,21 +22,25 @@ pub struct MItemPtr {
 
 impl MItemPtr {
     ///&mut MutItemから得たポインタであれば、*constであっても*mutにキャストして&mut参照を得て書き換えても良い
-    /// &から得たポインタを通じて書き換えるとUB。&mut参照をえることすらもUBではないかという説もあるが、それは違うと思う
-    /// &mut参照と&参照が同時に存在することもかなりUB的であるが、それも厳密には違うように思うし、
-    /// このシステムは参照を露出しないので、シングルスレッドアプリにおいて同一メモリアドレスに２つ以上の参照が構築されることはないはず
+    /// &から得たポインタを通じて書き換えるとUB。&mut参照を構築することすらもUBではないかという説もあるが、それは違うと思う
+    /// &mut参照と&参照が同時に存在することもかなりUB的であるが、それも厳密には違うように思う。
+    /// ただし、このシステムは参照を露出しないので、シングルスレッドアプリにおいて同一メモリアドレスに２つ以上の参照が構築されることはないはず
     /// マルチスレッド化はArc::make_mutを用いて行われるので、マルチスレッドで同一アドレスへのアクセスが有る場合、
-    /// &mutを得る時はmake_mutによりコピーが行われるので、&mutと&参照がかぶることはないはず
+    /// &mutを得る時はmake_mutによりコピーが行われるので、&mutと&参照がかぶることもないはず
+    /// このPtrが正しくラップされ、ライフタイムルールが壊れていなければ、シングルスレッドにおいて&mut と &が同時に存在することは出来ないが、
+    /// それ以前に参照を露出しなければ、シングルスレッドでは参照を複数存在させることは基本的に無理である
     pub fn new(item : *const MutItem, list_def : *const ListDefObj, root_def : *const RootDefObj) -> MItemPtr {
         MItemPtr { item, list_def, root_def }
     }
     pub fn item(&self) -> *const MutItem { self.item }
-    pub fn item_mut(&self) -> *mut MutItem { self.item as *mut _ }
+    /// *const MutItem must be obtained from &mut when this is mutated
+    pub unsafe fn item_mut(&self) -> &mut MutItem { unsafe{ &mut *(self.item as *mut _) } }
     pub fn list_def(&self) -> *const ListDefObj{ self.list_def }
+
 }
 
-pub fn get_mil<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
-    let (item, list_def) = unsafe { (&mut *ps.item_mut(), &*ps.list_def) };
+pub fn get_mil_mut<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
+    let (item, list_def) = unsafe { (ps.item_mut(), &*ps.list_def) };
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
         if let Some(ListSabValue::Mil(data)) = item.values_mut().get_mut(name) {
             if let Some(inner) = data {
@@ -51,7 +53,8 @@ pub fn get_mil<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<
     return None
 }
 
-pub fn get_mil_const<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
+/// Mutation through this ptr is undefined behavior
+pub unsafe fn get_mil_const<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
     let (item, list_def) = unsafe { (&*ps.item, &*ps.list_def) };
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
         if let Some(ListSabValue::Mil(data)) = item.values().get_mut(name) {
@@ -289,7 +292,7 @@ pub fn set_binary(ps : MItemPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
 }
 
 pub fn set_sabun(ps : MItemPtr, name : &str, p : RustParam) -> bool {
-    let (item, def) = unsafe { (&mut *ps.item, &*ps.list_def) };
+    let (item, def) = unsafe { (ps.item_mut(), &*ps.list_def) };
     match item.set_sabun(def, name.to_string(), p) {
         Ok(_) => true,
         Err(_) => false,
@@ -319,11 +322,11 @@ pub fn get_param_def<'a>(ps : MItemPtr, name : &str) -> Option<&'a RustParam>{
 
 /// 差分がない場合、デフォルト値をコピーして差分にツッコミ、さらにその&mut を返す
 pub fn get_param_mut<'a>(ps : MItemPtr, name : &str) -> Option<&'a mut RustParam> {
-    let (def, item) = unsafe { (&*ps.list_def, &mut *ps.item) };
+    let (def, item) = unsafe { (&*ps.list_def, ps.item_mut()) };
     if let Some(ListSabValue::Param(p)) = item.values_mut().get_mut(name) {
         return Some(p);
     }
-    let item = unsafe { &mut *ps.item }; //なんでこうしないとコンパイラに怒られるのかはよくわからない
+    let item = unsafe { ps.item_mut() }; //なんでこうしないとコンパイラに怒られるのかはよくわからない
     if let Some(ListDefValue::Param(p, _)) = def.default().get(name) {
         item.values_mut().insert(name.to_string(), ListSabValue::Param(p.clone()));
     } else {
@@ -361,7 +364,7 @@ pub fn get_enum(ps : MItemPtr) -> Option<(String, String)>{
 }
 
 pub fn set_enum(ps : MItemPtr, list_name : &str, id : &str) -> bool{
-    let item = unsafe{ &mut *ps.item };
+    let item = unsafe{ ps.item_mut() };
     item.refs_mut().clear();
     set_ref(ps, list_name, Qv::Val(id.to_string()))
 }

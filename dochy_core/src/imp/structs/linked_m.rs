@@ -368,20 +368,20 @@ impl<V> LinkedMap<V> {
         Some(LinkedMapIterMut::new(self, node))
     }
 
-    pub(crate) unsafe fn iter_unsafe(&mut self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.first) }
-    pub(crate) unsafe fn iter_from_last_unsafe(&mut self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.last) }
-    pub(crate) unsafe fn iter_from_id_unsafe(&mut self, id : u64) -> Option<LinkedMapUnsafeIter<V>>{
+    pub(crate) unsafe fn iter_unsafe_mut(&mut self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.first) }
+    pub(crate) unsafe fn iter_from_last_unsafe_mut(&mut self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.last) }
+    pub(crate) unsafe fn iter_from_id_unsafe_mut(&mut self, id : u64) -> Option<LinkedMapUnsafeIter<V>>{
         let node = if let Some(node) = self.node_from_id_mut(id){ node as *mut MutNode<V> } else{ return None; };
         Some(LinkedMapUnsafeIter::new(self, node))
     }
 
-    // pub unsafe fn citer_unsafe(&self) -> LinkedMapUnsafeCIter<V>{ LinkedMapUnsafeCIter::new(self, self.first) }
-    // pub unsafe fn citer_from_last_unsafe(&self) -> LinkedMapUnsafeCIter<V>{ LinkedMapUnsafeCIter::new(self, self.last) }
-    // pub unsafe fn citer_from_id_unsafe(&self, id : u64) -> Option<LinkedMapUnsafeCIter<V>>{
-    //     let node = if let Some(node) = self.node_from_id(id){ node as *const MutNode<V> } else{ return None; };
-    //     Some(LinkedMapUnsafeCIter::new(self, node))
-    //
-    // }
+    pub(crate) unsafe fn iter_unsafe_const(&self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.first) }
+    pub(crate) unsafe fn iter_from_last_unsafe_const(&self) -> LinkedMapUnsafeIter<V>{ LinkedMapUnsafeIter::new(self, self.last) }
+    pub(crate) unsafe fn iter_from_id_unsafe_const(&self, id : u64) -> Option<LinkedMapUnsafeIter<V>>{
+        let node = if let Some(node) = self.node_from_id(id){ node as *const MutNode<V> } else{ return None; };
+        Some(LinkedMapUnsafeIter::new(self, node))
+
+    }
 
     pub fn into_iter(self) -> LinkedMapIntoIter<V>{ LinkedMapIntoIter::new(self) }
 }
@@ -419,24 +419,16 @@ impl<V : PartialEq> PartialEq for LinkedMap<V>{
 }
 
 
-impl<'a,V> IntoIterator for &'a LinkedMap<V>{
-    type Item = (&'a u64, &'a V);
-    type IntoIter = LinkedMapIter<'a, V>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter()
-    }
-}
-
-
-impl<'a,V> IntoIterator for &'a mut LinkedMap<V>{
-    type Item = (&'a u64, &'a mut V);
-    type IntoIter = LinkedMapIterMut<'a, V>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter_mut()
-    }
-}
+// impl<'a,V> IntoIterator for &'a LinkedMap<V>{
+//     type Item = (&'a u64, &'a V);
+//     type IntoIter = LinkedMapIter<'a, V>;
+//
+//     fn into_iter(self) -> Self::IntoIter {
+//         self.iter()
+//     }
+// }
+//
+//
 
 pub struct LinkedMapIntoIter<V>{
     map : HashM<u64, Box<MutNode<V>>>,

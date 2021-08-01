@@ -46,3 +46,12 @@ impl<'a,V> Iterator for LinkedMapIterMut<'a, V>{
         self.next()
     }
 }
+
+impl<'a,V> IntoIterator for &'a mut LinkedMap<V>{
+    type Item = (&'a u64, &'a mut V);
+    type IntoIter = LinkedMapIterMut<'a, V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
+    }
+}

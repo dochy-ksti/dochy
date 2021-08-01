@@ -1,100 +1,60 @@
 use crate::imp::structs::linked_m::{LinkedMap, MutNode, get_next, ptr_eq, get_prev};
 use std::ptr::null_mut;
+use crate::imp::structs::linked_map_unsafe_iter::LinkedMapUnsafeIter;
+use std::marker::PhantomData;
 
-#[derive(Debug)]
+
 pub struct LinkedMapIter<'a, V>{
-    map : &'a LinkedMap<V>,
-    node : *const MutNode<V>,
+    iter : LinkedMapUnsafeIter<V>,
+    phantom : PhantomData<&'a LinkedMap<V>>,
 }
 impl<'a, V> LinkedMapIter<'a, V>{
-    pub(crate) fn new(map : &'a LinkedMap<V>, node : *const MutNode<V>) -> LinkedMapIter<'a, V>{ LinkedMapIter { map, node } }
+    pub(crate) fn new(map : &'a LinkedMap<V>, node : *const MutNode<V>) -> LinkedMapIter<'a, V>{
+        //LinkedMapIterが有効な間に書き換えるとアウトだが、&が有効なはずなので大丈夫だろう
+        LinkedMapIter{ iter : LinkedMapUnsafeIter::new(map, node), phantom : PhantomData::default() }
+    }
 
     ///現在のカーソルにあるアイテムを返し、カーソルを進める
     pub fn next(&mut self) -> Option<(&'a u64, &'a V)> {
-        self.next_impl().map(|current_node| {
-            //next_mutからキャストするほうが楽なんだけど、UnsafeIterが&LinkedMapから作られる場合があり、その場合&mutにした時点で（書き換えなくても)UBになる
-            //https://github.com/rust-lang/rust-clippy/issues/4774#issuecomment-565651216
-            //これで回避できているはず・・・
-            let node = unsafe { &* current_node };
-            (&node.id, &node.item)
-        })
-    }
-
-
-    fn next_impl(&mut self) -> Option<*const MutNode<V>>{
-        if self.node.is_null() { return None; }
-        let current_node = self.node as *const MutNode<V>;
-        let map = self.map;
-        if ptr_eq(self.node, map.last) {
-            self.node = null_mut();
-        } else {
-            self.node = get_next(self.node);
-        }
-        Some(current_node)
+        self.iter.next_const()
     }
 
     ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
-    /// next2回でそれをとることも出来る。
+    /// next2回でそれをとることも出来る。Cインターフェースやunsafe iterなら
     ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
     pub fn prev(&mut self) -> Option<(&'a u64, &'a V)> {
-        self.prev_impl().map(|current_node|{
-            let node = unsafe{ &*current_node };
-            (&node.id, &node.item)
-        })
-
-    }
-
-    fn prev_impl(&mut self) -> Option<*const MutNode<V>> {
-        if self.node.is_null(){ return None; }
-        let current_node = self.node;
-        let map = self.map;
-        if ptr_eq(self.node, map.first){
-            self.node = null_mut();
-        } else {
-            self.node = get_prev(self.node);
-        }
-        Some(current_node)
+        self.iter.prev_const()
     }
 
     pub fn current(&mut self) -> Option<(&'a u64, &'a V)> {
-        if self.node.is_null(){ return None; }
-        let node = unsafe{ &*self.node };
-        return Some((&node.id, &node.item))
+        self.iter.current_const()
     }
 
     ///nextもprevも現在のカーソルにあるアイテムを返す
     ///空であるか、最後/最初まで移動してアイテムが無くなったらfalse
     pub fn is_available(&self) -> bool {
-        !self.node.is_null()
+        self.iter.is_available()
     }
 
     pub fn is_first(&self) -> bool {
-        if self.node.is_null(){ return false; }
-        let map = self.map;
-        let node = unsafe{ &*self.node };
-        if let Some(id) = map.first_id(){
-            return id == node.id;
-        } else{
-            return false;
-        }
+        self.iter.is_first()
     }
-
     pub fn is_last(&self) -> bool {
-        if self.node.is_null(){ return false; }
-        let map = &*self.map;
-        let node = unsafe{ &*self.node };
-        if let Some(id) = map.last_id(){
-            return id == node.id;
-        } else{
-            return false;
-        }
+        self.iter.is_first()
     }
 }
-
 impl<'a,V> Iterator for LinkedMapIter<'a, V>{
     type Item = (&'a u64, &'a V);
 
     fn next(&mut self) -> Option<Self::Item> {
         self.next()
+    }
+}
+impl<'a,V> IntoIterator for &'a LinkedMap<V>{
+    type Item = (&'a u64, &'a V);
+    type IntoIter = LinkedMapIter<'a, V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }

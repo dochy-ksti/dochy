@@ -13,12 +13,13 @@ pub struct MListMut<'a, V : From<MItemPtr>>{
 }
 
 impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
+    ///MListPtrがMutでなければぶっ壊れる
     pub fn new<T>(ptr : MListPtr<V>, _src : &'a mut T) -> MListMut<'a, V>{
         MListMut{ ptr, phantom : PhantomData }
     }
 
     pub fn first_mut(&mut self) -> Option<MItemMut<V>>{
-        self.ptr.first().map(
+        self.ptr.first_mut().map(
             move |v| MItemMut::new(v, self))
     }
     pub fn first_id(&self) -> Option<u64>{
@@ -26,7 +27,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
     }
 
     pub fn last_mut(&mut self) -> Option<MItemMut<V>>{
-        self.ptr.last().map(
+        self.ptr.last_mut().map(
             move |v| MItemMut::new(v, self))
     }
     pub fn last_id(&self) -> Option<u64>{
@@ -34,7 +35,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
     }
 
     pub fn get_mut(&mut self, id : u64) -> Option<MItemMut<V>>{
-        self.ptr.get_item(id).map(
+        self.ptr.get_item_mut(id).map(
             move |v| MItemMut::new(v, self))
     }
     pub fn next_id(&self) -> u64{

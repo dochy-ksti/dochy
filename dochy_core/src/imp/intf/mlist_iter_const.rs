@@ -25,17 +25,17 @@ impl<'a, V : From<MItemPtr>> MListIterConst<'a, V>{
     }
 
     pub fn next(&mut self) -> Option<(u64, MItemConst<'a, V>)> {
-        self.ptr.next().map(|(id, v)| (
+        self.ptr.next_const().map(|(id, v)| (
             id,
             MItemConst::from_phantom(v, self.phantom)))
     }
     pub fn prev(&mut self) -> Option<(u64, MItemConst<'a, V>)> {
-        self.ptr.next().map(|(id, v)| (
+        self.ptr.prev_const().map(|(id, v)| (
             id,
             MItemConst::from_phantom(v, self.phantom)))
     }
     pub fn current(&mut self) -> Option<(u64, MItemConst<'a, V>)> {
-        self.ptr.current().map(|(id, v)| (
+        self.ptr.current_const().map(|(id, v)| (
             id,
             MItemConst::from_phantom(v, self.phantom)))
     }

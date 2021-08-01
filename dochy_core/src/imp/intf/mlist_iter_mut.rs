@@ -16,7 +16,7 @@ impl<'a, V : From<MItemPtr>> Iterator for MListIterMut<'a, V>{
     type Item = (u64, MItemMut<'a, V>);
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.ptr.next().map(|(id, v)| (id, MItemMut::from_phantom(v, self.phantom)))
+        self.ptr.next_mut().map(|(id, v)| (id, MItemMut::from_phantom(v, self.phantom)))
     }
 }
 impl<'a, V : From<MItemPtr>> MListIterMut<'a, V>{
@@ -24,17 +24,17 @@ impl<'a, V : From<MItemPtr>> MListIterMut<'a, V>{
         MListIterMut{ ptr, phantom : PhantomData }
     }
     pub fn next(&mut self) -> Option<(u64, MItemMut<'a, V>)> {
-        self.ptr.next().map(|(id, v)| (
+        self.ptr.next_mut().map(|(id, v)| (
             id,
             MItemMut::from_phantom(v, self.phantom)))
     }
     pub fn prev(&mut self) -> Option<(u64, MItemMut<'a, V>)> {
-        self.ptr.next().map(|(id, v)| (
+        self.ptr.next_mut().map(|(id, v)| (
             id,
             MItemMut::from_phantom(v, self.phantom)))
     }
     pub fn current(&mut self) -> Option<(u64, MItemMut<'a, V>)> {
-        self.ptr.current().map(|(id, v)| (
+        self.ptr.current_mut().map(|(id, v)| (
             id,
             MItemMut::from_phantom(v, self.phantom)))
     }

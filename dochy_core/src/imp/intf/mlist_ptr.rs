@@ -39,69 +39,51 @@ impl<V : From<MItemPtr>> MListPtr<V>{
     }
 
     fn map(&self) -> &LinkedMap<MutItem>{ unsafe{ &*self.map }}
-    fn map_mut(&self) -> &mut LinkedMap<MutItem>{ unsafe{ &mut *(self.map as *mut LinkedMap<MutItem>) }}
+    fn map_mut(&mut self) -> &mut LinkedMap<MutItem>{ unsafe{ &mut *(self.map as *mut LinkedMap<MutItem>) }}
 
-    pub fn first(&mut self) -> Option<V> {
+    pub fn first_mut(&mut self) -> Option<V> {
         let map = self.map_mut();
         map.first_mut().map(|r| self.from(r))
     }
-    /// Gets a mutable pointer from '&self'
-    /// Actually this doesn't violate anything because 'self' only has pointers.
-    /// This 'unsafe' is just a decoration
-    pub unsafe fn first_const(&self) -> Option<V> {
-        let map = &mut *self.map;
-        map.first_mut().map(|r| self.from(r))
+
+    pub fn first_const(&self) -> Option<V> {
+        let map = self.map();
+        map.first().map(|r| self.from(r))
     }
     pub fn first_id(&self) -> Option<u64> {
-        let map = unsafe{ &mut *self.map };
-        map.first_id()
+        self.map().first_id()
     }
-    pub fn last(&mut self) -> Option<V> {
-        let map = unsafe{ &mut *self.map };
-        map.last_mut().map(|r| self.from(r))
+    pub fn last_mut(&mut self) -> Option<V> {
+        self.map_mut().last_mut().map(|r| self.from(r))
     }
 
-    /// gets a mutable pointer from '&self'
-    /// actually this doesn't violate anything because 'self' only has pointers.
-    /// This 'unsafe' is just a decoration
     pub unsafe fn last_const(&self) -> Option<V> {
-        let map = &mut *self.map;
-        map.last_mut().map(|r| self.from(r))
+        self.map().last().map(|r| self.from(r))
     }
 
     pub fn last_id(&self) -> Option<u64> {
-        let map = unsafe{ &mut *self.map };
-        map.last_id()
+        self.map().last_id()
     }
-    pub fn get_item(&mut self, id : u64) -> Option<V>{
-        let map = unsafe{ &mut *self.map };
-        map.get_item_mut(id).map(|b| self.from(b))
+    pub fn get_item_mut(&mut self, id : u64) -> Option<V>{
+        self.map_mut().get_item_mut(id).map(|b| self.from(b))
     }
 
-    /// gets a mutable pointer from '&self'
-    /// actually this doesn't violate anything because 'self' only has pointers.
-    /// This 'unsafe' is just a decoration
     pub unsafe fn get_item_const(&self, id : u64) -> Option<V>{
-        let map = &mut *self.map;
-        map.get_item_mut(id).map(|b| self.from(b))
+        self.map().get_item(id).map(|b| self.from(b))
     }
 
     pub fn next_id(&self) -> u64{
-        let map = unsafe{ &mut *self.map };
-        map.next_id()
+        self.map().next_id()
     }
 
     pub fn contains_key(&self, key : u64) -> bool{
-        let map = unsafe{ &mut *self.map };
-        map.contains_key(key)
+        self.map().contains_key(key)
     }
     pub fn len(&self) -> usize{
-        let map = unsafe{ &mut *self.map };
-        map.len()
+        self.map().len()
     }
     pub fn is_empty(&self) -> bool {
-        let map = unsafe { &mut *self.map };
-        map.is_empty()
+        self.map().is_empty()
     }
 
     pub fn insert(&mut self) -> V{
@@ -109,58 +91,52 @@ impl<V : From<MItemPtr>> MListPtr<V>{
     }
 
     pub fn insert_last(&mut self) -> V{
-        let map = unsafe{ &mut *self.map };
+        let map = self.map_mut();
         let id = map.insert_last(MutItem::default());
         self.get_item(id).unwrap()
     }
     pub fn insert_first(&mut self) -> V{
-        let map = unsafe{ &mut *self.map };
+        let map = self.map_mut();
         let id = map.insert_first(MutItem::default());
         self.get_item(id).unwrap()
     }
 
     /// Anything can happen when a removed item is accessed, so be careful
     pub unsafe fn remove(&mut self, id : u64) -> bool {
-        let map = &mut *self.map;
-        map.remove(id)
+        self.map_mut().remove(id)
     }
     /// Anything can happen when a removed item is accessed, so be careful
     pub unsafe fn remove_first(&mut self) -> bool{
-        let map = &mut *self.map;
-        map.remove_first()
+        self.map_mut().remove_first()
     }
     /// Anything can happen when a removed item is accessed, so be careful
     pub unsafe fn remove_last(&mut self) -> bool{
-        let map =  &mut *self.map;
-        map.remove_last()
+        self.map_mut().remove_last()
     }
 
     pub fn move_to_first(&mut self, id : u64) -> bool {
-        let map = unsafe{ &mut *self.map };
-        map.move_to_first(id)
+        self.map_mut().move_to_first(id)
     }
 
     pub fn move_to_last(&mut self, id : u64) -> bool {
-        let map = unsafe{ &mut *self.map };
-        map.move_to_last(id)
+        self.map_mut().move_to_last(id)
     }
 
     pub fn move_to_prev(&mut self, next_items_id : u64, id : u64) -> bool{
-        let map = unsafe{ &mut *self.map };
-        map.move_to_prev(next_items_id, id)
+        self.map_mut().move_to_prev(next_items_id, id)
     }
 
     pub fn move_to_next(&mut self, prev_items_id : u64, id : u64) -> bool{
-        let map = unsafe{ &mut *self.map };
-        map.move_to_next(prev_items_id, id)
+        self.map_mut().move_to_next(prev_items_id, id)
     }
 
-    pub unsafe fn iter_const(&self) -> MListPtrIter<V> {
-        let map = &mut *self.map;
-        MListPtrIter::new(map.iter_unsafe(), self.list_def, self.root_def)
+    pub fn iter_const(&self) -> MListPtrIter<V> {
+        let iter  = unsafe{ self.map().iter_unsafe_const() };
+        MListPtrIter::new(iter, self.list_def, self.root_def)
     }
-    pub fn iter(&mut self) -> MListPtrIter<V> {
-        unsafe{ self.iter_const() }
+    pub fn iter_mut(&mut self) -> MListPtrIter<V> {
+        let iter = unsafe{ self.map_mut().iter_unsafe_mut() };
+        MListPtrIter::new(iter, self.list_def, self.root_def)
     }
 
     pub unsafe fn iter_from_last_const(&self) -> MListPtrIter<V> {
@@ -199,24 +175,40 @@ impl<V : From<MItemPtr>> MListPtrIter<V>{
         MListPtrIter { iter, list_def, root_def, phantom : PhantomData }
     }
 
-    fn from(&self, item : *mut MutItem) -> V{
+    fn from(&self, item : *const MutItem) -> V{
         V::from(MItemPtr::new(item, self.list_def, self.root_def))
     }
     ///現在のカーソルにあるアイテムを返し、カーソルを進める
-    pub fn next(&mut self) -> Option<(u64, V)> {
+    pub fn next_const(&mut self) -> Option<(u64, V)> {
+        self.iter.next_const().map(|(k,v)| (*k, self.from(v)))
+    }
+
+    ///現在のカーソルにあるアイテムを返し、カーソルを進める。Mutate可能なMItemPtrを返すをラップして返す。
+    /// ConstなMListPtrから得たMListPtrIterから呼び出して書き換えたらUB
+    pub fn next_mut(&mut self) -> Option<(u64, V)> {
         self.iter.next_mut().map(|(k,v)| (*k, self.from(v)))
     }
 
     ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
     /// next2回でそれをとることも出来る。
     ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
-    pub fn prev(&mut self) -> Option<(u64, V)> {
+    pub fn prev_const(&mut self) -> Option<(u64, V)> {
+        self.iter.prev_const().map(|(k,v)| (*k, self.from(v)))
+    }
+
+    pub fn prev_mut(&mut self) -> Option<(u64, V)> {
         self.iter.prev_mut().map(|(k,v)| (*k, self.from(v)))
     }
     
-    pub fn current(&mut self) -> Option<(u64, V)> {
+    pub fn current_const(&mut self) -> Option<(u64, V)> {
+        self.iter.current_const().map(|(k,v)| (*k,self.from(v)))
+    }
+
+    pub fn current_mut(&mut self) -> Option<(u64, V)> {
         self.iter.current_mut().map(|(k,v)| (*k,self.from(v)))
     }
+
+
 
     pub fn is_available(&self) -> bool {
         self.iter.is_available()

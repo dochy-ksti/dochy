@@ -4,6 +4,8 @@ use crate::imp::structs::list_value::{ListDefValue};
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::qv::Qv;
 use crate::imp::structs::list_def_obj::ListDefObj;
+use crate::imp::structs::root_obj::RootObject;
+use crate::imp::intf::RootObjectPtr;
 use crate::imp::intf::clist::CListPtr;
 use crate::imp::structs::ref_value::RefSabValue;
 use crate::HashM;
@@ -12,20 +14,20 @@ use crate::imp::structs::root_def_obj::RootDefObj;
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Clone, Copy)]
-pub struct CItemPtr<'a> {
-    item : &'a ConstItem,
-    list_def : &'a ListDefObj,
-    root_def : &'a RootDefObj,
+pub struct CItemPtr {
+    item : *const ConstItem,
+    list_def : *const ListDefObj,
+    root_def : *const RootDefObj,
 }
 
-impl<'a> CItemPtr<'a> {
-    pub fn new<'b>(item : &'b ConstItem, list_def : &'b ListDefObj, root_def : &'b RootDefObj) -> CItemPtr<'b> { CItemPtr { item, list_def, root_def }}
-    pub fn item(&self) -> &'a ConstItem { self.item }
-    pub fn list_def(&self) -> &'a ListDefObj{ self.list_def }
+impl CItemPtr {
+    pub fn new(item : *const ConstItem, list_def : *const ListDefObj, root_def : *const RootDefObj) -> CItemPtr { CItemPtr { item, list_def, root_def }}
+    pub fn item(&self) -> *const ConstItem { self.item }
+    pub fn list_def(&self) -> *const ListDefObj{ self.list_def }
 }
 
-pub fn get_cil<'a, T : From<CItemPtr<'a>>>(ps : CItemPtr, name : &str) -> Option<CListPtr<'a, T>>{
-    let (item, list_def) = (ps.item, ps.list_def);
+pub fn get_cil<T : From<CItemPtr>>(ps : CItemPtr, name : &str) -> Option<CListPtr<T>>{
+    let (item, list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
     if let Some(ListDefValue::CilDef(def)) = list_def.default().get(name){
         if let Some(ListSabValue::Cil(data)) = item.values().get(name){
             return Some(CListPtr::new(data.list(), def, ps.root_def))
@@ -170,7 +172,7 @@ pub fn get_immutable_float_array<'a, 'b>(ps : CItemPtr, name : &'a str) -> Optio
 }
 
 pub fn get_param<'a>(p : CItemPtr, name : &str) -> Option<&'a RustParam>{
-    let (item, def) = (p.item, p.list_def);
+    let (item, def) = unsafe{ (&*p.item, &*p.list_def) };
     if let Some(ListSabValue::Param(p)) = item.values().get(name){
         Some(p)
     } else if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
@@ -181,7 +183,7 @@ pub fn get_param<'a>(p : CItemPtr, name : &str) -> Option<&'a RustParam>{
 }
 
 pub fn get_param_def<'a, 'b>(def : CItemPtr, name : &'a str) -> Option<&'b RustParam>{
-    let def = def.list_def;
+    let def = unsafe{ &*def.list_def };
     if let Some(ListDefValue::Param(p, _)) = def.default().get(name){
         Some(p)
     } else{
@@ -189,7 +191,7 @@ pub fn get_param_def<'a, 'b>(def : CItemPtr, name : &'a str) -> Option<&'b RustP
     }
 }
 
-pub fn get_ref<'a>(ps : CItemPtr<'a>, list_name : &str) -> Option<Qv<CItemPtr<'a>>>{
+pub fn get_ref(ps : CItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
     let qv = get_ref_id(ps, list_name)?;
     qv.opt_map(|id|{
         let data = super::root::get_table(ps.root_def, list_name).unwrap();
@@ -198,7 +200,7 @@ pub fn get_ref<'a>(ps : CItemPtr<'a>, list_name : &str) -> Option<Qv<CItemPtr<'a
 }
 
 pub fn get_ref_id(ps : CItemPtr, list_name : &str) -> Option<Qv<String>>{
-    let (item, list_def) = (ps.item, ps.list_def);
+    let (item, list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
     get_ref_id_impl(item.refs(), list_def, list_name)
 }
 
@@ -214,7 +216,7 @@ pub fn get_ref_id_impl(refs : &HashM<String, RefSabValue>, list_def : &ListDefOb
 }
 
 pub fn get_enum(ps : CItemPtr) -> Option<(String, String)>{
-    let item = ps.item;
+    let item = unsafe{ &*ps.item };
     get_enum_impl(item.refs())
 }
 
