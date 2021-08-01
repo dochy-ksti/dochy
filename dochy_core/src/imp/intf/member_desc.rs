@@ -58,8 +58,7 @@ fn to_key_items(kvs : &DataKVs) -> Vec<KeyItem>{
     kvs.items().iter().map(|a| KeyItem::new(a.id().to_string(), a.is_old())).collect()
 }
 
-pub fn get_member_desc(root_ptr : *mut RootObject) -> Vec<MemberDesc>{
-    let root = unsafe{ root_ptr.as_ref().unwrap() };
+pub fn get_member_desc(root : &RootObject) -> Vec<MemberDesc>{
     let mut vec : Vec<MemberDesc> = Vec::with_capacity(root.default().len());
     for (k,(_id, val)) in root.default().def(){
         let mem = k.to_string();
@@ -85,7 +84,7 @@ pub fn get_member_desc(root_ptr : *mut RootObject) -> Vec<MemberDesc>{
                 let children = get_list_def_desc(m.default());
                 let refs = get_ref_def_desc(m.default().refs());
                 let descs = MemberDescs::new(children, refs);
-                vec.push(MemberDesc::new(mem, VarType::Normal, RustMemberType::MList, is_old, Some(descs)))
+                vec.push(MemberDesc::new(mem, if m.undefiable(){ VarType::Undefiable } else{ VarType::Normal } , RustMemberType::MList, is_old, Some(descs)))
             },
         };
     }

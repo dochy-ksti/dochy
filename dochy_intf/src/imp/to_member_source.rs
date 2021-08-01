@@ -12,7 +12,7 @@ pub(crate) enum MemberSource{
     Param(ParamSource),
     Table(TableSource),
     CList(CListSource),
-    MList(MListSource),
+    MList(MilSource),
     Cil(CilSource),
     Mil(MilSource),
 }
@@ -85,7 +85,7 @@ pub(crate) fn to_member_source(mem : &MemberDesc) -> MemberSource{
             MemberSource::Cil(CilSource::from(mem))
         }
         RustMemberType::MList =>{
-            MemberSource::MList(MListSource::from(mem))
+            MemberSource::MList(MilSource::from(mem))
         },
         RustMemberType::Mil =>{
             MemberSource::Mil(MilSource::from(mem))

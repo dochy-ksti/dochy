@@ -17,22 +17,28 @@ use crate::imp::structs::root_def_obj::RootDefObj;
 #[repr(C)]
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct MItemPtr {
-    item : *mut MutItem,
+    item : *const MutItem,
     list_def : *const ListDefObj,
     root_def: *const RootDefObj,
 }
 
 impl MItemPtr {
-    ///getだけなら &MutListItemからのポインタでもOKである。その場合setするとundefined behaviorなので、&mut からのポインタを得る必要がある
-    pub fn new(item : *mut MutItem, list_def : *const ListDefObj, root_def : *const RootDefObj) -> MItemPtr {
+    ///&mut MutItemから得たポインタであれば、*constであっても*mutにキャストして&mut参照を得て書き換えても良い
+    /// &から得たポインタを通じて書き換えるとUB。&mut参照をえることすらもUBではないかという説もあるが、それは違うと思う
+    /// &mut参照と&参照が同時に存在することもかなりUB的であるが、それも厳密には違うように思うし、
+    /// このシステムは参照を露出しないので、シングルスレッドアプリにおいて同一メモリアドレスに２つ以上の参照が構築されることはないはず
+    /// マルチスレッド化はArc::make_mutを用いて行われるので、マルチスレッドで同一アドレスへのアクセスが有る場合、
+    /// &mutを得る時はmake_mutによりコピーが行われるので、&mutと&参照がかぶることはないはず
+    pub fn new(item : *const MutItem, list_def : *const ListDefObj, root_def : *const RootDefObj) -> MItemPtr {
         MItemPtr { item, list_def, root_def }
     }
-    pub fn item(&self) -> *mut MutItem { self.item }
+    pub fn item(&self) -> *const MutItem { self.item }
+    pub fn item_mut(&self) -> *mut MutItem { self.item as *mut _ }
     pub fn list_def(&self) -> *const ListDefObj{ self.list_def }
 }
 
 pub fn get_mil<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
-    let (item, list_def) = unsafe { (&mut *ps.item, &*ps.list_def) };
+    let (item, list_def) = unsafe { (&mut *ps.item_mut(), &*ps.list_def) };
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
         if let Some(ListSabValue::Mil(data)) = item.values_mut().get_mut(name) {
             if let Some(inner) = data {
@@ -44,6 +50,21 @@ pub fn get_mil<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<
     }
     return None
 }
+
+pub fn get_mil_const<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
+    let (item, list_def) = unsafe { (&*ps.item, &*ps.list_def) };
+    if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
+        if let Some(ListSabValue::Mil(data)) = item.values().get_mut(name) {
+            if let Some(inner) = data {
+                return Some(Some(MListPtr::new(inner.list_mut(), md.default(), ps.root_def)))
+            } else {
+                return Some(None)
+            }
+        }
+    }
+    return None
+}
+
 
 pub fn get_bool(ps : MItemPtr, name : &str) -> Option<Qv<bool>>{
     if let Some(RustParam::Bool(b)) = get_param(ps, name){

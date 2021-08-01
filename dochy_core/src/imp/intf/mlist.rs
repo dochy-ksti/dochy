@@ -18,22 +18,27 @@ use crate::imp::structs::root_def_obj::RootDefObj;
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct MListPtr<V : From<MItemPtr>>{
-    map : *mut LinkedMap<MutItem>,
+    map : *const LinkedMap<MutItem>,
     list_def : *const ListDefObj,
     root_def : *const RootDefObj,
     phantom : PhantomData<*const V>,
 }
 
 impl<V : From<MItemPtr>> MListPtr<V>{
-    pub fn new(map : *mut LinkedMap<MutItem>, list_def : *const ListDefObj, root_def : *const RootDefObj)
+    /// &LinkedMap<MutItem>から得たポインタを通して書き換えるとUBなので、注意して書き換えないようにしなければならない
+    /// ものすごくunsafe
+    pub fn new(map : *const LinkedMap<MutItem>, list_def : *const ListDefObj, root_def : *const RootDefObj)
         -> MListPtr<V>{ MListPtr { map, list_def, root_def, phantom : PhantomData } }
 
-    fn from(&self, item : *mut MutItem) -> V{
+    fn from(&self, item : *const MutItem) -> V{
         V::from(MItemPtr::new(item, self.list_def, self.root_def))
     }
 
+    fn map(&self) -> &LinkedMap<MutItem>{ unsafe{ &*self.map }}
+    fn map_mut(&self) -> &mut LinkedMap<MutItem>{ unsafe{ &mut *(self.map as *mut LinkedMap<MutItem>) }}
+
     pub fn first(&mut self) -> Option<V> {
-        let map = unsafe{ &mut *self.map };
+        let map = self.map_mut();
         map.first_mut().map(|r| self.from(r))
     }
     /// Gets a mutable pointer from '&self'
