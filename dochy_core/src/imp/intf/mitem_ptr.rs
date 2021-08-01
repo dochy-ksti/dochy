@@ -322,7 +322,7 @@ pub fn get_param_def<'a>(ps : MItemPtr, name : &str) -> Option<&'a RustParam>{
 
 /// 差分がない場合、デフォルト値をコピーして差分にツッコミ、さらにその&mut を返す
 pub fn get_param_mut<'a>(ps : MItemPtr, name : &str) -> Option<&'a mut RustParam> {
-    let (def, item) = unsafe { (&*ps.list_def, ps.clone().item_mut()) };
+    let (def, item) = unsafe { (&*ps.list_def, ps.item_mut()) };
     if let Some(ListSabValue::Param(p)) = item.values_mut().get_mut(name) {
         return Some(p);
     }

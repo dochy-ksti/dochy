@@ -10,7 +10,7 @@ pub struct LinkedMapIter<'a, V>{
 }
 impl<'a, V> LinkedMapIter<'a, V>{
     pub(crate) fn new(map : &'a LinkedMap<V>, node : *const MutNode<V>) -> LinkedMapIter<'a, V>{
-        //LinkedMapIterが有効な間に書き換えるとアウトだが、&が有効なはずなので大丈夫だろう
+        //LinkedMapIterが有効な間に書き換えるとアウトだが、&が有効なはずなので大丈夫
         LinkedMapIter{ iter : LinkedMapUnsafeIter::new(map, node), phantom : PhantomData::default() }
     }
 
