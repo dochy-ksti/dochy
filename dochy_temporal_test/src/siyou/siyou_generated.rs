@@ -801,7 +801,7 @@ impl From<MItemPtr> for Mut1MItem {
 }
 impl Mut1MItem {
 	pub unsafe fn inner_mut_list_us(&self) -> MListPtr<InnerMutListMItem>{
-		mitem::get_mil(self.ptr, "innerMutList").unwrap().unwrap()
+		mitem_ptr::get_mil(self.ptr, "innerMutList").unwrap().unwrap()
 	}
 	pub fn inner_mut_list(&self) -> MListConst<InnerMutListMItem>{
 		MListConst::new(unsafe{ self.inner_mut_list_us() }, self)
@@ -810,23 +810,23 @@ impl Mut1MItem {
 		MListMut::new(unsafe{ self.inner_mut_list_us() }, self)
 	}
 	pub fn some_name(&self) -> String{
-		let qv = mitem::get_str(self.ptr, "someName").unwrap();
+		let qv = mitem_ptr::get_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn some_name_def_val(&self) -> String{
-		let qv = mitem::get_str_def(self.ptr, "someName").unwrap();
+		let qv = mitem_ptr::get_str_def(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn some_name_immutable(&self) -> &String{
-		let qv = mitem::get_immutable_str(self.ptr, "someName").unwrap();
+		let qv = mitem_ptr::get_immutable_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn some_name_mutable(&mut self) -> &mut String{
-		let qv = mitem::get_mutable_str(self.ptr, "someName").unwrap();
+		let qv = mitem_ptr::get_mutable_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_some_name(&mut self, some_name : String){
-		mitem::set_str(self.ptr, "someName", Qv::Val(some_name));
+		mitem_ptr::set_str(self.ptr, "someName", Qv::Val(some_name));
 	}
 	
 	
@@ -842,26 +842,26 @@ impl From<MItemPtr> for InnerMutListMItem {
 }
 impl InnerMutListMItem {
 	pub fn inner_list_mem(&self) -> i64{
-		let qv = mitem::get_int(self.ptr, "innerListMem").unwrap();
+		let qv = mitem_ptr::get_int(self.ptr, "innerListMem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn inner_list_mem_def_val(&self) -> i64{
-		let qv = mitem::get_int_def(self.ptr, "innerListMem").unwrap();
+		let qv = mitem_ptr::get_int_def(self.ptr, "innerListMem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_inner_list_mem(&mut self, inner_list_mem : i64){
-		mitem::set_int(self.ptr, "innerListMem", Qv::Val(inner_list_mem));
+		mitem_ptr::set_int(self.ptr, "innerListMem", Qv::Val(inner_list_mem));
 	}
 	pub fn ref_hego_list(&self) -> HegoListCItem{
-		let qv = mitem::get_ref(self.ptr, "hegoList").unwrap();
+		let qv = mitem_ptr::get_ref(self.ptr, "hegoList").unwrap();
 		HegoListCItem::from(qv.into_value().unwrap())
 	}
 	pub fn ref_id_hego_list(&self) -> String{
-		let qv = mitem::get_ref_id(self.ptr, "hegoList").unwrap();
+		let qv = mitem_ptr::get_ref_id(self.ptr, "hegoList").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_ref_hego_list(&mut self, id : HegoListTableID){
-		mitem::set_ref(self.ptr, "hegoList", Qv::Val(id.to_str().to_string()));
+		mitem_ptr::set_ref(self.ptr, "hegoList", Qv::Val(id.to_str().to_string()));
 	}
 }
 
@@ -1200,35 +1200,35 @@ impl From<MItemPtr> for Mut2MItem {
 }
 impl Mut2MItem {
 	pub fn mem(&self) -> String{
-		let qv = mitem::get_str(self.ptr, "mem").unwrap();
+		let qv = mitem_ptr::get_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn mem_def_val(&self) -> String{
-		let qv = mitem::get_str_def(self.ptr, "mem").unwrap();
+		let qv = mitem_ptr::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn mem_immutable(&self) -> &String{
-		let qv = mitem::get_immutable_str(self.ptr, "mem").unwrap();
+		let qv = mitem_ptr::get_immutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn mem_mutable(&mut self) -> &mut String{
-		let qv = mitem::get_mutable_str(self.ptr, "mem").unwrap();
+		let qv = mitem_ptr::get_mutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_mem(&mut self, mem : String){
-		mitem::set_str(self.ptr, "mem", Qv::Val(mem));
+		mitem_ptr::set_str(self.ptr, "mem", Qv::Val(mem));
 	}
 	pub fn get_enum(&self) -> Mut2Enum{
-		let (list_name, _) = mitem::get_enum(self.ptr).unwrap();
-		let p = if let Qv::Val(p) = mitem::get_ref(self.ptr, &list_name).unwrap(){ p } else { unreachable!() };
+		let (list_name, _) = mitem_ptr::get_enum(self.ptr).unwrap();
+		let p = if let Qv::Val(p) = mitem_ptr::get_ref(self.ptr, &list_name).unwrap(){ p } else { unreachable!() };
 		Mut2Enum::new(&list_name,p)
 	}
 	pub fn get_enum_ids(&self) -> (String,String){
-		mitem::get_enum(self.ptr).unwrap()
+		mitem_ptr::get_enum(self.ptr).unwrap()
 	}
 	pub fn set_enum(&self, kind : Mut2Kind){
 		let (list_name, id) = kind.id();
-		mitem::set_enum(self.ptr, list_name, id);
+		mitem_ptr::set_enum(self.ptr, list_name, id);
 	}
 }
 pub enum Mut2Enum{ HogeList(HogeListCItem), HegoList(HegoListCItem), HugaList(HugaListCItem), }

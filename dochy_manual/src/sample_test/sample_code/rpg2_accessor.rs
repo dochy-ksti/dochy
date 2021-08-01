@@ -138,7 +138,7 @@ impl From<MItemPtr> for PcListMItem {
 }
 impl PcListMItem {
 	pub unsafe fn items_us(&self) -> MListPtr<ItemsMItem>{
-		mitem::get_mil(self.ptr, "items").unwrap().unwrap()
+		mitem_ptr::get_mil(self.ptr, "items").unwrap().unwrap()
 	}
 	pub fn items(&self) -> MListConst<ItemsMItem>{
 		MListConst::new(unsafe{ self.items_us() }, self)
@@ -147,23 +147,23 @@ impl PcListMItem {
 		MListMut::new(unsafe{ self.items_us() }, self)
 	}
 	pub fn name(&self) -> String{
-		let qv = mitem::get_str(self.ptr, "name").unwrap();
+		let qv = mitem_ptr::get_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn name_def_val(&self) -> String{
-		let qv = mitem::get_str_def(self.ptr, "name").unwrap();
+		let qv = mitem_ptr::get_str_def(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn name_immutable(&self) -> &String{
-		let qv = mitem::get_immutable_str(self.ptr, "name").unwrap();
+		let qv = mitem_ptr::get_immutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn name_mutable(&mut self) -> &mut String{
-		let qv = mitem::get_mutable_str(self.ptr, "name").unwrap();
+		let qv = mitem_ptr::get_mutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_name(&mut self, name : String){
-		mitem::set_str(self.ptr, "name", Qv::Val(name));
+		mitem_ptr::set_str(self.ptr, "name", Qv::Val(name));
 	}
 	
 	
@@ -179,16 +179,16 @@ impl From<MItemPtr> for ItemsMItem {
 }
 impl ItemsMItem {
 	pub fn get_enum(&self) -> ItemsEnum{
-		let (list_name, _) = mitem::get_enum(self.ptr).unwrap();
-		let p = if let Qv::Val(p) = mitem::get_ref(self.ptr, &list_name).unwrap(){ p } else { unreachable!() };
+		let (list_name, _) = mitem_ptr::get_enum(self.ptr).unwrap();
+		let p = if let Qv::Val(p) = mitem_ptr::get_ref(self.ptr, &list_name).unwrap(){ p } else { unreachable!() };
 		ItemsEnum::new(&list_name,p)
 	}
 	pub fn get_enum_ids(&self) -> (String,String){
-		mitem::get_enum(self.ptr).unwrap()
+		mitem_ptr::get_enum(self.ptr).unwrap()
 	}
 	pub fn set_enum(&self, kind : ItemsKind){
 		let (list_name, id) = kind.id();
-		mitem::set_enum(self.ptr, list_name, id);
+		mitem_ptr::set_enum(self.ptr, list_name, id);
 	}
 }
 pub enum ItemsEnum{ Sword(SwordCItem), Herb(HerbCItem), }

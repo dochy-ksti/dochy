@@ -5,31 +5,31 @@ use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::rust_string::RustString;
 use crate::imp::intf::clist::CListPtr;
-use crate::imp::intf::mlist::MListPtr;
+use crate::imp::intf::mlist_ptr::MListPtr;
 use crate::imp::intf::table::TablePtr;
-use crate::imp::intf::mitem::MItemPtr;
+use crate::imp::intf::mitem_ptr::MItemPtr;
 use crate::imp::intf::citem::CItemPtr;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
 use crate::structs::{RustBinary};
 use crate::imp::structs::root_sab_value::RootSabValue;
 use crate::imp::structs::root_def_obj::RootDefObj;
 
-#[derive(Debug, PartialEq, Clone, Copy)]
-pub struct RootObjectPtr{
-    ptr : *mut RootObject
-}
-impl RootObjectPtr {
-    pub fn new(ptr: *mut RootObject) -> RootObjectPtr { RootObjectPtr { ptr } }
-}
+// #[derive(Debug, PartialEq, Clone, Copy)]
+// pub struct RootObjectPtr{
+//     ptr : *mut RootObject
+// }
+// impl RootObjectPtr {
+//     pub fn new(ptr: *mut RootObject) -> RootObjectPtr { RootObjectPtr { ptr } }
+// }
 
-pub fn get_bool(root : RootObjectPtr, name : &str) -> Option<Qv<bool>>{
+pub fn get_bool(root : RootObject, name : &str) -> Option<Qv<bool>>{
     if let Some(RustParam::Bool(b)) = get_param(root, name){
         Some(b.clone())
     } else{
         None
     }
 }
-pub fn get_bool_def(root : RootObjectPtr, name : &str) -> Option<Qv<bool>>{
+pub fn get_bool_def(root : &RootObject, name : &str) -> Option<Qv<bool>>{
     if let Some(RustParam::Bool(b)) = get_param_def(root, name){
         Some(b.clone())
     } else{
@@ -37,7 +37,7 @@ pub fn get_bool_def(root : RootObjectPtr, name : &str) -> Option<Qv<bool>>{
     }
 }
 
-pub fn get_float(root : RootObjectPtr, name : &str) -> Option<Qv<f64>>{
+pub fn get_float(root : &RootObject, name : &str) -> Option<Qv<f64>>{
     if let Some(RustParam::Float(b)) = get_param(root, name){
         Some(b.clone())
     } else{
@@ -45,7 +45,7 @@ pub fn get_float(root : RootObjectPtr, name : &str) -> Option<Qv<f64>>{
     }
 }
 
-pub fn get_float_def(root : RootObjectPtr, name : &str) -> Option<Qv<f64>>{
+pub fn get_float_def(root : &RootObject, name : &str) -> Option<Qv<f64>>{
     if let Some(RustParam::Float(b)) = get_param_def(root, name){
         Some(b.clone())
     } else{
@@ -53,7 +53,7 @@ pub fn get_float_def(root : RootObjectPtr, name : &str) -> Option<Qv<f64>>{
     }
 }
 
-pub fn get_int(root : RootObjectPtr, name : &str) -> Option<Qv<i64>>{
+pub fn get_int(root : &RootObject, name : &str) -> Option<Qv<i64>>{
     if let Some(RustParam::Int(b)) = get_param(root, name){
         Some(b.clone())
     } else{
@@ -61,7 +61,7 @@ pub fn get_int(root : RootObjectPtr, name : &str) -> Option<Qv<i64>>{
     }
 }
 
-pub fn get_int_def(root : RootObjectPtr, name : &str) -> Option<Qv<i64>>{
+pub fn get_int_def(root : &RootObject, name : &str) -> Option<Qv<i64>>{
     if let Some(RustParam::Int(b)) = get_param_def(root, name){
         Some(b.clone())
     } else{
@@ -69,7 +69,7 @@ pub fn get_int_def(root : RootObjectPtr, name : &str) -> Option<Qv<i64>>{
     }
 }
 
-pub fn get_str(root : RootObjectPtr, name : &str) -> Option<Qv<String>>{
+pub fn get_str(root : &RootObject, name : &str) -> Option<Qv<String>>{
     if let Some(RustParam::String(b)) = get_param(root, name){
         Some(b.map(|s| s.str().to_string()))
     } else{
@@ -77,7 +77,7 @@ pub fn get_str(root : RootObjectPtr, name : &str) -> Option<Qv<String>>{
     }
 }
 
-pub fn get_str_def(root : RootObjectPtr, name : &str) -> Option<Qv<String>>{
+pub fn get_str_def(root : &RootObject, name : &str) -> Option<Qv<String>>{
     if let Some(RustParam::String(b)) = get_param_def(root, name){
         Some(b.map(|s| s.str().to_string()))
     } else{
@@ -85,7 +85,7 @@ pub fn get_str_def(root : RootObjectPtr, name : &str) -> Option<Qv<String>>{
     }
 }
 
-pub fn get_int_array(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<i64>>>{
+pub fn get_int_array(root : &RootObject, name : &str) -> Option<Qv<Vec<i64>>>{
     if let Some(RustParam::IntArray(b)) = get_param(root, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
@@ -93,7 +93,7 @@ pub fn get_int_array(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<i64>>>{
     }
 }
 
-pub fn get_int_array_def(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<i64>>>{
+pub fn get_int_array_def(root : &RootObject, name : &str) -> Option<Qv<Vec<i64>>>{
     if let Some(RustParam::IntArray(b)) = get_param_def(root, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
@@ -101,7 +101,7 @@ pub fn get_int_array_def(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<i64
     }
 }
 
-pub fn get_float_array(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<f64>>>{
+pub fn get_float_array(root : &RootObject, name : &str) -> Option<Qv<Vec<f64>>>{
     if let Some(RustParam::FloatArray(b)) = get_param(root, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
@@ -109,28 +109,28 @@ pub fn get_float_array(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<f64>>
     }
 }
 
-pub fn get_float_array_def(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<f64>>>{
+pub fn get_float_array_def(root : &RootObject, name : &str) -> Option<Qv<Vec<f64>>>{
     if let Some(RustParam::FloatArray(b)) = get_param_def(root, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
         None
     }
 }
-pub fn get_binary(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+pub fn get_binary(root : &RootObject, name : &str) -> Option<Qv<Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param(root, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
         None
     }
 }
-pub fn get_binary_def(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+pub fn get_binary_def(root : &RootObject, name : &str) -> Option<Qv<Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param_def(root, name){
         Some(b.map(|s| s.vec().clone()))
     } else{
         None
     }
 }
-pub fn get_immutable_binary<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
+pub fn get_immutable_binary<'a>(root : &'a RootObject, name : &str) -> Option<Qv<&'a Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param(root, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec())),
@@ -141,7 +141,7 @@ pub fn get_immutable_binary<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Opt
         None
     }
 }
-pub fn get_immutable_str<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'b String>>{
+pub fn get_immutable_str<'a>(root : &'a RootObject, name : &str) -> Option<Qv<&'a String>>{
     if let Some(RustParam::String(b)) = get_param(root, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.string())),
@@ -152,7 +152,7 @@ pub fn get_immutable_str<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option
         None
     }
 }
-pub fn get_immutable_int_array<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'b Vec<i64>>>{
+pub fn get_immutable_int_array<'a>(root : &'a RootObject, name : &str) -> Option<Qv<&'a Vec<i64>>>{
     if let Some(RustParam::IntArray(b)) = get_param(root, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec())),
@@ -163,7 +163,7 @@ pub fn get_immutable_int_array<'a, 'b>(root : RootObjectPtr, name : &'a str) -> 
         None
     }
 }
-pub fn get_immutable_float_array<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'b Vec<f64>>>{
+pub fn get_immutable_float_array<'a>(root : &'a RootObject, name : &str) -> Option<Qv<&'a Vec<f64>>>{
     if let Some(RustParam::FloatArray(b)) = get_param(root, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec())),
@@ -175,9 +175,9 @@ pub fn get_immutable_float_array<'a, 'b>(root : RootObjectPtr, name : &'a str) -
     }
 }
 
-pub fn get_mutable_binary<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
-    let item =  unsafe{ &mut *ps.ptr };
-    if let Some(RustParam::Binary(b)) = get_param_mut(item.sabun_mut(), name){
+pub fn get_mutable_binary<'a>(ps : &'a mut RootObject, name : &str) -> Option<Qv<&'a mut Vec<u8>>>{
+
+    if let Some(RustParam::Binary(b)) = get_param_mut(ps.sabun_mut(), name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
             Qv::Null => Some(Qv::Null),
@@ -187,9 +187,9 @@ pub fn get_mutable_binary<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<
         None
     }
 }
-pub fn get_mutable_str<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut String>>{
-    let item =  unsafe{ &mut *ps.ptr };
-    if let Some(RustParam::String(b)) = get_param_mut(item.sabun_mut(), name){
+pub fn get_mutable_str<'a>(ps : &'a mut RootObject, name : &str) -> Option<Qv<&'a mut String>>{
+
+    if let Some(RustParam::String(b)) = get_param_mut(ps.sabun_mut(), name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.string_mut())),
             Qv::Null => Some(Qv::Null),
@@ -199,9 +199,9 @@ pub fn get_mutable_str<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<
         None
     }
 }
-pub fn get_mutable_int_array<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<i64>>>{
-    let item =  unsafe{ &mut *ps.ptr };
-    if let Some(RustParam::IntArray(b)) = get_param_mut(item.sabun_mut(), name){
+pub fn get_mutable_int_array<'a>(ps : &'a mut RootObject, name : &str) -> Option<Qv<&'a mut Vec<i64>>>{
+
+    if let Some(RustParam::IntArray(b)) = get_param_mut(ps.sabun_mut(), name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
             Qv::Null => Some(Qv::Null),
@@ -232,7 +232,7 @@ pub fn get_table(root_def : *const RootDefObj, name : &str) -> Option<TablePtr>{
 }
 
 
-pub fn get_clist<T : From<CItemPtr>>(root_ptr : RootObjectPtr, name : &str) -> Option<CListPtr<T>>{
+pub fn get_clist<'a, T : From<CItemPtr<'a>>>(root_ptr : RootObjectPtr, name : &str) -> Option<CListPtr<T>>{
     let root = unsafe{ &*root_ptr.ptr };
     if let Some(RootValue::CList(l)) = root.default().get(name){
         Some(CListPtr::new(l.list(), l.default(), root.default()))
@@ -254,6 +254,22 @@ pub fn get_mlist<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Optio
     }
     return None;
 }
+
+// ///If you modify values through this MListPtr, it's an undefined behavior, so this is very unsafe.
+// pub unsafe fn get_mlist_const<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
+//     let (def, sabun) = unsafe{  ((*root.ptr).default(), (*root.ptr).sabun()) };
+//     if let Some(RootValue::MList(l)) = def.get(name){
+//         if let Some(RootSabValue::Mut(m)) = sabun.get(name) {
+//             if let Some(m) = m {
+//                 return Some(Some(MListPtr::new(m.list() as *const _ as *mut _, l.default(), def)));
+//             } else{
+//                 return Some(None);
+//             }
+//         }
+//     }
+//     return None;
+// }
+
 
 pub fn get_param<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustParam> {
     let ptr = unsafe{ &*ps.ptr };

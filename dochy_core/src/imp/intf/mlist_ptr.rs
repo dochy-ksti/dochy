@@ -1,9 +1,10 @@
-use crate::imp::structs::linked_m::{LinkedMap, LinkedMapUnsafeIter};
+use crate::imp::structs::linked_m::{LinkedMap};
 use crate::imp::structs::rust_list::MutItem;
 use std::marker::PhantomData;
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::intf::mitem::MItemPtr;
+use crate::imp::intf::mitem_ptr::MItemPtr;
 use crate::imp::structs::root_def_obj::RootDefObj;
+use crate::imp::structs::linked_map_unsafe_iter::LinkedMapUnsafeIter;
 
 /// This uses pointers so every method is basically unsafe.
 /// You can get this ptr, and create an immutable reference,
@@ -15,6 +16,9 @@ use crate::imp::structs::root_def_obj::RootDefObj;
 /// is also an undefined behavior.
 ///
 /// Pointers can outlive their referents, and access dropped items. It's also UB.
+///
+/// Because references and pointers are not exposed,
+/// creating contradict references is basically impossible.
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct MListPtr<V : From<MItemPtr>>{
