@@ -28,7 +28,7 @@ impl MItemPtr {
     /// マルチスレッド化はArc::make_mutを用いて行われるので、マルチスレッドで同一アドレスへのアクセスが有る場合、
     /// &mutを得る時はmake_mutによりコピーが行われるので、&mutと&参照がかぶることもないはず
     /// このPtrが正しくラップされ、ライフタイムルールが壊れていなければ、シングルスレッドにおいて&mut と &が同時に存在することは出来ないが、
-    /// それ以前に参照を露出しなければ、シングルスレッドでは参照を複数存在させることは基本的に無理である
+    /// そもそもそれ以前に参照を露出しなければ、シングルスレッドでは参照を複数存在させることは基本的に無理である
     pub fn new(item : *const MutItem, list_def : *const ListDefObj, root_def : *const RootDefObj) -> MItemPtr {
         MItemPtr { item, list_def, root_def }
     }

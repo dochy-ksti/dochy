@@ -5,16 +5,6 @@ use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::util::hash_m::HashS;
 use crate::imp::structs::root_def_obj::RootDefObj;
 
-// pub fn get_member_desc(root : *const ConstData) -> MemberDescs{
-//     let root = unsafe{ root.as_ref().unwrap() };
-//     get_list_def_desc(root.default())
-// }
-
-// pub fn get_ref_desc(root : *const ConstData) -> RefDescs{
-//     let root = unsafe{ root.as_ref().unwrap() };
-//     get_ref_def_desc(root.default().refs())
-// }
-
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct TablePtr {
     ptr : *const ConstTable,
