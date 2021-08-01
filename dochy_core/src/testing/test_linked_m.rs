@@ -293,23 +293,23 @@ mod tests {
     #[test]
     fn unsafe_iter(){
         let mut map = create_map3();
-        let mut iter = unsafe{ map.iter_unsafe() };
-        assert_eq!(iter.next(), Some((&0,&0)));
-        assert_eq!(iter.current(), Some((&1,&1)));
-        assert_eq!(iter.prev(), Some((&1,&1)));
+        let mut iter = unsafe{ map.iter_unsafe_mut() };
+        assert_eq!(iter.next_const(), Some((&0,&0)));
+        assert_eq!(iter.current_const(), Some((&1,&1)));
+        assert_eq!(iter.prev_const(), Some((&1,&1)));
         map.remove(1);
-        assert_eq!(iter.next(), Some((&0,&0)));
-        assert_eq!(iter.current(), Some((&2,&2)));
+        assert_eq!(iter.next_const(), Some((&0,&0)));
+        assert_eq!(iter.current_const(), Some((&2,&2)));
 
         let mut map = create_map3();
-        let mut iter = unsafe{ map.iter_unsafe() };
-        assert_eq!(iter.current(), Some((&0,&0)));
+        let mut iter = unsafe{ map.iter_unsafe_mut() };
+        assert_eq!(iter.current_const(), Some((&0,&0)));
         map.move_to_last(0);
-        assert_eq!(iter.prev(), Some((&0,&0)));
-        assert_eq!(iter.prev(), Some((&2,&2)));
-        assert_eq!(iter.prev(), Some((&1,&1)));
-        assert_eq!(iter.prev(), None);
-        assert_eq!(iter.prev(), None);
+        assert_eq!(iter.prev_const(), Some((&0,&0)));
+        assert_eq!(iter.prev_const(), Some((&2,&2)));
+        assert_eq!(iter.prev_const(), Some((&1,&1)));
+        assert_eq!(iter.prev_const(), None);
+        assert_eq!(iter.prev_const(), None);
 
 
     }

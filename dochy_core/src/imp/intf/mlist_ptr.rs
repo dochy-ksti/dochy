@@ -29,8 +29,9 @@ pub struct MListPtr<V : From<MItemPtr>>{
 }
 
 impl<V : From<MItemPtr>> MListPtr<V>{
-    /// &LinkedMap<MutItem>から得たポインタを通して書き換えるとUBなので、注意して書き換えないようにしなければならない
-    /// ものすごくunsafe
+    /// &LinkedMap<MutItem>から得たポインタを通して書き換えるとUBなので、
+    /// 書き換える場合&mut LinkedMapからポインタを取得し、*constに入れる
+    /// Const版とMut版に分けて安全に書くのも出来なくはない気がするが大変すぎるのでこのようになっている
     pub fn new(map : *const LinkedMap<MutItem>, list_def : *const ListDefObj, root_def : *const RootDefObj)
         -> MListPtr<V>{ MListPtr { map, list_def, root_def, phantom : PhantomData } }
 
@@ -39,7 +40,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
     }
 
     fn map(&self) -> &LinkedMap<MutItem>{ unsafe{ &*self.map }}
-    fn map_mut(&mut self) -> &mut LinkedMap<MutItem>{ unsafe{ &mut *(self.map as *mut LinkedMap<MutItem>) }}
+    fn map_mut<'a>(&mut self) -> &'a mut LinkedMap<MutItem>{ unsafe{ &mut *(self.map as *mut LinkedMap<MutItem>) }}
 
     pub fn first_mut(&mut self) -> Option<V> {
         let map = self.map_mut();
@@ -93,12 +94,12 @@ impl<V : From<MItemPtr>> MListPtr<V>{
     pub fn insert_last(&mut self) -> V{
         let map = self.map_mut();
         let id = map.insert_last(MutItem::default());
-        self.get_item(id).unwrap()
+        self.get_item_mut(id).unwrap()
     }
     pub fn insert_first(&mut self) -> V{
         let map = self.map_mut();
         let id = map.insert_first(MutItem::default());
-        self.get_item(id).unwrap()
+        self.get_item_mut(id).unwrap()
     }
 
     /// Anything can happen when a removed item is accessed, so be careful
@@ -139,20 +140,22 @@ impl<V : From<MItemPtr>> MListPtr<V>{
         MListPtrIter::new(iter, self.list_def, self.root_def)
     }
 
-    pub unsafe fn iter_from_last_const(&self) -> MListPtrIter<V> {
-        let map = &mut *self.map;
-        MListPtrIter::new(map.iter_from_last_unsafe(), self.list_def, self.root_def)
+    pub fn iter_from_last_const(&self) -> MListPtrIter<V> {
+        let iter = unsafe{ self.map().iter_from_last_unsafe_const() };
+        MListPtrIter::new(iter, self.list_def, self.root_def)
     }
-    pub fn iter_from_last(&mut self) -> MListPtrIter<V>{
-        unsafe{ self.iter_from_last_const() }
+    pub fn iter_from_last_mut(&mut self) -> MListPtrIter<V>{
+        let iter = unsafe{ self.map_mut().iter_from_last_unsafe_mut() };
+        MListPtrIter::new(iter, self.list_def, self.root_def)
     }
 
-    pub unsafe fn iter_from_id_const(&self, id : u64) -> Option<MListPtrIter<V>> {
-        let map = &mut *self.map;
-        map.iter_from_id_unsafe(id).map(|iter| MListPtrIter::new(iter, self.list_def, self.root_def))
+    pub fn iter_from_id_const(&self, id : u64) -> Option<MListPtrIter<V>> {
+        let iter = unsafe{ self.map().iter_from_id_unsafe_const(id) };
+        iter.map(|iter| MListPtrIter::new(iter, self.list_def, self.root_def))
     }
-    pub fn iter_from_id(&mut self, id : u64)-> Option<MListPtrIter<V>> {
-        unsafe{ self.iter_from_id_const(id) }
+    pub fn iter_from_id_mut(&mut self, id : u64)-> Option<MListPtrIter<V>> {
+        let iter = unsafe{ self.map_mut().iter_from_id_unsafe_mut(id) };
+        iter.map(|iter| MListPtrIter::new(iter, self.list_def, self.root_def))
     }
 }
 

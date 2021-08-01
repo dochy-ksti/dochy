@@ -34,7 +34,7 @@ impl MItemPtr {
     }
     pub fn item(&self) -> *const MutItem { self.item }
     /// *const MutItem must be obtained from &mut when this is mutated
-    pub unsafe fn item_mut(&self) -> &mut MutItem { unsafe{ &mut *(self.item as *mut _) } }
+    pub unsafe fn item_mut<'a>(&self) -> &'a mut MutItem { unsafe{ &mut *(self.item as *mut _) } }
     pub fn list_def(&self) -> *const ListDefObj{ self.list_def }
 
 }
@@ -57,9 +57,9 @@ pub fn get_mil_mut<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Opt
 pub unsafe fn get_mil_const<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
     let (item, list_def) = unsafe { (&*ps.item, &*ps.list_def) };
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
-        if let Some(ListSabValue::Mil(data)) = item.values().get_mut(name) {
+        if let Some(ListSabValue::Mil(data)) = item.values().get(name) {
             if let Some(inner) = data {
-                return Some(Some(MListPtr::new(inner.list_mut(), md.default(), ps.root_def)))
+                return Some(Some(MListPtr::new(inner.list(), md.default(), ps.root_def)))
             } else {
                 return Some(None)
             }
@@ -322,7 +322,7 @@ pub fn get_param_def<'a>(ps : MItemPtr, name : &str) -> Option<&'a RustParam>{
 
 /// 差分がない場合、デフォルト値をコピーして差分にツッコミ、さらにその&mut を返す
 pub fn get_param_mut<'a>(ps : MItemPtr, name : &str) -> Option<&'a mut RustParam> {
-    let (def, item) = unsafe { (&*ps.list_def, ps.item_mut()) };
+    let (def, item) = unsafe { (&*ps.list_def, ps.clone().item_mut()) };
     if let Some(ListSabValue::Param(p)) = item.values_mut().get_mut(name) {
         return Some(p);
     }
@@ -340,7 +340,7 @@ pub fn get_param_mut<'a>(ps : MItemPtr, name : &str) -> Option<&'a mut RustParam
 }
 
 pub fn set_ref(ps : MItemPtr, list_name : &str, id : Qv<String>) -> bool{
-    let (item, _def)= unsafe{ (ps.item.as_mut().unwrap(), ps.list_def.as_ref().unwrap()) };
+    let item = unsafe{ ps.item_mut() };
     item.refs_mut().insert(list_name.to_string(), RefSabValue::new(id));
     return true;
 }
@@ -354,12 +354,12 @@ pub fn get_ref(ps : MItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
 }
 
 pub fn get_ref_id(ps : MItemPtr, list_name : &str) -> Option<Qv<String>>{
-    let (item, list_def) = unsafe{ (ps.item.as_ref().unwrap(), ps.list_def.as_ref().unwrap()) };
+    let (item, list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
     get_ref_id_impl(item.refs(), list_def, list_name)
 }
 
 pub fn get_enum(ps : MItemPtr) -> Option<(String, String)>{
-    let item = unsafe{ ps.item.as_ref().unwrap() };
+    let item = unsafe{ &*ps.item };
     get_enum_impl(item.refs())
 }
 
@@ -373,7 +373,7 @@ pub fn set_enum(ps : MItemPtr, list_name : &str, id : &str) -> bool{
 /// len is ignored except for vec-types.
 /// This should be needed in the C interface.
 pub fn set_initial_value<'a>(ps : MItemPtr, name : &str, len : usize) -> bool{
-    let (def, item) = unsafe { (&*ps.list_def, &mut *ps.item) };
+    let (def, item) = unsafe { (&*ps.list_def, ps.item_mut()) };
     if let Some(ListDefValue::Param(p, _)) = def.default().get(name) {
         item.values_mut().insert(name.to_string(), ListSabValue::Param(p.to_default_value(len)));
         return true;
