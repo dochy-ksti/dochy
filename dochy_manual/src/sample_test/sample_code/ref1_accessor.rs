@@ -16,21 +16,17 @@ impl RootIntf{
     pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
-	pub unsafe fn list_us(&self) -> MListPtr<ListMItem>{
-		root::get_mlist(self.ptr, "list").unwrap()
-	}
 	pub fn list(&self) -> MListConst<ListMItem>{
-		MListConst::new(unsafe{ self.list_us() }, self)
+		let mil = root::get_mlist_const(self.ptr, "list").unwrap().unwrap();
+		MListConst::new(mil, self)
 	}
 	pub fn list_mut(&mut self) -> MListMut<ListMItem>{
-		MListMut::new(unsafe{ self.list_us() }, self)
-	}
-	pub unsafe fn table_a_us(&self) -> TableATable{
-		let ans = root::get_table(self.ptr, "tableA").unwrap();
-		TableATable::new(ans)
+		let mil = root::get_mlist_mut(self.ptr, "list").unwrap().unwrap();
+		MListMut::new(mil, self)
 	}
 	pub fn table_a(&self) -> CTableConst<TableATable>{
-		CTableConst::new(unsafe{ self.table_a_us() }, self)
+		let t = TableATable::new(root::get_table(self.ptr.def(), "tableA").unwrap());
+		CTableConst::new(t, self)
 	}
 }
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -44,26 +40,26 @@ impl From<MItemPtr> for ListMItem {
 }
 impl ListMItem {
 	pub fn bar(&self) -> i64{
-		let qv = mitem_ptr::get_int(self.ptr, "bar").unwrap();
+		let qv = mitem::get_int(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn bar_def_val(&self) -> i64{
-		let qv = mitem_ptr::get_int_def(self.ptr, "bar").unwrap();
+		let qv = mitem::get_int_def(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_bar(&mut self, bar : i64){
-		mitem_ptr::set_int(self.ptr, "bar", Qv::Val(bar));
+		mitem::set_int(self.ptr, "bar", Qv::Val(bar));
 	}
 	pub fn ref_table_a(&self) -> TableACItem{
-		let qv = mitem_ptr::get_ref(self.ptr, "tableA").unwrap();
+		let qv = mitem::get_ref(self.ptr, "tableA").unwrap();
 		TableACItem::from(qv.into_value().unwrap())
 	}
 	pub fn ref_id_table_a(&self) -> String{
-		let qv = mitem_ptr::get_ref_id(self.ptr, "tableA").unwrap();
+		let qv = mitem::get_ref_id(self.ptr, "tableA").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_ref_table_a(&mut self, id : TableATableID){
-		mitem_ptr::set_ref(self.ptr, "tableA", Qv::Val(id.to_str().to_string()));
+		mitem::set_ref(self.ptr, "tableA", Qv::Val(id.to_str().to_string()));
 	}
 }
 

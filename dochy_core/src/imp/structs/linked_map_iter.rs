@@ -1,5 +1,4 @@
-use crate::imp::structs::linked_m::{LinkedMap, MutNode, get_next, ptr_eq, get_prev};
-use std::ptr::null_mut;
+use crate::imp::structs::linked_m::{LinkedMap, MutNode};
 use crate::imp::structs::linked_map_unsafe_iter::LinkedMapUnsafeIter;
 use std::marker::PhantomData;
 

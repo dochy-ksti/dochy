@@ -16,14 +16,13 @@ impl RootIntf{
     pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
-	pub unsafe fn mlist_us(&self) -> MListPtr<MlistMItem>{
-		root::get_mlist(self.ptr, "mlist").unwrap()
-	}
 	pub fn mlist(&self) -> MListConst<MlistMItem>{
-		MListConst::new(unsafe{ self.mlist_us() }, self)
+		let mil = root::get_mlist_const(self.ptr, "mlist").unwrap().unwrap();
+		MListConst::new(mil, self)
 	}
 	pub fn mlist_mut(&mut self) -> MListMut<MlistMItem>{
-		MListMut::new(unsafe{ self.mlist_us() }, self)
+		let mil = root::get_mlist_mut(self.ptr, "mlist").unwrap().unwrap();
+		MListMut::new(mil, self)
 	}
 }
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -37,26 +36,26 @@ impl From<MItemPtr> for MlistMItem {
 }
 impl MlistMItem {
 	pub fn bar(&self) -> i64{
-		let qv = mitem_ptr::get_int(self.ptr, "bar").unwrap();
+		let qv = mitem::get_int(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn bar_def_val(&self) -> i64{
-		let qv = mitem_ptr::get_int_def(self.ptr, "bar").unwrap();
+		let qv = mitem::get_int_def(self.ptr, "bar").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_bar(&mut self, bar : i64){
-		mitem_ptr::set_int(self.ptr, "bar", Qv::Val(bar));
+		mitem::set_int(self.ptr, "bar", Qv::Val(bar));
 	}
 	pub fn baz(&self) -> i64{
-		let qv = mitem_ptr::get_int(self.ptr, "baz").unwrap();
+		let qv = mitem::get_int(self.ptr, "baz").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn baz_def_val(&self) -> i64{
-		let qv = mitem_ptr::get_int_def(self.ptr, "baz").unwrap();
+		let qv = mitem::get_int_def(self.ptr, "baz").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_baz(&mut self, baz : i64){
-		mitem_ptr::set_int(self.ptr, "baz", Qv::Val(baz));
+		mitem::set_int(self.ptr, "baz", Qv::Val(baz));
 	}
 	
 	

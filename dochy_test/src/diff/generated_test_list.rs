@@ -17,28 +17,21 @@
 	    pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
 	    pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 	
-		pub unsafe fn refed2_us(&self) -> Refed2Table{
-			let ans = root::get_table(self.ptr, "refed2").unwrap();
-			Refed2Table::new(ans)
-		}
 		pub fn refed2(&self) -> CTableConst<Refed2Table>{
-			CTableConst::new(unsafe{ self.refed2_us() }, self)
-		}
-		pub unsafe fn list_us(&self) -> MListPtr<ListMItem>{
-			root::get_mlist(self.ptr, "list").unwrap()
+			let t = Refed2Table::new(root::get_table(self.ptr.def(), "refed2").unwrap());
+			CTableConst::new(t, self)
 		}
 		pub fn list(&self) -> MListConst<ListMItem>{
-			MListConst::new(unsafe{ self.list_us() }, self)
+			let mil = root::get_mlist_const(self.ptr, "list").unwrap().unwrap();
+			MListConst::new(mil, self)
 		}
 		pub fn list_mut(&mut self) -> MListMut<ListMItem>{
-			MListMut::new(unsafe{ self.list_us() }, self)
-		}
-		pub unsafe fn refed1_us(&self) -> Refed1Table{
-			let ans = root::get_table(self.ptr, "refed1").unwrap();
-			Refed1Table::new(ans)
+			let mil = root::get_mlist_mut(self.ptr, "list").unwrap().unwrap();
+			MListMut::new(mil, self)
 		}
 		pub fn refed1(&self) -> CTableConst<Refed1Table>{
-			CTableConst::new(unsafe{ self.refed1_us() }, self)
+			let t = Refed1Table::new(root::get_table(self.ptr.def(), "refed1").unwrap());
+			CTableConst::new(t, self)
 		}
 	}
 	#[derive(Debug, PartialEq)]
@@ -131,35 +124,34 @@
 	}
 	impl ListMItem {
 		pub fn mem(&self) -> i64{
-			let qv = mitem_ptr::get_int(self.ptr, "mem").unwrap();
+			let qv = mitem::get_int(self.ptr, "mem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn mem_def_val(&self) -> i64{
-			let qv = mitem_ptr::get_int_def(self.ptr, "mem").unwrap();
+			let qv = mitem::get_int_def(self.ptr, "mem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_mem(&mut self, mem : i64){
-			mitem_ptr::set_int(self.ptr, "mem", Qv::Val(mem));
-		}
-		pub unsafe fn in_list_us(&self) -> MListPtr<InListMItem>{
-			mitem_ptr::get_mil(self.ptr, "inList").unwrap().unwrap()
+			mitem::set_int(self.ptr, "mem", Qv::Val(mem));
 		}
 		pub fn in_list(&self) -> MListConst<InListMItem>{
-			MListConst::new(unsafe{ self.in_list_us() }, self)
+			let mil = mitem::get_mil_const(self.ptr, "inList").unwrap().unwrap();
+			MListConst::new(mil, self)
 		}
 		pub fn in_list_mut(&mut self) -> MListMut<InListMItem>{
-			MListMut::new(unsafe{ self.in_list_us() }, self)
+			let mil = mitem::get_mil_mut(self.ptr, "inList").unwrap().unwrap();
+			MListMut::new(mil, self)
 		}
 		pub fn ref_refed1(&self) -> Refed1CItem{
-			let qv = mitem_ptr::get_ref(self.ptr, "refed1").unwrap();
+			let qv = mitem::get_ref(self.ptr, "refed1").unwrap();
 			Refed1CItem::from(qv.into_value().unwrap())
 		}
 		pub fn ref_id_refed1(&self) -> String{
-			let qv = mitem_ptr::get_ref_id(self.ptr, "refed1").unwrap();
+			let qv = mitem::get_ref_id(self.ptr, "refed1").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_ref_refed1(&mut self, id : Refed1TableID){
-			mitem_ptr::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
+			mitem::set_ref(self.ptr, "refed1", Qv::Val(id.to_str().to_string()));
 		}
 	}
 	#[derive(Debug, PartialEq, Clone, Copy)]
@@ -173,35 +165,34 @@
 	}
 	impl InListMItem {
 		pub fn in_mem(&self) -> i64{
-			let qv = mitem_ptr::get_int(self.ptr, "inMem").unwrap();
+			let qv = mitem::get_int(self.ptr, "inMem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn in_mem_def_val(&self) -> i64{
-			let qv = mitem_ptr::get_int_def(self.ptr, "inMem").unwrap();
+			let qv = mitem::get_int_def(self.ptr, "inMem").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_in_mem(&mut self, in_mem : i64){
-			mitem_ptr::set_int(self.ptr, "inMem", Qv::Val(in_mem));
-		}
-		pub unsafe fn in_list2_us(&self) -> MListPtr<InList2MItem>{
-			mitem_ptr::get_mil(self.ptr, "inList2").unwrap().unwrap()
+			mitem::set_int(self.ptr, "inMem", Qv::Val(in_mem));
 		}
 		pub fn in_list2(&self) -> MListConst<InList2MItem>{
-			MListConst::new(unsafe{ self.in_list2_us() }, self)
+			let mil = mitem::get_mil_const(self.ptr, "inList2").unwrap().unwrap();
+			MListConst::new(mil, self)
 		}
 		pub fn in_list2_mut(&mut self) -> MListMut<InList2MItem>{
-			MListMut::new(unsafe{ self.in_list2_us() }, self)
+			let mil = mitem::get_mil_mut(self.ptr, "inList2").unwrap().unwrap();
+			MListMut::new(mil, self)
 		}
 		pub fn ref_refed2(&self) -> Refed2CItem{
-			let qv = mitem_ptr::get_ref(self.ptr, "refed2").unwrap();
+			let qv = mitem::get_ref(self.ptr, "refed2").unwrap();
 			Refed2CItem::from(qv.into_value().unwrap())
 		}
 		pub fn ref_id_refed2(&self) -> String{
-			let qv = mitem_ptr::get_ref_id(self.ptr, "refed2").unwrap();
+			let qv = mitem::get_ref_id(self.ptr, "refed2").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_ref_refed2(&mut self, id : Refed2TableID){
-			mitem_ptr::set_ref(self.ptr, "refed2", Qv::Val(id.to_str().to_string()));
+			mitem::set_ref(self.ptr, "refed2", Qv::Val(id.to_str().to_string()));
 		}
 	}
 	#[derive(Debug, PartialEq, Clone, Copy)]
@@ -215,15 +206,15 @@
 	}
 	impl InList2MItem {
 		pub fn in_mem2(&self) -> i64{
-			let qv = mitem_ptr::get_int(self.ptr, "inMem2").unwrap();
+			let qv = mitem::get_int(self.ptr, "inMem2").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn in_mem2_def_val(&self) -> i64{
-			let qv = mitem_ptr::get_int_def(self.ptr, "inMem2").unwrap();
+			let qv = mitem::get_int_def(self.ptr, "inMem2").unwrap();
 			qv.into_value().unwrap()
 		}
 		pub fn set_in_mem2(&mut self, in_mem2 : i64){
-			mitem_ptr::set_int(self.ptr, "inMem2", Qv::Val(in_mem2));
+			mitem::set_int(self.ptr, "inMem2", Qv::Val(in_mem2));
 		}
 		
 		

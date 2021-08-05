@@ -34,7 +34,7 @@ impl MItemPtr {
     }
     pub fn item(&self) -> *const MutItem { self.item }
     /// *const MutItem must be obtained from &mut when this is mutated
-    pub unsafe fn item_mut<'a>(&self) -> &'a mut MutItem { unsafe{ &mut *(self.item as *mut _) } }
+    pub unsafe fn item_mut<'a>(&self) -> &'a mut MutItem { &mut *(self.item as *mut _) }
     pub fn list_def(&self) -> *const ListDefObj{ self.list_def }
 
 }
@@ -54,7 +54,7 @@ pub fn get_mil_mut<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Opt
 }
 
 /// Mutation through this ptr is undefined behavior
-pub unsafe fn get_mil_const<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
+pub fn get_mil_const<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
     let (item, list_def) = unsafe { (&*ps.item, &*ps.list_def) };
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
         if let Some(ListSabValue::Mil(data)) = item.values().get(name) {

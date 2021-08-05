@@ -2,7 +2,7 @@ use crate::imp::structs::linked_m::{LinkedMap};
 use crate::imp::structs::rust_list::MutItem;
 use std::marker::PhantomData;
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::intf::mitem_ptr::MItemPtr;
+use crate::imp::intf::mitem::MItemPtr;
 use crate::imp::structs::root_def_obj::RootDefObj;
 use crate::imp::structs::linked_map_unsafe_iter::LinkedMapUnsafeIter;
 
@@ -58,7 +58,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
         self.map_mut().last_mut().map(|r| self.from(r))
     }
 
-    pub unsafe fn last_const(&self) -> Option<V> {
+    pub fn last_const(&self) -> Option<V> {
         self.map().last().map(|r| self.from(r))
     }
 
@@ -69,7 +69,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
         self.map_mut().get_item_mut(id).map(|b| self.from(b))
     }
 
-    pub unsafe fn get_item_const(&self, id : u64) -> Option<V>{
+    pub fn get_item_const(&self, id : u64) -> Option<V>{
         self.map().get_item(id).map(|b| self.from(b))
     }
 

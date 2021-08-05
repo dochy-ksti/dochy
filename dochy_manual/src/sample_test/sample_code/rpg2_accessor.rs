@@ -16,28 +16,21 @@ impl RootIntf{
     pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
-	pub unsafe fn sword_us(&self) -> SwordTable{
-		let ans = root::get_table(self.ptr, "sword").unwrap();
-		SwordTable::new(ans)
-	}
 	pub fn sword(&self) -> CTableConst<SwordTable>{
-		CTableConst::new(unsafe{ self.sword_us() }, self)
-	}
-	pub unsafe fn pc_list_us(&self) -> MListPtr<PcListMItem>{
-		root::get_mlist(self.ptr, "pcList").unwrap()
+		let t = SwordTable::new(root::get_table(self.ptr.def(), "sword").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub fn pc_list(&self) -> MListConst<PcListMItem>{
-		MListConst::new(unsafe{ self.pc_list_us() }, self)
+		let mil = root::get_mlist_const(self.ptr, "pcList").unwrap().unwrap();
+		MListConst::new(mil, self)
 	}
 	pub fn pc_list_mut(&mut self) -> MListMut<PcListMItem>{
-		MListMut::new(unsafe{ self.pc_list_us() }, self)
-	}
-	pub unsafe fn herb_us(&self) -> HerbTable{
-		let ans = root::get_table(self.ptr, "herb").unwrap();
-		HerbTable::new(ans)
+		let mil = root::get_mlist_mut(self.ptr, "pcList").unwrap().unwrap();
+		MListMut::new(mil, self)
 	}
 	pub fn herb(&self) -> CTableConst<HerbTable>{
-		CTableConst::new(unsafe{ self.herb_us() }, self)
+		let t = HerbTable::new(root::get_table(self.ptr.def(), "herb").unwrap());
+		CTableConst::new(t, self)
 	}
 }
 #[derive(Debug, PartialEq)]
@@ -137,33 +130,32 @@ impl From<MItemPtr> for PcListMItem {
 	}
 }
 impl PcListMItem {
-	pub unsafe fn items_us(&self) -> MListPtr<ItemsMItem>{
-		mitem_ptr::get_mil(self.ptr, "items").unwrap().unwrap()
-	}
 	pub fn items(&self) -> MListConst<ItemsMItem>{
-		MListConst::new(unsafe{ self.items_us() }, self)
+		let mil = mitem::get_mil_const(self.ptr, "items").unwrap().unwrap();
+		MListConst::new(mil, self)
 	}
 	pub fn items_mut(&mut self) -> MListMut<ItemsMItem>{
-		MListMut::new(unsafe{ self.items_us() }, self)
+		let mil = mitem::get_mil_mut(self.ptr, "items").unwrap().unwrap();
+		MListMut::new(mil, self)
 	}
 	pub fn name(&self) -> String{
-		let qv = mitem_ptr::get_str(self.ptr, "name").unwrap();
+		let qv = mitem::get_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn name_def_val(&self) -> String{
-		let qv = mitem_ptr::get_str_def(self.ptr, "name").unwrap();
+		let qv = mitem::get_str_def(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn name_immutable(&self) -> &String{
-		let qv = mitem_ptr::get_immutable_str(self.ptr, "name").unwrap();
+		let qv = mitem::get_immutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn name_mutable(&mut self) -> &mut String{
-		let qv = mitem_ptr::get_mutable_str(self.ptr, "name").unwrap();
+		let qv = mitem::get_mutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_name(&mut self, name : String){
-		mitem_ptr::set_str(self.ptr, "name", Qv::Val(name));
+		mitem::set_str(self.ptr, "name", Qv::Val(name));
 	}
 	
 	
@@ -179,16 +171,16 @@ impl From<MItemPtr> for ItemsMItem {
 }
 impl ItemsMItem {
 	pub fn get_enum(&self) -> ItemsEnum{
-		let (list_name, _) = mitem_ptr::get_enum(self.ptr).unwrap();
-		let p = if let Qv::Val(p) = mitem_ptr::get_ref(self.ptr, &list_name).unwrap(){ p } else { unreachable!() };
+		let (list_name, _) = mitem::get_enum(self.ptr).unwrap();
+		let p = if let Qv::Val(p) = mitem::get_ref(self.ptr, &list_name).unwrap(){ p } else { unreachable!() };
 		ItemsEnum::new(&list_name,p)
 	}
 	pub fn get_enum_ids(&self) -> (String,String){
-		mitem_ptr::get_enum(self.ptr).unwrap()
+		mitem::get_enum(self.ptr).unwrap()
 	}
 	pub fn set_enum(&self, kind : ItemsKind){
 		let (list_name, id) = kind.id();
-		mitem_ptr::set_enum(self.ptr, list_name, id);
+		mitem::set_enum(self.ptr, list_name, id);
 	}
 }
 pub enum ItemsEnum{ Sword(SwordCItem), Herb(HerbCItem), }

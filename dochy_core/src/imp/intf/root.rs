@@ -9,7 +9,6 @@ use crate::imp::intf::table::TablePtr;
 use crate::imp::intf::citem::CItemPtr;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
 use crate::structs::{RustBinary};
-use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
 use crate::imp::structs::root_def_obj::RootDefObj;
 use crate::imp::intf::{MListPtr, MItemPtr};
@@ -20,6 +19,9 @@ pub struct RootObjectPtr{
 }
 impl RootObjectPtr {
     pub fn new(ptr: *mut RootObject) -> RootObjectPtr { RootObjectPtr { ptr } }
+    pub fn def(&self) -> *const RootDefObj{
+        (unsafe{ &*self.ptr }).default()
+    }
 }
 
 pub fn get_bool(root : RootObjectPtr, name : &str) -> Option<Qv<bool>>{
@@ -241,7 +243,7 @@ pub fn get_clist<T : From<CItemPtr>>(root_ptr : RootObjectPtr, name : &str) -> O
     }
 }
 
-pub fn get_mlist<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
+pub fn get_mlist_mut<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
     let (def, sabun, _meta) = unsafe{  (*root.ptr).def_and_mut_sab() };
     if let Some(RootValue::MList(l)) = def.get(name){
         if let Some(RootSabValue::Mut(m)) = sabun.get_mut(name) {

@@ -11,7 +11,7 @@ fn mlilst_mut_generate() {
                 &ans.to_string(),
             ).unwrap();
         }
-        Err(e) => {
+        Err(_e) => {
             assert!(false);
         }
     }

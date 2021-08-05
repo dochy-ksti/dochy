@@ -9,6 +9,8 @@ pub mod common{
     pub use dochy_fs::common::JSON_ARC_OPT;
     pub use dochy_fs::common::reserved_filename;
 
+    pub use dochy_fs::common:: DochyCache;
+
     //pub use dochy_fs::common::read_archive;
     //pub use dochy_fs::common::load_archive;
 
@@ -26,7 +28,7 @@ pub mod history{
     pub use dochy_fs::history::HistoryOptionsBuilder;
     pub use dochy_fs::history::CumulativeOptionsBuilder;
 
-    pub use dochy_fs::history::DochyCache;
+
 
     pub use dochy_fs::history::FileHistory;
     pub use dochy_fs::history::HistoryRemover;

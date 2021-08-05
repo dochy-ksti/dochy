@@ -164,12 +164,9 @@ impl RootIntf{
 	pub fn set_binary(&mut self, binary : Vec<u8>){
 		root::set_binary(self.ptr, "binary", Qv::Val(binary));
 	}
-	pub unsafe fn weapon_us(&self) -> WeaponTable{
-		let ans = root::get_table(self.ptr, "weapon").unwrap();
-		WeaponTable::new(ans)
-	}
 	pub fn weapon(&self) -> CTableConst<WeaponTable>{
-		CTableConst::new(unsafe{ self.weapon_us() }, self)
+		let t = WeaponTable::new(root::get_table(self.ptr.def(), "weapon").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub fn float_array(&self) -> Vec<f64>{
 		let qv = root::get_float_array(self.ptr, "floatArray").unwrap();
@@ -209,19 +206,13 @@ impl RootIntf{
 	pub fn set_nullable_int_array(&mut self, nullable_int_array : NullOr<Vec<i64>>){
 		root::set_int_array(self.ptr, "nullableIntArray", nullable_int_array.into_qv());
 	}
-	pub unsafe fn hoge_list_us(&self) -> HogeListTable{
-		let ans = root::get_table(self.ptr, "hogeList").unwrap();
-		HogeListTable::new(ans)
-	}
 	pub fn hoge_list(&self) -> CTableConst<HogeListTable>{
-		CTableConst::new(unsafe{ self.hoge_list_us() }, self)
-	}
-	pub unsafe fn some_data_us(&self) -> SomeDataTable{
-		let ans = root::get_table(self.ptr, "someData").unwrap();
-		SomeDataTable::new(ans)
+		let t = HogeListTable::new(root::get_table(self.ptr.def(), "hogeList").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub fn some_data(&self) -> CTableConst<SomeDataTable>{
-		CTableConst::new(unsafe{ self.some_data_us() }, self)
+		let t = SomeDataTable::new(root::get_table(self.ptr.def(), "someData").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub fn hoge_int(&self) -> i64{
 		let qv = root::get_int(self.ptr, "hogeInt").unwrap();
@@ -234,12 +225,9 @@ impl RootIntf{
 	pub fn set_hoge_int(&mut self, hoge_int : i64){
 		root::set_int(self.ptr, "hogeInt", Qv::Val(hoge_int));
 	}
-	pub unsafe fn usable_us(&self) -> UsableTable{
-		let ans = root::get_table(self.ptr, "usable").unwrap();
-		UsableTable::new(ans)
-	}
 	pub fn usable(&self) -> CTableConst<UsableTable>{
-		CTableConst::new(unsafe{ self.usable_us() }, self)
+		let t = UsableTable::new(root::get_table(self.ptr.def(), "usable").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub unsafe fn item_list3_us(&self) -> CListPtr<ItemList3CItem>{
 		root::get_clist(self.ptr, "itemList3").unwrap()
@@ -247,14 +235,13 @@ impl RootIntf{
 	pub fn item_list3(&self) -> CListConst<ItemList3CItem>{
 		CListConst::new(unsafe{ self.item_list3_us() }, self)
 	}
-	pub unsafe fn mut1_us(&self) -> MListPtr<Mut1MItem>{
-		root::get_mlist(self.ptr, "mut1").unwrap()
-	}
 	pub fn mut1(&self) -> MListConst<Mut1MItem>{
-		MListConst::new(unsafe{ self.mut1_us() }, self)
+		let mil = root::get_mlist_const(self.ptr, "mut1").unwrap().unwrap();
+		MListConst::new(mil, self)
 	}
 	pub fn mut1_mut(&mut self) -> MListMut<Mut1MItem>{
-		MListMut::new(unsafe{ self.mut1_us() }, self)
+		let mil = root::get_mlist_mut(self.ptr, "mut1").unwrap().unwrap();
+		MListMut::new(mil, self)
 	}
 	pub fn hego_int(&self) -> NullOr<i64>{
 		let qv = root::get_int(self.ptr, "hegoInt").unwrap();
@@ -267,26 +254,17 @@ impl RootIntf{
 	pub fn set_hego_int(&mut self, hego_int : NullOr<i64>){
 		root::set_int(self.ptr, "hegoInt", hego_int.into_qv());
 	}
-	pub unsafe fn huga_list_us(&self) -> HugaListTable{
-		let ans = root::get_table(self.ptr, "hugaList").unwrap();
-		HugaListTable::new(ans)
-	}
 	pub fn huga_list(&self) -> CTableConst<HugaListTable>{
-		CTableConst::new(unsafe{ self.huga_list_us() }, self)
-	}
-	pub unsafe fn dim2_list_us(&self) -> Dim2ListTable{
-		let ans = root::get_table(self.ptr, "dim2List").unwrap();
-		Dim2ListTable::new(ans)
+		let t = HugaListTable::new(root::get_table(self.ptr.def(), "hugaList").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub fn dim2_list(&self) -> CTableConst<Dim2ListTable>{
-		CTableConst::new(unsafe{ self.dim2_list_us() }, self)
-	}
-	pub unsafe fn unko_list_us(&self) -> UnkoListTable{
-		let ans = root::get_table(self.ptr, "unkoList").unwrap();
-		UnkoListTable::new(ans)
+		let t = Dim2ListTable::new(root::get_table(self.ptr.def(), "dim2List").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub fn unko_list(&self) -> CTableConst<UnkoListTable>{
-		CTableConst::new(unsafe{ self.unko_list_us() }, self)
+		let t = UnkoListTable::new(root::get_table(self.ptr.def(), "unkoList").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub fn hoge_string(&self) -> String{
 		let qv = root::get_str(self.ptr, "hogeString").unwrap();
@@ -307,21 +285,17 @@ impl RootIntf{
 	pub fn set_hoge_string(&mut self, hoge_string : String){
 		root::set_str(self.ptr, "hogeString", Qv::Val(hoge_string));
 	}
-	pub unsafe fn hego_list_us(&self) -> HegoListTable{
-		let ans = root::get_table(self.ptr, "hegoList").unwrap();
-		HegoListTable::new(ans)
-	}
 	pub fn hego_list(&self) -> CTableConst<HegoListTable>{
-		CTableConst::new(unsafe{ self.hego_list_us() }, self)
-	}
-	pub unsafe fn mut2_us(&self) -> MListPtr<Mut2MItem>{
-		root::get_mlist(self.ptr, "mut2").unwrap()
+		let t = HegoListTable::new(root::get_table(self.ptr.def(), "hegoList").unwrap());
+		CTableConst::new(t, self)
 	}
 	pub fn mut2(&self) -> MListConst<Mut2MItem>{
-		MListConst::new(unsafe{ self.mut2_us() }, self)
+		let mil = root::get_mlist_const(self.ptr, "mut2").unwrap().unwrap();
+		MListConst::new(mil, self)
 	}
 	pub fn mut2_mut(&mut self) -> MListMut<Mut2MItem>{
-		MListMut::new(unsafe{ self.mut2_us() }, self)
+		let mil = root::get_mlist_mut(self.ptr, "mut2").unwrap().unwrap();
+		MListMut::new(mil, self)
 	}
 	pub fn old_name2_old(&self) -> NullOr<i64>{
 		let qv = root::get_int(self.ptr, "oldName2").unwrap();
@@ -800,33 +774,32 @@ impl From<MItemPtr> for Mut1MItem {
 	}
 }
 impl Mut1MItem {
-	pub unsafe fn inner_mut_list_us(&self) -> MListPtr<InnerMutListMItem>{
-		mitem_ptr::get_mil(self.ptr, "innerMutList").unwrap().unwrap()
-	}
 	pub fn inner_mut_list(&self) -> MListConst<InnerMutListMItem>{
-		MListConst::new(unsafe{ self.inner_mut_list_us() }, self)
+		let mil = mitem::get_mil_const(self.ptr, "innerMutList").unwrap().unwrap();
+		MListConst::new(mil, self)
 	}
 	pub fn inner_mut_list_mut(&mut self) -> MListMut<InnerMutListMItem>{
-		MListMut::new(unsafe{ self.inner_mut_list_us() }, self)
+		let mil = mitem::get_mil_mut(self.ptr, "innerMutList").unwrap().unwrap();
+		MListMut::new(mil, self)
 	}
 	pub fn some_name(&self) -> String{
-		let qv = mitem_ptr::get_str(self.ptr, "someName").unwrap();
+		let qv = mitem::get_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn some_name_def_val(&self) -> String{
-		let qv = mitem_ptr::get_str_def(self.ptr, "someName").unwrap();
+		let qv = mitem::get_str_def(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn some_name_immutable(&self) -> &String{
-		let qv = mitem_ptr::get_immutable_str(self.ptr, "someName").unwrap();
+		let qv = mitem::get_immutable_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn some_name_mutable(&mut self) -> &mut String{
-		let qv = mitem_ptr::get_mutable_str(self.ptr, "someName").unwrap();
+		let qv = mitem::get_mutable_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_some_name(&mut self, some_name : String){
-		mitem_ptr::set_str(self.ptr, "someName", Qv::Val(some_name));
+		mitem::set_str(self.ptr, "someName", Qv::Val(some_name));
 	}
 	
 	
@@ -842,26 +815,26 @@ impl From<MItemPtr> for InnerMutListMItem {
 }
 impl InnerMutListMItem {
 	pub fn inner_list_mem(&self) -> i64{
-		let qv = mitem_ptr::get_int(self.ptr, "innerListMem").unwrap();
+		let qv = mitem::get_int(self.ptr, "innerListMem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn inner_list_mem_def_val(&self) -> i64{
-		let qv = mitem_ptr::get_int_def(self.ptr, "innerListMem").unwrap();
+		let qv = mitem::get_int_def(self.ptr, "innerListMem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_inner_list_mem(&mut self, inner_list_mem : i64){
-		mitem_ptr::set_int(self.ptr, "innerListMem", Qv::Val(inner_list_mem));
+		mitem::set_int(self.ptr, "innerListMem", Qv::Val(inner_list_mem));
 	}
 	pub fn ref_hego_list(&self) -> HegoListCItem{
-		let qv = mitem_ptr::get_ref(self.ptr, "hegoList").unwrap();
+		let qv = mitem::get_ref(self.ptr, "hegoList").unwrap();
 		HegoListCItem::from(qv.into_value().unwrap())
 	}
 	pub fn ref_id_hego_list(&self) -> String{
-		let qv = mitem_ptr::get_ref_id(self.ptr, "hegoList").unwrap();
+		let qv = mitem::get_ref_id(self.ptr, "hegoList").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_ref_hego_list(&mut self, id : HegoListTableID){
-		mitem_ptr::set_ref(self.ptr, "hegoList", Qv::Val(id.to_str().to_string()));
+		mitem::set_ref(self.ptr, "hegoList", Qv::Val(id.to_str().to_string()));
 	}
 }
 
@@ -1200,35 +1173,35 @@ impl From<MItemPtr> for Mut2MItem {
 }
 impl Mut2MItem {
 	pub fn mem(&self) -> String{
-		let qv = mitem_ptr::get_str(self.ptr, "mem").unwrap();
+		let qv = mitem::get_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn mem_def_val(&self) -> String{
-		let qv = mitem_ptr::get_str_def(self.ptr, "mem").unwrap();
+		let qv = mitem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn mem_immutable(&self) -> &String{
-		let qv = mitem_ptr::get_immutable_str(self.ptr, "mem").unwrap();
+		let qv = mitem::get_immutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn mem_mutable(&mut self) -> &mut String{
-		let qv = mitem_ptr::get_mutable_str(self.ptr, "mem").unwrap();
+		let qv = mitem::get_mutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_mem(&mut self, mem : String){
-		mitem_ptr::set_str(self.ptr, "mem", Qv::Val(mem));
+		mitem::set_str(self.ptr, "mem", Qv::Val(mem));
 	}
 	pub fn get_enum(&self) -> Mut2Enum{
-		let (list_name, _) = mitem_ptr::get_enum(self.ptr).unwrap();
-		let p = if let Qv::Val(p) = mitem_ptr::get_ref(self.ptr, &list_name).unwrap(){ p } else { unreachable!() };
+		let (list_name, _) = mitem::get_enum(self.ptr).unwrap();
+		let p = if let Qv::Val(p) = mitem::get_ref(self.ptr, &list_name).unwrap(){ p } else { unreachable!() };
 		Mut2Enum::new(&list_name,p)
 	}
 	pub fn get_enum_ids(&self) -> (String,String){
-		mitem_ptr::get_enum(self.ptr).unwrap()
+		mitem::get_enum(self.ptr).unwrap()
 	}
 	pub fn set_enum(&self, kind : Mut2Kind){
 		let (list_name, id) = kind.id();
-		mitem_ptr::set_enum(self.ptr, list_name, id);
+		mitem::set_enum(self.ptr, list_name, id);
 	}
 }
 pub enum Mut2Enum{ HogeList(HogeListCItem), HegoList(HegoListCItem), HugaList(HugaListCItem), }

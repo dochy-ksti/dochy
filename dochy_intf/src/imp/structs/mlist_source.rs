@@ -3,22 +3,25 @@ use crate::imp::util::to_type_name::{to_snake_name, to_mitem_type_name};
 use crate::imp::util::with_old::with_old;
 use dochy_core::intf::member_desc::{MemberDesc};
 use crate::imp::structs::mitem_source::MItemSource;
+use dochy_core::structs::{VarType};
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct MListSource {
     stem : String,
+    undefiable : bool,
     is_old : bool,
     item_source : MItemSource,
 }
 impl MListSource {
-    pub fn new(stem : String, is_old : bool, item_source : MItemSource) -> MListSource {
-        MListSource { stem, is_old, item_source }
+    pub fn new(stem : String, undefiable : bool, is_old : bool,  item_source : MItemSource) -> MListSource {
+        MListSource { stem, undefiable, is_old, item_source }
     }
     pub fn from(desc : &MemberDesc) -> MListSource {
         let cs = desc.child_descs().unwrap();
 
         MListSource::new(
             desc.name().to_string(),
+            desc.var_type() == VarType::Undefiable,
             desc.is_old(),
             MItemSource::from(desc.name().to_string(), cs.items(), cs.refs())
         )
@@ -36,16 +39,27 @@ impl MListSource {
         let is_old = self.is_old();
         let item_type_name = to_mitem_type_name(id);
         let fn_name = with_old(&snake_name, is_old);
-        sb.push(0,&format!("pub unsafe fn {}_us(&self) -> MListPtr<{}>{{", &fn_name , &item_type_name));
-        sb.push(1,&format!("root::get_mlist(self.ptr, \"{}\").unwrap()", id));
-        sb.push(0,"}");
-        sb.push(0,&format!("pub fn {}(&self) -> MListConst<{}>{{", &fn_name , &item_type_name));
-        sb.push(1,&format!("MListConst::new(unsafe{{ self.{}_us() }}, self)", &fn_name));
-        sb.push(0,"}");
-        sb.push(0,&format!("pub fn {}_mut(&mut self) -> MListMut<{}>{{", &fn_name , &item_type_name));
-        sb.push(1,&format!("MListMut::new(unsafe{{ self.{}_us() }}, self)", &fn_name));
-        sb.push(0,"}");
+        if self.undefiable{
 
+            sb.push(0, &format!("pub fn {}(&self) -> Option<MListConst<{}>>{{", &fn_name , &item_type_name));
+            sb.push(1, &format!("let mil = root::get_mlist_const(self.ptr, \"{}\").unwrap();", id));
+            sb.push(1, &format!("mil.map(move |p| MListConst::new(p, self))"));
+            sb.push(0, "}");
+            sb.push(0, &format!("pub fn {}_mut(&mut self) -> Option<MListMut<{}>>{{", &fn_name , &item_type_name));
+            sb.push(1, &format!("let mil = root::get_mlist_mut(self.ptr, \"{}\").unwrap();", id));
+            sb.push(1, &format!("mil.map(move |p| MListMut::new(p, self))"));
+            sb.push(0, "}");
+        } else {
+
+            sb.push(0, &format!("pub fn {}(&self) -> MListConst<{}>{{", &fn_name, &item_type_name));
+            sb.push(1, &format!("let mil = root::get_mlist_const(self.ptr, \"{}\").unwrap().unwrap();", id));
+            sb.push(1, &format!("MListConst::new(mil, self)"));
+            sb.push(0, "}");
+            sb.push(0, &format!("pub fn {}_mut(&mut self) -> MListMut<{}>{{", &fn_name, &item_type_name));
+            sb.push(1, &format!("let mil = root::get_mlist_mut(self.ptr, \"{}\").unwrap().unwrap();", id));
+            sb.push(1, &format!("MListMut::new(mil, self)"));
+            sb.push(0, "}");
+        }
         sb.to_string()
     }
     pub fn to_string(&self) -> String{

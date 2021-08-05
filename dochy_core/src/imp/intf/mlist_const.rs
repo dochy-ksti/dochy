@@ -18,21 +18,21 @@ impl<'a, V : From<MItemPtr>> MListConst<'a, V>{
     }
 
     pub fn first(&self) -> Option<MItemConst<V>>{
-        unsafe{ self.ptr.first_const() }.map(
+        self.ptr.first_const().map(
             move |v| MItemConst::new(v, self))
     }
     pub fn first_id(&self) -> Option<u64>{
         self.ptr.first_id()
     }
     pub fn last(&self) -> Option<MItemConst<V>>{
-        unsafe{ self.ptr.last_const() }.map(
+        self.ptr.last_const().map(
             move |v| MItemConst::new(v, self))
     }
     pub fn last_id(&self) -> Option<u64>{
         self.ptr.last_id()
     }
     pub fn get_item(&self, id : u64) -> Option<MItemConst<V>>{
-        unsafe{ self.ptr.get_item_const(id) }.map(
+        self.ptr.get_item_const(id).map(
             move |v| MItemConst::new(v, self))
     }
     pub fn next_id(&self) -> u64{
@@ -50,14 +50,14 @@ impl<'a, V : From<MItemPtr>> MListConst<'a, V>{
 
     pub fn iter(&self) -> MListIterConst<V>{
         MListIterConst::new(
-        unsafe{ self.ptr.iter_const() }, self)
+        self.ptr.iter_const(), self)
     }
     pub fn iter_from_last(&self) -> MListIterConst<V>{
         MListIterConst::new(
-            unsafe{ self.ptr.iter_from_last_const() }, self)
+            self.ptr.iter_from_last_const(), self)
     }
     pub fn iter_from_id(&self, id : u64) -> Option<MListIterConst<V>> {
-        unsafe { self.ptr.iter_from_id_const(id) }.map(
+        self.ptr.iter_from_id_const(id).map(
             |ptr| MListIterConst::new(ptr, self))
     }
 }

@@ -33,6 +33,8 @@ pub mod common{
 
     pub use crate::imp::common::list::file_data::FileData;
 
+    pub use crate::imp::common::dochy_cache::DochyCache;
+
     pub mod hash{
         pub use crate::imp::common::path::hash::folder_name_to_hash;
         pub use crate::imp::common::path::hash::hash_to_folder_name;

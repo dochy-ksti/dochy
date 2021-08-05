@@ -59,12 +59,13 @@ impl TableSource {
         let is_old = self.is_old();
         let data_type_name = to_table_type_name(id);
         let fn_name = with_old(&snake_name, is_old);
-        sb.push(0,&format!("pub unsafe fn {}_us(&self) -> {}{{", &fn_name , &data_type_name));
-        sb.push(1,&format!("let ans = root::get_table(self.ptr, \"{}\").unwrap();", id));
-        sb.push(1,&format!("{}::new(ans)", &data_type_name));
-        sb.push(0,"}");
+        // sb.push(0,&format!("pub unsafe fn {}_us(&self) -> {}{{", &fn_name , &data_type_name));
+        // sb.push(1,&format!("let ans = root::get_table(self.ptr, \"{}\").unwrap();", id));
+        // sb.push(1,&format!("{}::new(ans)", &data_type_name));
+        // sb.push(0,"}");
         sb.push(0,&format!("pub fn {}(&self) -> CTableConst<{}>{{", &fn_name, &data_type_name));
-        sb.push(1,&format!("CTableConst::new(unsafe{{ self.{}_us() }}, self)", &fn_name));
+        sb.push(1,&format!("let t = {}::new(root::get_table(self.ptr.def(), \"{}\").unwrap());", &data_type_name, id));
+        sb.push(1,&format!("CTableConst::new(t, self)"));
         sb.push(0,"}");
         sb.to_string()
     }

@@ -42,24 +42,24 @@ impl MilSource {
         let item_type_name = to_mitem_type_name(id);
         let fn_name = with_old(&snake_name, is_old);
         if self.undefiable{
-            sb.push(0, &format!("pub unsafe fn {}_us(&self) -> Option<MListPtr<{}>>{{", &fn_name , &item_type_name));
-            sb.push(1, &format!("mitem::get_mil(self.ptr, \"{}\").unwrap()", id));
-            sb.push(0, "}");
+
             sb.push(0, &format!("pub fn {}(&self) -> Option<MListConst<{}>>{{", &fn_name , &item_type_name));
-            sb.push(1, &format!("unsafe{{ self.{}_us() }}.map(move |p| MListConst::new(p, self))", &fn_name));
+            sb.push(1, &format!("let mil = mitem::get_mil_const(self.ptr, \"{}\").unwrap();", id));
+            sb.push(1, &format!("mil.map(move |p| MListConst::new(p, self))"));
             sb.push(0, "}");
             sb.push(0, &format!("pub fn {}_mut(&mut self) -> Option<MListMut<{}>>{{", &fn_name , &item_type_name));
-            sb.push(1, &format!("unsafe{{ self.{}_us() }}.map(move |p| MListMut::new(p, self))", &fn_name));
+            sb.push(1, &format!("let mil = mitem::get_mil_mut(self.ptr, \"{}\").unwrap();", id));
+            sb.push(1, &format!("mil.map(move |p| MListMut::new(p, self))"));
             sb.push(0, "}");
         } else {
-            sb.push(0, &format!("pub unsafe fn {}_us(&self) -> MListPtr<{}>{{", &fn_name, &item_type_name));
-            sb.push(1, &format!("mitem::get_mil(self.ptr, \"{}\").unwrap().unwrap()", id));
-            sb.push(0, "}");
+
             sb.push(0, &format!("pub fn {}(&self) -> MListConst<{}>{{", &fn_name, &item_type_name));
-            sb.push(1, &format!("MListConst::new(unsafe{{ self.{}_us() }}, self)", &fn_name));
+            sb.push(1, &format!("let mil = mitem::get_mil_const(self.ptr, \"{}\").unwrap().unwrap();", id));
+            sb.push(1, &format!("MListConst::new(mil, self)"));
             sb.push(0, "}");
             sb.push(0, &format!("pub fn {}_mut(&mut self) -> MListMut<{}>{{", &fn_name, &item_type_name));
-            sb.push(1, &format!("MListMut::new(unsafe{{ self.{}_us() }}, self)", &fn_name));
+            sb.push(1, &format!("let mil = mitem::get_mil_mut(self.ptr, \"{}\").unwrap().unwrap();", id));
+            sb.push(1, &format!("MListMut::new(mil, self)"));
             sb.push(0, "}");
         }
         sb.to_string()

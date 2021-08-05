@@ -1,9 +1,9 @@
 use dochy::error::DpResult;
 use dochy::core::json_dir_to_root;
 use crate::a2_hello_history::hello_history_accessor::RootIntf;
-use dochy::fs::common::{CurrentSrc, hash_dir_path};
+use dochy::fs::common::{CurrentSrc, hash_dir_path, DochyCache};
 use std::path::{Path};
-use dochy::fs::history::{save_history_file, DochyCache, list_histories, load_history_file};
+use dochy::fs::history::{save_history_file, list_histories, load_history_file};
 use dochy::core::structs::RootObject;
 
 //#[test]

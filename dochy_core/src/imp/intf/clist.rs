@@ -1,6 +1,5 @@
 use crate::imp::intf::citem::CItemPtr;
 use crate::imp::structs::list_def_obj::ListDefObj;
-use crate::imp::structs::root_obj::RootObject;
 use std::marker::PhantomData;
 use crate::imp::structs::rust_list::ConstItem;
 use crate::imp::structs::root_def_obj::RootDefObj;
