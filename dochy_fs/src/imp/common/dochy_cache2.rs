@@ -11,10 +11,14 @@ use crate::imp::history::diff_and_cache::open_diff_file_without_metadata::open_d
 
 
 pub struct DochyCache{
+    current_src : PathBuf,
+    inner : Option<CacheInner>,
+}
+
+struct CacheInner{
     src_cache : RootObject,
     phase_cache: Vec<(PathBuf, RootObject)>,
     hash : u128,
-    path : PathBuf,
 }
 
 impl DochyCache{

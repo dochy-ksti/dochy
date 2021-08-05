@@ -49,11 +49,8 @@ impl RootIntf{
 	pub fn set_at_huga_number(&mut self, at_huga_number : i64){
 		root::set_int(self.ptr, "@HugaNumber", Qv::Val(at_huga_number));
 	}
-	pub unsafe fn ini_item_list_us(&self) -> CListPtr<IniItemListCItem>{
-		root::get_clist(self.ptr, "iniItemList").unwrap()
-	}
 	pub fn ini_item_list(&self) -> CListConst<IniItemListCItem>{
-		CListConst::new(unsafe{ self.ini_item_list_us() }, self)
+		CListConst::new(root::get_clist(self.ptr, "iniItemList").unwrap(), self)
 	}
 	pub fn int_array(&self) -> Vec<i64>{
 		let qv = root::get_int_array(self.ptr, "intArray").unwrap();
@@ -229,11 +226,8 @@ impl RootIntf{
 		let t = UsableTable::new(root::get_table(self.ptr.def(), "usable").unwrap());
 		CTableConst::new(t, self)
 	}
-	pub unsafe fn item_list3_us(&self) -> CListPtr<ItemList3CItem>{
-		root::get_clist(self.ptr, "itemList3").unwrap()
-	}
 	pub fn item_list3(&self) -> CListConst<ItemList3CItem>{
-		CListConst::new(unsafe{ self.item_list3_us() }, self)
+		CListConst::new(root::get_clist(self.ptr, "itemList3").unwrap(), self)
 	}
 	pub fn mut1(&self) -> MListConst<Mut1MItem>{
 		let mil = root::get_mlist_const(self.ptr, "mut1").unwrap().unwrap();
@@ -319,11 +313,8 @@ impl RootIntf{
 	pub fn set_pugya_int2(&mut self, pugya_int2 : Qv<i64>){
 		root::set_int(self.ptr, "pugyaInt2", pugya_int2.into_qv());
 	}
-	pub unsafe fn enum_list_us(&self) -> CListPtr<EnumListCItem>{
-		root::get_clist(self.ptr, "enumList").unwrap()
-	}
 	pub fn enum_list(&self) -> CListConst<EnumListCItem>{
-		CListConst::new(unsafe{ self.enum_list_us() }, self)
+		CListConst::new(root::get_clist(self.ptr, "enumList").unwrap(), self)
 	}
 	pub fn empty_int_array(&self) -> Vec<i64>{
 		let qv = root::get_int_array(self.ptr, "emptyIntArray").unwrap();
@@ -401,14 +392,16 @@ impl WeaponTable {
 		WeaponCItem::from(ptr)
 	}
 	pub fn katana(&self) -> CItemConst<WeaponCItem> {
-		CItemConst::new(unsafe{ self.katana_us() }, self)
+		let ptr = table::get_value(self.ptr, "katana").unwrap();
+		CItemConst::new(WeaponCItem::from(ptr), self)
 	}
 	pub unsafe fn doutanuki_us(&self) -> WeaponCItem {
 		let ptr = table::get_value(self.ptr, "doutanuki").unwrap();
 		WeaponCItem::from(ptr)
 	}
 	pub fn doutanuki(&self) -> CItemConst<WeaponCItem> {
-		CItemConst::new(unsafe{ self.doutanuki_us() }, self)
+		let ptr = table::get_value(self.ptr, "doutanuki").unwrap();
+		CItemConst::new(WeaponCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : WeaponTableID) -> WeaponCItem{
 		match id{
@@ -480,7 +473,8 @@ impl HogeListTable {
 		HogeListCItem::from(ptr)
 	}
 	pub fn hogehoge(&self) -> CItemConst<HogeListCItem> {
-		CItemConst::new(unsafe{ self.hogehoge_us() }, self)
+		let ptr = table::get_value(self.ptr, "hogehoge").unwrap();
+		CItemConst::new(HogeListCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : HogeListTableID) -> HogeListCItem{
 		match id{
@@ -552,14 +546,16 @@ impl SomeDataTable {
 		SomeDataCItem::from(ptr)
 	}
 	pub fn a2ban(&self) -> CItemConst<SomeDataCItem> {
-		CItemConst::new(unsafe{ self.a2ban_us() }, self)
+		let ptr = table::get_value(self.ptr, "a2ban").unwrap();
+		CItemConst::new(SomeDataCItem::from(ptr), self)
 	}
 	pub unsafe fn a1ban_us(&self) -> SomeDataCItem {
 		let ptr = table::get_value(self.ptr, "a1ban").unwrap();
 		SomeDataCItem::from(ptr)
 	}
 	pub fn a1ban(&self) -> CItemConst<SomeDataCItem> {
-		CItemConst::new(unsafe{ self.a1ban_us() }, self)
+		let ptr = table::get_value(self.ptr, "a1ban").unwrap();
+		CItemConst::new(SomeDataCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : SomeDataTableID) -> SomeDataCItem{
 		match id{
@@ -650,14 +646,16 @@ impl UsableTable {
 		UsableCItem::from(ptr)
 	}
 	pub fn yakusou(&self) -> CItemConst<UsableCItem> {
-		CItemConst::new(unsafe{ self.yakusou_us() }, self)
+		let ptr = table::get_value(self.ptr, "yakusou").unwrap();
+		CItemConst::new(UsableCItem::from(ptr), self)
 	}
 	pub unsafe fn dokukesisou_us(&self) -> UsableCItem {
 		let ptr = table::get_value(self.ptr, "dokukesisou").unwrap();
 		UsableCItem::from(ptr)
 	}
 	pub fn dokukesisou(&self) -> CItemConst<UsableCItem> {
-		CItemConst::new(unsafe{ self.dokukesisou_us() }, self)
+		let ptr = table::get_value(self.ptr, "dokukesisou").unwrap();
+		CItemConst::new(UsableCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : UsableTableID) -> UsableCItem{
 		match id{
@@ -849,7 +847,8 @@ impl HugaListTable {
 		HugaListCItem::from(ptr)
 	}
 	pub fn hugahuga(&self) -> CItemConst<HugaListCItem> {
-		CItemConst::new(unsafe{ self.hugahuga_us() }, self)
+		let ptr = table::get_value(self.ptr, "hugahuga").unwrap();
+		CItemConst::new(HugaListCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : HugaListTableID) -> HugaListCItem{
 		match id{
@@ -909,21 +908,24 @@ impl Dim2ListTable {
 		Dim2ListCItem::from(ptr)
 	}
 	pub fn item3(&self) -> CItemConst<Dim2ListCItem> {
-		CItemConst::new(unsafe{ self.item3_us() }, self)
+		let ptr = table::get_value(self.ptr, "item3").unwrap();
+		CItemConst::new(Dim2ListCItem::from(ptr), self)
 	}
 	pub unsafe fn item2_us(&self) -> Dim2ListCItem {
 		let ptr = table::get_value(self.ptr, "item2").unwrap();
 		Dim2ListCItem::from(ptr)
 	}
 	pub fn item2(&self) -> CItemConst<Dim2ListCItem> {
-		CItemConst::new(unsafe{ self.item2_us() }, self)
+		let ptr = table::get_value(self.ptr, "item2").unwrap();
+		CItemConst::new(Dim2ListCItem::from(ptr), self)
 	}
 	pub unsafe fn item1_us(&self) -> Dim2ListCItem {
 		let ptr = table::get_value(self.ptr, "item1").unwrap();
 		Dim2ListCItem::from(ptr)
 	}
 	pub fn item1(&self) -> CItemConst<Dim2ListCItem> {
-		CItemConst::new(unsafe{ self.item1_us() }, self)
+		let ptr = table::get_value(self.ptr, "item1").unwrap();
+		CItemConst::new(Dim2ListCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : Dim2ListTableID) -> Dim2ListCItem{
 		match id{
@@ -999,14 +1001,16 @@ impl UnkoListTable {
 		UnkoListCItem::from(ptr)
 	}
 	pub fn first(&self) -> CItemConst<UnkoListCItem> {
-		CItemConst::new(unsafe{ self.first_us() }, self)
+		let ptr = table::get_value(self.ptr, "first").unwrap();
+		CItemConst::new(UnkoListCItem::from(ptr), self)
 	}
 	pub unsafe fn second_us(&self) -> UnkoListCItem {
 		let ptr = table::get_value(self.ptr, "second").unwrap();
 		UnkoListCItem::from(ptr)
 	}
 	pub fn second(&self) -> CItemConst<UnkoListCItem> {
-		CItemConst::new(unsafe{ self.second_us() }, self)
+		let ptr = table::get_value(self.ptr, "second").unwrap();
+		CItemConst::new(UnkoListCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : UnkoListTableID) -> UnkoListCItem{
 		match id{
@@ -1090,14 +1094,16 @@ impl HegoListTable {
 		HegoListCItem::from(ptr)
 	}
 	pub fn nantoka_old(&self) -> CItemConst<HegoListCItem> {
-		CItemConst::new(unsafe{ self.nantoka_old_us() }, self)
+		let ptr = table::get_value(self.ptr, "nantoka").unwrap();
+		CItemConst::new(HegoListCItem::from(ptr), self)
 	}
 	pub unsafe fn hegohego_us(&self) -> HegoListCItem {
 		let ptr = table::get_value(self.ptr, "hegohego").unwrap();
 		HegoListCItem::from(ptr)
 	}
 	pub fn hegohego(&self) -> CItemConst<HegoListCItem> {
-		CItemConst::new(unsafe{ self.hegohego_us() }, self)
+		let ptr = table::get_value(self.ptr, "hegohego").unwrap();
+		CItemConst::new(HegoListCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : HegoListTableID) -> HegoListCItem{
 		match id{

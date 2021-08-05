@@ -92,7 +92,8 @@ impl TableSource {
             sb.push(1, "}");
 
             sb.push(1,&format!("pub fn {}(&self) -> CItemConst<{}> {{", &key_name, &item_type_name));
-            sb.push(2,&format!("CItemConst::new(unsafe{{ self.{}_us() }}, self)", &key_name));
+            sb.push(2,&format!("let ptr = table::get_value(self.ptr, \"{}\").unwrap();", &key.key));
+            sb.push(2,&format!("CItemConst::new({}::from(ptr), self)", &item_type_name));
             sb.push(1, "}");
         }
 
