@@ -52,18 +52,9 @@ fn load_impl<P : AsRef<Path>>(history_dir : P,
     let file_path = hash_dir.join(props.calc_filename());
     let loaded = load(&file_path, history, cache, op)?;
 
-    match cache.current_src() {
-        CurrentSrc::SrcDir(src_dir) => {
-            let new = json_dir_to_root(src_dir, validation)?;
-            let adjusted = adjust_versions(new, loaded, validation)?;
-            Ok(adjusted)
-        },
-        CurrentSrc::ArchiveFile(current_archive) => {
-            let new = load_archive(current_archive, validation)?;
-            let adjusted = adjust_versions(new, loaded, validation)?;
-            Ok(adjusted)
-        }
-    }
+    let src_root = cache.clone_src_root();
+    let adjusted = adjust_versions(src_root, loaded, validation)?;
+    Ok(adjusted)
 }
 
 pub fn load_history_file_data<P : AsRef<Path>>(history_dir : P,

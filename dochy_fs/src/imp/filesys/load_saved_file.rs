@@ -9,7 +9,7 @@ use crate::imp::common::archive::load_archive::load_archive;
 use crate::imp::common::path::reserved_filename::ARCHIVE_DEFAULT_NAME;
 
 /// archiveファイルは常にファイルと同じディレクトリにあることになっている。
-pub fn load_saved_file<P : AsRef<Path>>(file_path : P, current_src : &CurrentSrc, validation : bool) -> FsResult<RootObject>{
+pub fn load_saved_file<P : AsRef<Path>>(file_path : P, current_src : &DochyCache, validation : bool) -> FsResult<RootObject>{
     let path = file_path.as_ref();
     let dir_path = path.parent().ok_or("file_path's file must be in a folder which contains src.archive file.")?;
     let archive_path = dir_path.join(ARCHIVE_DEFAULT_NAME);

@@ -11,7 +11,7 @@ pub fn load_archive<P : AsRef<Path>>(archive_path : P, validation : bool) -> FsR
     Ok(read_archive(&archive, validation)?)
 }
 
-pub fn load_archive_and_hash<P : AsRef<Path>>(archive_path : P, validation : bool) -> FsResult<(RootObject, hash)>{
+pub fn load_archive_and_hash<P : AsRef<Path>>(archive_path : P, validation : bool) -> FsResult<(RootObject, u128)>{
     let mut file = File::open(archive_path)?;
     let archive = read_archive_data(&mut file)?;
     let hash = archive.meta().calc_hash()?;

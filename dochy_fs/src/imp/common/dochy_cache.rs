@@ -14,7 +14,6 @@ use crate::common::load_archive;
 use crate::imp::common::archive::load_archive::load_archive_and_hash;
 use std::io::Write;
 
-//TODO: ここをやれ
 
 
 pub struct DochyCache{
@@ -22,11 +21,10 @@ pub struct DochyCache{
     root : RootObject,
     hash : u128,
     phase_cache: HashMap<usize, (PathBuf, RootObject)>,
-    max_phase:usize,
 }
 
 impl DochyCache{
-    pub fn create(current_src : CurrentSrc, max_phase : usize, validation : bool) -> FsResult<DochyCache>{
+    pub fn create(current_src : CurrentSrc, validation : bool) -> FsResult<DochyCache>{
         let (root, hash) = match &current_src{
             CurrentSrc::SrcDir(src_dir) => {
                 let root = json_dir_to_root(src_dir, validation)?;
@@ -40,28 +38,18 @@ impl DochyCache{
         Ok(DochyCache{
             current_src, root, hash,
             phase_cache : HashMap::new(),
-            max_phase
         })
     }
 
-    pub fn new(current_src : CurrentSrc, max_phase : usize) -> FsResult<DochyCache>{
-        create(current_src, max_phase, false)
+    pub fn new(current_src : CurrentSrc) -> FsResult<DochyCache>{
+        Self::create(current_src, false)
     }
 
-    pub fn create_archive<W : Write>(&self, write : &mut W) -> FsResult<()>{
-        match &self.current_src{
-            CurrentSrc::SrcDir(src_dir) => {
-                create_archive_from_directory(
-                    src_dir,  write,
-                    |_| false, &*JSON_ARC_OPT)?;
-                Ok(())
-            },
-            CurrentSrc::ArchiveFile(path) =>{
-                let mut file = std::fs::File::open(path)?;
-                std::io::copy(&mut file, write)?;
-                Ok(())
-            }
-        }
+    pub fn current_src(&self) -> &CurrentSrc{ &self.current_src }
+    pub fn hash(&self) -> u128{ self.hash }
+
+    pub fn clone_src_root(&self) -> RootObject{
+        self.root.clone()
     }
 
 }

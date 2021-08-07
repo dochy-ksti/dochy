@@ -2,13 +2,13 @@ use crate::error::FsResult;
 use std::path::Path;
 use crate::history::HistoryOptions;
 use dochy_core::structs::RootObject;
-use crate::imp::history::file_hist::prepare_history_hash_dir::prepare_history_hash_dir;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
 use crate::imp::history::latest_file_info::latest_file_info::{get_current_root_obj_info, set_current_root_obj_info, CurrentRootObjInfo};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::derive_impl::derive_impl;
 use crate::imp::common::dochy_cache::DochyCache;
+use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 /// If the 'root' is not derived from the latest save file, calculate diff from the source JSON5 and save it.
@@ -34,10 +34,10 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
     let history_dir = history_dir.as_ref();
     let opt = opt.as_ref();
     let src = cache.current_src();
+    let hash = cache.hash();
+    let history_hash_dir = prepare_hash_dir(history_dir, src, hash)?;
 
-    let (history_hash_dir, hash) = prepare_history_hash_dir(history_dir, src)?;
-
-
+    //TODO: ただしくMutexを管理し、マルチスレッドでも同期化すること
     let info = get_current_root_obj_info(history_dir, hash).clone();
 
     if let Some(info) = info.as_ref() {
