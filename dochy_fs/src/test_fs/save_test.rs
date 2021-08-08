@@ -29,7 +29,7 @@ fn save_test() -> FsResult<()> {
 
         let path = save_file(proj_dir_path,&mut root, &cache,  "test1", false)?;
 
-        let mut loaded = load_saved_file(&path, &current_src, false)?;
+        let mut loaded = load_saved_file(&path, &cache, false)?;
         first_save_path = path;
 
         let p = RootObjectPtr::new(&mut loaded);
@@ -44,7 +44,7 @@ fn save_test() -> FsResult<()> {
         set_int(p, "int", Qv::Val(-1));
 
         let path = save_file(proj_dir_path,&mut root, &cache, "test2", false)?;
-        let mut loaded = load_saved_file(&path, &current_src, false)?;
+        let mut loaded = load_saved_file(&path, &cache, false)?;
 
         let p = RootObjectPtr::new(&mut loaded);
         let i = get_int(p, "int")?;
@@ -52,7 +52,7 @@ fn save_test() -> FsResult<()> {
     }
 
     {
-        let mut loaded = load_saved_file(&first_save_path, &CurrentSrc::SrcDir(src_dir_path.clone()), false)?;
+        let mut loaded = load_saved_file(&first_save_path, &cache, false)?;
 
         let p = RootObjectPtr::new(&mut loaded);
         let b = get_bool(p, "b")?;

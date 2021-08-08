@@ -1,5 +1,5 @@
 use crate::imp::history::diff_and_cache::cacher::Cache;
-use std::path::{PathBuf, Path};
+use std::path::{PathBuf};
 use crate::error::FsResult;
 use dochy_core::structs::RootObject;
 use crate::imp::common::current_src::CurrentSrc;

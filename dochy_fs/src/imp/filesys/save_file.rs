@@ -3,8 +3,6 @@ use std::fs::File;
 use crate::error::FsResult;
 use std::io::Write;
 use dochy_core::structs::RootObject;
-use crate::imp::common::current_src::CurrentSrc;
-use crate::imp::common::path::hash_dir_path::hash_dir_path;
 use crate::imp::common::dochy_cache::DochyCache;
 use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 

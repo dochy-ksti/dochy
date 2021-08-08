@@ -18,14 +18,15 @@ use std::io::Write;
 
 pub struct DochyCache{
     current_src : CurrentSrc,
-    root : RootObject,
+    src_root : RootObject,
     hash : u128,
     phase_cache: HashMap<usize, (PathBuf, RootObject)>,
+
 }
 
 impl DochyCache{
     pub fn create(current_src : CurrentSrc, validation : bool) -> FsResult<DochyCache>{
-        let (root, hash) = match &current_src{
+        let (src_root, hash) = match &current_src{
             CurrentSrc::SrcDir(src_dir) => {
                 let root = json_dir_to_root(src_dir, validation)?;
                 let (hash, _meta) = get_hash_and_metadata_from_dir(src_dir, &JSON_ARC_OPT)?;
@@ -36,7 +37,7 @@ impl DochyCache{
             }
         };
         Ok(DochyCache{
-            current_src, root, hash,
+            current_src, src_root, hash,
             phase_cache : HashMap::new(),
         })
     }
@@ -49,7 +50,7 @@ impl DochyCache{
     pub fn hash(&self) -> u128{ self.hash }
 
     pub fn clone_src_root(&self) -> RootObject{
-        self.root.clone()
+        self.src_root.clone()
     }
 
 }

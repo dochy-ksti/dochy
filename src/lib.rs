@@ -26,6 +26,7 @@ pub mod error;
 //TODO: ロード処理をマルチスレッド化する(2スレッドがバランスがいいか？)
 //TODO: CopySaveFileToPhase0を作る SaveAsyncを作る
 //TODO: バックエンドを変更可能にする。デバッグのためのインメモリ、leveldb-rsを使ってKVPなど。ファイルももっと安全に、フォルダ削除時に新しいファイルから消していくような、構造が壊れない処理を
+//TODO: Pathの同一性が怪しいから、Pathを自作のものに置き換える
 
 //TODO: 全部documentationする
 //TODO: Redditに出して反応を見る このペースだと何ヶ月かかるんじゃあ・・・
