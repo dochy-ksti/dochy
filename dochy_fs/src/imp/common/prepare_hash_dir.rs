@@ -1,12 +1,8 @@
 use std::path::{Path, PathBuf};
 use crate::common::CurrentSrc;
 use crate::error::FsResult;
-use dochy_archiver::{create_archive_from_directory, CreateArchiveFromDirectory, get_hash_and_metadata_from_archive};
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
 use std::fs::File;
-use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
-use std::ops::Deref;
-use crate::imp::common::dochy_cache::DochyCache;
 use crate::imp::common::path::reserved_filename::ARCHIVE_DEFAULT_NAME;
 use crate::common::reserved_filename::CREATED_TIME_FILE_NAME;
 use crate::imp::common::path::created_time_file::create_time_dat;

@@ -9,5 +9,5 @@ pub(crate) trait Cache<V, CachedItem> where
 
     /// diff ファイル適用済みのデータがキャッシュされている場合、そのデータを返し、
     /// さらにそこからapplyすべきdiffファイルのパスのリストも返す
-    fn get_cache(&mut self, pathes : Vec<PathBuf>) -> FsResult<(CachedItem, Vec<PathBuf>)>;
+    fn get_cache(&mut self, pathes : Vec<PathBuf>, max_phase : usize) -> FsResult<(CachedItem, Vec<PathBuf>)>;
 }

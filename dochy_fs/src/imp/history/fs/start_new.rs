@@ -20,19 +20,20 @@ pub(crate) fn start_new<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     //file history は OS にキャッシュされており、基本的にノーコストで取り出せる、と考えよう。そうしないと単純に出来ない
     let history = create_file_history(history_hash_dir, max_phase, cumulative)?;
 
-    start_new_impl(tag, diff_src, cache, history_hash_dir, &history)
+    start_new_impl(tag, diff_src, cache, max_phase, history_hash_dir, &history)
 }
 
 pub(crate) fn start_new_impl<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     tag : Option<String>,
     diff_src : &S,
     cache : &mut C,
+    max_phase : usize,
     history_hash_dir: &Path,
     history : &FileHistory) -> FsResult<FileNameProps>{
 
     if let Some(prop) = history.get_newest_prop(){
-        write_phase_a(tag, prop.control() + 1, diff_src, cache, history_hash_dir)
+        write_phase_a(tag, prop.control() + 1, diff_src, cache, max_phase, history_hash_dir)
     } else{
-        first(tag, diff_src, cache, history_hash_dir)
+        first(tag, diff_src, cache, max_phase, history_hash_dir)
     }
 }

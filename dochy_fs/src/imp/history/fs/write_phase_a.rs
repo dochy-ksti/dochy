@@ -13,12 +13,13 @@ pub(crate) fn write_phase_a<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     control : u32,
     diff_src: &S,
     cache : &mut C,
+    max_phase : usize,
     history_hash_dir: &Path) -> FsResult<FileNameProps>{
 
     let file_name = calc_filename(tag.as_ref().map(|s| s.as_str()), control, None,&[0]);
     let file_path = history_hash_dir.join(&file_name);
 
-    let (initial, _) = cache.get_cache(vec![])?;
+    let (initial, _) = cache.get_cache(vec![], max_phase)?;
 
     let diff = diff_src.create_diff(&initial)?;
     let mut vec : Vec<u8> = vec![];

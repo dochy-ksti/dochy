@@ -1,18 +1,12 @@
-use crate::imp::history::diff_and_cache::cacher::Cache;
-use std::path::{PathBuf, Path};
+use std::path::{PathBuf};
 use crate::error::FsResult;
 use dochy_core::structs::RootObject;
 use crate::imp::common::current_src::CurrentSrc;
-use dochy_diff::apply_diff;
-use crate::imp::history::diff_and_cache::dochy_diff::DochyDiff;
-use crate::imp::history::diff_and_cache::open_diff_file_without_metadata::open_diff_file_without_metadata;
-use std::collections::HashMap;
-use dochy_archiver::{ArchiveData, get_hash_and_metadata_from_dir, create_archive_from_directory};
+use std::collections::{HashMap, BTreeMap};
+use dochy_archiver::{get_hash_and_metadata_from_dir};
 use dochy_core::json_dir_to_root;
 use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
-use crate::common::load_archive;
 use crate::imp::common::archive::load_archive::load_archive_and_hash;
-use std::io::Write;
 
 
 
@@ -20,8 +14,7 @@ pub struct DochyCache{
     current_src : CurrentSrc,
     src_root : RootObject,
     hash : u128,
-    phase_cache: HashMap<usize, (PathBuf, RootObject)>,
-
+    pub(crate) phase_cache: BTreeMap<usize, (PathBuf, RootObject)>,
 }
 
 impl DochyCache{
@@ -38,7 +31,7 @@ impl DochyCache{
         };
         Ok(DochyCache{
             current_src, src_root, hash,
-            phase_cache : HashMap::new(),
+            phase_cache : BTreeMap::new(),
         })
     }
 
@@ -53,4 +46,25 @@ impl DochyCache{
         self.src_root.clone()
     }
 
+    pub fn get_cache(&mut self, mut pathes: Vec<PathBuf>) -> FsResult<(RootObject, Vec<PathBuf>)> {
+        // let mut root = if self.cache_src == false{
+        //     self.current_src.create_root()?
+        // } else{
+        //     self.get_or_create_src()?
+        // };
+        // if pathes.len() == 0{
+        //     return Ok((root, pathes));
+        // }
+        // let path = pathes.remove(0);
+        // if self.cache_phase_a == false{
+        //     let mut file = open_diff_file_without_metadata(&path)?;
+        //
+        //     apply_diff(&mut root, &mut file)?;
+        //     return Ok((root, pathes));
+        // } else{
+        //     let a = self.get_or_create_phase_a(root, &path)?;
+        //     return Ok((a, pathes))
+        // }
+        unimplemented!()
+    }
 }

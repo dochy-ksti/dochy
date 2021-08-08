@@ -28,5 +28,5 @@ pub(crate) fn load<
 
     let paths = create_ancestors_paths(history, &analyzed, opt.max_phase(), opt.is_cumulative(), dir_path)?;
 
-    Ok(accumulate_diff(paths, cache)?)
+    Ok(accumulate_diff(paths, cache, opt.max_phase())?)
 }
