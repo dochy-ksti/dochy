@@ -1,7 +1,5 @@
 use std::path::{PathBuf, Path};
-use dochy_core::structs::RootObject;
 use crate::error::FsResult;
-use crate::imp::common::archive::load_archive::load_archive;
 use std::io::Write;
 use dochy_archiver::create_archive_from_directory;
 use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
@@ -18,16 +16,16 @@ pub enum CurrentSrc{
 }
 
 impl CurrentSrc{
-    pub(crate) fn create_root(&self) -> FsResult<RootObject>{
-        match self{
-            CurrentSrc::SrcDir(dir) =>{
-                Ok(dochy_core::json_dir_to_root(dir, false)?)
-            },
-            CurrentSrc::ArchiveFile(arc) =>{
-                load_archive(arc, false)
-            }
-        }
-    }
+    // pub(crate) fn create_root(&self) -> FsResult<RootObject>{
+    //     match self{
+    //         CurrentSrc::SrcDir(dir) =>{
+    //             Ok(dochy_core::json_dir_to_root(dir, false)?)
+    //         },
+    //         CurrentSrc::ArchiveFile(arc) =>{
+    //             load_archive(arc, false)
+    //         }
+    //     }
+    // }
 
     pub fn from_src_dir<P : AsRef<Path>>(src_dir : P) -> CurrentSrc{
         CurrentSrc::SrcDir(PathBuf::from(src_dir.as_ref()))
