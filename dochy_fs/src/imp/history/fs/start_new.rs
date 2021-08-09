@@ -1,7 +1,7 @@
 use std::path::Path;
 use crate::error::FsResult;
 //use crate::imp::history::file_name::find_newest_his_file::find_newest_his_file;
-use crate::imp::history::fs::write_phase_a::write_phase_a;
+use crate::imp::history::fs::write_phase_0::write_phase_0;
 use crate::imp::history::fs::first::first;
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
@@ -32,7 +32,7 @@ pub(crate) fn start_new_impl<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     history : &FileHistory) -> FsResult<FileNameProps>{
 
     if let Some(prop) = history.get_newest_prop(){
-        write_phase_a(tag, prop.control() + 1, diff_src, cache, max_phase, history_hash_dir)
+        write_phase_0(tag, prop.control() + 1, diff_src, cache, max_phase, history_hash_dir)
     } else{
         first(tag, diff_src, cache, max_phase, history_hash_dir)
     }

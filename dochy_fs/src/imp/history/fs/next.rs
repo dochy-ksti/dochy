@@ -9,7 +9,7 @@ use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::imp::history::fs::derive_impl::derive_impl;
 
-
+//testから使われてるんだけど、 _(アンダースコア)消すと文句言われるのなんだかよくわからん
 pub(crate) fn _next<
     V : DiffValue,
     S: DiffSrc<V>,

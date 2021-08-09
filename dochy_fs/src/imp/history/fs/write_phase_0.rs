@@ -8,7 +8,7 @@ use crate::imp::history::diff_and_cache::diff_value::DiffValue;
 use crate::imp::history::diff_and_cache::cacher::Cache;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 
-pub(crate) fn write_phase_a<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
+pub(crate) fn write_phase_0<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     tag : Option<String>,
     control : u32,
     diff_src: &S,
@@ -27,6 +27,7 @@ pub(crate) fn write_phase_a<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     let data = PhaseData::new(vec.len() as u64);
 
     write_phase_file(&data, &file_path, &vec)?;
+    cache.set_cache(file_path, diff_src.clone(), 0)?;
 
     FileNameProps::from(&file_name)
 }

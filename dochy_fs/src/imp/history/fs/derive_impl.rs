@@ -40,9 +40,7 @@ pub(crate) fn derive_impl<
     let (decoded, _) = dochy_compaction::enc_dec::decode::decode(&mut file)?;
     let mut data = PhaseData::decode(&decoded)?;
     let next_phase = calc_next_phase(&data, options);
-    // if next_phase == 0{
-    //     return start_new_impl(tag, diff_src, cache, history_hash_dir, history);
-    // }
+
 
     let ancestors1 = create_ancestors(&history, &from, options.max_phase(), options.is_cumulative())?;
     let (ancestors, next_props) = create_dependencies(&ancestors1, next_phase, next_ctl, tag, options.max_phase(), options.is_cumulative())?;
@@ -61,6 +59,7 @@ pub(crate) fn derive_impl<
     let next_file_path = history_hash_dir.join(&next_props.calc_filename());
 
     write_phase_file(&data, &next_file_path, &vec)?;
+    cache.set_cache(next_file_path, diff_src.clone(), next_phase)?;
 
     Ok(next_props)
 }
