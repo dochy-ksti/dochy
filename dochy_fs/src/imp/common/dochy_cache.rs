@@ -46,16 +46,11 @@ impl DochyCache{
         self.src_root.clone()
     }
 
-    pub fn get_cache(&mut self, mut pathes: Vec<PathBuf>) -> FsResult<(RootObject, Vec<PathBuf>)> {
-        // let mut root = if self.cache_src == false{
-        //     self.current_src.create_root()?
-        // } else{
-        //     self.get_or_create_src()?
-        // };
-        // if pathes.len() == 0{
-        //     return Ok((root, pathes));
-        // }
-        // let path = pathes.remove(0);
+    pub fn get_cache(&mut self, mut paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
+        if let Some(op) = get_phase_cache(&self.phase_cache, &paths){
+
+        } else{}
+
         // if self.cache_phase_a == false{
         //     let mut file = open_diff_file_without_metadata(&path)?;
         //
@@ -67,4 +62,23 @@ impl DochyCache{
         // }
         unimplemented!()
     }
+}
+
+fn get_phase_cache(cache : &BTreeMap<usize, (PathBuf, RootObject)>, vec : &Vec<PathBuf>, max_phase : usize) -> Option<usize>{
+    let (index,(path, _)) = cache.iter().last()?;
+    let last_path = vec.iter().last()?;
+    if path == last_path {
+        return Some(*index);
+    }
+
+
+    for i in (0..max_phase).rev(){
+        if let Some((c,_)) = cache.get(&i){
+            if let Some(p) = vec.get(i){
+                if c == p{ return Some(i); }
+            }
+        }
+    }
+    return None;
+
 }
