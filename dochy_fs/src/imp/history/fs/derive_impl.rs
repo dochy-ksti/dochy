@@ -53,7 +53,7 @@ pub(crate) fn derive_impl<
     let mut vec: Vec<u8> = vec![];
     diff.write_value(&mut vec)?;
 
-    //ファイルに書き込む前に先にlenを求める必要がある
+    //ファイルに書き込む前にlenを求める必要がある
     data.pop_and_push(next_phase, vec.len() as u64);
 
     let next_file_path = history_hash_dir.join(&next_props.calc_filename());
