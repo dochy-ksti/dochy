@@ -45,14 +45,16 @@
 			Refed2CItem::from(ptr)
 		}
 		pub fn b1(&self) -> CItemConst<Refed2CItem> {
-			CItemConst::new(unsafe{ self.b1_us() }, self)
+			let ptr = table::get_value(self.ptr, "b1").unwrap();
+			CItemConst::new(Refed2CItem::from(ptr), self)
 		}
 		pub unsafe fn b2_us(&self) -> Refed2CItem {
 			let ptr = table::get_value(self.ptr, "b2").unwrap();
 			Refed2CItem::from(ptr)
 		}
 		pub fn b2(&self) -> CItemConst<Refed2CItem> {
-			CItemConst::new(unsafe{ self.b2_us() }, self)
+			let ptr = table::get_value(self.ptr, "b2").unwrap();
+			CItemConst::new(Refed2CItem::from(ptr), self)
 		}
 		pub unsafe fn get_by_id_us(&self, id : Refed2TableID) -> Refed2CItem{
 			match id{
@@ -231,14 +233,16 @@
 			Refed1CItem::from(ptr)
 		}
 		pub fn a1(&self) -> CItemConst<Refed1CItem> {
-			CItemConst::new(unsafe{ self.a1_us() }, self)
+			let ptr = table::get_value(self.ptr, "a1").unwrap();
+			CItemConst::new(Refed1CItem::from(ptr), self)
 		}
 		pub unsafe fn a2_us(&self) -> Refed1CItem {
 			let ptr = table::get_value(self.ptr, "a2").unwrap();
 			Refed1CItem::from(ptr)
 		}
 		pub fn a2(&self) -> CItemConst<Refed1CItem> {
-			CItemConst::new(unsafe{ self.a2_us() }, self)
+			let ptr = table::get_value(self.ptr, "a2").unwrap();
+			CItemConst::new(Refed1CItem::from(ptr), self)
 		}
 		pub unsafe fn get_by_id_us(&self, id : Refed1TableID) -> Refed1CItem{
 			match id{

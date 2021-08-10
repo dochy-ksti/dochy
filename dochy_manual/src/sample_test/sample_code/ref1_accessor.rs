@@ -74,14 +74,16 @@ impl TableATable {
 		TableACItem::from(ptr)
 	}
 	pub fn item2(&self) -> CItemConst<TableACItem> {
-		CItemConst::new(unsafe{ self.item2_us() }, self)
+		let ptr = table::get_value(self.ptr, "item2").unwrap();
+		CItemConst::new(TableACItem::from(ptr), self)
 	}
 	pub unsafe fn item1_us(&self) -> TableACItem {
 		let ptr = table::get_value(self.ptr, "item1").unwrap();
 		TableACItem::from(ptr)
 	}
 	pub fn item1(&self) -> CItemConst<TableACItem> {
-		CItemConst::new(unsafe{ self.item1_us() }, self)
+		let ptr = table::get_value(self.ptr, "item1").unwrap();
+		CItemConst::new(TableACItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : TableATableID) -> TableACItem{
 		match id{

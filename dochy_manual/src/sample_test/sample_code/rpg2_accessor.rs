@@ -44,14 +44,16 @@ impl SwordTable {
 		SwordCItem::from(ptr)
 	}
 	pub fn iron(&self) -> CItemConst<SwordCItem> {
-		CItemConst::new(unsafe{ self.iron_us() }, self)
+		let ptr = table::get_value(self.ptr, "iron").unwrap();
+		CItemConst::new(SwordCItem::from(ptr), self)
 	}
 	pub unsafe fn bronze_us(&self) -> SwordCItem {
 		let ptr = table::get_value(self.ptr, "bronze").unwrap();
 		SwordCItem::from(ptr)
 	}
 	pub fn bronze(&self) -> CItemConst<SwordCItem> {
-		CItemConst::new(unsafe{ self.bronze_us() }, self)
+		let ptr = table::get_value(self.ptr, "bronze").unwrap();
+		CItemConst::new(SwordCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : SwordTableID) -> SwordCItem{
 		match id{
@@ -214,14 +216,16 @@ impl HerbTable {
 		HerbCItem::from(ptr)
 	}
 	pub fn middle(&self) -> CItemConst<HerbCItem> {
-		CItemConst::new(unsafe{ self.middle_us() }, self)
+		let ptr = table::get_value(self.ptr, "middle").unwrap();
+		CItemConst::new(HerbCItem::from(ptr), self)
 	}
 	pub unsafe fn low_us(&self) -> HerbCItem {
 		let ptr = table::get_value(self.ptr, "low").unwrap();
 		HerbCItem::from(ptr)
 	}
 	pub fn low(&self) -> CItemConst<HerbCItem> {
-		CItemConst::new(unsafe{ self.low_us() }, self)
+		let ptr = table::get_value(self.ptr, "low").unwrap();
+		CItemConst::new(HerbCItem::from(ptr), self)
 	}
 	pub unsafe fn get_by_id_us(&self, id : HerbTableID) -> HerbCItem{
 		match id{

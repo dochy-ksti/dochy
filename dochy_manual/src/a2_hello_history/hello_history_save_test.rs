@@ -17,7 +17,7 @@ fn hello_history_save_test() -> DpResult<()> {
     let his = list_histories(history_dir, ())?;
     his.remove_old_files(0, history_dir)?;
     let mut cache = DochyCache::new(
-        CurrentSrc::from_src_dir(src_dir));
+        CurrentSrc::from_src_dir(src_dir))?;
 
     for counter in 0..40{
         save_twice(history_dir, root, counter, &mut cache)?;
