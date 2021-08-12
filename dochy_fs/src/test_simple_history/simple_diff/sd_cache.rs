@@ -13,7 +13,7 @@ impl SdCache{
 }
 
 impl Cache<SdDiff, SdData> for SdCache{
-    fn get_cache(&mut self, pathes: Vec<PathBuf>, _max_phase : usize) -> FsResult<(SdData, Vec<PathBuf>)> {
+    fn get_cache(&mut self, pathes: Vec<PathBuf>, _max_phase : usize, _caching : bool) -> FsResult<(SdData, Vec<PathBuf>)> {
         Ok((SdData::new(self.size), pathes))
     }
 

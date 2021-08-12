@@ -1,6 +1,6 @@
 use dochy_core::structs::{RustParam, Qv};
 
-pub(crate) struct RootDiffR{
+pub struct RootDiffR{
     params : Vec<(usize, RustParam)>,
     //Noneはありえないのだが他と同じルーチンを使うとOptionが帰ってくる
     // 変換するのも面倒だし固有ルーチンにするのも大変なのでこれで

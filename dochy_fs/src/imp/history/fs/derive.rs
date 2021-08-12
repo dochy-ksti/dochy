@@ -12,7 +12,7 @@ use crate::imp::history::fs::derive_impl::derive_impl;
 pub(crate) fn _derive<
     V : DiffValue,
     S: DiffSrc<V>,
-    C : Cache<V, S>,
+    C : Cache<V,S>,
     P : AsRef<Path>,
     Op : AsRef<HistoryOptions>>(tag : Option<String>,
                      diff_src: &S,

@@ -13,7 +13,7 @@ use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
 pub(crate) fn load<
     V : DiffValue,
     S : DiffSrc<V>,
-    C : Cache<V, S>,
+    C : Cache<V,S>,
     P : AsRef<Path>,
     Op : AsRef<HistoryOptions>>(diff_file_path: P,
                      history : &FileHistory,
@@ -28,5 +28,5 @@ pub(crate) fn load<
 
     let paths = create_ancestors_paths(history, &analyzed, opt.max_phase(), opt.is_cumulative(), dir_path)?;
 
-    Ok(accumulate_diff(paths, cache, opt.max_phase())?)
+    Ok(accumulate_diff(paths, cache, opt.max_phase(), false)?)
 }

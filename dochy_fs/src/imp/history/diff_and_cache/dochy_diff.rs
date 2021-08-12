@@ -1,4 +1,4 @@
-use crate::imp::history::diff_and_cache::diff_value::DiffValue;
+use crate::imp::history::diff_and_cache::diff_value::{DiffValue};
 use crate::error::FsResult;
 use std::io::{Read, Write};
 

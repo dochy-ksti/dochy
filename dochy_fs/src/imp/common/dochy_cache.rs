@@ -47,8 +47,7 @@ impl DochyCache{
         self.src_root.clone()
     }
 
-    pub fn get_cache(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
-
+    pub fn get_cache_for_save(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
         if let Some(index) = get_phase_cache(&self.phase_cache, &paths, max_phase){
             if index == max_phase{
                 let (_,root) = self.phase_cache.get(&index).unwrap();
@@ -65,6 +64,23 @@ impl DochyCache{
             let root = self.clone_src_root();
             let r = calc_diffs_and_cache(&mut self.phase_cache, root, &paths, max_phase, 0)?;
             return Ok((r, Vec::new()))
+        }
+    }
+    pub fn get_cache_for_load(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
+        if let Some(index) = get_phase_cache(&self.phase_cache, &paths, max_phase){
+            if index == max_phase{
+                let (_,root) = self.phase_cache.get(&index).unwrap();
+                return Ok((root.clone(), Vec::new()));
+            } else{
+                let root = {
+                    let (_, root) = self.phase_cache.get(&index).unwrap();
+                    root.clone()
+                };
+                let ans = paths.into_iter().skip(index+1).collect();
+                return Ok((root, ans));
+            }
+        } else{
+            Ok((self.clone_src_root(), paths))
         }
     }
 

@@ -16,7 +16,7 @@ use crate::imp::history::file_hist::ancestors::{calc_ancestors_paths, create_anc
 pub(crate) fn derive_impl<
     V : DiffValue,
     S: DiffSrc<V>,
-    C : Cache<V, S>,
+    C : Cache<V,S>,
     P : AsRef<Path>,
     Op : AsRef<HistoryOptions>>(tag : Option<String>,
                                 diff_src: &S,
@@ -47,7 +47,7 @@ pub(crate) fn derive_impl<
 
     let paths = calc_ancestors_paths(&ancestors, history_hash_dir);
 
-    let composed = accumulate_diff(paths, cache, options.max_phase())?;
+    let composed = accumulate_diff(paths, cache, options.max_phase(), true)?;
     let diff = diff_src.create_diff(&composed)?;
 
     let mut vec: Vec<u8> = vec![];

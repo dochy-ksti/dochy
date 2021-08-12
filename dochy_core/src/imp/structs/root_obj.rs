@@ -52,8 +52,10 @@ impl RootObject{
         RootObject{ default: Arc::new(default), sabun : Arc::new(sabun), old : Arc::new(old), meta_table : Arc::new(meta_table), id : Arc::new(()) }
     }
     pub fn default(&self) -> &RootDefObj{ self.default.as_ref() }
+    pub fn default_arc(&self) -> Arc<RootDefObj>{ self.default.clone() }
 
     pub fn meta_table(&self) -> &MetaTable{ self.meta_table.as_ref() }
+    pub fn meta_table_arc(&self) -> Arc<MetaTable>{ self.meta_table.clone() }
 
     /////mlistがdefaultにある都合上、書き換える必要性が生じている。HashMのKeyはmetatableからポインタ参照されているので、ハッシュ再構成が起きてはならない
     //pub(crate) fn default_mut(&mut self) -> &mut HashM<String, (usize, RootValue)>{ self.default.as_mut() }
@@ -77,7 +79,9 @@ impl RootObject{
     }
     pub fn sabun(&self) -> &HashM<String, RootSabValue>{ self.sabun.as_ref() }
     pub fn sabun_mut(&mut self) -> &mut HashM<String, RootSabValue>{ Arc::make_mut(&mut self.sabun) }
-    pub(crate) fn old(&self) -> &HashS<String>{ self.old.as_ref() }
+    pub fn old(&self) -> &HashS<String>{ self.old.as_ref() }
+    pub fn old_arc(&self) -> Arc<HashS<String>>{ self.old.clone() }
+
     pub fn set_sabun_param(&mut self, name : String, param : RustParam) -> Result<Option<RustParam>, SetSabunError> {
         let (p, vt) = if let Some(RootValue::Param(p, vt)) = self.default().get(&name) { (p, vt) } else {
             return Err(SetSabunError::ParamNotFound);

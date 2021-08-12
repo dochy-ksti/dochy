@@ -1,8 +1,9 @@
-use crate::imp::history::diff_and_cache::diff_value::DiffValue;
+use crate::imp::history::diff_and_cache::diff_value::{DiffValue};
 use crate::error::FsResult;
 use crate::test_simple_history::simple_diff::sd_diff::SdDiff;
 use std::io::{Read, Write};
 use dochy_compaction::enc_dec::decode::decode;
+use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 
 impl DiffValue for SdDiff{
     fn read_value<R: Read>(read: &mut R) -> FsResult<Self> {
@@ -14,3 +15,4 @@ impl DiffValue for SdDiff{
         self.encode(write)
     }
 }
+

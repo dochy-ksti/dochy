@@ -19,7 +19,7 @@ pub(crate) fn write_phase_0<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     let file_name = calc_filename(tag.as_ref().map(|s| s.as_str()), control, None,&[0]);
     let file_path = history_hash_dir.join(&file_name);
 
-    let (initial, _) = cache.get_cache(vec![], max_phase)?;
+    let (initial, _) = cache.get_cache(vec![], max_phase, true)?;
 
     let diff = diff_src.create_diff(&initial)?;
     let mut vec : Vec<u8> = vec![];
