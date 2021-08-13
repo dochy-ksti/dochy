@@ -92,10 +92,6 @@ fn remove_upper_phase_cache(cache : &mut BTreeMap<usize, (PathBuf, RootObject)>,
     }
 }
 
-
-
-
-
 fn get_cached_item(cache : &mut DochyCache, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
     if let Some(index) = get_phase_cache(&cache.phase_cache, &paths, max_phase){
         if index == max_phase{
