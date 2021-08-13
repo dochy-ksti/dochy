@@ -46,15 +46,22 @@ impl DochyCache{
         self.src_root.clone()
     }
 
-    /// Single threaded, caches except max_phase item
+    /// Single threaded, caches calculated items except max_phase's
     pub fn apply_items_for_save(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<RootObject> {
         let first_len = paths.len();
         let (root,paths) = get_cached_item(self, paths, max_phase)?;
         let num_cached = paths.len() - first_len;
+
+        //キャッシュを削除しない場合、phase0から古いデータ→新しいデータの関係性が壊れる
+        //Binaryは値の比較をせず、Arcのポインタ比較だけで同値性を判断するが、
+        // 大きいphaseのデータを比較するときに、小さいphaseのキャッシュがないのでphase0からデータを作り直すので、
+        // 同値であっても違うArcなので違うと判定され、巨大なデータになってしまう
+        // それを避けるためキャッシュは古いデータ→新しいデータの関係性を保つべきだろう
         remove_upper_phase_cache(&mut self.phase_cache, num_cached);
         let mut current_index = num_cached;
 
         //セーブは非同期で実行されるので、時間がかかってもかまうことはない、という発想
+        //マルチスレッドにすることで、他の処理が遅くなる方が問題が大きいのではないかと思う
         apply_items_st(root, &paths, |r|{
             if current_index < max_phase{
                 let path = &paths[current_index - num_cached];
@@ -64,7 +71,7 @@ impl DochyCache{
         })
     }
 
-    /// Multi-threaded, no cache
+    /// Multi-threaded, not caches calculated items
     pub fn apply_items_for_load(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<RootObject> {
         let (root,paths) = get_cached_item(self, paths, max_phase)?;
         //ロードではキャッシュを行わず、全力でただ開く。ロードが終わるまで処理が進まないことが想定されている
