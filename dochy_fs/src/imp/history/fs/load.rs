@@ -3,7 +3,7 @@ use crate::error::FsResult;
 use crate::imp::history::file_hist::file_history::FileHistory;
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
-use crate::imp::history::diff_and_cache::cacher::Cache;
+use crate::imp::history::diff_and_cache::cache::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::imp::history::file_name::analyze_file_name::analyze_file_name;
 use crate::imp::history::file_hist::ancestors::create_ancestors_paths;
@@ -28,5 +28,5 @@ pub(crate) fn load<
 
     let paths = create_ancestors_paths(history, &analyzed, opt.max_phase(), opt.is_cumulative(), dir_path)?;
 
-    Ok(accumulate_diff(paths, cache, opt.max_phase(), false)?)
+    Ok(cache.apply_items(paths,  opt.max_phase(), false)?)
 }

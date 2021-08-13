@@ -3,7 +3,7 @@ use crate::error::FsResult;
 use crate::imp::history::fs::write_phase_0::write_phase_0;
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
-use crate::imp::history::diff_and_cache::cacher::Cache;
+use crate::imp::history::diff_and_cache::cache::Cache;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 
 pub(crate) fn first<V : DiffValue, S : DiffSrc<V>, C : Cache<V,S>>(

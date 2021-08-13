@@ -2,7 +2,7 @@ use std::path::Path;
 use crate::error::FsResult;
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
-use crate::imp::history::diff_and_cache::cacher::Cache;
+use crate::imp::history::diff_and_cache::cache::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::history::FileNameProps;

@@ -1,4 +1,4 @@
-pub mod cacher;
+pub mod cache;
 pub mod diff_src;
 pub mod accumulate_diff;
 pub mod diff_value;

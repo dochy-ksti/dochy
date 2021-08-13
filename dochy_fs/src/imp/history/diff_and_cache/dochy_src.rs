@@ -12,9 +12,9 @@ impl DiffSrc<DochyDiff> for RootObject{
         Ok(DochyDiff::new(vec))
     }
 
-    // fn apply_diff(&mut self, diff: RootDiffR) -> FsResult<()> {
-    //     dochy_diff::apply_root_diff_r(self, diff)?;
-    //     Ok(())
-    // }
+    fn apply_diff(&mut self, diff: DochyDiff) -> FsResult<()> {
+        dochy_diff::apply_diff(self, &mut diff.slice())?;
+        Ok(())
+    }
 }
 

@@ -6,7 +6,7 @@ use crate::imp::history::fs::write_phase_file::write_phase_file;
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
 use crate::imp::history::diff_and_cache::accumulate_diff::accumulate_diff;
-use crate::imp::history::diff_and_cache::cacher::Cache;
+use crate::imp::history::diff_and_cache::cache::Cache;
 use crate::imp::history::algo::history_options::{HistoryOptions};
 use crate::history::FileNameProps;
 use crate::imp::history::file_hist::file_history::FileHistory;
@@ -47,7 +47,7 @@ pub(crate) fn derive_impl<
 
     let paths = calc_ancestors_paths(&ancestors, history_hash_dir);
 
-    let composed = accumulate_diff(paths, cache, options.max_phase(), true)?;
+    let composed = cache.apply_items(paths,options.max_phase(), true)?;
     let diff = diff_src.create_diff(&composed)?;
 
     let mut vec: Vec<u8> = vec![];

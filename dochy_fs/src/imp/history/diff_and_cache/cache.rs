@@ -9,6 +9,6 @@ pub(crate) trait Cache<V : DiffValue, S : DiffSrc<V>>{
     /// さらにそこからapplyすべきdiffファイルのパスのリストも返す
     ///
     /// caching : 全部計算してキャッシュするか、自分がもってるキャッシュだけ返すか。どっちでもよい。trueでもfalseでも同じ処理でもよい
-    fn get_cache(&mut self, pathes : Vec<PathBuf>, max_phase : usize, caching : bool) -> FsResult<(S, Vec<PathBuf>)>;
+    fn apply_items(&mut self, paths : Vec<PathBuf>, max_phase : usize, caching : bool) -> FsResult<S>;
     fn set_cache(&mut self, path : PathBuf, item : S, phase : usize) -> FsResult<()>;
 }

@@ -12,8 +12,8 @@ impl DiffSrc<SdDiff> for SdData{
         Ok(create_sd_diff(from, self))
     }
 
-    // fn apply_diff(&mut self, diff: SdDiff) -> FsResult<()> {
-    //     SdData::apply_diff(self, &diff)
-    // }
+    fn apply_diff(&mut self, diff: SdDiff) -> FsResult<()> {
+        SdData::apply_diff(self, &diff)
+    }
 
 }
