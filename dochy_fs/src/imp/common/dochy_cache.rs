@@ -7,8 +7,7 @@ use dochy_archiver::{get_hash_and_metadata_from_dir};
 use dochy_core::json_dir_to_root;
 use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
 use crate::imp::common::archive::load_archive::load_archive_and_hash;
-use crate::imp::history::diff_and_cache::open_diff_file_without_metadata::open_diff_file_without_metadata;
-use dochy_diff::apply_diff;
+use crate::imp::common::apply_items::{apply_items_st, apply_items_mt};
 
 
 pub struct DochyCache{
@@ -47,89 +46,72 @@ impl DochyCache{
         self.src_root.clone()
     }
 
-    pub fn get_cache_for_save(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
-        if let Some(index) = get_phase_cache(&self.phase_cache, &paths, max_phase){
-            if index == max_phase{
-                let (_,root) = self.phase_cache.get(&index).unwrap();
-                return Ok((root.clone(), Vec::new()));
-            } else{
-                let root = {
-                    let (_, root) = self.phase_cache.get(&index).unwrap();
-                    root.clone()
-                };
-                let r = calc_diffs_and_cache(&mut self.phase_cache, root, &paths, max_phase, index+1)?;
-                return Ok((r, Vec::new()))
+    /// Single threaded, caches except max_phase item
+    pub fn apply_items_for_save(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<RootObject> {
+        let first_len = paths.len();
+        let (root,paths) = get_cached_item(self, paths, max_phase)?;
+        let num_cached = paths.len() - first_len;
+        remove_upper_phase_cache(&mut self.phase_cache, num_cached);
+        let mut current_index = num_cached;
+
+        //セーブは非同期で実行されるので、時間がかかってもかまうことはない、という発想
+        apply_items_st(root, &paths, |r|{
+            if current_index < max_phase{
+                let path = &paths[current_index - num_cached];
+                self.phase_cache.insert(current_index, (path.to_path_buf(), r.clone()));
+                current_index += 1;
             }
-        } else{
-            let root = self.clone_src_root();
-            let r = calc_diffs_and_cache(&mut self.phase_cache, root, &paths, max_phase, 0)?;
-            return Ok((r, Vec::new()))
-        }
-    }
-    pub fn get_cache_for_load(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
-        if let Some(index) = get_phase_cache(&self.phase_cache, &paths, max_phase){
-            if index == max_phase{
-                let (_,root) = self.phase_cache.get(&index).unwrap();
-                return Ok((root.clone(), Vec::new()));
-            } else{
-                let root = {
-                    let (_, root) = self.phase_cache.get(&index).unwrap();
-                    root.clone()
-                };
-                let ans = paths.into_iter().skip(index+1).collect();
-                return Ok((root, ans));
-            }
-        } else{
-            Ok((self.clone_src_root(), paths))
-        }
+        })
     }
 
-    pub fn set_cache(&mut self, path : PathBuf, item: RootObject, phase: usize) -> FsResult<()> {
-        loop{
-            let index = if let Some((index, _)) = self.phase_cache.iter().last(){ *index }
-            else{
-                break;
-            };
-            if phase < index{
-                self.phase_cache.remove(&index);
-            } else{
-                break;
-            }
-        }
+    /// Multi-threaded, no cache
+    pub fn apply_items_for_load(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<RootObject> {
+        let (root,paths) = get_cached_item(self, paths, max_phase)?;
+        //ロードではキャッシュを行わず、全力でただ開く。ロードが終わるまで処理が進まないことが想定されている
+        apply_items_mt(root, paths,|_|{})
+    }
+
+    pub fn set_cache(&mut self, path : PathBuf, item: RootObject, phase: usize) {
+        remove_upper_phase_cache(&mut self.phase_cache, phase);
         self.phase_cache.insert(phase, (path, item));
-        Ok(())
     }
 }
 
-fn calc_diffs_and_cache(cache : &mut BTreeMap<usize, (PathBuf, RootObject)>,
-                        mut root : RootObject,
-                        paths : &[PathBuf],
-                        max_phase : usize,
-                        current_index : usize) -> FsResult<RootObject> {
-    for i in current_index..max_phase {
-        let path = if let Some(path) = paths.get(i){ path } else {
-            return Ok(root);
+/// removes phase <= index
+fn remove_upper_phase_cache(cache : &mut BTreeMap<usize, (PathBuf, RootObject)>, phase : usize){
+    loop{
+        let index = if let Some((index, _)) = cache.iter().last(){ *index }
+        else{
+            break;
         };
-        let mut file = open_diff_file_without_metadata(&path)?;
-
-        apply_diff(&mut root, &mut file)?;
-        cache.insert(i, (path.to_path_buf(), root.clone()));
-    }
-    if paths.len() == max_phase{
-        return Ok(root);
-    }
-    for i in max_phase..paths.len(){
-        let path = &paths[i];
-        let mut file = open_diff_file_without_metadata(&path)?;
-
-        apply_diff(&mut root, &mut file)?;
-
-        if i == paths.len() - 1{
-            cache.insert(max_phase,(path.to_path_buf(), root.clone()));
-            return Ok(root);
+        if phase <= index{
+            cache.remove(&index);
+        } else{
+            break;
         }
     }
-    unreachable!()
+}
+
+
+
+
+
+fn get_cached_item(cache : &mut DochyCache, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
+    if let Some(index) = get_phase_cache(&cache.phase_cache, &paths, max_phase){
+        if index == max_phase{
+            let (_,root) = cache.phase_cache.get(&index).unwrap();
+            return Ok((root.clone(), Vec::new()));
+        } else{
+            let root = {
+                let (_, root) = cache.phase_cache.get(&index).unwrap();
+                root.clone()
+            };
+            let ans = paths.into_iter().skip(index+1).collect();
+            return Ok((root, ans));
+        }
+    } else{
+        Ok((cache.clone_src_root(), paths))
+    }
 }
 
 fn get_phase_cache(cache : &BTreeMap<usize, (PathBuf, RootObject)>, vec : &Vec<PathBuf>, max_phase : usize) -> Option<usize>{

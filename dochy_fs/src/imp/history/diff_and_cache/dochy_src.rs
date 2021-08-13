@@ -1,8 +1,7 @@
 use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
-use dochy_core::structs::{RootObject, MetaTable};
+use dochy_core::structs::{RootObject};
 use crate::error::FsResult;
 use crate::imp::history::diff_and_cache::dochy_diff::DochyDiff;
-use dochy_diff::RootDiffR;
 
 
 impl DiffSrc<DochyDiff> for RootObject{

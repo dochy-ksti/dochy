@@ -17,11 +17,11 @@ pub fn apply_diff<R : Read>(root : &mut RootObject, diff : &mut R) -> Result<(),
     Ok(())
 }
 
-pub fn get_root_diff_r<R : Read>(kvals : Vec<KVal>, meta_table : &MetaTable) -> Result<RootDiffR, DiffError>{
+pub fn get_root_diff_r(kvals : Vec<KVal>, meta_table : &MetaTable) -> Result<RootDiffR, DiffError>{
     let mut reader = Reader::new(kvals);
     Ok(read_root(&mut reader, meta_table)?)
 }
 
-pub fn apply_root_diff_r<R : Read>(root : &mut RootObject, diff : RootDiffR) -> Result<(), DiffError>{
+pub fn apply_root_diff_r(root : &mut RootObject, diff : RootDiffR) -> Result<(), DiffError>{
     apply_root_diff(root, diff)
 }

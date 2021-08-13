@@ -6,6 +6,9 @@ use crate::imp::structs::param_type::ParamType;
 use crate::imp::structs::var_type::VarType;
 use crate::HashM;
 
+unsafe impl Send for MetaTable{}
+unsafe impl Sync for MetaTable{}
+
 #[derive(Debug)]
 pub struct MetaTable{
     table : Vec<Option<(*const String, MetaValue)>>
