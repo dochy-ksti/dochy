@@ -76,9 +76,13 @@ pub fn get_str(ps : CItemPtr, name : &str) -> Option<Qv<String>>{
     } else{ None }
 }
 
-pub fn get_str_def(ps : CItemPtr, name : &str) -> Option<Qv<String>>{
+pub fn get_str_def<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b String>>{
     if let Some(RustParam::String(b)) = get_param_def(ps, name){
-        Some(b.map(|s| s.str().to_string()))
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.string())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
     } else{ None }
 }
 
@@ -90,9 +94,13 @@ pub fn get_int_array(ps : CItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
     }
 }
 
-pub fn get_int_array_def(ps : CItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
+pub fn get_int_array_def<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b Vec<i64>>>{
     if let Some(RustParam::IntArray(b)) = get_param_def(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
     } else{ None }
 }
 
@@ -104,9 +112,13 @@ pub fn get_float_array(ps : CItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
     }
 }
 
-pub fn get_float_array_def(ps : CItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
+pub fn get_float_array_def<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b Vec<f64>>>{
     if let Some(RustParam::FloatArray(b)) = get_param_def(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
     } else{ None }
 }
 
@@ -118,9 +130,13 @@ pub fn get_binary(ps : CItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
     }
 }
 
-pub fn get_binary_def(ps : CItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
+pub fn get_binary_def<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param_def(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        match b{
+            Qv::Val(v) => Some(Qv::Val(v.vec())),
+            Qv::Null => Some(Qv::Null),
+            Qv::Undefined => Some(Qv::Undefined)
+        }
     } else{ None }
 }
 

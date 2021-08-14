@@ -69,7 +69,7 @@ impl ParamSource{
         let var_type = self.var_type();
         let pt = self.param_type();
 
-        sb.push(0,&format!("pub fn {}_immutable(&self) -> {}{{", with_old(&snake_name, is_old), with_var(&format!("&{}", pt.typename()), var_type)));
+        sb.push(0,&format!("pub fn {}(&self) -> {}{{", with_old(&snake_name, is_old), with_var(&format!("&{}", pt.typename()), var_type)));
         sb.push(1,&format!("let qv = {}::get_immutable_{}(self.ptr, \"{}\").unwrap();", mod_name, pt.nickname(), id));
 
 
@@ -99,7 +99,7 @@ impl ParamSource{
         let var_type = self.var_type();
         let pt = self.param_type();
 
-        sb.push(0,&format!("pub fn {}_mutable(&mut self) -> {}{{", with_old(&snake_name, is_old), with_var(&format!("&mut {}", pt.typename()), var_type)));
+        sb.push(0,&format!("pub fn {}_mut(&mut self) -> {}{{", with_old(&snake_name, is_old), with_var(&format!("&mut {}", pt.typename()), var_type)));
         sb.push(1,&format!("let qv = {}::get_mutable_{}(self.ptr, \"{}\").unwrap();", mod_name, pt.nickname(), id));
 
 
@@ -130,6 +130,36 @@ impl ParamSource{
         let pt = self.param_type();
 
         sb.push(0,&format!("pub fn {}_def_val(&self) -> {}{{", with_old(&snake_name, is_old), with_var(pt.typename(), var_type)));
+        sb.push(1,&format!("let qv = {}::get_{}_def(self.ptr, \"{}\").unwrap();", mod_name, pt.nickname(), id));
+
+        match &var_type {
+            VarType::Normal => {
+                sb.push(1,&format!("qv.into_value().unwrap()"));
+            },
+            VarType::Undefiable => {
+                sb.push(1,&format!("UndefOr::from_qv(qv).unwrap()"));
+            },
+            VarType::Nullable => {
+                sb.push(1,&format!("NullOr::from_qv(qv).unwrap()"));
+            },
+            VarType::UndefNullable => {
+                sb.push(1,&format!("qv"));
+            },
+        }
+        sb.push(0,"}");
+        sb.to_string()
+    }
+
+    pub fn get_def_immutable(&self, mod_name : &str) -> String{
+        let mut sb = SourceBuilder::new();
+
+        let id = self.name();
+        let snake_name = to_snake_name(id);
+        let is_old = self.is_old();
+        let var_type = self.var_type();
+        let pt = self.param_type();
+
+        sb.push(0,&format!("pub fn {}_def_val(&self) -> {}{{", with_old(&snake_name, is_old), with_var(&format!("&{}", pt.typename()), var_type)));
         sb.push(1,&format!("let qv = {}::get_{}_def(self.ptr, \"{}\").unwrap();", mod_name, pt.nickname(), id));
 
         match &var_type {

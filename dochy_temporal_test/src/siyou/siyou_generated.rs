@@ -52,38 +52,30 @@ impl RootIntf{
 	pub fn ini_item_list(&self) -> CListConst<IniItemListCItem>{
 		CListConst::new(root::get_clist(self.ptr, "iniItemList").unwrap(), self)
 	}
-	pub fn int_array(&self) -> Vec<i64>{
-		let qv = root::get_int_array(self.ptr, "intArray").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn int_array_def_val(&self) -> Vec<i64>{
+	pub fn int_array_def_val(&self) -> &Vec<i64>{
 		let qv = root::get_int_array_def(self.ptr, "intArray").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn int_array_immutable(&self) -> &Vec<i64>{
+	pub fn int_array(&self) -> &Vec<i64>{
 		let qv = root::get_immutable_int_array(self.ptr, "intArray").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn int_array_mutable(&mut self) -> &mut Vec<i64>{
+	pub fn int_array_mut(&mut self) -> &mut Vec<i64>{
 		let qv = root::get_mutable_int_array(self.ptr, "intArray").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_int_array(&mut self, int_array : Vec<i64>){
 		root::set_int_array(self.ptr, "intArray", Qv::Val(int_array));
 	}
-	pub fn some_str(&self) -> String{
-		let qv = root::get_str(self.ptr, "someStr").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn some_str_def_val(&self) -> String{
+	pub fn some_str_def_val(&self) -> &String{
 		let qv = root::get_str_def(self.ptr, "someStr").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn some_str_immutable(&self) -> &String{
+	pub fn some_str(&self) -> &String{
 		let qv = root::get_immutable_str(self.ptr, "someStr").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn some_str_mutable(&mut self) -> &mut String{
+	pub fn some_str_mut(&mut self) -> &mut String{
 		let qv = root::get_mutable_str(self.ptr, "someStr").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -101,19 +93,15 @@ impl RootIntf{
 	pub fn set_hego_float(&mut self, hego_float : NullOr<f64>){
 		root::set_float(self.ptr, "hegoFloat", hego_float.into_qv());
 	}
-	pub fn new_name(&self) -> UndefOr<String>{
-		let qv = root::get_str(self.ptr, "newName").unwrap();
-		UndefOr::from_qv(qv).unwrap()
-	}
-	pub fn new_name_def_val(&self) -> UndefOr<String>{
+	pub fn new_name_def_val(&self) -> UndefOr<&String>{
 		let qv = root::get_str_def(self.ptr, "newName").unwrap();
 		UndefOr::from_qv(qv).unwrap()
 	}
-	pub fn new_name_immutable(&self) -> UndefOr<&String>{
+	pub fn new_name(&self) -> UndefOr<&String>{
 		let qv = root::get_immutable_str(self.ptr, "newName").unwrap();
 		UndefOr::from_qv(qv).unwrap()
 	}
-	pub fn new_name_mutable(&mut self) -> UndefOr<&mut String>{
+	pub fn new_name_mut(&mut self) -> UndefOr<&mut String>{
 		let qv = root::get_mutable_str(self.ptr, "newName").unwrap();
 		UndefOr::from_qv(qv).unwrap()
 	}
@@ -142,19 +130,15 @@ impl RootIntf{
 	pub fn set_hoge_float(&mut self, hoge_float : f64){
 		root::set_float(self.ptr, "hogeFloat", Qv::Val(hoge_float));
 	}
-	pub fn binary(&self) -> Vec<u8>{
-		let qv = root::get_binary(self.ptr, "binary").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn binary_def_val(&self) -> Vec<u8>{
+	pub fn binary_def_val(&self) -> &Vec<u8>{
 		let qv = root::get_binary_def(self.ptr, "binary").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn binary_immutable(&self) -> &Vec<u8>{
+	pub fn binary(&self) -> &Vec<u8>{
 		let qv = root::get_immutable_binary(self.ptr, "binary").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn binary_mutable(&mut self) -> &mut Vec<u8>{
+	pub fn binary_mut(&mut self) -> &mut Vec<u8>{
 		let qv = root::get_mutable_binary(self.ptr, "binary").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -165,38 +149,30 @@ impl RootIntf{
 		let t = WeaponTable::new(root::get_table(self.ptr.def(), "weapon").unwrap());
 		CTableConst::new(t, self)
 	}
-	pub fn float_array(&self) -> Vec<f64>{
-		let qv = root::get_float_array(self.ptr, "floatArray").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn float_array_def_val(&self) -> Vec<f64>{
+	pub fn float_array_def_val(&self) -> &Vec<f64>{
 		let qv = root::get_float_array_def(self.ptr, "floatArray").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn float_array_immutable(&self) -> &Vec<f64>{
+	pub fn float_array(&self) -> &Vec<f64>{
 		let qv = root::get_immutable_float_array(self.ptr, "floatArray").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn float_array_mutable(&mut self) -> &mut Vec<f64>{
+	pub fn float_array_mut(&mut self) -> &mut Vec<f64>{
 		let qv = root::get_mutable_float_array(self.ptr, "floatArray").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_float_array(&mut self, float_array : Vec<f64>){
 		root::set_float_array(self.ptr, "floatArray", Qv::Val(float_array));
 	}
-	pub fn nullable_int_array(&self) -> NullOr<Vec<i64>>{
-		let qv = root::get_int_array(self.ptr, "nullableIntArray").unwrap();
-		NullOr::from_qv(qv).unwrap()
-	}
-	pub fn nullable_int_array_def_val(&self) -> NullOr<Vec<i64>>{
+	pub fn nullable_int_array_def_val(&self) -> NullOr<&Vec<i64>>{
 		let qv = root::get_int_array_def(self.ptr, "nullableIntArray").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
-	pub fn nullable_int_array_immutable(&self) -> NullOr<&Vec<i64>>{
+	pub fn nullable_int_array(&self) -> NullOr<&Vec<i64>>{
 		let qv = root::get_immutable_int_array(self.ptr, "nullableIntArray").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
-	pub fn nullable_int_array_mutable(&mut self) -> NullOr<&mut Vec<i64>>{
+	pub fn nullable_int_array_mut(&mut self) -> NullOr<&mut Vec<i64>>{
 		let qv = root::get_mutable_int_array(self.ptr, "nullableIntArray").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
@@ -260,19 +236,15 @@ impl RootIntf{
 		let t = UnkoListTable::new(root::get_table(self.ptr.def(), "unkoList").unwrap());
 		CTableConst::new(t, self)
 	}
-	pub fn hoge_string(&self) -> String{
-		let qv = root::get_str(self.ptr, "hogeString").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn hoge_string_def_val(&self) -> String{
+	pub fn hoge_string_def_val(&self) -> &String{
 		let qv = root::get_str_def(self.ptr, "hogeString").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn hoge_string_immutable(&self) -> &String{
+	pub fn hoge_string(&self) -> &String{
 		let qv = root::get_immutable_str(self.ptr, "hogeString").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn hoge_string_mutable(&mut self) -> &mut String{
+	pub fn hoge_string_mut(&mut self) -> &mut String{
 		let qv = root::get_mutable_str(self.ptr, "hogeString").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -316,38 +288,30 @@ impl RootIntf{
 	pub fn enum_list(&self) -> CListConst<EnumListCItem>{
 		CListConst::new(root::get_clist(self.ptr, "enumList").unwrap(), self)
 	}
-	pub fn empty_int_array(&self) -> Vec<i64>{
-		let qv = root::get_int_array(self.ptr, "emptyIntArray").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn empty_int_array_def_val(&self) -> Vec<i64>{
+	pub fn empty_int_array_def_val(&self) -> &Vec<i64>{
 		let qv = root::get_int_array_def(self.ptr, "emptyIntArray").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn empty_int_array_immutable(&self) -> &Vec<i64>{
+	pub fn empty_int_array(&self) -> &Vec<i64>{
 		let qv = root::get_immutable_int_array(self.ptr, "emptyIntArray").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn empty_int_array_mutable(&mut self) -> &mut Vec<i64>{
+	pub fn empty_int_array_mut(&mut self) -> &mut Vec<i64>{
 		let qv = root::get_mutable_int_array(self.ptr, "emptyIntArray").unwrap();
 		qv.into_value().unwrap()
 	}
 	pub fn set_empty_int_array(&mut self, empty_int_array : Vec<i64>){
 		root::set_int_array(self.ptr, "emptyIntArray", Qv::Val(empty_int_array));
 	}
-	pub fn old_name_old(&self) -> NullOr<String>{
-		let qv = root::get_str(self.ptr, "oldName").unwrap();
-		NullOr::from_qv(qv).unwrap()
-	}
-	pub fn old_name_old_def_val(&self) -> NullOr<String>{
+	pub fn old_name_old_def_val(&self) -> NullOr<&String>{
 		let qv = root::get_str_def(self.ptr, "oldName").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
-	pub fn old_name_old_immutable(&self) -> NullOr<&String>{
+	pub fn old_name_old(&self) -> NullOr<&String>{
 		let qv = root::get_immutable_str(self.ptr, "oldName").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
-	pub fn old_name_old_mutable(&mut self) -> NullOr<&mut String>{
+	pub fn old_name_old_mut(&mut self) -> NullOr<&mut String>{
 		let qv = root::get_mutable_str(self.ptr, "oldName").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
@@ -520,15 +484,11 @@ impl From<CItemPtr> for HogeListCItem {
 	fn from(ptr : CItemPtr) -> Self { Self{ ptr } }
 }
 impl HogeListCItem {
-	pub fn mem(&self) -> String{
-		let qv = citem::get_str(self.ptr, "mem").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn mem_def_val(&self) -> String{
+	pub fn mem_def_val(&self) -> &String{
 		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn mem_immutable(&self) -> &String{
+	pub fn mem(&self) -> &String{
 		let qv = citem::get_immutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -613,15 +573,11 @@ impl SomeDataCItem {
 		let qv = citem::get_float_def(self.ptr, "n").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn s(&self) -> String{
-		let qv = citem::get_str(self.ptr, "s").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn s_def_val(&self) -> String{
+	pub fn s_def_val(&self) -> &String{
 		let qv = citem::get_str_def(self.ptr, "s").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn s_immutable(&self) -> &String{
+	pub fn s(&self) -> &String{
 		let qv = citem::get_immutable_str(self.ptr, "s").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -724,15 +680,11 @@ impl From<CItemPtr> for ItemList3CItem {
 	fn from(ptr : CItemPtr) -> Self { Self{ ptr } }
 }
 impl ItemList3CItem {
-	pub fn mem_override(&self) -> NullOr<String>{
-		let qv = citem::get_str(self.ptr, "memOverride").unwrap();
-		NullOr::from_qv(qv).unwrap()
-	}
-	pub fn mem_override_def_val(&self) -> NullOr<String>{
+	pub fn mem_override_def_val(&self) -> NullOr<&String>{
 		let qv = citem::get_str_def(self.ptr, "memOverride").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
-	pub fn mem_override_immutable(&self) -> NullOr<&String>{
+	pub fn mem_override(&self) -> NullOr<&String>{
 		let qv = citem::get_immutable_str(self.ptr, "memOverride").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
@@ -780,19 +732,15 @@ impl Mut1MItem {
 		let mil = mitem::get_mil_mut(self.ptr, "innerMutList").unwrap().unwrap();
 		MListMut::new(mil, self)
 	}
-	pub fn some_name(&self) -> String{
-		let qv = mitem::get_str(self.ptr, "someName").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn some_name_def_val(&self) -> String{
+	pub fn some_name_def_val(&self) -> &String{
 		let qv = mitem::get_str_def(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn some_name_immutable(&self) -> &String{
+	pub fn some_name(&self) -> &String{
 		let qv = mitem::get_immutable_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn some_name_mutable(&mut self) -> &mut String{
+	pub fn some_name_mut(&mut self) -> &mut String{
 		let qv = mitem::get_mutable_str(self.ptr, "someName").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -1068,15 +1016,11 @@ impl UnkoListCItem {
 		let qv = citem::get_int_def(self.ptr, "hogeInt").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn hoge_string(&self) -> String{
-		let qv = citem::get_str(self.ptr, "hogeString").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn hoge_string_def_val(&self) -> String{
+	pub fn hoge_string_def_val(&self) -> &String{
 		let qv = citem::get_str_def(self.ptr, "hogeString").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn hoge_string_immutable(&self) -> &String{
+	pub fn hoge_string(&self) -> &String{
 		let qv = citem::get_immutable_str(self.ptr, "hogeString").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -1153,15 +1097,11 @@ impl From<CItemPtr> for HegoListCItem {
 	fn from(ptr : CItemPtr) -> Self { Self{ ptr } }
 }
 impl HegoListCItem {
-	pub fn mem(&self) -> String{
-		let qv = citem::get_str(self.ptr, "mem").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn mem_def_val(&self) -> String{
+	pub fn mem_def_val(&self) -> &String{
 		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn mem_immutable(&self) -> &String{
+	pub fn mem(&self) -> &String{
 		let qv = citem::get_immutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -1178,19 +1118,15 @@ impl From<MItemPtr> for Mut2MItem {
 	}
 }
 impl Mut2MItem {
-	pub fn mem(&self) -> String{
-		let qv = mitem::get_str(self.ptr, "mem").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn mem_def_val(&self) -> String{
+	pub fn mem_def_val(&self) -> &String{
 		let qv = mitem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn mem_immutable(&self) -> &String{
+	pub fn mem(&self) -> &String{
 		let qv = mitem::get_immutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn mem_mutable(&mut self) -> &mut String{
+	pub fn mem_mut(&mut self) -> &mut String{
 		let qv = mitem::get_mutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -1240,15 +1176,11 @@ impl From<CItemPtr> for EnumListCItem {
 	fn from(ptr : CItemPtr) -> Self { Self{ ptr } }
 }
 impl EnumListCItem {
-	pub fn mem(&self) -> String{
-		let qv = citem::get_str(self.ptr, "mem").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn mem_def_val(&self) -> String{
+	pub fn mem_def_val(&self) -> &String{
 		let qv = citem::get_str_def(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn mem_immutable(&self) -> &String{
+	pub fn mem(&self) -> &String{
 		let qv = citem::get_immutable_str(self.ptr, "mem").unwrap();
 		qv.into_value().unwrap()
 	}

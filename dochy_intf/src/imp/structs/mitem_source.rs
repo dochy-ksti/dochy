@@ -50,8 +50,8 @@ impl MItemSource {
 
                     match param.param_type() {
                         ParamType::Binary | ParamType::String | ParamType::IntArray | ParamType::FloatArray =>{
-                            sb.push_without_newline(1, &param.get("mitem"));
-                            sb.push_without_newline(1, &param.get_def("mitem"));
+                            //sb.push_without_newline(1, &param.get("mitem"));
+                            sb.push_without_newline(1, &param.get_def_immutable("mitem"));
                             sb.push_without_newline(1, &param.get_immutable("mitem"));
                             sb.push_without_newline(1, &param.get_mutable("mitem"));
                             sb.push_without_newline(1, &param.set("mitem"));
