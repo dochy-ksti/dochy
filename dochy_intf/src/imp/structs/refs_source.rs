@@ -40,7 +40,7 @@ impl RefsSource{
         let mut sb = SourceBuilder::new();
 
         if self.is_enum {
-            sb.push(0, &format!("pub fn set_enum(&self, kind : {}){{", &to_kind_type_name(stem)));
+            sb.push(0, &format!("pub fn set_enum(&mut self, kind : {}){{", &to_kind_type_name(stem)));
             sb.push(1, &format!("let (list_name, id) = kind.id();"));
             sb.push(1, &format!("mitem::set_enum(self.ptr, list_name, id);"));
             sb.push(0, "}");

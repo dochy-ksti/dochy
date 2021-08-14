@@ -1205,7 +1205,7 @@ impl Mut2MItem {
 	pub fn get_enum_ids(&self) -> (String,String){
 		mitem::get_enum(self.ptr).unwrap()
 	}
-	pub fn set_enum(&self, kind : Mut2Kind){
+	pub fn set_enum(&mut self, kind : Mut2Kind){
 		let (list_name, id) = kind.id();
 		mitem::set_enum(self.ptr, list_name, id);
 	}
