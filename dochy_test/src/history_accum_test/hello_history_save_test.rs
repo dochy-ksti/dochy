@@ -1,18 +1,18 @@
 use dochy::error::DpResult;
 use dochy::core::json_dir_to_root;
-use crate::a2_hello_history::hello_history_accessor::RootIntf;
 use dochy::fs::common::{CurrentSrc, hash_dir_path, DochyCache};
 use std::path::{Path};
 use dochy::fs::history::{save_history_file, list_histories, load_history_file};
 use dochy::core::structs::RootObject;
+use crate::history_accum_test::hello_history_accessor::RootIntf;
 
-///save_twiceしてsecond newest fileをload
+
 //#[test]
-fn hello_history_save_test() -> DpResult<()> {
-    let src_dir = "src/a2_hello_history/src_dir";
+fn accum_save_test() -> DpResult<()> {
+    let src_dir = "src/history_accum_test/src_dir";
     let mut root = json_dir_to_root(src_dir, true)?;
 
-    let history_dir = Path::new("src/a2_hello_history/history_dir");
+    let history_dir = Path::new("src/history_accum_test/history_dir");
 
     std::fs::create_dir(history_dir).ok();
     let his = list_histories(history_dir, ())?;

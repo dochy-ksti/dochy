@@ -51,7 +51,7 @@ impl DochyCache{
     pub fn apply_items_for_save(&mut self, paths: Vec<PathBuf>, op : &HistoryOptions) -> FsResult<RootObject> {
         let first_len = paths.len();
         let (root,paths) = get_cached_item(self, paths, op.max_phase())?;
-        let num_cached = paths.len() - first_len;
+        let num_cached = first_len - paths.len();
 
         //キャッシュを削除しない場合、phase0から古いデータ→新しいデータという関係性が壊れる
         //Binaryは値の比較をせず、Arcのポインタ比較だけで同値性を判断するが、
