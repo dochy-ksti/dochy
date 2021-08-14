@@ -4,14 +4,15 @@ use crate::error::FsResult;
 use dochy_core::structs::RootObject;
 use crate::imp::history::diff_and_cache::dochy_diff::DochyDiff;
 use crate::imp::common::dochy_cache::DochyCache;
+use crate::history::HistoryOptions;
 
 
 impl Cache<DochyDiff, RootObject> for DochyCache {
-    fn apply_items(&mut self, paths: Vec<PathBuf>, max_phase: usize, caching: bool) -> FsResult<RootObject> {
+    fn apply_items(&mut self, paths: Vec<PathBuf>, op: &HistoryOptions, caching: bool) -> FsResult<RootObject> {
         if caching {
-            self.apply_items_for_save(paths, max_phase)
+            self.apply_items_for_save(paths, op)
         } else{
-            self.apply_items_for_load(paths, max_phase)
+            self.apply_items_for_load(paths, op)
         }
     }
 

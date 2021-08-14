@@ -42,7 +42,7 @@ pub(crate) fn calc_next_phase(data : &PhaseData, op : &HistoryOptions) -> usize{
             }
         }
     }
-    if op.update_phase_a() == false{
+    if op.update_phase_0() == false{
         return 1;
     }
 

@@ -23,11 +23,12 @@ fn test_cumulative_limit_nth() -> FsResult<()> {
     let op = HistoryOptions::from(
         HistoryOptionsBuilder {
             max_phase: 2,
-            update_phase_a: true,
+            update_phase_0: true,
             cumulative: Some(CumulativeOptionsBuilder {
                 limit_nth: Some(2),
                 limit_count: None,
-            })
+            }),
+            ..Default::default()
         })?;
 
     let mut data : SdData = SdData::new(None);

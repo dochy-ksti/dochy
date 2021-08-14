@@ -40,25 +40,39 @@ use once_cell::sync::Lazy;
 #[derive(Debug, Clone)]
 pub struct HistoryOptions {
     max_phase : usize,
-    update_phase_a : bool,
+    update_phase_0: bool,
     cumulative : Option<CumulativeOptions>,
+    mt_save : Option<Option<usize>>,
+    mt_load : Option<Option<usize>>,
 }
 
 impl HistoryOptions {
-    /// Phase-A=0, Phase-B=1...
-    /// if max_phase == 1, there will be no Phase-C.
+
+    /// if max_phase == 1, there will be no Phase-2.
     pub fn max_phase(&self) -> usize{ self.max_phase }
 
-    ///if false, Phase-A isn't made twice
-    pub fn update_phase_a(&self) -> bool{ self.update_phase_a }
+    ///if false, Phase-0 isn't made twice
+    pub fn update_phase_0(&self) -> bool{ self.update_phase_0 }
 
     /// If this is Some, the max phase will be cumulative
     pub fn cumulative(&self) -> Option<&CumulativeOptions>{
         self.cumulative.as_ref()
     }
 
-    /// If history will contain Cumulative-Phase
+    /// self.cumulative().is_some()
     pub fn is_cumulative(&self) -> bool{ self.cumulative.is_some() }
+
+    /// enables multi-thread save
+    pub fn mt_save(&self) -> bool{ self.mt_save.is_some() }
+
+    /// If None, default or not multi-threaded
+    pub fn num_save_threads(&self) -> Option<usize>{ self.mt_save.flatten() }
+
+    /// enables multi-thread load
+    pub fn mt_load(&self) -> bool{ self.mt_load.is_some() }
+
+    /// If None, default or not multi-threaded
+    pub fn num_load_threads(&self) -> Option<usize>{ self.mt_load.flatten() }
 
     /// Construct HistoryOption with default values
     pub fn new() -> HistoryOptions {
@@ -68,7 +82,7 @@ impl HistoryOptions {
     /// Construct HistoryOption from builders
     pub fn from(builder : HistoryOptionsBuilder) -> FsResult<HistoryOptions>{
         if builder.max_phase == 0{
-            if builder.update_phase_a == false {
+            if builder.update_phase_0 == false {
                 return Err(format!("max_phase == 0 && update_phase_a == false is inconsistent."))?;
             }
             if let Some(cumu) = &builder.cumulative{
@@ -82,7 +96,9 @@ impl HistoryOptions {
         }
         Ok(HistoryOptions {
             max_phase : builder.max_phase,
-            update_phase_a : builder.update_phase_a,
+            update_phase_0: builder.update_phase_0,
+            mt_save: builder.mt_save,
+            mt_load: builder.mt_load,
             cumulative : builder.cumulative
                 .map(|c| CumulativeOptions::from(c)).transpose()?
         })
@@ -123,18 +139,30 @@ pub struct HistoryOptionsBuilder {
     /// if max_phase == 1, there will be no Phase-C.
     pub max_phase : usize,
 
-    ///if false, Phase-A isn't made twice
-    pub update_phase_a : bool,
+    ///if false, Phase-0 isn't made twice
+    pub update_phase_0 : bool,
 
     /// If this is Some, the max phase will be cumulative
     pub cumulative : Option<CumulativeOptionsBuilder>,
+
+    /// If None, not multi-threaded,
+    /// If Some(None), default multi-threaded,
+    /// If Some(Some(num)) multi-threaded with num threads
+    pub mt_save : Option<Option<usize>>,
+
+    /// If None, not multi-threaded,
+    /// If Some(None), default multi-threaded,
+    /// If Some(Some(num)) multi-threaded with num threads
+    pub mt_load : Option<Option<usize>>,
 }
 
 impl Default for HistoryOptionsBuilder {
     fn default() -> Self {
         Self{
             max_phase : 3,
-            update_phase_a : true,
+            update_phase_0 : true,
+            mt_save : None,
+            mt_load : Some(None),
             cumulative : Some(CumulativeOptionsBuilder::default()),
         }
     }

@@ -24,11 +24,11 @@ pub(crate) fn _next<
     let history_hash_dir = history_hash_dir.as_ref();
     let opt = opt.as_ref();
 
-    let history = create_file_history(history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
+    let history = create_file_history(history_hash_dir, opt.max_phase(), opt.cumulative().is_some())?;
     let newest_prop = if let Some(prop) = history.get_newest_prop() {
          prop
     } else {
-        return first(tag, diff_src, cache, opt.max_phase(), history_hash_dir);
+        return first(tag, diff_src, cache, opt, history_hash_dir);
     };
 
     derive_impl(tag, diff_src, cache, history_hash_dir, &history, newest_prop, opt)

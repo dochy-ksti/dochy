@@ -21,8 +21,9 @@ fn test_max_phase0() -> FsResult<()> {
     let op = HistoryOptions::from(
         HistoryOptionsBuilder {
             max_phase: 0,
-            update_phase_a : true,
+            update_phase_0 : true,
             cumulative: None,
+            ..Default::default()
         })?;
 
     let mut data : SdData = SdData::new(Some(200));

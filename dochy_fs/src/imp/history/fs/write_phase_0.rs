@@ -7,19 +7,20 @@ use crate::imp::history::diff_and_cache::diff_src::DiffSrc;
 use crate::imp::history::diff_and_cache::diff_value::DiffValue;
 use crate::imp::history::diff_and_cache::cache::Cache;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
+use crate::history::HistoryOptions;
 
 pub(crate) fn write_phase_0<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     tag : Option<String>,
     control : u32,
     diff_src: &S,
     cache : &mut C,
-    max_phase : usize,
+    op : &HistoryOptions,
     history_hash_dir: &Path) -> FsResult<FileNameProps>{
 
     let file_name = calc_filename(tag.as_ref().map(|s| s.as_str()), control, None,&[0]);
     let file_path = history_hash_dir.join(&file_name);
 
-    let initial = cache.apply_items(vec![], max_phase, true)?;
+    let initial = cache.apply_items(vec![], op, true)?;
 
     let diff = diff_src.create_diff(&initial)?;
     let mut vec : Vec<u8> = vec![];

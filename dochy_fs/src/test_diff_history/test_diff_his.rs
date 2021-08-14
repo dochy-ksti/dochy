@@ -23,11 +23,12 @@ fn test_diff_his() -> FsResult<()> {
 
     let opt = HistoryOptions::from(HistoryOptionsBuilder {
         max_phase: 1,
-        update_phase_a: true,
+        update_phase_0: true,
         cumulative: Some(CumulativeOptionsBuilder {
             limit_count: Some(3),
             limit_nth: None,
         }),
+        ..Default::default()
     })?;
 
     let mut cache = DochyCache::new(current_src.clone())?;

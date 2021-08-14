@@ -23,11 +23,12 @@ fn test_load_and_save() -> FsResult<()> {
     let op = HistoryOptions::from(
         HistoryOptionsBuilder {
             max_phase: 4,
-            update_phase_a : true,
+            update_phase_0 : true,
             cumulative: Some(CumulativeOptionsBuilder {
                 limit_nth: Some(1),
                 limit_count: Some(100)
-            })
+            }),
+            ..Default::default()
         })?;
 
     let mut data : SdData = SdData::new(None);

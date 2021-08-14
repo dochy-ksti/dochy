@@ -22,11 +22,12 @@ fn test_simple_diff_files() -> FsResult<()> {
     let op = HistoryOptions::from(
         HistoryOptionsBuilder {
             max_phase: 2,
-            update_phase_a : true,
+            update_phase_0 : true,
             cumulative: Some(CumulativeOptionsBuilder {
                 limit_nth: Some(2),
                 limit_count: Some(100)
-            })
+            }),
+            ..Default::default()
         })?;
 
     let mut data : SdData = SdData::new(None);
@@ -40,7 +41,7 @@ fn test_simple_diff_files() -> FsResult<()> {
         }
 
         _next(None, &data, &mut cache, &dir, &op)?;
-        let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
+        let history = create_file_history(&dir, op.max_phase(), op.cumulative().is_some())?;
         let loaded = load(&history.newest_file_path(&dir)?, &history, &mut cache, &op)?;
         assert_eq!(loaded, data)
     }

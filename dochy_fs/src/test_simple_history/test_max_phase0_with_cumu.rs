@@ -22,11 +22,12 @@ fn test_max_phase0_with_cumu() -> FsResult<()> {
     let op = HistoryOptions::from(
         HistoryOptionsBuilder {
             max_phase: 0,
-            update_phase_a : true,
+            update_phase_0 : true,
             cumulative: Some(CumulativeOptionsBuilder{
                 limit_count : None,
                 limit_nth : None,
             }),
+            ..Default::default()
         })?;
 
     let mut data : SdData = SdData::new(None);

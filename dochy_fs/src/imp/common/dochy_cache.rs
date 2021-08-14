@@ -8,12 +8,14 @@ use dochy_core::json_dir_to_root;
 use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
 use crate::imp::common::archive::load_archive::load_archive_and_hash;
 use crate::imp::common::apply_items::{apply_items_st, apply_items_mt};
+use crate::history::HistoryOptions;
 
 
 pub struct DochyCache{
     current_src : CurrentSrc,
     src_root : RootObject,
     hash : u128,
+    ///ほんとはVecでいいんだよなあ
     pub(crate) phase_cache: BTreeMap<usize, (PathBuf, RootObject)>,
 }
 
@@ -46,36 +48,48 @@ impl DochyCache{
         self.src_root.clone()
     }
 
-    /// Single threaded, caches calculated items except max_phase's
-    pub fn apply_items_for_save(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<RootObject> {
+    pub fn apply_items_for_save(&mut self, paths: Vec<PathBuf>, op : &HistoryOptions) -> FsResult<RootObject> {
         let first_len = paths.len();
-        let (root,paths) = get_cached_item(self, paths, max_phase)?;
+        let (root,paths) = get_cached_item(self, paths, op.max_phase())?;
         let num_cached = paths.len() - first_len;
 
-        //キャッシュを削除しない場合、phase0から古いデータ→新しいデータの関係性が壊れる
+        //キャッシュを削除しない場合、phase0から古いデータ→新しいデータという関係性が壊れる
         //Binaryは値の比較をせず、Arcのポインタ比較だけで同値性を判断するが、
-        // 大きいphaseのデータを比較するときに、小さいphaseのキャッシュがないのでphase0からデータを作り直すので、
+        // 大きいphaseのデータを比較するときに、小さいphaseのキャッシュがないとphase0からデータを作り直すので、
         // 同値であっても違うArcなので違うと判定され、巨大なデータになってしまう
         // それを避けるためキャッシュは古いデータ→新しいデータの関係性を保つべきだろう
         remove_upper_phase_cache(&mut self.phase_cache, num_cached);
         let mut current_index = num_cached;
 
-        //セーブは非同期で実行されるので、時間がかかってもかまうことはない、という発想
-        //マルチスレッドにすることで、他の処理が遅くなる方が問題が大きいのではないかと思う
-        apply_items_st(root, &paths, |r|{
-            if current_index < max_phase{
+        let cache_func = |r : &RootObject| {
+            if current_index < op.max_phase() {
                 let path = &paths[current_index - num_cached];
                 self.phase_cache.insert(current_index, (path.to_path_buf(), r.clone()));
                 current_index += 1;
             }
-        })
+        };
+        if op.mt_save() == false {
+            //こっちがデフォルト
+            //セーブは非同期で実行されるので、時間がかかってもかまうことはない、という発想
+            //マルチスレッドにすることで、他の処理が遅くなる方が問題が大きいのではないかと思う
+            apply_items_st(root, &paths, cache_func)
+        } else{
+            apply_items_mt(root, paths.to_vec(),  op.num_save_threads(), cache_func)
+        }
     }
 
-    /// Multi-threaded, not caches calculated items
-    pub fn apply_items_for_load(&mut self, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<RootObject> {
-        let (root,paths) = get_cached_item(self, paths, max_phase)?;
-        //ロードではキャッシュを行わず、全力でただ開く。ロードが終わるまで処理が進まないことが想定されている
-        apply_items_mt(root, paths,|_|{})
+    pub fn apply_items_for_load(&mut self, paths: Vec<PathBuf>, op : &HistoryOptions) -> FsResult<RootObject> {
+        let (root,paths) = get_cached_item(self, paths, op.max_phase())?;
+
+        if op.mt_load() {
+            //こっちがデフォルト
+            //ロードではキャッシュを行わず、全力でただ開く。ロードが終わるまで処理が進まないことが想定されている
+            //ロードで中途半端にキャッシュを作ると、キャッシュの古→新 関係が壊れるので、全部作るか、全部やめるかの2択
+            //なのでロード時にキャッシュは作らんほうがよいだろう
+            apply_items_mt(root, paths, op.num_load_threads(),|_| {})
+        } else{
+            apply_items_st(root, &paths, |_| {})
+        }
     }
 
     pub fn set_cache(&mut self, path : PathBuf, item: RootObject, phase: usize) {

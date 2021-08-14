@@ -58,7 +58,7 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
 
 
     let opt = opt.as_ref();
-    let latest = fs_start_new(tag, root, cache, &history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
+    let latest = fs_start_new(tag, root, cache, &history_hash_dir, opt, opt.is_cumulative())?;
     set_current_root_obj_info(history_dir, hash, Some(CurrentRootObjInfo::new(root.id(), latest.clone(), true)));
     return Ok(latest);
 }
