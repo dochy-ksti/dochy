@@ -49,13 +49,13 @@ fn print_file_data<P : AsRef<Path>>(path : P) -> DpResult<()>{
 
 fn save_twice(history_dir : &Path, root : RootObject, counter : usize, cache : &mut DochyCache) -> DpResult<()>{
     let mut r = RootIntf::new(root);
-    let mut txt = r.data1();
+    let mut txt = r.data1().clone();
     txt.push_str(&format!("{}", counter));
     r.set_data1(txt.clone());
     let _props = save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
     //dbg!(format!("1 {} {}", props.calc_filename(), counter));
     txt.push_str(&format!("{}", counter));
-    r.set_data1(txt);
+    r.set_data1(txt.clone());
     let _props = save_history_file(history_dir, None, r.root_obj_ref(), cache, ())?;
     //dbg!(format!("2 {} {}", props.calc_filename(), counter));
     Ok(())

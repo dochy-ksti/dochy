@@ -48,9 +48,9 @@ mod tests {
         assert_eq!(intf.hoge_float(), 1.0);
         assert_eq!(intf.hoge_string(), "山原や");
         assert_eq!(intf.hoge_bool(), false);
-        assert_eq!(intf.hoge_int_array(), vec![]);
-        assert_eq!(intf.hoge_float_array(), vec![1.2,3.4,5.6,7.8]);
-        assert_eq!(intf.hoge_binary(), vec![4,5,6]);
+        assert_eq!(intf.hoge_int_array(), &vec![]);
+        assert_eq!(intf.hoge_float_array(), &vec![1.2,3.4,5.6,7.8]);
+        assert_eq!(intf.hoge_binary(), &vec![4,5,6]);
         assert_eq!(intf.hoge_int_hatena(), NullOr::Val(1));
         assert_eq!(intf.hoge_int_hatena_to_null(), NullOr::Null);
         assert_eq!(intf.hoge_int_hatena_null(), NullOr::Val(1));
@@ -128,8 +128,8 @@ mod tests {
         assert_eq!(intf.hoge_float(), 1.0);
         assert_eq!(intf.hoge_string(), "山原や");
         assert_eq!(intf.hoge_bool(), false);
-        assert_eq!(intf.hoge_int_array(), vec![]);
-        assert_eq!(intf.hoge_float_array(), vec![1.2,3.4,5.6,7.8]);
+        assert_eq!(intf.hoge_int_array(), &vec![]);
+        assert_eq!(intf.hoge_float_array(), &vec![1.2,3.4,5.6,7.8]);
         assert_eq!(intf.hoge_int_hatena(), NullOr::Val(1));
         assert_eq!(intf.hoge_int_hatena_to_null(), NullOr::Null);
         assert_eq!(intf.hoge_int_hatena_null(), NullOr::Val(1));

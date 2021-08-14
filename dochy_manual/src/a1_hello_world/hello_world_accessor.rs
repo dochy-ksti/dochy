@@ -16,19 +16,15 @@ impl RootIntf{
     pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
-	pub fn message(&self) -> String{
-		let qv = root::get_str(self.ptr, "message").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn message_def_val(&self) -> String{
+	pub fn message_def_val(&self) -> &String{
 		let qv = root::get_str_def(self.ptr, "message").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn message_immutable(&self) -> &String{
+	pub fn message(&self) -> &String{
 		let qv = root::get_immutable_str(self.ptr, "message").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn message_mutable(&mut self) -> &mut String{
+	pub fn message_mut(&mut self) -> &mut String{
 		let qv = root::get_mutable_str(self.ptr, "message").unwrap();
 		qv.into_value().unwrap()
 	}

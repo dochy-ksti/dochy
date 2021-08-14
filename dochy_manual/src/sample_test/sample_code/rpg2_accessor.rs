@@ -140,19 +140,15 @@ impl PcListMItem {
 		let mil = mitem::get_mil_mut(self.ptr, "items").unwrap().unwrap();
 		MListMut::new(mil, self)
 	}
-	pub fn name(&self) -> String{
-		let qv = mitem::get_str(self.ptr, "name").unwrap();
-		qv.into_value().unwrap()
-	}
-	pub fn name_def_val(&self) -> String{
+	pub fn name_def_val(&self) -> &String{
 		let qv = mitem::get_str_def(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn name_immutable(&self) -> &String{
+	pub fn name(&self) -> &String{
 		let qv = mitem::get_immutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn name_mutable(&mut self) -> &mut String{
+	pub fn name_mut(&mut self) -> &mut String{
 		let qv = mitem::get_mutable_str(self.ptr, "name").unwrap();
 		qv.into_value().unwrap()
 	}

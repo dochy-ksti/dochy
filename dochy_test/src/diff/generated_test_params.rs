@@ -39,19 +39,15 @@
 		pub fn set_hoge_int(&mut self, hoge_int : i64){
 			root::set_int(self.ptr, "hogeInt", Qv::Val(hoge_int));
 		}
-		pub fn hoge_float_array(&self) -> Vec<f64>{
-			let qv = root::get_float_array(self.ptr, "hogeFloatArray").unwrap();
-			qv.into_value().unwrap()
-		}
-		pub fn hoge_float_array_def_val(&self) -> Vec<f64>{
+		pub fn hoge_float_array_def_val(&self) -> &Vec<f64>{
 			let qv = root::get_float_array_def(self.ptr, "hogeFloatArray").unwrap();
 			qv.into_value().unwrap()
 		}
-		pub fn hoge_float_array_immutable(&self) -> &Vec<f64>{
+		pub fn hoge_float_array(&self) -> &Vec<f64>{
 			let qv = root::get_immutable_float_array(self.ptr, "hogeFloatArray").unwrap();
 			qv.into_value().unwrap()
 		}
-		pub fn hoge_float_array_mutable(&mut self) -> &mut Vec<f64>{
+		pub fn hoge_float_array_mut(&mut self) -> &mut Vec<f64>{
 			let qv = root::get_mutable_float_array(self.ptr, "hogeFloatArray").unwrap();
 			qv.into_value().unwrap()
 		}
@@ -69,19 +65,15 @@
 		pub fn set_hoge_bool(&mut self, hoge_bool : bool){
 			root::set_bool(self.ptr, "hogeBool", Qv::Val(hoge_bool));
 		}
-		pub fn hoge_binary(&self) -> Vec<u8>{
-			let qv = root::get_binary(self.ptr, "hogeBinary").unwrap();
-			qv.into_value().unwrap()
-		}
-		pub fn hoge_binary_def_val(&self) -> Vec<u8>{
+		pub fn hoge_binary_def_val(&self) -> &Vec<u8>{
 			let qv = root::get_binary_def(self.ptr, "hogeBinary").unwrap();
 			qv.into_value().unwrap()
 		}
-		pub fn hoge_binary_immutable(&self) -> &Vec<u8>{
+		pub fn hoge_binary(&self) -> &Vec<u8>{
 			let qv = root::get_immutable_binary(self.ptr, "hogeBinary").unwrap();
 			qv.into_value().unwrap()
 		}
-		pub fn hoge_binary_mutable(&mut self) -> &mut Vec<u8>{
+		pub fn hoge_binary_mut(&mut self) -> &mut Vec<u8>{
 			let qv = root::get_mutable_binary(self.ptr, "hogeBinary").unwrap();
 			qv.into_value().unwrap()
 		}
@@ -110,19 +102,15 @@
 		pub fn set_hoge_undef_null_to_null(&mut self, hoge_undef_null_to_null : Qv<i64>){
 			root::set_int(self.ptr, "hogeUndefNullToNull", hoge_undef_null_to_null.into_qv());
 		}
-		pub fn hoge_string(&self) -> String{
-			let qv = root::get_str(self.ptr, "hogeString").unwrap();
-			qv.into_value().unwrap()
-		}
-		pub fn hoge_string_def_val(&self) -> String{
+		pub fn hoge_string_def_val(&self) -> &String{
 			let qv = root::get_str_def(self.ptr, "hogeString").unwrap();
 			qv.into_value().unwrap()
 		}
-		pub fn hoge_string_immutable(&self) -> &String{
+		pub fn hoge_string(&self) -> &String{
 			let qv = root::get_immutable_str(self.ptr, "hogeString").unwrap();
 			qv.into_value().unwrap()
 		}
-		pub fn hoge_string_mutable(&mut self) -> &mut String{
+		pub fn hoge_string_mut(&mut self) -> &mut String{
 			let qv = root::get_mutable_str(self.ptr, "hogeString").unwrap();
 			qv.into_value().unwrap()
 		}
@@ -195,19 +183,15 @@
 		pub fn set_hoge_float(&mut self, hoge_float : f64){
 			root::set_float(self.ptr, "hogeFloat", Qv::Val(hoge_float));
 		}
-		pub fn hoge_int_array(&self) -> Vec<i64>{
-			let qv = root::get_int_array(self.ptr, "hogeIntArray").unwrap();
-			qv.into_value().unwrap()
-		}
-		pub fn hoge_int_array_def_val(&self) -> Vec<i64>{
+		pub fn hoge_int_array_def_val(&self) -> &Vec<i64>{
 			let qv = root::get_int_array_def(self.ptr, "hogeIntArray").unwrap();
 			qv.into_value().unwrap()
 		}
-		pub fn hoge_int_array_immutable(&self) -> &Vec<i64>{
+		pub fn hoge_int_array(&self) -> &Vec<i64>{
 			let qv = root::get_immutable_int_array(self.ptr, "hogeIntArray").unwrap();
 			qv.into_value().unwrap()
 		}
-		pub fn hoge_int_array_mutable(&mut self) -> &mut Vec<i64>{
+		pub fn hoge_int_array_mut(&mut self) -> &mut Vec<i64>{
 			let qv = root::get_mutable_int_array(self.ptr, "hogeIntArray").unwrap();
 			qv.into_value().unwrap()
 		}
