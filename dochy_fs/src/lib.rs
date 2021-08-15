@@ -59,11 +59,14 @@ pub mod history{
     pub use crate::imp::history::file_name::file_name_props::FileNameProps;
 
     pub use crate::imp::history::pub_fn::save_history_file::save_history_file;
-    //pub use crate::imp::history::pub_fn::start_new::start_new;
 
     pub use crate::imp::history::pub_fn::list_histories::list_histories;
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file;
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file_data;
+
+    pub use crate::imp::history::current_root_obj_info::current_root_obj_info::set_current_root_obj_info;
+    pub use crate::imp::history::current_root_obj_info::current_root_obj_info::get_current_root_obj_info;
+    pub use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
 }
 
 pub mod filesys{

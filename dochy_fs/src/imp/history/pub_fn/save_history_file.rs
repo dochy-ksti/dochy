@@ -3,7 +3,7 @@ use std::path::Path;
 use crate::history::HistoryOptions;
 use dochy_core::structs::RootObject;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
-use crate::imp::history::latest_file_info::latest_file_info::{get_current_root_obj_info, set_current_root_obj_info, CurrentRootObjInfo};
+use crate::imp::history::current_root_obj_info::current_root_obj_info::{get_current_root_obj_info, set_current_root_obj_info, CurrentRootObjInfo};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::derive_impl::derive_impl;
@@ -43,7 +43,7 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
     if let Some(info) = info.as_ref() {
         if root.id_ptr_eq(info.current_root_id()) {
             let history = create_file_history(&history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
-            let from = if info.current_base_file().phase() ==  opt.max_phase() && info.is_latest() == false{
+            let from = if info.current_base_file().phase() ==  opt.max_phase() && info.is_newest() == false{
                 //最新ファイルの読み出しでない場合、キャッシュ効率を上げるため、最終フェーズからの派生では一つ前から派生する
                 history.get_parent(info.current_base_file())?
             } else{

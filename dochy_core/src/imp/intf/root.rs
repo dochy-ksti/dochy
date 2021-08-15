@@ -194,8 +194,8 @@ pub fn get_immutable_float_array<'a, 'b>(root : RootObjectPtr, name : &'a str) -
 }
 
 pub fn get_mutable_binary<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<u8>>>{
-    let item =  unsafe{ &mut *ps.ptr };
-    if let Some(RustParam::Binary(b)) = get_param_mut(item.sabun_mut(), name){
+
+    if let Some(RustParam::Binary(b)) = get_param_mut(ps, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
             Qv::Null => Some(Qv::Null),
@@ -206,8 +206,8 @@ pub fn get_mutable_binary<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<
     }
 }
 pub fn get_mutable_str<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut String>>{
-    let item =  unsafe{ &mut *ps.ptr };
-    if let Some(RustParam::String(b)) = get_param_mut(item.sabun_mut(), name){
+
+    if let Some(RustParam::String(b)) = get_param_mut(ps, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.string_mut())),
             Qv::Null => Some(Qv::Null),
@@ -218,8 +218,7 @@ pub fn get_mutable_str<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<
     }
 }
 pub fn get_mutable_int_array<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<i64>>>{
-    let item =  unsafe{ &mut *ps.ptr };
-    if let Some(RustParam::IntArray(b)) = get_param_mut(item.sabun_mut(), name){
+    if let Some(RustParam::IntArray(b)) = get_param_mut(ps, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
             Qv::Null => Some(Qv::Null),
@@ -230,8 +229,7 @@ pub fn get_mutable_int_array<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Opti
     }
 }
 pub fn get_mutable_float_array<'a, 'b>(ps : RootObjectPtr, name : &'a str) -> Option<Qv<&'b mut Vec<f64>>>{
-    let item =  unsafe{ &mut *ps.ptr };
-    if let Some(RustParam::FloatArray(b)) = get_param_mut(item.sabun_mut(), name){
+    if let Some(RustParam::FloatArray(b)) = get_param_mut(ps, name){
         match b{
             Qv::Val(v) => Some(Qv::Val(v.vec_mut())),
             Qv::Null => Some(Qv::Null),
@@ -299,10 +297,26 @@ pub fn get_param<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustParam> {
         Some(p)
     } else { None }
 }
-pub fn get_param_mut<'a>(sab : &'a mut HashM<String, RootSabValue>, name : &str) -> Option<&'a mut RustParam> {
-    if let Some(RootSabValue::Param(p)) = sab.get_mut(name) {
-        Some(p)
-    } else { None }
+pub fn get_param_mut<'a, 'b>(p : RootObjectPtr, name : &'a str) -> Option<&'b mut RustParam> {
+    {
+        let mut r = unsafe{ &mut *p.ptr };
+        let (_def, m, _) = r.def_and_mut_sab();
+        if let Some(RootSabValue::Param(p)) = m.get_mut(name) {
+            return Some(p);
+        }
+    }
+
+    let mut r = unsafe{ &mut *p.ptr };
+    let (def, m, _) = r.def_and_mut_sab();
+    if let Some(RootValue::Param(p,_)) = def.get(name){
+        m.insert(name.to_string(), RootSabValue::Param(p.clone()));
+    } else{
+        return None;
+    }
+    if let Some(RootSabValue::Param(p)) = m.get_mut(name) {
+        return Some(p);
+    }
+    unreachable!()
 }
 pub fn get_param_def<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustParam> {
     let def = unsafe{ &*ps.ptr}.default();

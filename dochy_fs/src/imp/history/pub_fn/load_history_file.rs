@@ -7,7 +7,7 @@ use std::path::Path;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
 use dochy_core::{ adjust_versions};
 use crate::imp::history::file_hist::history_file_data::HistoryFileData;
-use crate::imp::history::latest_file_info::latest_file_info::{set_current_root_obj_info, CurrentRootObjInfo};
+use crate::imp::history::current_root_obj_info::current_root_obj_info::{set_current_root_obj_info, CurrentRootObjInfo};
 use crate::imp::common::dochy_cache::DochyCache;
 
 /// Loads a history file.

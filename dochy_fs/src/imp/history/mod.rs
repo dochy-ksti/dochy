@@ -5,4 +5,4 @@ pub mod file_hist;
 pub mod diff_and_cache;
 pub mod pub_fn;
 pub mod remove;
-pub mod latest_file_info;
+pub mod current_root_obj_info;

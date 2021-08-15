@@ -46,6 +46,10 @@ pub mod history{
     pub use dochy_fs::history::list_histories;
     pub use dochy_fs::history::load_history_file;
     pub use dochy_fs::history::load_history_file_data;
+
+    pub use dochy_fs::history::set_current_root_obj_info;
+    pub use dochy_fs::history::get_current_root_obj_info;
+    pub use dochy_fs::history::CurrentRootObjInfo;
 }
 
 pub mod filesys{

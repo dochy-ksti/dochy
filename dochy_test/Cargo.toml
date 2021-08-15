@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 dochy = { path="../../dochy"}
 dochy_diff = { path="../dochy_diff"}
+rand = "0.8.3"
