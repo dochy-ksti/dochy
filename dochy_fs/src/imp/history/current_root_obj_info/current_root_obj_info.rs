@@ -40,11 +40,20 @@ pub fn get_mutex<'a, P : AsRef<Path>>(history_hash_dir_path : P, hash : u128) ->
     return unsafe{ &*ptr }
 }
 
+/// You can peek the file to be derived in the next save, but the Mutex is needed for save and load.
+/// If you call save or load while the MutexGuard is alive, deadlock occurs.
 pub fn get_current_root_obj_info<'a, P : AsRef<Path>>(history_dir_path : P, hash : u128) -> MutexGuard<'a, Option<CurrentRootObjInfo>>{
     let a = get_mutex(history_dir_path, hash).lock();
     a
 }
 
+/// During save and load, the RootObject's ID and the selected file is recorded. If you use the same RootObject in the next save,
+/// the file to be derived is automatically selected by the system.
+///
+/// This is the backdoor. You can set the ID and a file info and designate the file to be derived in the next save.
+/// Arbitrary deriving is not supported. You must derive from an older state of the RootObject.
+///
+/// If you call this function before the MutexGuard is dropped, deadlock occurs.
 pub fn set_current_root_obj_info<P : AsRef<Path>>(history_dir_path : P, hash : u128, latest_file_info : Option<CurrentRootObjInfo>){
     let mut m = get_mutex(history_dir_path, hash).lock();
     *m = latest_file_info;

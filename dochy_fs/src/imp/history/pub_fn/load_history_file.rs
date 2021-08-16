@@ -1,7 +1,7 @@
 use crate::error::FsResult;
 use dochy_core::structs::RootObject;
 use crate::imp::history::fs::load::load;
-use crate::history::{FileHistory, HistoryOptions};
+use crate::history::{FileHistory, HistoryOptions, get_current_root_obj_info};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use std::path::Path;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
@@ -11,9 +11,6 @@ use crate::imp::history::current_root_obj_info::current_root_obj_info::{set_curr
 use crate::imp::common::dochy_cache::DochyCache;
 
 /// Loads a history file.
-/// Concurrent access to a history_dir is not supported.
-/// Concurrent load and save, save and save, load and load access can cause problems,
-/// so use synchronization if you want to access concurrently.
 pub fn load_history_file<
     P : AsRef<Path>,
     Op : AsRef<HistoryOptions>>(history_dir : P,
@@ -26,11 +23,10 @@ pub fn load_history_file<
     let history_dir = history_dir.as_ref();
     let op = op.as_ref();
 
+    let guard = get_current_root_obj_info(history_dir, hash);
     match load_impl(history_dir, hash, props, history, cache, op, validation){
         Ok(root) =>{
-
-            set_current_root_obj_info(history_dir, hash,
-                                      Some(CurrentRootObjInfo::new(root.id(), props.clone())));
+            *guard = Some(CurrentRootObjInfo::new(root.id(), props.clone()));
 
             Ok(root)
         },
