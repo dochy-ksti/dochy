@@ -27,14 +27,44 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
                              cache : &mut DochyCache, opt : Op) -> FsResult<FileNameProps> {
     save_history_file_impl(history_dir, tag, root, root.id(), cache, opt)
 }
+pub struct JoinHandler<T>{
+    handle : std::thread::JoinHandle<T>
+}
 
-pub fn save_history_file_async<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_dir: P,
-                                                                      tag : Option<String>,
-                                                                      root : &RootObject,
-                                                                      cache : &mut DochyCache, opt : Op) -> FsResult<FileNameProps> {
+impl<T> JoinHandler<T>{
+    pub fn join(self) -> FsResult<T>{
+        Ok(self.handle.join().or(Err("join failed"))?)
+    }
+}
+
+pub fn save_history_file_async<
+    P : AsRef<Path>,
+    Op : AsRef<HistoryOptions>,
+    F : FnOnce(FsResult<FileNameProps>) + Send>(history_dir: P,
+                                         tag : Option<String>,
+                                         root : &RootObject,
+                                         cache : &mut DochyCache,
+                                         opt : Op,
+                                         callback : F) -> JoinHandler<Option<FileNameProps>> {
     let id = root.id();
     let clone = root.clone();
-    save_history_file_impl(history_dir, tag, root, root.id(), cache, opt)
+    let history_dir = history_dir.as_ref().to_path_buf();
+    let opt = opt.as_ref().clone();
+    let handle = std::thread::spawn(move || {
+        let result = save_history_file_impl(history_dir, tag, &clone, id, cache, opt);
+        match result {
+            Ok(r) => {
+                let ret = r.clone();
+                callback(Ok(r));
+                return Some(ret);
+            },
+            Err(e) =>{
+                callback(Err(e));
+                return None;
+            }
+        }
+    });
+    JoinHandler{ handle }
 }
 
 fn save_history_file_impl<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_dir: P,
@@ -42,7 +72,7 @@ fn save_history_file_impl<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_d
                                                                       root : &RootObject,
                                                                       root_id : Weak<()>,
                                                                       cache : &mut DochyCache, opt : Op) -> FsResult<FileNameProps> {
-{
+
     let history_dir = history_dir.as_ref();
     let opt = opt.as_ref();
     let src = cache.current_src();

@@ -8,6 +8,7 @@ use with_capacity_safe::WcsError;
 
 pub type FsResult<T> = Result<T, FsError>;
 
+
 pub struct FsError {
     error : anyhow::Error,
 }
