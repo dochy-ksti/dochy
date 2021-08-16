@@ -33,10 +33,14 @@ fn accum_save_test() -> DpResult<()> {
         //ロードするとロードしたオブジェクトでセーブしないとHistoryが構成できない
         //ここはインチキして、セーブした時の状態に戻す
         dochy::fs::history::set_current_root_obj_info(
-            history_dir, cache.hash(), Some(CurrentRootObjInfo::new(root.root_obj_ref().id(), saved, true)))
+            history_dir, cache.hash(), Some(CurrentRootObjInfo::new(root.root_obj_ref().id(), saved)))
     }
 
     print_file_data(hash_dir_path(history_dir, cache.hash()))?;
+
+    let loaded = RootIntf::new(load_newest_file(history_dir, &mut cache)?);
+    assert_eq!(loaded.data0(), root.data0());
+    dbg!(root.data0());
     Ok(())
 }
 

@@ -38,27 +38,31 @@ pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_di
     let history_hash_dir = prepare_hash_dir(history_dir, src, hash)?;
 
     //TODO: ただしくMutexを管理し、マルチスレッドでも同期化すること
-    let info = get_current_root_obj_info(history_dir, hash).clone();
+    let mut guard = get_current_root_obj_info(history_dir, hash);
+    let info = guard.as_ref().map(|a| a.clone());
 
-    if let Some(info) = info.as_ref() {
+    if let Some(info) = &info {
         if root.id_ptr_eq(info.current_root_id()) {
             let history = create_file_history(&history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
-            let from = if info.current_base_file().phase() ==  opt.max_phase() && info.is_newest() == false{
-                //最新ファイルの読み出しでない場合、キャッシュ効率を上げるため、最終フェーズからの派生では一つ前から派生する
-                history.get_parent(info.current_base_file())?
-            } else{
-                info.current_base_file()
-            };
+            if let Some(newest) = history.get_newest_prop() {
+                let from = if info.current_base_file().phase() == opt.max_phase() && info.current_base_file() != newest {
+                    //最新ファイルからの派生でない場合、キャッシュに乗っていない可能性がより高いし、最終フェーズの計算が面倒でもあるので、親から派生する
+                    history.get_parent(info.current_base_file())?
+                } else {
+                    info.current_base_file()
+                };
 
-            let latest = derive_impl(tag, root, cache, &history_hash_dir, &history, from, opt)?;
-            set_current_root_obj_info(history_dir, hash, Some(CurrentRootObjInfo::new(root.id(), latest.clone(), true)));
-            return Ok(latest);
+                let latest = derive_impl(tag, root, cache, &history_hash_dir, &history, from, opt)?;
+                *guard = Some(CurrentRootObjInfo::new(root.id(), latest.clone()));
+
+                return Ok(latest);
+            }
         }
     }
 
 
     let opt = opt.as_ref();
     let latest = fs_start_new(tag, root, cache, &history_hash_dir, opt, opt.is_cumulative())?;
-    set_current_root_obj_info(history_dir, hash, Some(CurrentRootObjInfo::new(root.id(), latest.clone(), true)));
+    *guard = Some(CurrentRootObjInfo::new(root.id(), latest.clone()));
     return Ok(latest);
 }

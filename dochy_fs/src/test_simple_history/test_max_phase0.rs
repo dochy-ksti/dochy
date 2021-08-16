@@ -43,7 +43,7 @@ fn test_max_phase0() -> FsResult<()> {
         //show_history_dir(&dir);
         let newest_path = history.newest_file_path(&dir)?;
         //dbg!(&newest_path);
-        let loaded = load(newest_path, &history, &mut cache, &op)?;
+        let loaded = load(newest_path, &history, cache.create_root(), &mut cache, &op)?;
 
         assert_eq!(loaded, data)
     }

@@ -42,7 +42,7 @@ fn test_load_and_save() -> FsResult<()> {
 
         _next(None, &data, &mut cache, &dir, &op)?;
         let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
-        let loaded = load(&history.newest_file_path(&dir)?, &history, &mut cache, &op)?;
+        let loaded = load(&history.newest_file_path(&dir)?, &history, cache.create_root(), &mut cache, &op)?;
         assert_eq!(loaded, data)
     }
 
@@ -50,7 +50,8 @@ fn test_load_and_save() -> FsResult<()> {
     let files= history.list_files();
     let prev = files[files.len() - 2];
     assert_eq!(prev.phase(), 3);
-    let mut data = load(&dir.join(prev.calc_filename()), &history, &mut cache, &op)?;
+
+    let mut data = load(&dir.join(prev.calc_filename()), &history, cache.create_root(), &mut cache, &op)?;
     _derive(None, &data, &mut cache, &dir, prev, &op)?;
 
     for _ in 0..30{
@@ -62,7 +63,7 @@ fn test_load_and_save() -> FsResult<()> {
 
         _next(None, &data, &mut cache, &dir, &op)?;
         let history = create_file_history(&dir, op.max_phase(), op.is_cumulative())?;
-        let loaded = load(&history.newest_file_path(&dir)?, &history, &mut cache, &op)?;
+        let loaded = load(&history.newest_file_path(&dir)?, &history, cache.create_root(), &mut cache, &op)?;
         assert_eq!(loaded, data)
     }
 

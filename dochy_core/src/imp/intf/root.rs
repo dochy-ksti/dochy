@@ -1,6 +1,5 @@
 use crate::imp::structs::root_obj::RootObject;
 use crate::imp::structs::qv::Qv;
-use crate::HashM;
 use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::rust_param::RustParam;
 use crate::imp::structs::rust_string::RustString;
@@ -299,14 +298,14 @@ pub fn get_param<'a>(ps : RootObjectPtr, name : &str) -> Option<&'a RustParam> {
 }
 pub fn get_param_mut<'a, 'b>(p : RootObjectPtr, name : &'a str) -> Option<&'b mut RustParam> {
     {
-        let mut r = unsafe{ &mut *p.ptr };
+        let r = unsafe{ &mut *p.ptr };
         let (_def, m, _) = r.def_and_mut_sab();
         if let Some(RootSabValue::Param(p)) = m.get_mut(name) {
             return Some(p);
         }
     }
 
-    let mut r = unsafe{ &mut *p.ptr };
+    let r = unsafe{ &mut *p.ptr };
     let (def, m, _) = r.def_and_mut_sab();
     if let Some(RootValue::Param(p,_)) = def.get(name){
         m.insert(name.to_string(), RootSabValue::Param(p.clone()));

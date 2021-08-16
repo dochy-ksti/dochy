@@ -15,8 +15,9 @@ pub(crate) fn load<
     C : Cache<V,S>,
     P : AsRef<Path>,
     Op : AsRef<HistoryOptions>>(diff_file_path: P,
-                     history : &FileHistory,
-                     cache : &mut C,
+                                history : &FileHistory,
+                                root : S,
+                                cache : &mut C,
                      opt : Op) -> FsResult<S> {
     let path = diff_file_path.as_ref();
     let opt = opt.as_ref();
@@ -27,5 +28,5 @@ pub(crate) fn load<
 
     let paths = create_ancestors_paths(history, &analyzed, opt.max_phase(), opt.is_cumulative(), dir_path)?;
 
-    Ok(cache.apply_items(paths,  opt, false)?)
+    Ok(cache.apply_items_for_load(root, paths,  opt)?)
 }

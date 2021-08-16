@@ -14,12 +14,19 @@ pub(crate) struct SdCache{
 
 impl SdCache{
     pub(crate) fn new(size : Option<usize>) -> SdCache{ SdCache{ size } }
+    pub(crate) fn create_root(&self) -> SdData{
+        SdData::new(self.size)
+    }
 }
 
 impl Cache<SdDiff, SdData> for SdCache{
-    fn apply_items(&mut self, paths: Vec<PathBuf>, _op: &HistoryOptions, _caching: bool) -> FsResult<SdData> {
-        let r = SdData::new(self.size);
+    fn apply_items_for_save(&mut self, paths: Vec<PathBuf>, _op: &HistoryOptions) -> FsResult<SdData> {
+        let r = self.create_root();
         accumulate_diff(r, paths)
+    }
+
+    fn apply_items_for_load(&mut self, load_root: SdData, paths: Vec<PathBuf>, _op: &HistoryOptions) -> FsResult<SdData> {
+        accumulate_diff(load_root, paths)
     }
 
     fn set_cache(&mut self, _path: PathBuf, _item: SdData, _phase: usize) -> FsResult<()> {

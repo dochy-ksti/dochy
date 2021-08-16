@@ -8,17 +8,15 @@ use crate::history::FileNameProps;
 pub struct CurrentRootObjInfo {
     current_root_id: Weak<()>,
     current_base_file: FileNameProps,
-    is_newest: bool,
 }
 
 impl CurrentRootObjInfo {
-    pub fn new(current_root_id: Weak<()>, current_base_file: FileNameProps, is_latest : bool) -> CurrentRootObjInfo {
-        CurrentRootObjInfo { current_root_id, current_base_file, is_newest: is_latest }
+    pub fn new(current_root_id: Weak<()>, current_base_file: FileNameProps) -> CurrentRootObjInfo {
+        CurrentRootObjInfo { current_root_id, current_base_file}
     }
 
     pub fn current_root_id(&self) -> &Weak<()>{ &self.current_root_id }
     pub fn current_base_file(&self) -> &FileNameProps{ &self.current_base_file }
-    pub fn is_newest(&self) -> bool{ self.is_newest }
 }
 
 pub fn get_mutex<'a, P : AsRef<Path>>(history_hash_dir_path : P, hash : u128) -> &'a Mutex<Option<CurrentRootObjInfo>>{

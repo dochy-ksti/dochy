@@ -46,7 +46,7 @@ pub(crate) fn derive_impl<
 
     let paths = calc_ancestors_paths(&ancestors, history_hash_dir);
 
-    let composed = cache.apply_items(paths,options, true)?;
+    let composed = cache.apply_items_for_save(paths,options)?;
     let diff = diff_src.create_diff(&composed)?;
 
     let mut vec: Vec<u8> = vec![];

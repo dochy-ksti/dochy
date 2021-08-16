@@ -8,12 +8,14 @@ use crate::history::HistoryOptions;
 
 
 impl Cache<DochyDiff, RootObject> for DochyCache {
-    fn apply_items(&mut self, paths: Vec<PathBuf>, op: &HistoryOptions, caching: bool) -> FsResult<RootObject> {
-        if caching {
-            self.apply_items_for_save(paths, op)
-        } else{
-            self.apply_items_for_load(paths, op)
-        }
+
+
+    fn apply_items_for_save(&mut self, paths: Vec<PathBuf>, op: &HistoryOptions) -> FsResult<RootObject> {
+        self.apply_items_for_save(paths, op)
+    }
+
+    fn apply_items_for_load(&mut self, load_root: RootObject, paths: Vec<PathBuf>, op: &HistoryOptions) -> FsResult<RootObject> {
+        self.apply_items_for_load(load_root, paths, op)
     }
 
     fn set_cache(&mut self, path : PathBuf, item: RootObject, phase: usize) -> FsResult<()> {

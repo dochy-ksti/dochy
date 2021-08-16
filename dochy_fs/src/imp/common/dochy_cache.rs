@@ -1,6 +1,6 @@
-use std::path::{PathBuf};
+use std::path::{PathBuf, Path};
 use crate::error::FsResult;
-use dochy_core::structs::RootObject;
+use dochy_core::structs::{RootObject};
 use crate::imp::common::current_src::CurrentSrc;
 use std::collections::{BTreeMap};
 use dochy_archiver::{get_hash_and_metadata_from_dir};
@@ -9,6 +9,8 @@ use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
 use crate::imp::common::archive::load_archive::load_archive_and_hash;
 use crate::imp::common::apply_items::{apply_items_st, apply_items_mt};
 use crate::history::HistoryOptions;
+use crate::common::load_archive;
+use crate::imp::common::archive::get_archive_path::get_archive_path2;
 
 
 pub struct DochyCache{
@@ -37,6 +39,14 @@ impl DochyCache{
         })
     }
 
+    pub fn get_or_create_hash_root<P:AsRef<Path>>(&self, history_dir : P, hash : u128) -> FsResult<RootObject>{
+        if self.hash() != hash {
+            load_archive(get_archive_path2(history_dir, hash), false)
+        } else{
+            Ok(self.clone_src_root())
+        }
+    }
+
     pub fn new(current_src : CurrentSrc) -> FsResult<DochyCache>{
         Self::create(current_src, false)
     }
@@ -50,7 +60,7 @@ impl DochyCache{
 
     pub fn apply_items_for_save(&mut self, paths: Vec<PathBuf>, op : &HistoryOptions) -> FsResult<RootObject> {
         let first_len = paths.len();
-        let (root,paths) = get_cached_item(self, paths, op.max_phase())?;
+        let (root,paths) = get_cached_item(self.clone_src_root(), self, paths, op.max_phase())?;
         let num_cached = first_len - paths.len();
 
         //キャッシュを削除しない場合、phase0から古いデータ→新しいデータという関係性が壊れる
@@ -78,8 +88,8 @@ impl DochyCache{
         }
     }
 
-    pub fn apply_items_for_load(&mut self, paths: Vec<PathBuf>, op : &HistoryOptions) -> FsResult<RootObject> {
-        let (root,paths) = get_cached_item(self, paths, op.max_phase())?;
+    pub fn apply_items_for_load(&mut self, load_root : RootObject, paths: Vec<PathBuf>, op : &HistoryOptions) -> FsResult<RootObject> {
+        let (root,paths) = get_cached_item(load_root,self, paths, op.max_phase())?;
 
         if op.mt_load() {
             //こっちがデフォルト
@@ -113,7 +123,7 @@ fn remove_upper_phase_cache(cache : &mut BTreeMap<usize, (PathBuf, RootObject)>,
     }
 }
 
-fn get_cached_item(cache : &mut DochyCache, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
+fn get_cached_item(root : RootObject, cache : &mut DochyCache, paths: Vec<PathBuf>, max_phase : usize) -> FsResult<(RootObject, Vec<PathBuf>)> {
     if let Some(index) = get_phase_cache(&cache.phase_cache, &paths, max_phase){
         if index == max_phase{
             let (_,root) = cache.phase_cache.get(&index).unwrap();
@@ -127,7 +137,7 @@ fn get_cached_item(cache : &mut DochyCache, paths: Vec<PathBuf>, max_phase : usi
             return Ok((root, ans));
         }
     } else{
-        Ok((cache.clone_src_root(), paths))
+        Ok((root, paths))
     }
 }
 

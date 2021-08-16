@@ -28,9 +28,9 @@ pub fn load_history_file<
 
     match load_impl(history_dir, hash, props, history, cache, op, validation){
         Ok(root) =>{
-            let is_latest = history.get_newest_prop()? == props;
+
             set_current_root_obj_info(history_dir, hash,
-                                      Some(CurrentRootObjInfo::new(root.id(), props.clone(), is_latest)));
+                                      Some(CurrentRootObjInfo::new(root.id(), props.clone())));
 
             Ok(root)
         },
@@ -48,11 +48,17 @@ fn load_impl<P : AsRef<Path>>(history_dir : P,
     let dir = history_dir.as_ref();
     let hash_dir = hash_dir_path(dir, hash);
     let file_path = hash_dir.join(props.calc_filename());
-    let loaded = load(&file_path, history, cache, op)?;
 
-    let src_root = cache.clone_src_root();
-    let adjusted = adjust_versions(src_root, loaded, validation)?;
-    Ok(adjusted)
+    if cache.hash() != hash{
+        let root = cache.get_or_create_hash_root(dir, hash)?;
+        let loaded = load(&file_path, history, root, cache,  op)?;
+        let adjusted = adjust_versions(cache.clone_src_root(), loaded, validation)?;
+        Ok(adjusted)
+    } else{
+        let root = cache.clone_src_root();
+        let loaded = load(&file_path, history, root, cache,op)?;
+        Ok(loaded)
+    }
 }
 
 pub fn load_history_file_data<P : AsRef<Path>>(history_dir : P,
