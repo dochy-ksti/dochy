@@ -1,15 +1,16 @@
 use crate::error::FsResult;
 use std::path::Path;
-use crate::history::HistoryOptions;
+use crate::history::{HistoryOptions, CurrentRootObjInfo};
 use dochy_core::structs::RootObject;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
-use crate::imp::history::current_root_obj_info::current_root_obj_info::{get_current_root_obj_info, CurrentRootObjInfo};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::derive_impl::derive_impl;
 use crate::imp::common::dochy_cache::DochyCache;
 use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 use std::sync::Weak;
+use crate::imp::history::history_info::HistoryInfo;
+use crate::imp::history::current_root_obj_info::current_root_map::get_mutex;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 ///
@@ -21,11 +22,10 @@ use std::sync::Weak;
 /// * 'cache' - Cached data to make the process faster.
 ///
 /// The algorithm to generate diffs is described [here](https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/src/sample_test/sample_code/history.md)
-pub fn save_history_file<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_dir: P,
-                             tag : Option<String>,
-                             root : &RootObject,
-                             cache : &mut DochyCache, opt : Op) -> FsResult<FileNameProps> {
-    save_history_file_impl(history_dir, tag, root, root.id(), cache, opt)
+pub fn save_history_file(history_info : &HistoryInfo,
+                         tag : Option<String>,
+                         root : &RootObject) -> FsResult<FileNameProps> {
+    save_history_file_impl(history_info, tag, root, root.id())
 }
 pub struct JoinHandler<T>{
     handle : std::thread::JoinHandle<T>
@@ -38,52 +38,45 @@ impl<T> JoinHandler<T>{
 }
 
 pub fn save_history_file_async<
-    P : AsRef<Path>,
-    Op : AsRef<HistoryOptions>,
-    F : FnOnce(FsResult<FileNameProps>) + Send>(history_dir: P,
-                                         tag : Option<String>,
-                                         root : &RootObject,
-                                         cache : &mut DochyCache,
-                                         opt : Op,
-                                         callback : F) -> JoinHandler<Option<FileNameProps>> {
+    F : FnOnce(FsResult<FileNameProps>) + Send>(history_info: &HistoryInfo,
+                                                tag : Option<String>,
+                                                root : &RootObject,
+                                                callback : F) -> JoinHandler<Option<FileNameProps>> {
     let id = root.id();
     let clone = root.clone();
-    let history_dir = history_dir.as_ref().to_path_buf();
-    let opt = opt.as_ref().clone();
+
     let handle = std::thread::spawn(move || {
-        let result = save_history_file_impl(history_dir, tag, &clone, id, cache, opt);
+        let result = save_history_file_impl(history_info, tag, &clone, id);
         match result {
             Ok(r) => {
                 let ret = r.clone();
                 callback(Ok(r));
-                return Some(ret);
+                Some(ret)
             },
-            Err(e) =>{
+            Err(e) => {
                 callback(Err(e));
-                return None;
+                None
             }
         }
     });
     JoinHandler{ handle }
 }
 
-fn save_history_file_impl<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_dir: P,
-                                                                      tag : Option<String>,
-                                                                      root : &RootObject,
-                                                                      root_id : Weak<()>,
-                                                                      cache : &mut DochyCache, opt : Op) -> FsResult<FileNameProps> {
+fn save_history_file_impl(history_info: &HistoryInfo,
+                          tag : Option<String>,
+                          root : &RootObject,
+                          root_id : Weak<()>) -> FsResult<FileNameProps> {
+    let history_dir = history_info.history_dir();
+    let mut mutex = get_mutex(history_dir)?;
+    let info = mutex.current_info();
 
-    let history_dir = history_dir.as_ref();
-    let opt = opt.as_ref();
-    let src = cache.current_src();
+    let opt = info.history_options();
+    let src = info.current_src();
+    let (cache, h) = mutex.muts();
     let hash = cache.hash();
     let history_hash_dir = prepare_hash_dir(history_dir, src, hash)?;
 
-    //TODO: ただしくMutexを管理し、マルチスレッドでも同期化すること
-    let mut guard = get_current_root_obj_info(history_dir, hash);
-    let info = guard.as_ref().map(|a| a.clone());
-
-    if let Some(info) = &info {
+    if let Some(info) = h {
         if root_id.ptr_eq(info.current_root_id()) {
             let history = create_file_history(&history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
             if let Some(newest) = history.get_newest_prop() {
@@ -94,16 +87,15 @@ fn save_history_file_impl<P : AsRef<Path>, Op : AsRef<HistoryOptions>>(history_d
                     info.current_base_file()
                 };
 
-                let latest = derive_impl(tag, root, cache, &history_hash_dir, &history, from, opt)?;
-                *guard = Some(CurrentRootObjInfo::new(root.id(), latest.clone()));
+                let saved = derive_impl(tag, root, cache, &history_hash_dir, &history, from, opt)?;
+                *h = Some(CurrentRootObjInfo::new(root_id, saved.clone()));
 
-                return Ok(latest);
+                return Ok(saved);
             }
         }
     }
 
-    let opt = opt.as_ref();
-    let latest = fs_start_new(tag, root, cache, &history_hash_dir, opt, opt.is_cumulative())?;
-    *guard = Some(CurrentRootObjInfo::new(root.id(), latest.clone()));
-    return Ok(latest);
+    let saved = fs_start_new(tag, root, cache, &history_hash_dir, opt, opt.is_cumulative())?;
+    *h = Some(CurrentRootObjInfo::new(root_id, saved.clone()));
+    return Ok(saved);
 }

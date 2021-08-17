@@ -47,7 +47,6 @@ pub mod history{
     pub use crate::imp::history::algo::history_options::HistoryOptionsBuilder;
     pub use crate::imp::history::algo::history_options::CumulativeOptionsBuilder;
 
-
     pub use crate::imp::history::file_hist::file_history::FileHistory;
     pub use crate::imp::history::remove::history_remover::HistoryRemover;
 
@@ -64,9 +63,11 @@ pub mod history{
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file;
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file_data;
 
-    pub use crate::imp::history::current_root_obj_info::current_root_obj_info::set_current_root_obj_info;
-    pub use crate::imp::history::current_root_obj_info::current_root_obj_info::get_current_root_obj_info;
-    pub use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
+    pub use crate::imp::history::current_root_obj_info::current_root_map::set_current_root_obj_info;
+    pub use crate::imp::history::current_root_obj_info::current_root_map::get_current_root_info;
+    pub use crate::imp::history::current_root_obj_info::current_root_map::peek_num_queued_threads;
+    pub use crate::imp::history::current_root_obj_info::current_root_map::CurrentRootObjInfo;
+    pub use crate::imp::history::current_root_obj_info::current_root_map::CurrentRootInfo;
 }
 
 pub mod filesys{
