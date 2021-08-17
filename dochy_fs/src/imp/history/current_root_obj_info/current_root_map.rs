@@ -31,6 +31,7 @@ struct MapItem{
     current_src : CurrentSrc,
     hash : u128,
     history_options : HistoryOptions,
+    src_root : RootObject,
     synced : Box<Mutex<SyncedItem>>
 }
 
@@ -81,7 +82,7 @@ static MAP : Lazy<Mutex<HashMap<PathBuf, Box<MapItem>>>> = Lazy::new(||{
     Mutex::new(HashMap::new())
 });
 
-pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op : HistoryOptions) -> FsResult<HistoryInfo>{
+pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op : &HistoryOptions) -> FsResult<HistoryInfo>{
     let mut map = MAP.lock();
     if let Some(item) = map.get(history_dir){
         if item.current_src != current_src{
@@ -98,7 +99,7 @@ pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op
         hash,
         queued : AtomicUsize::new(0),
         current_src,
-        history_options : op,
+        history_options : op.clone(),
         //src_root,
         synced : Box::new(Mutex::new(SyncedItem{
             cache,
@@ -109,7 +110,7 @@ pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op
 }
 
 ///unbound life time だが、Boxのアドレスは固定なので安全なはず
-fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a MapItem>{
+pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a MapItem>{
     let ptr: *const MapItem = {
         let mut map = MAP.lock();
         let b = map.get(history_dir)?;
@@ -146,6 +147,7 @@ impl CurrentRootInfo{
     pub fn queued(&self) -> usize{ self.queued }
     pub fn current_src(&self) -> &CurrentSrc{ &self.current_src }
     pub fn history_options(&self) -> &HistoryOptions{ &self.history_options }
+    ///あとで消せるなら消す
     pub fn current_root_obj_info(&self) -> &Option<CurrentRootObjInfo>{ &self.current_root_obj_info }
 }
 
@@ -154,7 +156,6 @@ pub fn peek_num_queued_threads(history_info : &HistoryInfo) -> FsResult<usize> {
     let item = get_map_item(history_info.history_dir())?;
     Ok(item.queued.into())
 }
-
 
 /// You can peek the file to be derived in the next save, but the Mutex is needed for save and load.
 /// If you call save or load while the MutexGuard is alive, deadlock occurs.

@@ -9,6 +9,7 @@ use crate::test_fs::copy_dir_all::copy_dir_all;
 use dochy_core::json_dir_to_root;
 use crate::test_diff_history::show_dir_contents_diff_history::show_dir_contents_diff_history;
 use crate::imp::common::dochy_cache::DochyCache;
+use crate::imp::history::history_info::HistoryInfo;
 
 ///途中でソースを変えるテスト
 //#[test]
@@ -31,14 +32,15 @@ fn test_diff_his() -> FsResult<()> {
         ..Default::default()
     })?;
 
-    let mut cache = DochyCache::new(current_src.clone())?;
+    let info = HistoryInfo::create(history_dir, current_src, &opt)?;
+
 
     let mut root = json_dir_to_root(&src_dir_path, false)?;
     for i in 0..2 {
         let p = RootObjectPtr::new(&mut root);
         set_int(p, "int", Qv::Val(i));
 
-        save_history_file(proj_dir_path, None, &root, &mut cache, &opt)?;
+        save_history_file(&info, None, &root)?;
         let histories = list_histories(proj_dir_path, &opt)?;
 
         let newest = histories.get_newest_file_data()?;
