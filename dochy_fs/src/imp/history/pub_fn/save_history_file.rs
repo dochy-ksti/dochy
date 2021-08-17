@@ -10,7 +10,7 @@ use crate::imp::common::dochy_cache::DochyCache;
 use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 use std::sync::Weak;
 use crate::imp::history::history_info::HistoryInfo;
-use crate::imp::history::current_root_obj_info::current_root_map::get_mutex;
+use crate::imp::history::current_root_obj_info::history_cache_map::get_mutex;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 ///
@@ -38,15 +38,15 @@ impl<T> JoinHandler<T>{
 }
 
 pub fn save_history_file_async<
-    F : FnOnce(FsResult<FileNameProps>) + Send>(history_info: &HistoryInfo,
+    F : FnOnce(FsResult<FileNameProps>) + Send + 'static>(history_info: &HistoryInfo,
                                                 tag : Option<String>,
                                                 root : &RootObject,
                                                 callback : F) -> JoinHandler<Option<FileNameProps>> {
     let id = root.id();
     let clone = root.clone();
-
+    let history_info = history_info.clone();
     let handle = std::thread::spawn(move || {
-        let result = save_history_file_impl(history_info, tag, &clone, id);
+        let result = save_history_file_impl(&history_info, tag, &clone, id);
         match result {
             Ok(r) => {
                 let ret = r.clone();
@@ -68,7 +68,7 @@ fn save_history_file_impl(history_info: &HistoryInfo,
                           root_id : Weak<()>) -> FsResult<FileNameProps> {
     let history_dir = history_info.history_dir();
     let mut mutex = get_mutex(history_dir)?;
-    let info = mutex.current_info();
+    let info = mutex.current_info().clone();
 
     let opt = info.history_options();
     let src = info.current_src();

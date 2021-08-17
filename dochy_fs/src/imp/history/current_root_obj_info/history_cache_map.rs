@@ -10,41 +10,11 @@ use crate::imp::history::history_info::HistoryInfo;
 use std::ops::{Deref, DerefMut};
 use std::sync::{Arc, Weak};
 use dochy_core::structs::RootObject;
+use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
+use crate::imp::history::current_root_obj_info::history_cache_item::{SyncedItem, HistoryCacheItem};
 
-#[derive(Debug, Clone)]
-pub struct CurrentRootObjInfo {
-    current_root_id: Weak<()>,
-    current_base_file: FileNameProps,
-}
 
-impl CurrentRootObjInfo {
-    pub fn new(current_root_id: Weak<()>, current_base_file: FileNameProps) -> CurrentRootObjInfo {
-        CurrentRootObjInfo { current_root_id, current_base_file}
-    }
-
-    pub fn current_root_id(&self) -> &Weak<()>{ &self.current_root_id }
-    pub fn current_base_file(&self) -> &FileNameProps{ &self.current_base_file }
-}
-
-struct MapItem{
-    queued : AtomicUsize,
-    current_src : CurrentSrc,
-    hash : u128,
-    history_options : HistoryOptions,
-    src_root : RootObject,
-    synced : Box<Mutex<SyncedItem>>
-}
-
-pub(crate) struct SyncedItem{
-    cache : DochyCache,
-    current_root : Option<CurrentRootObjInfo>,
-}
-
-impl SyncedItem{
-    pub(crate) fn muts(&mut self) -> (&mut DochyCache, &mut Option<CurrentRootObjInfo>){
-        (&mut self.cache, &mut self.current_root)
-    }
-}
+p
 
 pub(crate) struct MutexG<'a>{
     guard : MutexGuard<'a, SyncedItem>,
@@ -54,9 +24,9 @@ pub(crate) struct MutexG<'a>{
 impl<'a> MutexG<'a>{
     //pub fn history_dir(&self) -> &Path{ &self.history_dir }
     pub(crate) fn current_info(&self) -> &CurrentRootInfo{ &self.current_info }
-    pub(crate) fn set_current_root_obj_info(&mut self, current_root_obj_info : Option<CurrentRootObjInfo>) {
-        *self.guard.current_root = current_root_obj_info;
-    }
+    //pub(crate) fn set_current_root_obj_info(&mut self, current_root_obj_info : Option<CurrentRootObjInfo>) {
+      //  *self.guard.current_root = current_root_obj_info;
+    //}
 }
 impl<'a> Drop for MutexG<'a>{
     fn drop(&mut self) {
@@ -78,7 +48,7 @@ impl<'a> DerefMut for MutexG<'a> {
     }
 }
 
-static MAP : Lazy<Mutex<HashMap<PathBuf, Box<MapItem>>>> = Lazy::new(||{
+static MAP : Lazy<Mutex<HashMap<PathBuf, Box<HistoryCacheItem>>>> = Lazy::new(||{
     Mutex::new(HashMap::new())
 });
 
@@ -94,13 +64,13 @@ pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op
 
     let cache = DochyCache::new(current_src.clone())?;
     let hash = cache.hash();
-    //let src_root = cache.clone_src_root();
-    map.insert(history_dir.to_path_buf(), Box::new(MapItem{
+    let src_root = cache.clone_src_root();
+    map.insert(history_dir.to_path_buf(), Box::new(HistoryCacheItem {
         hash,
         queued : AtomicUsize::new(0),
         current_src,
         history_options : op.clone(),
-        //src_root,
+        src_root,
         synced : Box::new(Mutex::new(SyncedItem{
             cache,
             current_root : None
@@ -110,8 +80,8 @@ pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op
 }
 
 ///unbound life time だが、Boxのアドレスは固定なので安全なはず
-pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a MapItem>{
-    let ptr: *const MapItem = {
+pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a HistoryCacheItem>{
+    let ptr: *const HistoryCacheItem = {
         let mut map = MAP.lock();
         let b = map.get(history_dir)?;
         b.as_ref()
@@ -154,7 +124,7 @@ impl CurrentRootInfo{
 /// how many threads waiting to save_async
 pub fn peek_num_queued_threads(history_info : &HistoryInfo) -> FsResult<usize> {
     let item = get_map_item(history_info.history_dir())?;
-    Ok(item.queued.into())
+    Ok(item.queued.load(Ordering::Relaxed))
 }
 
 /// You can peek the file to be derived in the next save, but the Mutex is needed for save and load.
@@ -165,9 +135,9 @@ pub fn get_current_root_info(history_info : &HistoryInfo) -> FsResult<CurrentRoo
     Ok(get_current_root_info_impl(item, &m))
 }
 
-fn get_current_root_info_impl(item : &MapItem, m : &MutexGuard<SyncedItem>) -> CurrentRootInfo{
+fn get_current_root_info_impl(item : &HistoryCacheItem, m : &MutexGuard<SyncedItem>) -> CurrentRootInfo{
     let hash = m.cache.hash();
-    let queued : usize = item.queued.into();
+    let queued : usize = item.queued.load(Ordering::Relaxed);
     let current_root_obj_info = m.current_root.clone();
     let current_src = item.current_src.clone();
     let history_options = item.history_options.clone();

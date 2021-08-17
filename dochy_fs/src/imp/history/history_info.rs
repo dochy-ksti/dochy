@@ -1,11 +1,11 @@
 use std::path::{PathBuf, Path};
 use crate::common::CurrentSrc;
-use crate::imp::history::current_root_obj_info::current_root_map::{init_dochy_cache, get_mutex};
+use crate::imp::history::current_root_obj_info::history_cache_map::{init_dochy_cache, get_mutex};
 use crate::error::FsResult;
 use crate::history::HistoryOptions;
 use dochy_core::structs::RootObject;
 
-#[derive(Debug, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct HistoryInfo{
     history_dir : PathBuf,
 }
@@ -22,7 +22,7 @@ impl HistoryInfo{
         init_dochy_cache(history_dir.as_ref(), current_src, history_options.as_ref())
     }
     pub fn history_dir(&self) -> &Path{ &self.history_dir }
-    pub fn clone_src_root(&self) -> RootObject{
+    //pub fn clone_src_root(&self) -> RootObject{
 
-    }
+    //}
 }
