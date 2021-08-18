@@ -2,7 +2,7 @@ use once_cell::sync::Lazy;
 use parking_lot::{Mutex, MutexGuard};
 use std::collections::HashMap;
 use crate::common::{DochyCache, CurrentSrc};
-use crate::history::{FileNameProps, HistoryOptions};
+use crate::history::{FileNameProps, HistoryOptions, PeekableCacheInfo};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::path::{PathBuf, Path};
 use crate::error::FsResult;
@@ -12,41 +12,8 @@ use std::sync::{Arc, Weak};
 use dochy_core::structs::RootObject;
 use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
 use crate::imp::history::current_root_obj_info::history_cache_item::{SyncedItem, HistoryCacheItem};
+use crate::imp::history::current_root_obj_info::mutex_g::MutexG;
 
-
-p
-
-pub(crate) struct MutexG<'a>{
-    guard : MutexGuard<'a, SyncedItem>,
-    history_dir : PathBuf,
-    current_info : CurrentRootInfo,
-}
-impl<'a> MutexG<'a>{
-    //pub fn history_dir(&self) -> &Path{ &self.history_dir }
-    pub(crate) fn current_info(&self) -> &CurrentRootInfo{ &self.current_info }
-    //pub(crate) fn set_current_root_obj_info(&mut self, current_root_obj_info : Option<CurrentRootObjInfo>) {
-      //  *self.guard.current_root = current_root_obj_info;
-    //}
-}
-impl<'a> Drop for MutexG<'a>{
-    fn drop(&mut self) {
-        dec_num_queue(&self.history_dir).ok();
-    }
-}
-
-impl<'a> Deref for MutexG<'a>{
-    type Target = SyncedItem;
-
-    fn deref(&self) -> &Self::Target {
-        Deref::deref(&self.guard)
-    }
-}
-
-impl<'a> DerefMut for MutexG<'a> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        DerefMut::deref_mut(&mut self.guard)
-    }
-}
 
 static MAP : Lazy<Mutex<HashMap<PathBuf, Box<HistoryCacheItem>>>> = Lazy::new(||{
     Mutex::new(HashMap::new())
@@ -55,27 +22,46 @@ static MAP : Lazy<Mutex<HashMap<PathBuf, Box<HistoryCacheItem>>>> = Lazy::new(||
 pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op : &HistoryOptions) -> FsResult<HistoryInfo>{
     let mut map = MAP.lock();
     if let Some(item) = map.get(history_dir){
-        if item.current_src != current_src{
-            Err("Source alternation while running is not supported")?
+        if item.peekable().current_src() != &current_src{
+            Err(format!("Source alternation while running is not supported {:?}", history_dir))?
+        } else if item.peekable().history_options() != op{
+            Err(format!("Changing HistoryOptions while running is not supported {:?}", history_dir))?
         } else{
             return Ok(HistoryInfo::new(history_dir.to_path_buf()));
         }
     }
+    init_dochy_cache_impl(map, history_dir, current_src, op)
+}
+
+/// The backdoor to change DochySrc while running.
+/// References of PeekableCacheInfo for the history_dir will corrupt
+/// If save / load in the history_dir is running, calling this results undefined behavior
+pub unsafe fn init_dochy_cache_us(history_dir : &Path,
+                                  current_src : CurrentSrc,
+                                  op : &HistoryOptions) -> FsResult<HistoryInfo>{
+    let mut map = MAP.lock();
+    init_dochy_cache_impl(map, history_dir, current_src, op)
+}
+
+fn init_dochy_cache_impl(mut map : MutexGuard<HashMap<PathBuf, Box<HistoryCacheItem>>>,
+                         history_dir : &Path,
+                         current_src : CurrentSrc,
+                         op : &HistoryOptions) -> FsResult<HistoryInfo>{
 
     let cache = DochyCache::new(current_src.clone())?;
     let hash = cache.hash();
     let src_root = cache.clone_src_root();
-    map.insert(history_dir.to_path_buf(), Box::new(HistoryCacheItem {
-        hash,
-        queued : AtomicUsize::new(0),
-        current_src,
-        history_options : op.clone(),
-        src_root,
-        synced : Box::new(Mutex::new(SyncedItem{
+    map.insert(history_dir.to_path_buf(), Box::new(HistoryCacheItem::new(
+        PeekableCacheInfo::new(
+            current_src,
+            hash,
+            op.clone(),
+            src_root),
+        Box::new(Mutex::new(SyncedItem::new(
             cache,
-            current_root : None
-        }))
-    }));
+            None)))
+
+    )));
     return Ok(HistoryInfo::new(history_dir.to_path_buf()));
 }
 
@@ -89,67 +75,24 @@ pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a HistoryCache
     Ok(unsafe{ &*ptr })
 }
 
-fn dec_num_queue(history_dir : &Path) -> FsResult<()>{
-    let m = get_map_item(history_dir)?;
-    m.queued.fetch_sub(1, Ordering::Relaxed);
-    Ok(())
-}
 
 pub(crate) fn get_mutex<'a>(history_dir : &Path) -> FsResult<MutexG<'a>>{
     let item = get_map_item(history_dir)?;
-    item.queued.fetch_add(1, Ordering::Relaxed);
-    let guard = item.synced.lock();
-    let current_info = get_current_root_info_impl(item, &guard);
-    Ok(MutexG{ guard, history_dir : history_dir.to_path_buf(), current_info })
-}
+    item.peekable().queued_atomic().fetch_add(1, Ordering::Relaxed);
+    let peekable_info = item.peekable().clone();
+    let guard = item.synced().lock();
 
-#[derive(Debug, Clone)]
-pub struct CurrentRootInfo{
-    hash : u128,
-    queued : usize,
-    current_src : CurrentSrc,
-    history_options : HistoryOptions,
-    current_root_obj_info : Option<CurrentRootObjInfo>,
-}
-
-impl CurrentRootInfo{
-    pub fn hash(&self) -> u128{ self.hash }
-    pub fn queued(&self) -> usize{ self.queued }
-    pub fn current_src(&self) -> &CurrentSrc{ &self.current_src }
-    pub fn history_options(&self) -> &HistoryOptions{ &self.history_options }
-    ///あとで消せるなら消す
-    pub fn current_root_obj_info(&self) -> &Option<CurrentRootObjInfo>{ &self.current_root_obj_info }
-}
-
-/// how many threads waiting to save_async
-pub fn peek_num_queued_threads(history_info : &HistoryInfo) -> FsResult<usize> {
-    let item = get_map_item(history_info.history_dir())?;
-    Ok(item.queued.load(Ordering::Relaxed))
+    Ok(MutexG::new(guard, history_dir.to_path_buf(), peekable_info))
 }
 
 /// You can peek the file to be derived in the next save, but the Mutex is needed for save and load.
 /// If you call save or load while the MutexGuard is alive, deadlock occurs.
-pub fn get_current_root_info(history_info : &HistoryInfo) -> FsResult<CurrentRootInfo>{
+pub fn get_peekable_info<'a>(history_info : &HistoryInfo) -> FsResult<&'a PeekableCacheInfo>{
     let item = get_map_item(history_info.history_dir())?;
-    let m = item.synced.lock();
-    Ok(get_current_root_info_impl(item, &m))
+    Ok(item.peekable())
+
 }
 
-fn get_current_root_info_impl(item : &HistoryCacheItem, m : &MutexGuard<SyncedItem>) -> CurrentRootInfo{
-    let hash = m.cache.hash();
-    let queued : usize = item.queued.load(Ordering::Relaxed);
-    let current_root_obj_info = m.current_root.clone();
-    let current_src = item.current_src.clone();
-    let history_options = item.history_options.clone();
-
-    CurrentRootInfo{
-        hash,
-        queued,
-        current_src,
-        current_root_obj_info,
-        history_options,
-    }
-}
 
 /// During save and load, the RootObject's ID and the selected file is recorded. If you use the same RootObject in the next save,
 /// the file to be derived is automatically selected by the system.
@@ -157,10 +100,11 @@ fn get_current_root_info_impl(item : &HistoryCacheItem, m : &MutexGuard<SyncedIt
 /// This is the backdoor. You can set the ID and a file info and designate the file to be derived in the next save.
 /// Arbitrary deriving is not supported. You must derive from an older state of the RootObject.
 ///
-/// If you call this function before the MutexGuard is dropped, deadlock occurs.
+/// Calling this function before the MutexGuard is dropped results deadlock.
 pub fn set_current_root_obj_info(history_info : &HistoryInfo, current_root_obj_info : Option<CurrentRootObjInfo>) -> FsResult<()>{
     let m = get_map_item(history_info.history_dir())?;
-    let mut s = m.synced.lock();
-    s.current_root = current_root_obj_info;
+    let mut s = m.synced().lock();
+    let (_,h) = s.muts();
+     *h = current_root_obj_info;
     Ok(())
 }

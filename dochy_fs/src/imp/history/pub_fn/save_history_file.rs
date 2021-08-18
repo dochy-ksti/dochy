@@ -1,6 +1,6 @@
 use crate::error::FsResult;
 use std::path::Path;
-use crate::history::{HistoryOptions, CurrentRootObjInfo};
+use crate::history::{HistoryOptions, get_peekable_info};
 use dochy_core::structs::RootObject;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
@@ -11,15 +11,16 @@ use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 use std::sync::Weak;
 use crate::imp::history::history_info::HistoryInfo;
 use crate::imp::history::current_root_obj_info::history_cache_map::get_mutex;
+use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
+use std::cmp::Ordering;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 ///
 /// # Arguments
 ///
-/// * `history_dir` - the directory which has hash directories which contains history files.
+/// * `history_info` - info about the directory to place the file
 /// * `tag` - arbitrary string to distinguish files. It's appended to the file name.
 /// * 'root' - the object to save
-/// * 'cache' - Cached data to make the process faster.
 ///
 /// The algorithm to generate diffs is described [here](https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/src/sample_test/sample_code/history.md)
 pub fn save_history_file(history_info : &HistoryInfo,
@@ -37,6 +38,11 @@ impl<T> JoinHandler<T>{
     }
 }
 
+/// calculates the diff from the latest save file(most of the time) and save the diff file.
+/// This is non-blocking. RootObject is cloned and saved.
+/// RootObject consists of many Arcs so the cloning costs nearly zero.
+/// This system employs Copy on Write strategy.
+/// Actual copy occurs when the memory managed by Arc is modified before the save is finished using Arc::make_mut.
 pub fn save_history_file_async<
     F : FnOnce(FsResult<FileNameProps>) + Send + 'static>(history_info: &HistoryInfo,
                                                 tag : Option<String>,
@@ -62,21 +68,38 @@ pub fn save_history_file_async<
     JoinHandler{ handle }
 }
 
+/// Saves when no save-thread is runnning for the history_dir.
+/// Calling this function concurrently for the same history_dir can make the evaluation incorrect.
+pub fn save_history_file_async_if_vacant<
+    F : FnOnce(FsResult<FileNameProps>) + Send + 'static>(history_info: &HistoryInfo,
+                                         tag : Option<String>,
+                                         root : &RootObject,
+                                         callback : F) -> Option<JoinHandler<Option<FileNameProps>>> {
+    let peekable = get_peekable_info(history_info).unwrap();
+
+    if peekable.queued() != 0{ None }
+    else{
+        Some(save_history_file_async(history_info, tag, root, callback))
+    }
+}
+
 fn save_history_file_impl(history_info: &HistoryInfo,
                           tag : Option<String>,
                           root : &RootObject,
                           root_id : Weak<()>) -> FsResult<FileNameProps> {
     let history_dir = history_info.history_dir();
     let mut mutex = get_mutex(history_dir)?;
-    let info = mutex.current_info().clone();
+    let p = mutex.peekable();
 
-    let opt = info.history_options();
-    let src = info.current_src();
+    let opt = p.history_options().clone();
+    let src = p.current_src().clone();
+
     let (cache, h) = mutex.muts();
     let hash = cache.hash();
-    let history_hash_dir = prepare_hash_dir(history_dir, src, hash)?;
+    let history_hash_dir = prepare_hash_dir(history_dir, &src, hash)?;
+    let current_root_obj = h.clone();
 
-    if let Some(info) = h {
+    if let Some(info) = current_root_obj {
         if root_id.ptr_eq(info.current_root_id()) {
             let history = create_file_history(&history_hash_dir, opt.max_phase(), opt.is_cumulative())?;
             if let Some(newest) = history.get_newest_prop() {
@@ -95,7 +118,7 @@ fn save_history_file_impl(history_info: &HistoryInfo,
         }
     }
 
-    let saved = fs_start_new(tag, root, cache, &history_hash_dir, opt, opt.is_cumulative())?;
+    let saved = fs_start_new(tag, root, cache, &history_hash_dir, &opt, opt.is_cumulative())?;
     *h = Some(CurrentRootObjInfo::new(root_id, saved.clone()));
     return Ok(saved);
 }

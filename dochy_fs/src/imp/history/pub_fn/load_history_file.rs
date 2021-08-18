@@ -1,7 +1,7 @@
 use crate::error::FsResult;
 use dochy_core::structs::RootObject;
 use crate::imp::history::fs::load::load;
-use crate::history::{FileHistory, HistoryOptions, get_current_root_info, CurrentRootObjInfo};
+use crate::history::{FileHistory, HistoryOptions};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use std::path::Path;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
@@ -11,6 +11,7 @@ use crate::imp::common::dochy_cache::DochyCache;
 use crate::imp::history::current_root_obj_info::history_cache_map::{get_mutex};
 use crate::imp::history::history_info::HistoryInfo;
 use std::ops::DerefMut;
+use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
 
 /// Loads a history file.
 pub fn load_history_file(history_info : &HistoryInfo,
@@ -19,10 +20,12 @@ pub fn load_history_file(history_info : &HistoryInfo,
                          validation : bool) -> FsResult<RootObject> {
 
     let mut guard = get_mutex(history_info.history_dir())?;
-    let c = guard.current_info().clone();
+    let c = guard.peekable();
+    let hash = c.hash();
+    let op = c.history_options().clone();
     let (cache,h) = guard.muts();
-    match load_impl(history_info.history_dir(), c.hash(),
-                    props, history, cache, c.history_options(), validation){
+    match load_impl(history_info.history_dir(), hash,
+                    props, history, cache, &op, validation){
         Ok(root) =>{
             *h = Some(CurrentRootObjInfo::new(root.id(), props.clone()));
             Ok(root)

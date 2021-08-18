@@ -37,7 +37,7 @@ use once_cell::sync::Lazy;
 /// so you can change the options at the very time.
 ///
 /// You can use () for AsRef<HistoryOptions> to assign the default value.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct HistoryOptions {
     max_phase : usize,
     update_phase_0: bool,
@@ -106,7 +106,7 @@ impl HistoryOptions {
 }
 
 /// Customize how "cumulative diff files" are built
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct CumulativeOptions {
     limit_nth : Option<usize>,
     limit_count : Option<usize>,

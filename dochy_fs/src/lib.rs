@@ -58,16 +58,17 @@ pub mod history{
     pub use crate::imp::history::file_name::file_name_props::FileNameProps;
 
     pub use crate::imp::history::pub_fn::save_history_file::save_history_file;
+    pub use crate::imp::history::pub_fn::save_history_file::save_history_file_async;
 
     pub use crate::imp::history::pub_fn::list_histories::list_histories;
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file;
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file_data;
 
     pub use crate::imp::history::current_root_obj_info::history_cache_map::set_current_root_obj_info;
-    pub use crate::imp::history::current_root_obj_info::history_cache_map::get_current_root_info;
-    pub use crate::imp::history::current_root_obj_info::history_cache_map::peek_num_queued_threads;
-    pub use crate::imp::history::current_root_obj_info::history_cache_map::CurrentRootObjInfo;
-    pub use crate::imp::history::current_root_obj_info::history_cache_map::CurrentRootInfo;
+    pub use crate::imp::history::current_root_obj_info::history_cache_map::get_peekable_info;
+    pub use crate::imp::history::current_root_obj_info::history_cache_map::init_dochy_cache_us;
+    pub use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
+    pub use crate::imp::history::current_root_obj_info::history_cache_item::PeekableCacheInfo;
 }
 
 pub mod filesys{
