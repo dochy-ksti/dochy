@@ -1,8 +1,8 @@
 use std::path::{PathBuf, Path};
 use crate::common::CurrentSrc;
-use crate::imp::history::current_root_obj_info::history_cache_map::{init_dochy_cache, get_mutex};
+use crate::imp::history::current_root_obj_info::history_cache_map::{init_dochy_cache};
 use crate::error::FsResult;
-use crate::history::HistoryOptions;
+use crate::history::{HistoryOptions, get_peekable_info, PeekableCacheInfo};
 use dochy_core::structs::RootObject;
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
@@ -22,7 +22,10 @@ impl HistoryInfo{
         init_dochy_cache(history_dir.as_ref(), current_src, history_options.as_ref())
     }
     pub fn history_dir(&self) -> &Path{ &self.history_dir }
-    //pub fn clone_src_root(&self) -> RootObject{
-
-    //}
+    pub fn peekable(&self) -> &PeekableCacheInfo{
+        get_peekable_info(self).unwrap()
+    }
+    pub fn clone_src_root(&self) -> RootObject{
+        self.peekable().clone_src_root()
+    }
 }

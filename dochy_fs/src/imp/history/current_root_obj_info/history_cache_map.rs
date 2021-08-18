@@ -2,14 +2,10 @@ use once_cell::sync::Lazy;
 use parking_lot::{Mutex, MutexGuard};
 use std::collections::HashMap;
 use crate::common::{DochyCache, CurrentSrc};
-use crate::history::{FileNameProps, HistoryOptions, PeekableCacheInfo};
-use std::sync::atomic::{AtomicUsize, Ordering};
+use crate::history::{HistoryOptions, PeekableCacheInfo};
 use std::path::{PathBuf, Path};
 use crate::error::FsResult;
 use crate::imp::history::history_info::HistoryInfo;
-use std::ops::{Deref, DerefMut};
-use std::sync::{Arc, Weak};
-use dochy_core::structs::RootObject;
 use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
 use crate::imp::history::current_root_obj_info::history_cache_item::{SyncedItem, HistoryCacheItem};
 use crate::imp::history::current_root_obj_info::mutex_g::MutexG;
@@ -20,7 +16,7 @@ static MAP : Lazy<Mutex<HashMap<PathBuf, Box<HistoryCacheItem>>>> = Lazy::new(||
 });
 
 pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op : &HistoryOptions) -> FsResult<HistoryInfo>{
-    let mut map = MAP.lock();
+    let map = MAP.lock();
     if let Some(item) = map.get(history_dir){
         if item.peekable().current_src() != &current_src{
             Err(format!("Source alternation while running is not supported {:?}", history_dir))?
@@ -39,7 +35,7 @@ pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op
 pub unsafe fn init_dochy_cache_us(history_dir : &Path,
                                   current_src : CurrentSrc,
                                   op : &HistoryOptions) -> FsResult<HistoryInfo>{
-    let mut map = MAP.lock();
+    let map = MAP.lock();
     init_dochy_cache_impl(map, history_dir, current_src, op)
 }
 
@@ -68,7 +64,7 @@ fn init_dochy_cache_impl(mut map : MutexGuard<HashMap<PathBuf, Box<HistoryCacheI
 ///unbound life time だが、Boxのアドレスは固定なので安全なはず
 pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a HistoryCacheItem>{
     let ptr: *const HistoryCacheItem = {
-        let mut map = MAP.lock();
+        let map = MAP.lock();
         let b = map.get(history_dir)?;
         b.as_ref()
     };
@@ -78,11 +74,10 @@ pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a HistoryCache
 
 pub(crate) fn get_mutex<'a>(history_dir : &Path) -> FsResult<MutexG<'a>>{
     let item = get_map_item(history_dir)?;
-    item.peekable().queued_atomic().fetch_add(1, Ordering::Relaxed);
-    let peekable_info = item.peekable().clone();
+    let peekable_info = item.peekable();
     let guard = item.synced().lock();
 
-    Ok(MutexG::new(guard, history_dir.to_path_buf(), peekable_info))
+    Ok(MutexG::new(guard, peekable_info))
 }
 
 /// You can peek the file to be derived in the next save, but the Mutex is needed for save and load.

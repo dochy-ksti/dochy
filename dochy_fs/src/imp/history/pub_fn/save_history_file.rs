@@ -1,18 +1,15 @@
 use crate::error::FsResult;
-use std::path::Path;
-use crate::history::{HistoryOptions, get_peekable_info};
+use crate::history::{get_peekable_info};
 use dochy_core::structs::RootObject;
 use crate::imp::history::fs::start_new::start_new as fs_start_new;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::derive_impl::derive_impl;
-use crate::imp::common::dochy_cache::DochyCache;
 use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 use std::sync::Weak;
 use crate::imp::history::history_info::HistoryInfo;
 use crate::imp::history::current_root_obj_info::history_cache_map::get_mutex;
 use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
-use std::cmp::Ordering;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 ///
@@ -43,6 +40,8 @@ impl<T> JoinHandler<T>{
 /// RootObject consists of many Arcs so the cloning costs nearly zero.
 /// This system employs Copy on Write strategy.
 /// Actual copy occurs when the memory managed by Arc is modified before the save is finished using Arc::make_mut.
+///
+/// The save process is synchronized. You can call this function multiple times and the save is processed one by one.
 pub fn save_history_file_async<
     F : FnOnce(FsResult<FileNameProps>) + Send + 'static>(history_info: &HistoryInfo,
                                                 tag : Option<String>,

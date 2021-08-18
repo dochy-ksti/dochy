@@ -59,6 +59,7 @@ pub mod history{
 
     pub use crate::imp::history::pub_fn::save_history_file::save_history_file;
     pub use crate::imp::history::pub_fn::save_history_file::save_history_file_async;
+    pub use crate::imp::history::pub_fn::save_history_file::save_history_file_async_if_vacant;
 
     pub use crate::imp::history::pub_fn::list_histories::list_histories;
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file;
@@ -69,6 +70,8 @@ pub mod history{
     pub use crate::imp::history::current_root_obj_info::history_cache_map::init_dochy_cache_us;
     pub use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
     pub use crate::imp::history::current_root_obj_info::history_cache_item::PeekableCacheInfo;
+
+    pub use crate::imp::history::history_info::HistoryInfo;
 }
 
 pub mod filesys{
