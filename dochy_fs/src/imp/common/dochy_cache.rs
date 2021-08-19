@@ -3,10 +3,6 @@ use crate::error::FsResult;
 use dochy_core::structs::{RootObject};
 use crate::imp::common::current_src::CurrentSrc;
 use std::collections::{BTreeMap};
-use dochy_archiver::{get_hash_and_metadata_from_dir};
-use dochy_core::json_dir_to_root;
-use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
-use crate::imp::common::archive::load_archive::load_archive_and_hash;
 use crate::imp::common::apply_items::{apply_items_st, apply_items_mt};
 use crate::history::HistoryOptions;
 use crate::common::load_archive;
@@ -23,16 +19,7 @@ pub struct DochyCache{
 
 impl DochyCache{
     pub fn create(current_src : CurrentSrc, validation : bool) -> FsResult<DochyCache>{
-        let (src_root, hash) = match &current_src{
-            CurrentSrc::SrcDir(src_dir) => {
-                let root = json_dir_to_root(src_dir, validation)?;
-                let (hash, _meta) = get_hash_and_metadata_from_dir(src_dir, &JSON_ARC_OPT)?;
-                (root, hash)
-            },
-            CurrentSrc::ArchiveFile(path) =>{
-                load_archive_and_hash(path, validation)?
-            }
-        };
+        let (src_root, hash) = current_src.create_root_and_hash(validation)?;
         Ok(DochyCache{
             current_src, src_root, hash,
             phase_cache : BTreeMap::new(),

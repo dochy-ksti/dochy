@@ -1,8 +1,11 @@
 use std::path::{PathBuf, Path};
 use crate::error::FsResult;
 use std::io::Write;
-use dochy_archiver::create_archive_from_directory;
+use dochy_archiver::{create_archive_from_directory, get_hash_and_metadata_from_dir};
 use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
+use dochy_core::structs::RootObject;
+use dochy_core::json_dir_to_root;
+use crate::imp::common::archive::load_archive::load_archive_and_hash;
 
 /// We always have an archive of json src files which corresponds to save files.
 /// if there's no change in json src files, we don't need current src.
@@ -16,16 +19,20 @@ pub enum CurrentSrc{
 }
 
 impl CurrentSrc{
-    // pub(crate) fn create_root(&self) -> FsResult<RootObject>{
-    //     match self{
-    //         CurrentSrc::SrcDir(dir) =>{
-    //             Ok(dochy_core::json_dir_to_root(dir, false)?)
-    //         },
-    //         CurrentSrc::ArchiveFile(arc) =>{
-    //             load_archive(arc, false)
-    //         }
-    //     }
-    // }
+     pub fn create_root_and_hash(&self, validation : bool) -> FsResult<(RootObject, u128)>{
+         match self{
+             CurrentSrc::SrcDir(src_dir) => {
+                 let root = json_dir_to_root(src_dir, validation)?;
+                 let (hash, _meta) = get_hash_and_metadata_from_dir(src_dir, &JSON_ARC_OPT)?;
+                 Ok((root, hash))
+             },
+             CurrentSrc::ArchiveFile(path) =>{
+                 load_archive_and_hash(path, validation)
+             }
+         }
+     }
+
+
 
     pub fn from_src_dir<P : AsRef<Path>>(src_dir : P) -> CurrentSrc{
         CurrentSrc::SrcDir(PathBuf::from(src_dir.as_ref()))

@@ -1,13 +1,13 @@
 use dochy::error::DpResult;
 use crate::a1_hello_world::hello_world_accessor::RootIntf;
 use dochy::fs::filesys::{save_file};
-use dochy::fs::common::{CurrentSrc, DochyCache};
-use std::path::PathBuf;
+use dochy::fs::common::{CurrentSrc};
 
 #[test]
 fn hello_world_save_test() -> DpResult<()> {
-    let cache = DochyCache::new(CurrentSrc::SrcDir(PathBuf::from("src/a1_hello_world/some_dir")))?;
-    let root = cache.clone_src_root();
+    let current_src = CurrentSrc::from_src_dir("src/a1_hello_world/some_dir");
+    let (src_root, hash) = current_src.create_root_and_hash(false)?;
+    let root = src_root.clone();
 
     let mut root = RootIntf::new(root);
     root.set_message("Hello the next world".to_string());
@@ -17,9 +17,11 @@ fn hello_world_save_test() -> DpResult<()> {
 
     let _saved_path = save_file(
         save_dir_path,
-        root.root_obj_ref(),
-        &cache,
         "next_world.dochy",
+        root.root_obj_ref(),
+        &current_src,
+        hash,
+        &src_root,
         true)?;
 
     //println!("{:?}", &saved_path);

@@ -28,4 +28,10 @@ impl HistoryInfo{
     pub fn clone_src_root(&self) -> RootObject{
         self.peekable().clone_src_root()
     }
+    pub fn options(&self) -> &HistoryOptions{
+        self.peekable().history_options()
+    }
+    pub fn hash(&self) -> u128{
+        self.peekable().hash()
+    }
 }

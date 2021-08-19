@@ -19,7 +19,7 @@ pub mod error;
 //TODO: Pathの同一性が怪しいから、Pathを自作のものに置き換える??
 //TODO: 現状max_phaseのload時に派生元をmax_phase-1からにしているが、最新アイテムから派生しても別にいいような気がするんだが・・・
 //TODO: 2回セーブしてロードの繰り返しできちんとHistoryを構成するtestが書きたいので、max_phaseの最新ファイル以外からもロード後に派生できるようにする <-いずれ・・
-//TODO: 普通のsave_fileでcacheを使うことができなくなった・・・
+
 
 //TODO: 全部documentationする
 //TODO: Redditに出して反応を見る このペースだと何ヶ月かかるんじゃあ・・・

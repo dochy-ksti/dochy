@@ -6,17 +6,19 @@ use dochy_diff::apply_diff;
 use dochy_core::{adjust_versions};
 use crate::imp::common::archive::load_archive::load_archive;
 use crate::imp::common::path::reserved_filename::ARCHIVE_DEFAULT_NAME;
-use crate::common::DochyCache;
 use crate::common::hash::folder_name_to_hash;
 
 /// archiveファイルは常にファイルと同じディレクトリにあることになっている。
-pub fn load_saved_file<P : AsRef<Path>>(file_path : P, cache : &DochyCache, validation : bool) -> FsResult<RootObject>{
+pub fn load_saved_file<P : AsRef<Path>>(file_path : P,
+                                        current_src_hash : u128,
+                                        src_root: &RootObject,
+                                        validation : bool) -> FsResult<RootObject>{
     let path = file_path.as_ref();
     let dir_path = path.parent().ok_or("file_path's file must be in a folder which contains src.archive file.")?;
     let hash = folder_name_to_hash(dir_path.file_name()?)?;
 
-    let mut root = if cache.hash() == hash{
-        cache.clone_src_root()
+    let mut root = if current_src_hash == hash{
+        src_root.clone()
     } else {
         //archiveに関しては、カレントしかキャッシュしないことにする
         let archive_path = dir_path.join(ARCHIVE_DEFAULT_NAME);
@@ -26,8 +28,8 @@ pub fn load_saved_file<P : AsRef<Path>>(file_path : P, cache : &DochyCache, vali
     let mut file = File::open(file_path)?;
     apply_diff(&mut root, &mut file)?;
 
-    if cache.hash() != hash{
-        Ok(adjust_versions(cache.clone_src_root(), root, validation)?)
+    if current_src_hash != hash{
+        Ok(adjust_versions(src_root.clone(), root, validation)?)
     } else{
         Ok(root)
     }

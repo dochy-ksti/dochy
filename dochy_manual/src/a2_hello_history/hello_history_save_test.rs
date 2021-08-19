@@ -1,7 +1,6 @@
 use dochy::error::DpResult;
-use dochy::core::json_dir_to_root;
 use crate::a2_hello_history::hello_history_accessor::RootIntf;
-use dochy::fs::common::{CurrentSrc, hash_dir_path, DochyCache};
+use dochy::fs::common::{CurrentSrc, hash_dir_path};
 use std::path::{Path};
 use dochy::fs::history::{save_history_file, list_histories, load_history_file, HistoryInfo};
 use dochy::core::structs::RootObject;
@@ -15,18 +14,18 @@ fn hello_history_save_test() -> DpResult<()> {
                         CurrentSrc::from_src_dir("src/a2_hello_history/src_dir"), ())?;
     let history_dir = info.history_dir();
     std::fs::create_dir(history_dir).ok();
-    let his = list_histories(history_dir, ())?;
+    let his = list_histories(&info)?;
     his.remove_old_files(0, history_dir)?;
-
+    let mut root = info.clone_src_root();
 
     for counter in 0..40{
         save_twice(&info, root, counter)?;
         root = load_prev_file(&info)?;
     }
-    let his = list_histories(history_dir, ())?;
+    let his = list_histories(&info)?;
     let d = his.get_newest_file_data()?;
 
-    let r = load_history_file(&info d.props(), d.history(), false)?;
+    let r = load_history_file(&info,d.props(), d.history(), false)?;
     let r = RootIntf::new(r);
     println!("{}", r.data1());
 
@@ -61,8 +60,7 @@ fn save_twice(info : &HistoryInfo, root : RootObject, counter : usize) -> DpResu
 }
 
 fn load_prev_file(info : &HistoryInfo) -> DpResult<RootObject>{
-    let history_dir = info.history_dir();
-    let his = list_histories(history_dir, ())?;
+    let his = list_histories(&info)?;
     let v = his.list_files();
     let d = v.get(v.len() - 2)?;
     //dbg!(d.calc_path("hoge"));

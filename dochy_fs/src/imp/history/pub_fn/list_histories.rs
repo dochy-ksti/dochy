@@ -1,14 +1,14 @@
-use std::path::Path;
-use crate::history::{FileHistory, HistoryOptions};
+
+use crate::history::{FileHistory, HistoryInfo};
 use crate::common::get_hash_times;
 use crate::error::FsResult;
 use crate::imp::history::file_hist::file_histories::FileHistories;
 
 
-pub fn list_histories<P:AsRef<Path>, Q : AsRef<HistoryOptions>>(history_dir : P, options : Q) -> FsResult<FileHistories>{
-    let history_dir = history_dir.as_ref();
+pub fn list_histories(info : &HistoryInfo) -> FsResult<FileHistories>{
+    let history_dir = info.history_dir();
     let hash_times = get_hash_times(history_dir)?;
-    let opt = options.as_ref();
+    let opt = info.options();
 
     let mut vec : Vec<(u128, FileHistory)> = vec![];
     for (hash, _time) in hash_times{

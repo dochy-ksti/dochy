@@ -1,8 +1,7 @@
 use dochy::error::DpResult;
-use dochy::core::json_dir_to_root;
-use dochy::fs::common::{CurrentSrc, hash_dir_path, DochyCache};
+use dochy::fs::common::{CurrentSrc, hash_dir_path};
 use std::path::{Path};
-use dochy::fs::history::{save_history_file, list_histories, load_history_file, CurrentRootObjInfo};
+use dochy::fs::history::{save_history_file, list_histories, load_history_file, CurrentRootObjInfo, HistoryInfo};
 use dochy::core::structs::RootObject;
 use crate::history_accum_test::hello_history_accessor::RootIntf;
 use rand::Rng;
@@ -12,33 +11,33 @@ use rand::Rng;
 /// そんな状態が正しくHistoryとして記録できているか、目視とload and compareで確認
 #[test]
 fn accum_save_test() -> DpResult<()> {
-    let src_dir = "src/history_accum_test/src_dir";
-    let root = json_dir_to_root(src_dir, true)?;
+    let info = HistoryInfo::create("src/history_accum_test/history_dir",
+    CurrentSrc::from_src_dir("src/history_accum_test/src_dir"), ())?;
 
-    let history_dir = Path::new("src/history_accum_test/history_dir");
+    let root = info.clone_src_root();
+    let history_dir = info.history_dir();
 
     std::fs::create_dir(history_dir).ok();
-    let his = list_histories(history_dir, ())?;
+    let his = list_histories(&info)?;
     his.remove_old_files(0, history_dir)?;
-    let mut cache = DochyCache::new(
-        CurrentSrc::from_src_dir(src_dir))?;
+
     let mut root = RootIntf::new(root);
 
     for _counter in 0..60{
         mutate_root(&mut root);
-        let saved = save_history_file(history_dir, None, root.root_obj_ref(), &mut cache, ())?;
-        let loaded = RootIntf::new(load_newest_file(history_dir, &mut cache)?);
+        let saved = save_history_file(&info, None, root.root_obj_ref())?;
+        let loaded = RootIntf::new(load_newest_file(&info)?);
         //mutate_root(&mut loaded);
         assert!(root.root_obj_ref().contents_eq(loaded.root_obj_ref()));
         //ロードするとロードしたオブジェクトでセーブしないとHistoryが構成できない
         //ここはインチキして、セーブした時の状態に戻す
         dochy::fs::history::set_current_root_obj_info(
-            history_dir, cache.hash(), Some(CurrentRootObjInfo::new(root.root_obj_ref().id(), saved)))
+            &info, Some(CurrentRootObjInfo::new(root.root_obj_ref().id(), saved)))?;
     }
 
-    print_file_data(hash_dir_path(history_dir, cache.hash()))?;
+    print_file_data(hash_dir_path(history_dir, info.hash()))?;
 
-    let loaded = RootIntf::new(load_newest_file(history_dir, &mut cache)?);
+    let loaded = RootIntf::new(load_newest_file(&info)?);
     assert_eq!(loaded.data0(), root.data0());
     dbg!(root.data0());
     Ok(())
@@ -77,9 +76,9 @@ fn print_file_data<P : AsRef<Path>>(path : P) -> DpResult<()>{
 }
 
 
-fn load_newest_file(history_dir : &Path, cache : &mut DochyCache) -> DpResult<RootObject>{
-    let his = list_histories(history_dir, ())?;
+fn load_newest_file(info : &HistoryInfo) -> DpResult<RootObject>{
+    let his = list_histories(info)?;
     let d = his.get_newest_file_data()?;
 
-    Ok(load_history_file(history_dir, d.hash(), d.props(), d.history(), cache, (), false)?)
+    Ok(load_history_file(info, d.props(), d.history(),false)?)
 }
