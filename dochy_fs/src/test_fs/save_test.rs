@@ -1,4 +1,4 @@
-use crate::imp::filesys::save_file::save_file;
+use crate::imp::filesys::save_dochy_file::save_dochy_file;
 use dochy_core::intf::RootObjectPtr;
 use dochy_core::intf::root::{set_bool, get_bool, set_int, get_int};
 use dochy_core::structs::Qv;
@@ -25,7 +25,7 @@ fn save_test() -> FsResult<()> {
         let p = RootObjectPtr::new(&mut root);
         set_bool(p, "b", Qv::Val(true));
 
-        let path = save_file(proj_dir_path, "test1", &root, &current_src, hash, &src_root, false)?;
+        let path = save_dochy_file(proj_dir_path, "test1", &root, &current_src, hash, &src_root, false)?;
 
         let mut loaded = load_saved_file(&path, hash, &src_root,false)?;
         first_save_path = path;
@@ -43,7 +43,7 @@ fn save_test() -> FsResult<()> {
         let p = RootObjectPtr::new(&mut root);
         set_int(p, "int", Qv::Val(-1));
 
-        let path = save_file(proj_dir_path, "test2", &root, &current_src, hash, &src_root, false)?;
+        let path = save_dochy_file(proj_dir_path, "test2", &root, &current_src, hash, &src_root, false)?;
         let mut loaded = load_saved_file(&path, hash, &src_root, false)?;
 
         let p = RootObjectPtr::new(&mut loaded);

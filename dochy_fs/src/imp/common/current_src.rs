@@ -19,21 +19,6 @@ pub enum CurrentSrc{
 }
 
 impl CurrentSrc{
-     pub fn create_root_and_hash(&self, validation : bool) -> FsResult<(RootObject, u128)>{
-         match self{
-             CurrentSrc::SrcDir(src_dir) => {
-                 let root = json_dir_to_root(src_dir, validation)?;
-                 let (hash, _meta) = get_hash_and_metadata_from_dir(src_dir, &JSON_ARC_OPT)?;
-                 Ok((root, hash))
-             },
-             CurrentSrc::ArchiveFile(path) =>{
-                 load_archive_and_hash(path, validation)
-             }
-         }
-     }
-
-
-
     pub fn from_src_dir<P : AsRef<Path>>(src_dir : P) -> CurrentSrc{
         CurrentSrc::SrcDir(PathBuf::from(src_dir.as_ref()))
     }

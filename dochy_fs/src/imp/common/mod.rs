@@ -6,3 +6,5 @@ pub mod remove_hash_dir;
 pub mod dochy_cache;
 pub mod prepare_hash_dir;
 pub mod apply_items;
+pub mod current_src_info;
+pub mod current_src_map;

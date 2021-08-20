@@ -5,21 +5,19 @@ use std::io::Write;
 use dochy_core::structs::RootObject;
 use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 use crate::common::CurrentSrc;
+use crate::imp::filesys::save_dir_info::SaveDirInfo;
 
 /// 常にsrc_dirを参照しながら、srcがアップデートされた場合、新しいディレクトリを作り、archiveファイルを用意し、
 /// さらにセーブファイルも置く。セーブファイルは常にアーカイブと同じフォルダにある。
 ///
 ///
 /// バージョン間のデータ変換をしっかり行う必要がある。archiveの状態から、srcを参照して最新のバージョンにアップデートする。
-pub fn save_file<P : AsRef<Path>>(save_dir: P,
-                                  file_name : &str,
-                                  root: &RootObject,
-                                  current_src : &CurrentSrc,
-                                  hash : u128,
-                                  src_root : &RootObject,
-                                  overwrite : bool) -> FsResult<PathBuf>{
-    let save_dir = save_dir.as_ref();
-    let hash_dir = prepare_hash_dir(save_dir, current_src, hash)?;
+pub fn save_dochy_file<P : AsRef<Path>>(info : &SaveDirInfo,
+                                        file_name : &str,
+                                        root: &RootObject,
+                                        overwrite : bool) -> FsResult<PathBuf>{
+    let save_dir = info.save_dir();
+    let hash_dir = prepare_hash_dir(save_dir, info.current_src(), info.hash())?;
 
     let file_path = hash_dir.join(file_name);
     if file_path.exists() && overwrite == false {

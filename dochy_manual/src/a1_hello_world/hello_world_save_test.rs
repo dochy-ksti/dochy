@@ -1,6 +1,6 @@
 use dochy::error::DpResult;
 use crate::a1_hello_world::hello_world_accessor::RootIntf;
-use dochy::fs::filesys::{save_file};
+use dochy::fs::filesys::{save_dochy_file};
 use dochy::fs::common::{CurrentSrc};
 
 #[test]
@@ -15,7 +15,7 @@ fn hello_world_save_test() -> DpResult<()> {
     let save_dir_path = "src/a1_hello_world/save_dir";
     std::fs::create_dir(save_dir_path).ok();
 
-    let _saved_path = save_file(
+    let _saved_path = save_dochy_file(
         save_dir_path,
         "next_world.dochy",
         root.root_obj_ref(),
