@@ -76,8 +76,8 @@ pub mod history{
 
 pub mod filesys{
     pub use crate::imp::filesys::save_dochy_file::save_dochy_file;
-    pub use crate::imp::filesys::list_saved_files::list_saved_files;
-    pub use crate::imp::filesys::load_saved_file::load_saved_file;
-    pub use crate::imp::filesys::remove_saved_file::remove_saved_file;
+    pub use crate::imp::filesys::list_dochy_files::list_dochy_files;
+    pub use crate::imp::filesys::load_dochy_file::load_dochy_file;
+    pub use crate::imp::filesys::remove_dochy_file::remove_dochy_file;
 }
 

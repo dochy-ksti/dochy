@@ -34,12 +34,12 @@ pub(crate) fn get_current_src_cache(current_src : CurrentSrc) -> FsResult<Curren
 fn create_root_and_hash(current_src : &CurrentSrc) -> FsResult<(RootObject, u128)>{
     match current_src{
         CurrentSrc::SrcDir(src_dir) => {
-            let root = json_dir_to_root(src_dir, validation)?;
+            let root = json_dir_to_root(src_dir, false)?;
             let (hash, _meta) = get_hash_and_metadata_from_dir(src_dir, &JSON_ARC_OPT)?;
             Ok((root, hash))
         },
         CurrentSrc::ArchiveFile(path) =>{
-            load_archive_and_hash(path, validation)
+            load_archive_and_hash(path, false)
         }
     }
 }

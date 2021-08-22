@@ -57,9 +57,9 @@ pub mod history{
 
 pub mod filesys{
     pub use dochy_fs::filesys::save_dochy_file;
-    pub use dochy_fs::filesys::list_saved_files;
-    pub use dochy_fs::filesys::load_saved_file;
-    pub use dochy_fs::filesys::remove_saved_file;
+    pub use dochy_fs::filesys::list_dochy_files;
+    pub use dochy_fs::filesys::load_dochy_file;
+    pub use dochy_fs::filesys::remove_dochy_file;
 }
 
 pub mod error{

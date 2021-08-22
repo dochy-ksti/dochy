@@ -6,6 +6,7 @@ use dochy_core::structs::RootObject;
 use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 use crate::common::CurrentSrc;
 use crate::imp::filesys::save_dir_info::SaveDirInfo;
+use crate::imp::filesys::save_cache_map::get_mutex;
 
 /// 常にsrc_dirを参照しながら、srcがアップデートされた場合、新しいディレクトリを作り、archiveファイルを用意し、
 /// さらにセーブファイルも置く。セーブファイルは常にアーカイブと同じフォルダにある。
@@ -16,8 +17,11 @@ pub fn save_dochy_file<P : AsRef<Path>>(info : &SaveDirInfo,
                                         file_name : &str,
                                         root: &RootObject,
                                         overwrite : bool) -> FsResult<PathBuf>{
+    let mutex = get_mutex(info.save_dir())?;
+    let info = mutex.cache();
     let save_dir = info.save_dir();
     let hash_dir = prepare_hash_dir(save_dir, info.current_src(), info.hash())?;
+    let src_root = info.clone_src_root();
 
     let file_path = hash_dir.join(file_name);
     if file_path.exists() && overwrite == false {
