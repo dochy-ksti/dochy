@@ -76,6 +76,8 @@ pub mod history{
 
 pub mod filesys{
     pub use crate::imp::filesys::save_dochy_file::save_dochy_file;
+    pub use crate::imp::filesys::save_dochy_file::save_dochy_file_async;
+    pub use crate::imp::filesys::save_dochy_file::get_num_queued_threads;
     pub use crate::imp::filesys::list_dochy_files::list_dochy_files;
     pub use crate::imp::filesys::load_dochy_file::load_dochy_file;
     pub use crate::imp::filesys::remove_dochy_file::remove_dochy_file;
