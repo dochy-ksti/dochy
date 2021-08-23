@@ -1,18 +1,15 @@
 use std::path::{PathBuf, Path};
 use crate::error::FsResult;
 use std::io::Write;
-use dochy_archiver::{create_archive_from_directory, get_hash_and_metadata_from_dir};
+use dochy_archiver::{create_archive_from_directory};
 use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
-use dochy_core::structs::RootObject;
-use dochy_core::json_dir_to_root;
-use crate::imp::common::archive::load_archive::load_archive_and_hash;
 
 /// We always have an archive of json src files which corresponds to save files.
 /// if there's no change in json src files, we don't need current src.
 /// if the src is changed, we need the archived and the current src
 /// because we need to update the save data and make it compatible with the current version.
 /// The current src can be specified as an archive or a directory.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum CurrentSrc{
     SrcDir(PathBuf),
     ArchiveFile(PathBuf),

@@ -7,10 +7,10 @@ use std::path::Path;
 use crate::imp::common::path::hash_dir_path::hash_dir_path;
 use dochy_core::{ adjust_versions};
 use crate::imp::history::file_hist::history_file_data::HistoryFileData;
-use crate::imp::common::dochy_cache::DochyCache;
 use crate::imp::history::current_root_obj_info::history_cache_map::{get_mutex};
 use crate::imp::history::history_info::HistoryInfo;
 use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
+use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 
 /// Loads a history file.
 pub fn load_history_file(history_info : &HistoryInfo,

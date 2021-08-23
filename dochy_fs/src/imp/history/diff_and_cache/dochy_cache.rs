@@ -1,16 +1,16 @@
 use std::path::{PathBuf, Path};
 use crate::error::FsResult;
 use dochy_core::structs::{RootObject};
-use crate::imp::common::current_src::CurrentSrc;
 use std::collections::{BTreeMap};
 use crate::imp::common::apply_items::{apply_items_st, apply_items_mt};
 use crate::history::HistoryOptions;
-use crate::common::load_archive;
+use crate::common::{load_archive, CurrentSrc};
 use crate::imp::common::archive::get_archive_path::get_archive_path2;
+use crate::imp::common::current_src::current_src_map::get_current_src_info;
 
 
-pub struct DochyCache{
-    current_src : CurrentSrc,
+pub(crate) struct DochyCache{
+    //current_src : CurrentSrc,
     src_root : RootObject,
     hash : u128,
     ///ほんとはVecでいいんだよなあ
@@ -18,13 +18,7 @@ pub struct DochyCache{
 }
 
 impl DochyCache{
-    pub fn create(current_src : CurrentSrc, validation : bool) -> FsResult<DochyCache>{
-        let (src_root, hash) = current_src.create_root_and_hash(validation)?;
-        Ok(DochyCache{
-            current_src, src_root, hash,
-            phase_cache : BTreeMap::new(),
-        })
-    }
+
 
     pub fn get_or_create_hash_root<P:AsRef<Path>>(&self, history_dir : P, hash : u128) -> FsResult<RootObject>{
         if self.hash() != hash {
@@ -34,11 +28,18 @@ impl DochyCache{
         }
     }
 
-    pub fn new(current_src : CurrentSrc) -> FsResult<DochyCache>{
-        Self::create(current_src, false)
+    pub(crate) fn new(current_src : CurrentSrc) -> FsResult<DochyCache>{
+        let info = get_current_src_info(current_src)?;
+
+        Ok(DochyCache{
+            //current_src : info.current_src().clone(),
+            src_root : info.clone_src_root(),
+            hash : info.hash(),
+            phase_cache : BTreeMap::new(),
+        })
     }
 
-    pub fn current_src(&self) -> &CurrentSrc{ &self.current_src }
+    //pub fn current_src(&self) -> &CurrentSrc{ &self.current_src }
     pub fn hash(&self) -> u128{ self.hash }
 
     pub fn clone_src_root(&self) -> RootObject{

@@ -6,11 +6,13 @@ use tempfile::tempdir;
 use crate::error::FsResult;
 use crate::imp::filesys::load_dochy_file::load_dochy_file;
 use crate::test_fs::copy_dir_all::copy_dir_all;
-use crate::imp::common::current_src::CurrentSrc;
 use crate::imp::common::list::list_files::list_files;
 use crate::imp::filesys::save_dir_info::SaveDirInfo;
 use crate::imp::filesys::save_cache_map::force_update_and_get_info_us;
+use crate::common::CurrentSrc;
 
+
+///ソースを書き換えてadjustさせるテスト
 //#[test]
 fn save_test() -> FsResult<()> {
     let dir = tempdir()?;
@@ -60,8 +62,9 @@ fn save_test() -> FsResult<()> {
 
     {
         let current_src = CurrentSrc::SrcDir(src_dir_path.clone());
-        let (src_root, hash) = current_src.create_root_and_hash(false)?;
-        let mut loaded = load_dochy_file(&first_save_path, hash, &src_root, false)?;
+        let info = SaveDirInfo::create(proj_dir_path, current_src)?;
+
+        let mut loaded = load_dochy_file(&first_save_path, &info, false)?;
 
         let p = RootObjectPtr::new(&mut loaded);
         let b = get_bool(p, "b")?;
@@ -74,7 +77,8 @@ fn save_test() -> FsResult<()> {
         assert_eq!(a.value().unwrap(), &100);
     }
 
-    for _file in list_files(proj_dir_path)?{
+    for file in list_files(proj_dir_path)?{
+        println!("{} len {}", file.name(), file.len());
     }
 
 

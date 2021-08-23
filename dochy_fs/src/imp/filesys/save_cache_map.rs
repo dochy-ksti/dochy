@@ -1,19 +1,13 @@
 use once_cell::sync::Lazy;
-use parking_lot::{Mutex, MutexGuard};
+use parking_lot::{Mutex};
 use std::collections::HashMap;
-use crate::common::{DochyCache, CurrentSrc};
-use crate::history::{HistoryOptions, PeekableCacheInfo};
+use crate::common::{CurrentSrc};
 use std::path::{PathBuf, Path};
 use crate::error::FsResult;
-use crate::imp::history::history_info::HistoryInfo;
-use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
-use crate::imp::history::current_root_obj_info::history_cache_item::{SyncedItem, HistoryCacheItem};
-use crate::imp::history::current_root_obj_info::mutex_g::MutexG;
 use crate::imp::filesys::save_dir_info::SaveDirInfo;
-use crate::imp::common::current_src_map::get_current_src_cache;
-use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 use crate::imp::filesys::save_cache_item::SaveCacheItem;
 use crate::imp::filesys::dochy_mutex::DochyMutex;
+use crate::imp::common::current_src::current_src_map::get_current_src_info;
 
 
 static MAP : Lazy<Mutex<HashMap<PathBuf, Box<(SaveCacheItem, Mutex<()>)>>>> = Lazy::new(||{
@@ -37,6 +31,7 @@ pub(crate) fn cache_and_get_info(save_dir : &Path,
 /// If save_async in the save_dir is not finished, calling this results undefined behavior.
 pub unsafe fn force_update_and_get_info_us<P : AsRef<Path>>(save_dir : P,
                                                             current_src : CurrentSrc) -> FsResult<SaveDirInfo>{
+    let save_dir = save_dir.as_ref();
     let mut map = MAP.lock();
     let info = create_save_dir_info(save_dir, current_src)?;
     map.insert(save_dir.to_path_buf(),
@@ -45,7 +40,7 @@ pub unsafe fn force_update_and_get_info_us<P : AsRef<Path>>(save_dir : P,
 }
 
 fn create_save_dir_info(save_dir : &Path, current_src : CurrentSrc) -> FsResult<SaveDirInfo>{
-    let current = get_current_src_cache(current_src)?;
+    let current = get_current_src_info(current_src)?;
     let info = SaveDirInfo::new(save_dir.to_path_buf(),
                                 current.current_src().clone(),
                                 current.hash(),
@@ -54,8 +49,8 @@ fn create_save_dir_info(save_dir : &Path, current_src : CurrentSrc) -> FsResult<
 }
 
 fn get_map_item<'a>(save_dir : &Path) -> FsResult<&'a (SaveCacheItem, Mutex<()>)>{
-    let mut map = MAP.lock();
-    let ptr : *const((SaveCacheItem, Mutex<()>)) = map.get(save_dir)?.as_ref();
+    let map = MAP.lock();
+    let ptr : *const (SaveCacheItem, Mutex<()>) = map.get(save_dir)?.as_ref();
     Ok(unsafe{ &*ptr })
 }
 

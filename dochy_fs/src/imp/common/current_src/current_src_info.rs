@@ -1,5 +1,4 @@
 use crate::common::CurrentSrc;
-use std::path::PathBuf;
 use dochy_core::structs::RootObject;
 
 #[derive(Debug, Clone)]

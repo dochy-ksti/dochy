@@ -1,26 +1,20 @@
 use once_cell::sync::Lazy;
-use parking_lot::{Mutex, MutexGuard};
+use parking_lot::{Mutex};
 use std::collections::HashMap;
-use crate::common::{DochyCache, CurrentSrc, JSON_ARC_OPT};
-use crate::history::{HistoryOptions, PeekableCacheInfo};
-use std::path::{PathBuf, Path};
+use crate::common::{CurrentSrc, JSON_ARC_OPT};
 use crate::error::FsResult;
-use crate::imp::history::history_info::HistoryInfo;
-use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
-use crate::imp::history::current_root_obj_info::history_cache_item::{SyncedItem, HistoryCacheItem};
-use crate::imp::history::current_root_obj_info::mutex_g::MutexG;
-use crate::imp::common::current_src_info::CurrentSrcInfo;
 use dochy_core::structs::RootObject;
 use dochy_core::json_dir_to_root;
 use dochy_archiver::get_hash_and_metadata_from_dir;
 use crate::imp::common::archive::load_archive::load_archive_and_hash;
+use crate::imp::common::current_src::current_src_info::CurrentSrcInfo;
 
 
 static MAP : Lazy<Mutex<HashMap<CurrentSrc, Box<CurrentSrcInfo>>>> = Lazy::new(||{
     Mutex::new(HashMap::new())
 });
 
-pub(crate) fn get_current_src_cache(current_src : CurrentSrc) -> FsResult<CurrentSrcInfo>{
+pub(crate) fn get_current_src_info(current_src : CurrentSrc) -> FsResult<CurrentSrcInfo>{
     let mut map = MAP.lock();
     if let Some(item) = map.get(&current_src){
         return Ok(item.as_ref().clone())

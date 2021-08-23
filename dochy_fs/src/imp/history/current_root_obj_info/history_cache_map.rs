@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 use parking_lot::{Mutex, MutexGuard};
 use std::collections::HashMap;
-use crate::common::{DochyCache, CurrentSrc};
+use crate::common::{CurrentSrc};
 use crate::history::{HistoryOptions, PeekableCacheInfo};
 use std::path::{PathBuf, Path};
 use crate::error::FsResult;
@@ -9,6 +9,7 @@ use crate::imp::history::history_info::HistoryInfo;
 use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
 use crate::imp::history::current_root_obj_info::history_cache_item::{SyncedItem, HistoryCacheItem};
 use crate::imp::history::current_root_obj_info::mutex_g::MutexG;
+use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 
 
 static MAP : Lazy<Mutex<HashMap<PathBuf, Box<HistoryCacheItem>>>> = Lazy::new(||{

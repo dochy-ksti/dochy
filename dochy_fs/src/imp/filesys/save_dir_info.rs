@@ -21,7 +21,7 @@ impl SaveDirInfo{
     }
 
     pub fn create<P : AsRef<Path>>(save_dir : P, current_src : CurrentSrc) -> FsResult<SaveDirInfo>{
-        cache_and_get_info(save_dir, current_src)
+        cache_and_get_info(save_dir.as_ref(), current_src)
     }
 
     pub fn save_dir(&self) -> &Path{ &self.save_dir }

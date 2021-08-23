@@ -1,11 +1,10 @@
 use crate::common::CurrentSrc;
-use std::path::{PathBuf, Path};
+use std::path::{Path};
 use dochy_core::structs::RootObject;
-use crate::error::FsResult;
 use crate::imp::filesys::save_dir_info::SaveDirInfo;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub(crate) struct SaveCacheItem{
     info : SaveDirInfo,
     queued : AtomicUsize,

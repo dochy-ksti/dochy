@@ -18,12 +18,12 @@ mod test_simple_history;
 mod imp;
 
 pub mod common{
-    pub use crate::imp::common::current_src::CurrentSrc;
+    pub use crate::imp::common::current_src::current_src::CurrentSrc;
 
     pub use crate::imp::common::path::hash_dir_path::hash_dir_path;
     pub use crate::imp::common::path::hash_dir_path::hash_dir_paths;
     pub use crate::imp::common::path::get_hash_times::get_hash_times;
-    pub use crate::imp::common::remove_hash_dir::remove_hash_dir;
+    pub use crate::imp::common::path::remove_hash_dir::remove_hash_dir;
 
     pub use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
     pub use crate::imp::common::path::reserved_filename;
@@ -33,7 +33,7 @@ pub mod common{
 
     pub use crate::imp::common::list::file_data::FileData;
 
-    pub use crate::imp::common::dochy_cache::DochyCache;
+    pub use crate::imp::common::join_handler::JoinHandler;
 
     pub mod hash{
         pub use crate::imp::common::path::hash::folder_name_to_hash;
@@ -79,5 +79,7 @@ pub mod filesys{
     pub use crate::imp::filesys::list_dochy_files::list_dochy_files;
     pub use crate::imp::filesys::load_dochy_file::load_dochy_file;
     pub use crate::imp::filesys::remove_dochy_file::remove_dochy_file;
+    pub use crate::imp::filesys::save_cache_map::force_update_and_get_info_us;
+    pub use crate::imp::filesys::save_dir_info::SaveDirInfo;
 }
 

@@ -5,11 +5,12 @@ use crate::imp::history::fs::start_new::start_new as fs_start_new;
 use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::imp::history::fs::derive_impl::derive_impl;
-use crate::imp::common::prepare_hash_dir::prepare_hash_dir;
 use std::sync::Weak;
 use crate::imp::history::history_info::HistoryInfo;
 use crate::imp::history::current_root_obj_info::history_cache_map::get_mutex;
 use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
+use crate::imp::common::path::prepare_hash_dir::prepare_hash_dir;
+use crate::imp::common::join_handler::JoinHandler;
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 ///
@@ -25,15 +26,7 @@ pub fn save_history_file(history_info : &HistoryInfo,
                          root : &RootObject) -> FsResult<FileNameProps> {
     save_history_file_impl(history_info, tag, root, root.id())
 }
-pub struct JoinHandler<T>{
-    handle : std::thread::JoinHandle<T>
-}
 
-impl<T> JoinHandler<T>{
-    pub fn join(self) -> FsResult<T>{
-        Ok(self.handle.join().or(Err("join failed"))?)
-    }
-}
 
 /// calculates the diff from the latest save file(most of the time) and save the diff file.
 /// This is non-blocking. RootObject is cloned and saved.
@@ -64,7 +57,7 @@ pub fn save_history_file_async<
             }
         }
     });
-    JoinHandler{ handle }
+    JoinHandler::new(handle)
 }
 
 /// Saves when no save-thread is runnning for the history_dir.
