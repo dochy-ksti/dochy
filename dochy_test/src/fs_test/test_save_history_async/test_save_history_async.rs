@@ -1,0 +1,68 @@
+use dochy::error::DpResult;
+use dochy::fs::common::{CurrentSrc};
+use std::path::{Path, PathBuf};
+use dochy::core::structs::RootObject;
+use rand::Rng;
+use dochy::fs::filesys::{SaveDirInfo, save_dochy_file_async, load_dochy_file, list_dochy_files};
+use std::time::Duration;
+//use std::lazy::Lazy;
+use std::sync::Mutex;
+use once_cell::sync::Lazy;
+use crate::fs_test::test_save_history_async::test_save_history_async_accessor::RootIntf;
+use dochy::fs::history::{HistoryInfo, save_history_file_async, list_histories, load_history_file};
+use std::path::Component::RootDir;
+
+static vec_lazy : Lazy<Mutex<Vec<String>>> = Lazy::new(||{
+    Mutex::new(Vec::new())
+});
+
+#[test]
+fn test_save_history_async() -> DpResult<()> {
+    let root_dir = Path::new("src/fs_test/test_save_history_async");
+    let history_dir = root_dir.join("history_dir");
+
+    std::fs::remove_dir_all(&history_dir).ok();
+    std::fs::create_dir(&history_dir).ok();
+
+    let info = HistoryInfo::create(&history_dir,
+                                   CurrentSrc::from_src_dir("src/fs_test/test_save_history_async/src_dir"), ())?;
+
+    let root = info.clone_src_root();
+    let mut root = RootIntf::new(root);
+    let max = 10;
+
+    for i in 0..max{
+
+        root.set_data0(i);
+        save_history_file_async(&info,
+                                None,
+                                root.root_obj_ref(), move |_r|{
+                let mut v = vec_lazy.lock().unwrap();
+                v.push(format!("callback {}", i));
+            });
+    }
+
+    loop{
+        std::thread::sleep(Duration::from_millis(100));
+        if info.peekable().queued() == 0{
+            break;
+        }
+    }
+
+    let v = vec_lazy.lock().unwrap();
+    let hoge : &Vec<String> = &v;
+    println!("{:?}", hoge);
+
+    let hiss = list_histories(&info)?;
+    for d in hiss.list_files(){
+        let loaded = load_history_file(&info, d.props(), d.history(), true)?;
+        let l = RootIntf::new(loaded);
+        println!("{:?} {:?}", l.data0(), d.props().calc_filename());
+    }
+    // let ds = list_dochy_files(&save_dir)?;
+    // let last = ds.last().unwrap();
+    // let ld = load_dochy_file(last.calc_path(&save_dir), &info, true)?;
+    // let ld = RootIntf::new(ld);
+    // println!("data0 {}", ld.data0());
+    Ok(())
+}

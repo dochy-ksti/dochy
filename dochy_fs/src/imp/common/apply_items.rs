@@ -41,7 +41,7 @@ pub(crate) fn apply_items_mt<F : FnMut(&RootObject)>(mut root : RootObject,
             let v = DochyDiff::read_value(&mut file).unwrap();
             let sender = sender.clone();
             let meta_table_arc = meta_table_arc.clone();
-            pool.spawn(move ||{
+            pool.spawn_fifo(move ||{
                 let va = v.prepare(meta_table_arc.as_ref()).unwrap();
                 sender.send((i, va)).unwrap();
             });
