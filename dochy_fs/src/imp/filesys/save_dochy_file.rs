@@ -4,7 +4,7 @@ use crate::error::FsResult;
 use std::io::Write;
 use dochy_core::structs::RootObject;
 use crate::imp::filesys::save_dir_info::SaveDirInfo;
-use crate::imp::filesys::save_cache_map::{get_mutex, get_cache};
+use crate::imp::filesys::save_cache_map::{get_mutex};
 use crate::imp::common::path::prepare_hash_dir::prepare_hash_dir;
 use crate::common::JoinHandler;
 
@@ -58,7 +58,3 @@ pub fn save_dochy_file_async<
     JoinHandler::new(handle)
 }
 
-pub fn get_num_queued_threads(info : &SaveDirInfo) -> usize{
-    let cache = get_cache(info.save_dir()).unwrap();
-    cache.queued()
-}

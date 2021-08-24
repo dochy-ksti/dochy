@@ -28,7 +28,7 @@ impl SaveDirInfo{
     pub fn current_src(&self) -> &CurrentSrc{ &self.current_src }
     pub fn hash(&self) -> u128{ self.hash }
     pub fn clone_src_root(&self) -> RootObject{ self.src_root.clone() }
-    pub fn queued(&self) -> usize{
+    pub fn queued_threads(&self) -> usize{
         get_cache(self.save_dir()).unwrap().queued()
     }
 }

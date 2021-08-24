@@ -9,12 +9,12 @@ pub mod common{
     pub use dochy_fs::common::JSON_ARC_OPT;
     pub use dochy_fs::common::reserved_filename;
 
-    pub use dochy_fs::common:: DochyCache;
+    pub use dochy_fs::common::FileData;
+    pub use dochy_fs::common::JoinHandler;
 
     //pub use dochy_fs::common::read_archive;
     //pub use dochy_fs::common::load_archive;
 
-    pub use dochy_fs::common::FileData;
 
     // pub mod hash{
     //     pub use dochy_fs::common::hash::folder_name_to_hash;
@@ -57,9 +57,12 @@ pub mod history{
 
 pub mod filesys{
     pub use dochy_fs::filesys::save_dochy_file;
+    pub use dochy_fs::filesys::save_dochy_file_async;
     pub use dochy_fs::filesys::list_dochy_files;
     pub use dochy_fs::filesys::load_dochy_file;
     pub use dochy_fs::filesys::remove_dochy_file;
+    pub use dochy_fs::filesys::force_update_and_get_info_us;
+    pub use dochy_fs::filesys::SaveDirInfo;
 }
 
 pub mod error{

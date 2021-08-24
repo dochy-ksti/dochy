@@ -3,7 +3,7 @@ use dochy::fs::common::{CurrentSrc, hash_dir_path};
 use std::path::{Path};
 use dochy::fs::history::{save_history_file, list_histories, load_history_file, CurrentRootObjInfo, HistoryInfo};
 use dochy::core::structs::RootObject;
-use crate::history_accum_test::hello_history_accessor::RootIntf;
+use crate::fs_test::history_accum_test::hello_history_accessor::RootIntf;
 use rand::Rng;
 
 ///10メンバのうち1メンバを上書きするので90%はそのままだが、
@@ -11,8 +11,8 @@ use rand::Rng;
 /// そんな状態が正しくHistoryとして記録できているか、目視とload and compareで確認
 #[test]
 fn accum_save_test() -> DpResult<()> {
-    let info = HistoryInfo::create("src/history_accum_test/history_dir",
-    CurrentSrc::from_src_dir("src/history_accum_test/src_dir"), ())?;
+    let info = HistoryInfo::create("src/fs_test/history_accum_test/history_dir",
+    CurrentSrc::from_src_dir("src/fs_test/history_accum_test/src_dir"), ())?;
 
     let root = info.clone_src_root();
     let history_dir = info.history_dir();
