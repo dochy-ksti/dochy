@@ -29,7 +29,6 @@ pub mod common{
     pub use crate::imp::common::path::reserved_filename;
 
     pub use crate::imp::common::list::file_data::FileData;
-    pub use crate::imp::common::join_handler::JoinHandler;
 
     pub use crate::imp::common::archive::read_archive::read_archive;
     pub use crate::imp::common::archive::load_archive::load_archive;
@@ -59,8 +58,8 @@ pub mod history{
     pub use crate::imp::history::file_name::file_name_props::FileNameProps;
 
     pub use crate::imp::history::pub_fn::save_history_file::save_history_file;
-    pub use crate::imp::history::pub_fn::save_history_file::save_history_file_async;
-    pub use crate::imp::history::pub_fn::save_history_file::save_history_file_async_if_vacant;
+    pub use crate::imp::history::pub_fn::save_history_file::save_history_file_nb;
+    pub use crate::imp::history::pub_fn::save_history_file::save_history_file_nb_if_vacant;
 
     pub use crate::imp::history::pub_fn::list_histories::list_histories;
     pub use crate::imp::history::pub_fn::load_history_file::load_history_file;
@@ -77,7 +76,7 @@ pub mod history{
 
 pub mod filesys{
     pub use crate::imp::filesys::save_dochy_file::save_dochy_file;
-    pub use crate::imp::filesys::save_dochy_file::save_dochy_file_async;
+    pub use crate::imp::filesys::save_dochy_file::save_dochy_file_nb;
     pub use crate::imp::filesys::list_dochy_files::list_dochy_files;
     pub use crate::imp::filesys::load_dochy_file::load_dochy_file;
     pub use crate::imp::filesys::remove_dochy_file::remove_dochy_file;

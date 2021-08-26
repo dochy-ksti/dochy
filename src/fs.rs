@@ -10,7 +10,6 @@ pub mod common{
     pub use dochy_fs::common::reserved_filename;
 
     pub use dochy_fs::common::FileData;
-    pub use dochy_fs::common::JoinHandler;
 
     //pub use dochy_fs::common::read_archive;
     //pub use dochy_fs::common::load_archive;
@@ -39,8 +38,8 @@ pub mod history{
     pub use dochy_fs::history::FileNameProps;
 
     pub use dochy_fs::history::save_history_file;
-    pub use dochy_fs::history::save_history_file_async;
-    pub use dochy_fs::history::save_history_file_async_if_vacant;
+    pub use dochy_fs::history::save_history_file_nb;
+    pub use dochy_fs::history::save_history_file_nb_if_vacant;
 
     pub use dochy_fs::history::list_histories;
     pub use dochy_fs::history::load_history_file;
@@ -57,7 +56,7 @@ pub mod history{
 
 pub mod filesys{
     pub use dochy_fs::filesys::save_dochy_file;
-    pub use dochy_fs::filesys::save_dochy_file_async;
+    pub use dochy_fs::filesys::save_dochy_file_nb;
     pub use dochy_fs::filesys::list_dochy_files;
     pub use dochy_fs::filesys::load_dochy_file;
     pub use dochy_fs::filesys::remove_dochy_file;

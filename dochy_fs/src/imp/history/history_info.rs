@@ -1,9 +1,10 @@
 use std::path::{PathBuf, Path};
 use crate::common::CurrentSrc;
-use crate::imp::history::current_root_obj_info::history_cache_map::{init_dochy_cache};
+use crate::imp::history::current_root_obj_info::history_cache_map::{init_dochy_cache, get_fifo_thread};
 use crate::error::FsResult;
 use crate::history::{HistoryOptions, get_peekable_info, PeekableCacheInfo};
 use dochy_core::structs::RootObject;
+use crate::imp::history::current_root_obj_info::fifo_thread::FifoThread;
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct HistoryInfo{
@@ -34,4 +35,6 @@ impl HistoryInfo{
     pub fn hash(&self) -> u128{
         self.peekable().hash()
     }
+    pub(crate) fn fifo_thread(&self) -> &FifoThread{ get_fifo_thread(self).unwrap() }
+
 }

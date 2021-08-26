@@ -5,18 +5,21 @@ use dochy_core::structs::RootObject;
 use parking_lot::Mutex;
 use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
+use crate::imp::history::current_root_obj_info::fifo_thread::FifoThread;
 
 pub(crate) struct HistoryCacheItem {
     peekable : PeekableCacheInfo,
-    synced : Box<Mutex<SyncedItem>>
+    synced : Mutex<SyncedItem>,
+    fifo_thread : FifoThread
 }
 
 impl HistoryCacheItem{
-    pub(crate) fn new(peekable : PeekableCacheInfo, synced : Box<Mutex<SyncedItem>>) -> HistoryCacheItem{
-        HistoryCacheItem{ peekable, synced }
+    pub(crate) fn new(peekable : PeekableCacheInfo, synced : Mutex<SyncedItem>) -> HistoryCacheItem{
+        HistoryCacheItem{ peekable, synced, fifo_thread : FifoThread::new() }
     }
     pub(crate) fn peekable(&self) -> &PeekableCacheInfo{ &self.peekable }
-    pub(crate) fn synced(&self) -> &Mutex<SyncedItem>{ &self.synced.as_ref() }
+    pub(crate) fn synced(&self) -> &Mutex<SyncedItem>{ &self.synced }
+    pub(crate) fn fifo_thread(&self) -> &FifoThread{ &self.fifo_thread }
 }
 
 /// info gettable without accessing mutex

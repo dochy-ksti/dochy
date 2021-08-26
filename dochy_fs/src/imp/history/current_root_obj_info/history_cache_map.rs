@@ -10,6 +10,7 @@ use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRo
 use crate::imp::history::current_root_obj_info::history_cache_item::{SyncedItem, HistoryCacheItem};
 use crate::imp::history::current_root_obj_info::mutex_g::MutexG;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
+use crate::imp::history::current_root_obj_info::fifo_thread::FifoThread;
 
 
 static MAP : Lazy<Mutex<HashMap<PathBuf, Box<HistoryCacheItem>>>> = Lazy::new(||{
@@ -54,10 +55,9 @@ fn init_dochy_cache_impl(mut map : MutexGuard<HashMap<PathBuf, Box<HistoryCacheI
             hash,
             op.clone(),
             src_root),
-        Box::new(Mutex::new(SyncedItem::new(
+        Mutex::new(SyncedItem::new(
             cache,
-            None)))
-
+            None))
     )));
     return Ok(HistoryInfo::new(history_dir.to_path_buf()));
 }
@@ -86,7 +86,11 @@ pub(crate) fn get_mutex<'a>(history_dir : &Path) -> FsResult<MutexG<'a>>{
 pub fn get_peekable_info<'a>(history_info : &HistoryInfo) -> FsResult<&'a PeekableCacheInfo>{
     let item = get_map_item(history_info.history_dir())?;
     Ok(item.peekable())
+}
 
+pub(crate) fn get_fifo_thread<'a>(history_info : &HistoryInfo) -> FsResult<&'a FifoThread>{
+    let item = get_map_item(history_info.history_dir())?;
+    Ok(item.fifo_thread())
 }
 
 

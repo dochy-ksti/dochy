@@ -1,23 +1,23 @@
 use dochy::error::DpResult;
 use dochy::fs::common::{CurrentSrc};
-use std::path::{Path, PathBuf};
-use dochy::core::structs::RootObject;
-use rand::Rng;
-use dochy::fs::filesys::{SaveDirInfo, save_dochy_file_async, load_dochy_file, list_dochy_files};
+use std::path::{Path};
+
 use std::time::Duration;
 //use std::lazy::Lazy;
-use std::sync::Mutex;
+
 use once_cell::sync::Lazy;
 use crate::fs_test::test_save_history_async::test_save_history_async_accessor::RootIntf;
-use dochy::fs::history::{HistoryInfo, save_history_file_async, list_histories, load_history_file};
-use std::path::Component::RootDir;
+use dochy::fs::history::{HistoryInfo, list_histories, load_history_file, save_history_file_nb};
 
-static vec_lazy : Lazy<Mutex<Vec<String>>> = Lazy::new(||{
+use std::sync::Mutex as Mutex;
+//use parking_lot::FairMutex as Mutex;
+
+static VEC_LAZY: Lazy<Mutex<Vec<String>>> = Lazy::new(||{
     Mutex::new(Vec::new())
 });
 
 #[test]
-fn test_save_history_async() -> DpResult<()> {
+fn test_save_history_nb() -> DpResult<()> {
     let root_dir = Path::new("src/fs_test/test_save_history_async");
     let history_dir = root_dir.join("history_dir");
 
@@ -34,10 +34,10 @@ fn test_save_history_async() -> DpResult<()> {
     for i in 0..max{
 
         root.set_data0(i);
-        save_history_file_async(&info,
+        save_history_file_nb(&info,
                                 None,
                                 root.root_obj_ref(), move |_r|{
-                let mut v = vec_lazy.lock().unwrap();
+                let mut v = VEC_LAZY.lock().unwrap();
                 v.push(format!("callback {}", i));
             });
     }
@@ -49,7 +49,7 @@ fn test_save_history_async() -> DpResult<()> {
         }
     }
 
-    let v = vec_lazy.lock().unwrap();
+    let v = VEC_LAZY.lock().unwrap();
     let hoge : &Vec<String> = &v;
     println!("{:?}", hoge);
 
