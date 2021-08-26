@@ -1,6 +1,6 @@
-use parking_lot::MutexGuard;
 use crate::imp::filesys::save_cache_item::SaveCacheItem;
 use std::sync::atomic::Ordering;
+use std::sync::MutexGuard;
 
 pub(crate) struct DochyMutex<'a>{
     _guard: MutexGuard<'a, ()>,
