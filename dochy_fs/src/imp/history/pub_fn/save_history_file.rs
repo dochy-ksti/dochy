@@ -63,12 +63,17 @@ pub fn save_history_file_nb_if_vacant<
     F : FnOnce(FsResult<FileNameProps>) + Send + 'static>(history_info: &HistoryInfo,
                                          tag : Option<String>,
                                          root : &RootObject,
-                                         callback : F){
+                                         callback : F) -> bool{
     let peekable = get_peekable_info(history_info).unwrap();
 
+    println!("{}", peekable.queued());
     if peekable.queued() == 0{
         save_history_file_nb(history_info, tag, root, callback);
+        true
+    } else{
+        false
     }
+
 }
 
 fn save_history_file_impl(history_info: &HistoryInfo,
