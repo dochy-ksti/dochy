@@ -1,5 +1,4 @@
 use once_cell::sync::Lazy;
-use parking_lot::{Mutex};
 use std::collections::HashMap;
 use crate::common::{CurrentSrc, JSON_ARC_OPT};
 use crate::error::FsResult;
@@ -8,6 +7,7 @@ use dochy_core::json_dir_to_root;
 use dochy_archiver::get_hash_and_metadata_from_dir;
 use crate::imp::common::archive::load_archive::load_archive_and_hash;
 use crate::imp::common::current_src::current_src_info::CurrentSrcInfo;
+use std::sync::Mutex;
 
 
 static MAP : Lazy<Mutex<HashMap<CurrentSrc, Box<CurrentSrcInfo>>>> = Lazy::new(||{
@@ -15,7 +15,7 @@ static MAP : Lazy<Mutex<HashMap<CurrentSrc, Box<CurrentSrcInfo>>>> = Lazy::new(|
 });
 
 pub(crate) fn get_current_src_info(current_src : CurrentSrc) -> FsResult<CurrentSrcInfo>{
-    let mut map = MAP.lock();
+    let mut map = MAP.lock().unwrap();
     if let Some(item) = map.get(&current_src){
         return Ok(item.as_ref().clone())
     }

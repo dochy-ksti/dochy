@@ -1,8 +1,8 @@
 use crate::history::PeekableCacheInfo;
 use std::ops::{Deref, DerefMut};
 use crate::imp::history::current_root_obj_info::history_cache_item::SyncedItem;
-use parking_lot::MutexGuard;
 use std::sync::atomic::Ordering;
+use std::sync::MutexGuard;
 
 pub(crate) struct MutexG<'a>{
     guard : MutexGuard<'a, SyncedItem>,

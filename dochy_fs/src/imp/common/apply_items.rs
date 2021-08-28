@@ -3,7 +3,6 @@ use std::path::PathBuf;
 use crate::error::FsResult;
 use crate::imp::history::diff_and_cache::open_diff_file_without_metadata::open_diff_file_without_metadata;
 use dochy_diff::{apply_diff, RootDiffR};
-use rayon::{ThreadPoolBuilder};
 use std::sync::mpsc::{Sender, Receiver};
 use crate::imp::history::diff_and_cache::dochy_diff::DochyDiff;
 use std::collections::HashMap;
@@ -23,14 +22,9 @@ pub(crate) fn apply_items_st<F : FnMut(&RootObject)>(mut root : RootObject,
 ///マルチスレッド化したので早くなることが期待される
 pub(crate) fn apply_items_mt<F : FnMut(&RootObject)>(mut root : RootObject,
                                                      paths : Vec<PathBuf>,
-                                                     num_threads : Option<usize>,
                                                      mut func : F) -> FsResult<RootObject> {
 
-    let mut builder = ThreadPoolBuilder::new();
-    if let Some(num_threads) = num_threads{
-        builder = builder.num_threads(num_threads);
-    }
-    let pool = builder.build().unwrap();
+
     let (sender, receiver): (Sender<(usize,RootDiffR)>, Receiver<(usize,RootDiffR)>) = std::sync::mpsc::channel();
     let meta_table_arc = root.meta_table_arc();
     let paths_len = paths.len();
@@ -41,7 +35,7 @@ pub(crate) fn apply_items_mt<F : FnMut(&RootObject)>(mut root : RootObject,
             let v = DochyDiff::read_value(&mut file).unwrap();
             let sender = sender.clone();
             let meta_table_arc = meta_table_arc.clone();
-            pool.spawn_fifo(move ||{
+            rayon::spawn_fifo(move ||{
                 let va = v.prepare(meta_table_arc.as_ref()).unwrap();
                 sender.send((i, va)).unwrap();
             });

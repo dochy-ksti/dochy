@@ -2,10 +2,10 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use crate::common::{CurrentSrc};
 use crate::history::HistoryOptions;
 use dochy_core::structs::RootObject;
-use parking_lot::Mutex;
 use crate::imp::history::current_root_obj_info::current_root_obj_info::CurrentRootObjInfo;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 use crate::imp::history::current_root_obj_info::fifo_thread::FifoThread;
+use std::sync::Mutex;
 
 pub(crate) struct HistoryCacheItem {
     peekable : PeekableCacheInfo,

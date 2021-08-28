@@ -42,8 +42,8 @@ pub struct HistoryOptions {
     max_phase : usize,
     update_phase_0: bool,
     cumulative : Option<CumulativeOptions>,
-    mt_save : Option<Option<usize>>,
-    mt_load : Option<Option<usize>>,
+    mt_save : bool,
+    mt_load : bool,
 }
 
 impl HistoryOptions {
@@ -63,16 +63,11 @@ impl HistoryOptions {
     pub fn is_cumulative(&self) -> bool{ self.cumulative.is_some() }
 
     /// enables multi-thread save
-    pub fn mt_save(&self) -> bool{ self.mt_save.is_some() }
-
-    /// If None, default or not multi-threaded
-    pub fn num_save_threads(&self) -> Option<usize>{ self.mt_save.flatten() }
+    pub fn mt_save(&self) -> bool{ self.mt_save }
 
     /// enables multi-thread load
-    pub fn mt_load(&self) -> bool{ self.mt_load.is_some() }
+    pub fn mt_load(&self) -> bool{ self.mt_load }
 
-    /// If None, default or not multi-threaded
-    pub fn num_load_threads(&self) -> Option<usize>{ self.mt_load.flatten() }
 
     /// Construct HistoryOption with default values
     pub fn new() -> HistoryOptions {
@@ -139,21 +134,19 @@ pub struct HistoryOptionsBuilder {
     /// if max_phase == 1, there will be no Phase-C.
     pub max_phase : usize,
 
-    ///if false, Phase-0 isn't made twice
+    /// if false, Phase-0 isn't created in deriving.
+    /// (It's updated in saving a new RooObject.)
     pub update_phase_0 : bool,
 
     /// If this is Some, the max phase will be cumulative
     pub cumulative : Option<CumulativeOptionsBuilder>,
 
-    /// If None, not multi-threaded,
-    /// If Some(None), default multi-threaded,
-    /// If Some(Some(num)) multi-threaded with num threads
-    pub mt_save : Option<Option<usize>>,
 
-    /// If None, not multi-threaded,
-    /// If Some(None), default multi-threaded,
-    /// If Some(Some(num)) multi-threaded with num threads
-    pub mt_load : Option<Option<usize>>,
+    /// If multi-threaded saving is enabled
+    pub mt_save : bool,
+
+    /// If multi-threaded loading is enabled
+    pub mt_load : bool,
 }
 
 impl Default for HistoryOptionsBuilder {
@@ -161,8 +154,8 @@ impl Default for HistoryOptionsBuilder {
         Self{
             max_phase : 3,
             update_phase_0 : true,
-            mt_save : None,
-            mt_load : Some(None),
+            mt_save : false,
+            mt_load : true,
             cumulative : Some(CumulativeOptionsBuilder::default()),
         }
     }

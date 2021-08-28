@@ -72,7 +72,7 @@ impl DochyCache{
             //マルチスレッドにすることで、他の処理が遅くなる方が問題が大きいのではないかと思う
             apply_items_st(root, &paths, cache_func)
         } else{
-            apply_items_mt(root, paths.to_vec(),  op.num_save_threads(), cache_func)
+            apply_items_mt(root, paths.to_vec(),   cache_func)
         }
     }
 
@@ -84,7 +84,7 @@ impl DochyCache{
             //ロードではキャッシュを行わず、全力でただ開く。ロードが終わるまで処理が進まないことが想定されている
             //ロードで中途半端にキャッシュを作ると、キャッシュの古→新 関係が壊れるので、全部作るか、全部やめるかの2択
             //なのでロード時にキャッシュは作らんほうがよいだろう
-            apply_items_mt(root, paths, op.num_load_threads(),|_| {})
+            apply_items_mt(root, paths, |_| {})
         } else{
             apply_items_st(root, &paths, |_| {})
         }

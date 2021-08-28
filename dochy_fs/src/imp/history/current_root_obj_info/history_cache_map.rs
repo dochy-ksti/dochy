@@ -1,5 +1,4 @@
 use once_cell::sync::Lazy;
-use parking_lot::{Mutex, MutexGuard};
 use std::collections::HashMap;
 use crate::common::{CurrentSrc};
 use crate::history::{HistoryOptions, PeekableCacheInfo};
@@ -11,6 +10,7 @@ use crate::imp::history::current_root_obj_info::history_cache_item::{SyncedItem,
 use crate::imp::history::current_root_obj_info::mutex_g::MutexG;
 use crate::imp::history::diff_and_cache::dochy_cache::DochyCache;
 use crate::imp::history::current_root_obj_info::fifo_thread::FifoThread;
+use std::sync::{Mutex, MutexGuard};
 
 
 static MAP : Lazy<Mutex<HashMap<PathBuf, Box<HistoryCacheItem>>>> = Lazy::new(||{
@@ -18,7 +18,7 @@ static MAP : Lazy<Mutex<HashMap<PathBuf, Box<HistoryCacheItem>>>> = Lazy::new(||
 });
 
 pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op : &HistoryOptions) -> FsResult<HistoryInfo>{
-    let map = MAP.lock();
+    let map = MAP.lock().unwrap();
     if let Some(item) = map.get(history_dir){
         if item.peekable().current_src() != &current_src{
             Err(format!("Source alternation while running is not supported {:?}", history_dir))?
@@ -37,7 +37,7 @@ pub(crate) fn init_dochy_cache(history_dir : &Path, current_src : CurrentSrc, op
 pub unsafe fn init_dochy_cache_us(history_dir : &Path,
                                   current_src : CurrentSrc,
                                   op : &HistoryOptions) -> FsResult<HistoryInfo>{
-    let map = MAP.lock();
+    let map = MAP.lock().unwrap();
     init_dochy_cache_impl(map, history_dir, current_src, op)
 }
 
@@ -65,7 +65,7 @@ fn init_dochy_cache_impl(mut map : MutexGuard<HashMap<PathBuf, Box<HistoryCacheI
 ///unbound life time だが、Boxのアドレスは固定なので安全なはず
 pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a HistoryCacheItem>{
     let ptr: *const HistoryCacheItem = {
-        let map = MAP.lock();
+        let map = MAP.lock().unwrap();
         let b = map.get(history_dir)?;
         b.as_ref()
     };
@@ -76,7 +76,7 @@ pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a HistoryCache
 pub(crate) fn get_mutex<'a>(history_dir : &Path) -> FsResult<MutexG<'a>>{
     let item = get_map_item(history_dir)?;
     let peekable_info = item.peekable();
-    let guard = item.synced().lock();
+    let guard = item.synced().lock().unwrap();
 
     Ok(MutexG::new(guard, peekable_info))
 }
@@ -103,7 +103,7 @@ pub(crate) fn get_fifo_thread<'a>(history_info : &HistoryInfo) -> FsResult<&'a F
 /// Calling this function before the MutexGuard is dropped results deadlock.
 pub fn set_current_root_obj_info(history_info : &HistoryInfo, current_root_obj_info : Option<CurrentRootObjInfo>) -> FsResult<()>{
     let m = get_map_item(history_info.history_dir())?;
-    let mut s = m.synced().lock();
+    let mut s = m.synced().lock().unwrap();
     let (_,h) = s.muts();
      *h = current_root_obj_info;
     Ok(())

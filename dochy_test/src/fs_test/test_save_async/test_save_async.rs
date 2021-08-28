@@ -7,11 +7,11 @@ use dochy::fs::filesys::{SaveDirInfo, save_dochy_file_nb, load_dochy_file, list_
 use crate::fs_test::test_save_async::test_save_async_accessor::RootIntf;
 use std::time::Duration;
 //use std::lazy::Lazy;
-use std::sync::Mutex;
+use parking_lot::FairMutex;
 use once_cell::sync::Lazy;
 
-static vec_lazy : Lazy<Mutex<Vec<String>>> = Lazy::new(||{
-    Mutex::new(Vec::new())
+static vec_lazy : Lazy<FairMutex<Vec<String>>> = Lazy::new(||{
+    FairMutex::new(Vec::new())
 });
 
 #[test]
@@ -34,7 +34,7 @@ fn test_save_async() -> DpResult<()> {
                            &format!("file{}.dochy", i),
                            root.root_obj_ref(), true,
                            move |_r|{
-                                  let mut v = vec_lazy.lock().unwrap();
+                                  let mut v = vec_lazy.lock();
                                   v.push(format!("{} finished num_threads {}",i, info_copy.queued_threads()));
                               });
     }
@@ -46,7 +46,7 @@ fn test_save_async() -> DpResult<()> {
         }
     }
 
-    let v = vec_lazy.lock().unwrap();
+    let v = vec_lazy.lock();
     let hoge : &Vec<String> = &v;
     println!("{:?}", hoge);
 
