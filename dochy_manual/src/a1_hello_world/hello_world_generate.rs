@@ -5,7 +5,7 @@ use dochy::intf::generate_interface;
 
 #[test]
 fn hello_world_generate() -> DpResult<()> {
-    let mut root_obj : RootObject = json_dir_to_root("src/a1_hello_world/some_dir", true)?;
+    let mut root_obj : RootObject = json_dir_to_root("src/a1_hello_world/src_dir", true)?;
 
     let ans = generate_interface(&mut root_obj);
     std::fs::write(

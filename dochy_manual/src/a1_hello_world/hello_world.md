@@ -7,11 +7,15 @@ Dochy is a language, so we need "Hello World".
   message : "Hello World"
 }
 ```
-Dochy's source files are written in JSON5 which is slightly customized for Dochy.
-The file name must be "root.json5", 
-and the dedicated directory to place this file is also needed.
+Dochy's source file is written in JSON5 which is a better JSON.
+
+The file name must be "root.json5",
+
+A dedicated directory to place the file is needed. 
+(The directory shines when the number of source files is increased, but for now, that's definitely unnecessary)
 ```
-some_dir-root.json5
+proj_dir ┬ src_dir-root.json5
+         └ save_dir
 ```
 Let's convert the source file into a Dochy's object.
 ```Rust
