@@ -23,6 +23,7 @@ members = [
     "dochy_manual",
     "dochy_temporal_test",
     "dochy_test",
+    "dochy_bench",
 ]
 
 [dependencies]
