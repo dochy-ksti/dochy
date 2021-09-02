@@ -87,5 +87,5 @@ fn write_float_array(a : &RustFloatArray, r : &mut Vec<KVal>){
 }
 
 fn write_binary(a : &RustBinary, r : &mut Vec<KVal>){
-    r.push(KVal::Binary(a.vec().clone()));
+    r.push(KVal::BinaryArc(a.arc().clone()));
 }

@@ -81,6 +81,15 @@ pub fn encode<W : Write>(vec : &[KVal], write : &mut W) -> Result<usize>{
                 data.extend_from_slice(&vec);
                 data.extend_from_slice(v);
             },
+            KVal::BinaryArc(v) =>{
+                //let v : &Vec<u8> = v;
+                tag.append(0b0001_1, 5);
+                //ここは本当はu64でencodeすべき。気が向いたら直したい
+                let vec = super::var_int::encode(v.len() as i64);
+                tag.append((vec.len() - 1) as u64, 3);
+                data.extend_from_slice(&vec);
+                data.extend_from_slice(v);
+            },
             KVal::Binary8(v) =>{
                 tag.append(0b0001_01, 6);
                 let vec = super::var_int::encode(v.len() as i64);

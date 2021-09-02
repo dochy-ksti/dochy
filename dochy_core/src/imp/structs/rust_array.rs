@@ -118,6 +118,7 @@ impl RustBinary{
         Some(RustBinary::new(op?))
     }
     pub fn vec(&self) -> &Vec<u8>{ self.b.as_ref() }
+    pub fn arc(&self) -> &Arc<Vec<u8>>{ &self.b }
     pub fn vec_mut(&mut self) -> &mut Vec<u8>{
         //Arcが複数インスタンスある場合、Vecをコピーしてから&mutを返す(なんて便利なのだ・・・
         Arc::make_mut(&mut self.b)

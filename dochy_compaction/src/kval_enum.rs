@@ -1,3 +1,4 @@
+use std::sync::Arc;
 
 /// The Value to be serialized.
 #[derive(Debug, PartialEq)]
@@ -14,6 +15,7 @@ pub enum KVal {
     Decimal(Decimal),
     BigStr(String),
     Binary(Vec<u8>),
+    BinaryArc(Arc<Vec<u8>>),
     Binary8(Vec<u64>),
     Binary4(Vec<u32>),
     Binary2(Vec<u16>),
