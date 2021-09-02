@@ -1,7 +1,7 @@
 [package]
 name = "dochy"
 version = "0.7.1"
-authors = ["juzu <dochy.ksti@gmail.com>"]
+authors = ["juzy <dochy.ksti@gmail.com>"]
 edition = "2018"
 
 license = "MIT"
@@ -10,6 +10,7 @@ repository = "https://github.com/dochy-ksti/dochy"
 readme = "readme.md"
 keywords = ["json5","diff","binary","undo","autosave"]
 categories = ["filesystem","compression","data-structures"]
+
 
 [workspace]
 members = [
@@ -23,7 +24,6 @@ members = [
     "dochy_manual",
     "dochy_temporal_test",
     "dochy_test",
-    "dochy_bench",
 ]
 
 [dependencies]
