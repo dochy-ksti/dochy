@@ -4,7 +4,7 @@ version = "0.7.1"
 authors = ["juzy <dochy.ksti@gmail.com>"]
 edition = "2018"
 
-license = "MIT"
+license = "MIT OR Apache-2.0"
 description = "A file system which composes chlonological diff files efficiently."
 repository = "https://github.com/dochy-ksti/dochy"
 readme = "readme.md"
