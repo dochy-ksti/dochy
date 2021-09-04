@@ -1,35 +1,28 @@
-*** I'm Not An English Speaker. Please Correct My English ***
+Dochy is like a binary diff format of static JSON, and surrounding file systems and tools.
 
-Dochy is a static JSON-like data format.
+It's intended to replace ordinary data files, 
+especially for game/cloud apps which employs auto-save 
+and undoable apps.
 
-It can efficiently store "diff" of the data. 
+Let me introduce the key features of this project.
 
-It's designed to implement auto-save, undo, and 
-applications which must retain every change of the data. 
+1. [Efficiency](dochy_manual/src/sample_test/sample_code/efficiency.md)
+2. [Version Awareness](dochy_manual/src/sample_test/sample_code/version_awareness.md)
+3. [Reference and Enum](dochy_manual/src/sample_test/sample_code/ref_and_enum.md)
 
-*Demonstration
+These three documents(and [this](dochy_manual/src/sample_test/sample_code/history.md))
+should work as a walkthrough of Dochy's concepts. 
 
-[Demo](https://github.com/dochy-ksti/dochy_bench)
+[Hello World](dochy_manual/src/a1_hello_world/hello_world.md) 
+explains the basics.
 
-Test Data
-```JSON5
-{
-  "data0": "oiufsjdsj...", //1 MB of random string
-  "data1": "abuisoehg...", //1 MB of random string
-  //...
-  "data9": "bhsiofdis...", //1 MB of random string
-}
-```
-The JSON has ten random 1 MB strings, so the entire JSON file is about 10 MB.
+### caution
 
-We modify one string and save at a time. We repeat it 100 times.
+Quickly changing
 
-It means 10% of the data is modified each time.
+Documentation is incomplete.  
 
-Data is partially modified and saved most of the time.
-So it's not very unrealistic settings, I think.
+### Contribution
 
-This demo creates a hundred files having 10 MB of data, so
-the total file size is about 1 GB.
-
-We prepared the equivalent Dochy data.
+I'm Japanese and I desperately need proofreading of my English writing for this project,
+and any other feedbacks are welcome.

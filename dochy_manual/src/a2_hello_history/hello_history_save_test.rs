@@ -6,7 +6,7 @@ use dochy::fs::history::{save_history_file, list_histories, load_history_file, H
 use dochy::core::structs::RootObject;
 
 ///save_twiceしてsecond newest fileをload
-//#[test]
+#[test]
 fn hello_history_save_test() -> DpResult<()> {
 
 
