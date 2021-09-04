@@ -1,28 +1,139 @@
-Dochy is like a binary diff format of static JSON, and surrounding file systems and tools.
+*** I'm Not An English Speaker. Please Correct My English ***
 
-It's intended to replace ordinary data files, 
-especially for game/cloud apps which employs auto-save 
-and undoable apps.
+Dochy is a static JSON-like data format.
 
-Let me introduce the key features of this project.
+It can efficiently store "diff" of the data. 
 
-1. [Efficiency](dochy_manual/src/sample_test/sample_code/efficiency.md)
-2. [Version Awareness](dochy_manual/src/sample_test/sample_code/version_awareness.md)
-3. [Reference and Enum](dochy_manual/src/sample_test/sample_code/ref_and_enum.md)
+It's designed to implement auto-save, undo, and 
+applications which want to retain every change of the data. 
 
-These three documents(and [this](dochy_manual/src/sample_test/sample_code/history.md))
-should work as a walkthrough of Dochy's concepts. 
+*Demonstration
 
-[Hello World](dochy_manual/src/a1_hello_world/hello_world.md) 
-explains the basics.
+[Demo](https://github.com/dochy-ksti/dochy_bench)
 
-### caution
+Test Data
+```JSON5
+{
+  "data0": "oiufsjdsj...", //1 MB of random string
+  "data1": "abuisoehg...", //1 MB of random string
+  //...
+  "data9": "bhsiofdis...", //1 MB of random string
+}
+```
+Pseudo-Code
+```text
+for i in 0..100{
+    modify_one_string(json.get_data_mut(rand.gen_range(0..10)));
+    let s = serde_json::to_string(&json);
+    let mut file = std::fs::File::create(format!("{}/d{}.json", json_dir, i))?;
+    file.write_all(s.as_bytes())?;
+}
+```
+The JSON has ten random 1 MB strings, so the entire JSON file is about 10 MB.
 
-Quickly changing
+We modified one string and saved as JSON format at a time, and it was repeated 100 times. 
+The total amount of the files was about 1 GB.
 
-Documentation is incomplete.  
+Equivalent Dochy data is created, modified, and saved 100 times.
 
-### Contribution
+Dochy saves "diff". Only 1 MB of the modified data is saved at best.
 
-I'm Japanese and I desperately need proofreading of my English writing for this project,
-and any other feedbacks are welcome.
+The result is below
+```text
+JSON
+1906 milliseconds
+sum of file sizes 1021435957
+
+Dochy
+sum of file sizes 173005171
+604 milliseconds
+```
+JSON saved about 1 GB of data and takes 1906 milliseconds.
+
+Dochy saved about 173 MB of data and takes 604 milliseconds.
+
+Dochy took 17 % of the storage space and about one-third of the time.
+
+Very nice?
+
+Dochy only saved 17 % of the data so of course it's faster.
+
+For comparison, we changed JSON strings to the length of 17 % and run the demo.
+```text
+JSON(short)
+sum of file sizes 173570901
+338 milliseconds
+```
+About the same file size, and twice as fast.
+
+Serde is very fast, so the result is comprehensible.
+
+But I think Dochy's overhead is reasonable, and Dochy can save in non-blocking manner,
+so saving time may not worsen user experience. 
+
+*Load Demo
+
+Loading is where Dochy pays the cost. Dochy creates "Diff Hierarchy".
+
+```text
+Diff Hierarchy Concept
+
+Diff0(10 MB) - Diff00(1 MB) - Diff000(1 MB)
+                                   │
+                              Diff001(1 MB)
+                                   │
+                              Diff002(1 MB)
+             - Diff01(5 MB) - Diff010(1 MB)
+                                   │
+                              Diff011(1 MB)
+                                   │
+                              Diff012(1 MB)
+                                  ...
+             - Diff02(10 MB)- Diff020(1 MB)
+                                   │
+                              Diff021(1 MB)
+                                  ...
+                  ...
+ Diff1(10 MB)
+   ... 
+```
+To load Dochy Diff, we must load files hierarchically from top to bottom, and apply diffs repeatedly.
+
+We used the default setting of Dochy, and it takes 13 files to load one data at most.
+
+The total file size to load can be 4 times bigger than the biggest diff file (10 MB in this case),
+so it's 40 MB.
+
+We searched the deepest file from the hierarchy and loaded the data. 
+```text
+Dochy 
+40 milliseconds
+
+JSON
+94 milliseconds
+
+JSON(Short)
+16 milliseconds
+```
+The Dochy's total amount of data is 4 times bigger than JSON's, but more than twice as fast as JSON.
+
+Dochy is a binary data format and efficiently multi-threaded for loading, so it was able to beat Serde, I think.
+
+*How it can be done?
+
+Constructing diff is very costly process in nature, but Rust's Arc(Atomic-Reference-Count-Pointer) makes it very easy.
+
+Dochy's data is cloned on saving, so non-blocking saving can be done. 
+Dochy's data consists of Arcs, so the cloning can be done instantly.
+
+Using Arc::make_mut, actual copy of the inner data happens when two different Arcs point to the same object, 
+and the one is modified. When it's modified, two Arcs point to the different objects, so 
+comparing two pointers of Arcs is enough to confirm if it's modified. Comparing actual values is not necessary.
+
+And actual copy happens on the part which is to be actually modified. Copying everything is also unnecessary.
+Rust's Arc is really magical.
+
+When comparing data and constructing diff, we compare current object with the cloned object on save, and compare pointers.
+it's very fast process.
+
+On the other hand, we didn't do anything special on loading. If it's fast, it owes to Rayon.
