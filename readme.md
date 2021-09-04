@@ -34,6 +34,9 @@ The JSON has ten random 1 MB strings, so the entire JSON file is about 10 MB.
 We modified one string and saved as JSON format at a time, and it was repeated 100 times. 
 The total amount of the files was about 1 GB.
 
+It means 10 % of the data is modified each time. Data tends to be modified partially, 
+so 10 % is not very uncommon setting, I think.
+
 Equivalent Dochy data is created, modified, and saved 100 times.
 
 Dochy saves "diff". Only 1 MB of the modified data is saved at best.
@@ -48,9 +51,9 @@ Dochy
 sum of file sizes 173005171
 604 milliseconds
 ```
-JSON saved about 1 GB of data and takes 1906 milliseconds.
+JSON saved about 1 GB of data and took 1906 milliseconds.
 
-Dochy saved about 173 MB of data and takes 604 milliseconds.
+Dochy saved about 173 MB of data and took 604 milliseconds.
 
 Dochy took 17 % of the storage space and about one-third of the time.
 
@@ -64,7 +67,7 @@ JSON(short)
 sum of file sizes 173570901
 338 milliseconds
 ```
-About the same file size, and twice as fast.
+About the same file size, and JSON was twice as fast as Dochy.
 
 Serde is very fast, so the result is comprehensible.
 
@@ -133,7 +136,7 @@ comparing two pointers of Arcs is enough to confirm if it's modified. Comparing 
 And actual copy happens on the part which is to be actually modified. Copying everything is also unnecessary.
 Rust's Arc is really magical.
 
-When comparing data and constructing diff, we compare current object with the cloned object on save, and compare pointers.
+When comparing data and constructing diff, we compare the current object with the cloned object on save, and compare pointers.
 it's very fast process.
 
 On the other hand, we didn't do anything special on loading. If it's fast, it owes to Rayon.
