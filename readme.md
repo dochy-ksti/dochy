@@ -44,8 +44,8 @@ Dochy saves "diff". Only 1 MB of the modified data is saved at best.
 The result is below
 ```text
 JSON
-1906 milliseconds
 sum of file sizes 1021435957
+1906 milliseconds
 
 Dochy
 sum of file sizes 173005171
