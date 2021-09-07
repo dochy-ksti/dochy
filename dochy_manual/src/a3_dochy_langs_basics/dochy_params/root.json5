@@ -1,0 +1,39 @@
+{
+  // Dochy Lang is a language to define static types and initial values of data
+  // The source files of the language is called Dochy Src.
+  // It's written in JSON5. It's an improved JSON and comments can be written in it (as you can see).
+
+  // Firstly, you need to crate a directory to place JSON5 files. It's kind of cumbersome, but it's for scalability.
+  // The directory must have "root.json5"(It's also bothersome, but it's also for scalability).
+
+  // Let's take a look at the parameter types of Dochy Lang and how to write it.
+
+  // Int (i64)
+  int_value : 1,
+  // Float (f64)
+  float_value : 1.0,
+  // String
+  string_value : "String",
+
+  // In Dochy Lang, ints (1) and floats (1.0) are distinguishable.
+  // Right value's type determines the variable's static type.
+
+  // Let's call Dochy Lang's parameters Dochy Params.
+  // Dochy Params are
+
+  int_array : ["IntArray", 1, 2],
+  float_array : ["FloatArray", 1.0, 2], //integers can be written in FloatArray( it's converted to f64)
+  binary : ["Binary"],
+
+  // IntArray is i64's array.
+  // FloatArray is f64's array.
+  // Binary is u8's array.
+
+  // Arrays and Binary need specified typename at first of the arrays.
+
+  // You can specify types in ints, floats, and strings if you want to.
+  int_sp : ["Int", 1],
+  float_sp : ["Float", 1.0],
+  string_value_sp : ["String", "string"],
+
+}
