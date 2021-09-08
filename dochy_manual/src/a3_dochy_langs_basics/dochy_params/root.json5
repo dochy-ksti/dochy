@@ -14,6 +14,8 @@
   float_value : 1.0,
   // String
   string_value : "String",
+  // Bool
+  bool_value : true,
 
   // In Dochy Lang, ints (1) and floats (1.0) are distinguishable.
   // Right value's type determines the variable's static type.
@@ -29,11 +31,6 @@
   // FloatArray is f64's array.
   // Binary is u8's array.
 
-  // Arrays and Binary need specified typename at first of the arrays.
-
-  // You can specify types in ints, floats, and strings if you want to.
-  int_sp : ["Int", 1],
-  float_sp : ["Float", 1.0],
-  string_value_sp : ["String", "string"],
+  // Arrays and Binary need specified typename at the first of the arrays.
 
 }
