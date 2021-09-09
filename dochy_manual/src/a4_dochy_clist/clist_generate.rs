@@ -4,12 +4,12 @@ use dochy::core::json_dir_to_root;
 use dochy::intf::generate_interface;
 
 #[test]
-fn dochy_params_generate() -> DpResult<()> {
-    let mut root_obj : RootObject = json_dir_to_root("src/a3_dochy_langs_basics/dochy_params", true)?;
+fn clist_generate() -> DpResult<()> {
+    let mut root_obj : RootObject = json_dir_to_root("src/a4_dochy_collections/clist", true)?;
 
     let ans = generate_interface(&mut root_obj);
     std::fs::write(
-        "src/a3_dochy_langs_basics/dochy_params_accessor.rs",
+        "src/a4_dochy_collections/clist_accessor.rs",
         &ans.to_string(),
     ).unwrap();
     Ok(())

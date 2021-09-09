@@ -1,17 +1,17 @@
 {
   // Dochy has a special value named "undefined".
 
-  // When an old data does not have the variable, and the variable is "undefiable",
-  // it's automatically assigned the value "undefined"
+  // When an old data does not have a variable, and the variable is "undefiable",
+  // the value "undefined" will be automatically assigned to the variable in the conversion process.
 
   // "undefiable" values must have "!" at the end of the variable names.
-  // Dochy accepts the value "undefined", like null, but it's not recommended.
-  // "undefined" is not supposed to be used in the source files.
-  // "undefined" should be automatically assigned in conversion process.
+  // Dochy accepts the value "undefined", like null, but it's invalid JSON5 value and not recommended.
+  // "undefined" is not supposed to be used in source files.
+  // "undefined" should only be assigned in the conversion process.
 
   undefiable_int! : ["Int", undefined], // NOT RECOMMENDED
 
-  // You can craate a variable both nullable and undefiable with "!?"
+  // You can craate a variable both nullable and undefiable with the suffix "!?"
 
   undef_nullable_int!? : 2,
 }
