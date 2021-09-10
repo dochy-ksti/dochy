@@ -59,3 +59,5 @@
 // In the conversion process, older data's CList is just replaced by the current source file's CList.
 //
 // MList is not replaced in the conversion process (because we need to retain the modified data).
+//
+// CList is implemented by std::Vec internally.
