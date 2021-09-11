@@ -79,11 +79,11 @@ impl IdentityEqual for RustFloatArray{
 
 #[derive(Debug, Clone)]
 pub struct RustIntArray{
-    b : Box<Vec<i64>>,
+    b : Arc<Vec<i64>>,
 }
 
 impl RustIntArray{
-    pub fn new(b : Vec<i64>) -> RustIntArray{ RustIntArray{ b : Box::new(b) }}
+    pub fn new(b : Vec<i64>) -> RustIntArray{ RustIntArray{ b : Arc::new(b) }}
     //pub(crate) fn as_ref(&self) -> &Vec<i64>{ self.b.as_ref() }
     pub(crate) fn to_params(&self) -> Vec<RustParam>{
         self.vec().iter().map(|a| RustParam::Int(Qv::Val(*a))).collect()
@@ -93,12 +93,12 @@ impl RustIntArray{
         Some(RustIntArray::new(op?))
     }
     pub fn vec(&self) -> &Vec<i64>{ self.b.as_ref() }
-    pub fn vec_mut(&mut self) -> &mut Vec<i64>{ self.b.as_mut() }
+    pub fn vec_mut(&mut self) -> &mut Vec<i64>{ Arc::make_mut(&mut self.b) }
 }
 
 impl IdentityEqual for RustIntArray{
     fn identity_eq(&self, other: &Self) -> bool {
-        self.b == other.b
+        Arc::ptr_eq(&self.b, &other.b)
     }
 }
 

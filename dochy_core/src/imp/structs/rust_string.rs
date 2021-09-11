@@ -1,17 +1,18 @@
 use std::fmt::{Display, Formatter};
 use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct RustString{
-    str : Box<String>,
+    str : Arc<String>,
 }
 
 impl RustString{
-    pub fn new(s : String) -> RustString{ RustString{ str : Box::new(s) } }
+    pub fn new(s : String) -> RustString{ RustString{ str : Arc::new(s) } }
     pub fn str(&self) -> &str{ self.str.as_ref().as_str() }
-    pub fn str_mut(&mut self) -> &mut str{ self.str.as_mut().as_mut_str() }
+    pub fn str_mut(&mut self) -> &mut str{ self.string_mut().as_mut_str() }
     pub fn string(&self) -> &String{ self.str.as_ref() }
-    pub fn string_mut(&mut self) -> &mut String{ self.str.as_mut() }
+    pub fn string_mut(&mut self) -> &mut String{ Arc::make_mut(&mut self.str) }
 }
 
 impl Display for RustString{
@@ -22,7 +23,7 @@ impl Display for RustString{
 
 impl IdentityEqual for RustString{
     fn identity_eq(&self, other: &Self) -> bool {
-        self.str == other.str
+        Arc::ptr_eq(&self.str,  &other.str)
     }
 }
 
