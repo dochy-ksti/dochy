@@ -1,6 +1,6 @@
 This is Dochy's manual.
 
-To not write markdowns, manuals will be written 
+Not to write markdowns, this manual will be written 
 in source files with comments as long as possible.
 
 1. [Hello World](src/a1_hello_world/hello_world_save_test.rs)

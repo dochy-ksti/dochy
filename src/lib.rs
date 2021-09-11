@@ -1,3 +1,5 @@
+//! The manual of this library is [here](https://github.com/dochy-ksti/dochy/tree/development/dochy_manual)
+
 #![feature(try_trait)]
 #![feature(vec_into_raw_parts)]
 #![feature(test)]
