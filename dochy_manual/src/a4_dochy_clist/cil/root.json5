@@ -44,6 +44,18 @@
 //
 // Cil is separated into two parts, "CilDef" and "Cil".
 //
-// CilDef can exist in default objects. It only defines its default object. Actual values aren't defined there.
+// CilDef can exist only in default objects. It defines Cil's default object. Actual values can't be defined there.
 //
+//    {
+//      val : 1,
+//      inner_list : ["Cil",
+//        {
+//          name : "p",
+//        },
+//        {
+//          name : "q",
+//        }
+//      ]
+//    },
 //
+// Cil, on the other hand, only defines actual values. Cil can exist only in actual list items.
