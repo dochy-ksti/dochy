@@ -1,4 +1,4 @@
-use crate::imp::structs::rust_list::{ConstItem};
+use crate::imp::structs::rust_list::{ConstItem, ConstListVal};
 use crate::imp::structs::list_value::{ListDefValue};
 //use crate::imp::intf::inner_data::InnerDataPtr;
 use crate::imp::structs::rust_param::RustParam;
@@ -29,6 +29,8 @@ pub fn get_cil<T : From<CItemPtr>>(ps : CItemPtr, name : &str) -> Option<CListPt
     if let Some(ListDefValue::CilDef(def)) = list_def.default().get(name){
         if let Some(ListSabValue::Cil(data)) = item.values().get(name){
             return Some(CListPtr::new(data.list(), def, ps.root_def))
+        } else{
+            return Some(CListPtr::new(ConstListVal::empty(), def, ps.root_def))
         }
     }
     None

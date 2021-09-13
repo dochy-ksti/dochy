@@ -89,6 +89,10 @@ pub struct ConstListVal {
 impl ConstListVal {
     pub(crate) fn new(list : Vec<ConstItem>) -> ConstListVal { ConstListVal { list : Arc::new(list) }}
     pub(crate) fn list(&self) -> &Vec<ConstItem>{ self.list.as_ref() }
+    pub(crate) fn empty() -> &'static Vec<ConstItem>{
+        static EMP_VEC: Vec<ConstItem> = Vec::new();
+        &EMP_VEC
+    }
 }
 
 #[derive(Debug,  Clone)]
