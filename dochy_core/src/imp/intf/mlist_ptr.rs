@@ -41,6 +41,7 @@ impl<V : From<MItemPtr>> MListPtr<V>{
 
     fn map(&self) -> &LinkedMap<MutItem>{ unsafe{ &*self.map }}
     fn map_mut<'a>(&mut self) -> &'a mut LinkedMap<MutItem>{ unsafe{ &mut *(self.map as *mut LinkedMap<MutItem>) }}
+    fn def_ref<'a>(&mut self) -> &'a ListDefObj{ unsafe{ &*self.list_def } }
 
     pub fn first_mut(&mut self) -> Option<V> {
         let map = self.map_mut();
@@ -93,12 +94,12 @@ impl<V : From<MItemPtr>> MListPtr<V>{
 
     pub fn insert_last(&mut self) -> V{
         let map = self.map_mut();
-        let id = map.insert_last(MutItem::default());
+        let id = map.insert_last(MutItem::default(self.def_ref()));
         self.get_item_mut(id).unwrap()
     }
     pub fn insert_first(&mut self) -> V{
         let map = self.map_mut();
-        let id = map.insert_first(MutItem::default());
+        let id = map.insert_first(MutItem::default(self.def_ref()));
         self.get_item_mut(id).unwrap()
     }
 

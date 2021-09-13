@@ -12,6 +12,8 @@ pub mod get_refs;
 pub mod json_dir_to_rust;
 pub mod construct_root;
 pub mod validation;
+pub mod set_empty_mils;
+
 use dochy_json5::JVal;
 use names::Names;
 use crate::error::CoreResult;

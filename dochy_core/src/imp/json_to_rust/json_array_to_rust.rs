@@ -63,7 +63,6 @@ pub(crate) fn json_array_to_rust(array : &Vec<JVal>, var_type: VarType, span : &
                     Err(format!(r#"{} Lists can't be null {}"#, span.line_str(), names))?
                 }
             }
-
         },
     }
 }
