@@ -1,0 +1,26 @@
+{
+  // Inner MList is named "Mil", which is "Mut Inner List"
+
+  mlist : ["MList",[{
+    val : 0,
+    inner_list : ["MilDef",[{
+      name : "x",
+    }]]
+  }],
+    {
+      val : 1,
+      inner_list : ["Mil",
+        {
+          name : "p",
+        },
+        {
+          name : "q",
+        }
+      ]
+    },
+    {
+      val : 2,
+      //inner_list omitted
+    },
+  ],
+}

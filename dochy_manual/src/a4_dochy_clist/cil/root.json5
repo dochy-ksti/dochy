@@ -58,4 +58,13 @@
 //      ]
 //    },
 //
-// Cil, on the other hand, only defines actual values. Cil can exist only in actual list items.
+// Cil, on the other hand, only defines actual values. Cil can exist only in actual items of CList, Cil, Table.
+//
+//    {
+//      val : 2,
+//      //inner_list omitted
+//    },
+//
+// In this item, inner_list is omitted. Omitted lists are regarded as an empty list.
+//
+// Vec is used for implementing Cil, like CList.
