@@ -49,7 +49,7 @@ fn mil_test() -> DpResult<()> {
 
     let mut first = mlist.first_mut().unwrap();
     let mut il = first.inner_list_mut();
-    let mut item = il.insert();
+    let mut item = il.insert_first();
     item.set_name("first of inner list".to_string());
 
     let mut last = mlist.last_mut().unwrap();
@@ -78,7 +78,7 @@ fn mil_test() -> DpResult<()> {
 
     // Iterates the MList
     for (id, item) in root.mlist().iter(){
-        println!("Item's ID is {}", id);
+        println!("Item's ID is {}, val is {}", id, item.val());
 
         // Gets the inner list from the item.
         let il = item.inner_list();
@@ -93,13 +93,13 @@ fn mil_test() -> DpResult<()> {
 }
 // Output:
 //
-// Item's ID is 0
+// Item's ID is 0, val is 1
 // Inner List's len 3
+// item name first of inner list
 // item name p
 // item name q
-// item name first of inner list
-// Item's ID is 2
+// Item's ID is 2, val is 100
 // Inner List's len 0
-// Item's ID is 1
+// Item's ID is 1, val is 2
 // Inner List's len 1
 // item name x--last of inner list
