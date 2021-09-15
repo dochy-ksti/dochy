@@ -1,6 +1,6 @@
 {
   // MList is a mutable list in Dochy.
-  // It's similar to CList, except it's mutable.
+  // Explanations are reserved for the next section.
 
   mlist : ["MList",[{
     name : "a",

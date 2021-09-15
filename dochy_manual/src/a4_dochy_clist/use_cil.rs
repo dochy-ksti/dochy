@@ -11,6 +11,9 @@ fn cil_generate() -> DpResult<()> {
         /* dir_path */"src/a4_dochy_clist/cil",
         /* validation */ true)?;
 
+    // Validation is useful. You should validate your Dochy Src,
+    // but do it twice is meaningless. I think the cost of validation is negligible, though.
+
     // When "validation" is true, verification process will be more detailed
 
     // "generate_interface" analyzes RootObject, and generates the source code for handling the object in Rust.
@@ -26,9 +29,11 @@ fn cil_generate() -> DpResult<()> {
 
 #[test]
 fn cil_test() -> DpResult<()> {
-    let root_obj : RootObject = json_dir_to_root("src/a4_dochy_clist/cil", true)?;
+    let root_obj : RootObject = json_dir_to_root("src/a4_dochy_clist/cil", false)?;
+    // Running Validation twice is meaningless, so we didn't do it this time.
 
-    // RootIntf is the struct created from the source file.
+    // RootIntf is the wrapper object created from the source file.
+    // We can easily access data with it.
     let root = RootIntf::new(root_obj);
 
     // Iterates the CList
@@ -37,10 +42,11 @@ fn cil_test() -> DpResult<()> {
         // Gets the inner list from the item.
         let il = item.inner_list();
         println!("len {}", il.len());
+        // When inner_list is omitted in the source, len == 0
 
         // Iterates the inner list.
         for item in il.iter(){
-            println!("il item name {}", item.name());
+            println!("item name is {}", item.name());
         }
     }
     Ok(())

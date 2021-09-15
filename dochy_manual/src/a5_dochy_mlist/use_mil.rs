@@ -18,22 +18,88 @@ fn mil_generate() -> DpResult<()> {
 
 #[test]
 fn mil_test() -> DpResult<()> {
-    let root_obj : RootObject = json_dir_to_root("src/a5_dochy_mlist/mil", true)?;
+    let root_obj : RootObject = json_dir_to_root("src/a5_dochy_mlist/mil", false)?;
 
-    // RootIntf is the struct created from the source file.
-    let root = RootIntf::new(root_obj);
+    let mut root = RootIntf::new(root_obj);
 
-    // Iterates the CList
-    for (_id, item) in root.mlist().iter(){
+    // When it's mutably borrowed, we consider it "modified". If it's actually modified is not relevant.
+    // When it's "modified", if it's cloned (typically, cloning occurs when saving), the item/value is copied,
+    // so the two items are on the different memory address.
+    // We compare these address, and determine if it's modified.
+    // See [Arc::make_mut](https://doc.rust-lang.org/std/sync/struct.Arc.html#method.make_mut)
+    let mut mlist = root.mlist_mut();
+
+    // When we insert, an item is created and auto-increment ID is assigned,
+    // and the item is inserted to the last position. (we also have insert_first)
+    // and the mutable reference of it is returned.
+    let mut item = mlist.insert();
+    item.set_val(100);
+
+    // we can change orders of items in the Linked-List way.
+
+    // Gets the last-item's ID
+    let last_id = mlist.last_id().unwrap();
+    // Gets the first-item's ID
+    let first_id = mlist.first_id().unwrap();
+
+    // Places the newly-created last-item into the next position of the first-item.
+    mlist.move_to_next(
+        /* prev_items_id */ first_id,
+        /* id */ last_id);
+
+    let mut first = mlist.first_mut().unwrap();
+    let mut il = first.inner_list_mut();
+    let mut item = il.insert();
+    item.set_name("first of inner list".to_string());
+
+    let mut last = mlist.last_mut().unwrap();
+    let mut il = last.inner_list_mut();
+    let mut item = il.insert();
+    let name = item.name_mut();
+    // You can also use mutable references. push_str appends string (the default value remains).
+    name.push_str("--last of inner list");
+
+    // *** Not Important Note ***
+
+    // The default value doesn't usually exist in the item's hashtable.
+    // When a value doesn't exist in the table, Dochy considers it as the default value.
+    // In other words, when you get the value from an item and if it doesn't exist,
+    // Dochy returns the default value.
+
+    // When you set the value into the item, the value is placed in the item's hashtable,
+    // so we can get the value instead of the default value.
+
+    // If you mutably borrow an unset value, Dochy sets the default value into the item's hashtable first,
+    // and returns the mutable reference.
+    // If you push_str to it, the pushed string is appended to the default value.
+
+    // *** End Of Not Important Note ***
+
+
+    // Iterates the MList
+    for (id, item) in root.mlist().iter(){
+        println!("Item's ID is {}", id);
 
         // Gets the inner list from the item.
         let il = item.inner_list();
-        println!("len {}", il.len());
+        println!("Inner List's len {}", il.len());
 
         // Iterates the inner list.
         for (_id, item) in il.iter(){
-            println!("il item name {}", item.name());
+            println!("item name {}", item.name());
         }
     }
     Ok(())
 }
+// Output:
+//
+// Item's ID is 0
+// Inner List's len 3
+// item name p
+// item name q
+// item name first of inner list
+// Item's ID is 2
+// Inner List's len 0
+// Item's ID is 1
+// Inner List's len 1
+// item name x--last of inner list
