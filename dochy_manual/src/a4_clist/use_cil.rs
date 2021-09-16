@@ -2,13 +2,13 @@ use dochy::error::DpResult;
 use dochy::core::structs::RootObject;
 use dochy::core::json_dir_to_root;
 use dochy::intf::generate_interface;
-use crate::a4_dochy_clist::cil_accessor::RootIntf;
+use crate::a4_clist::cil_accessor::RootIntf;
 
 #[test]
 fn cil_generate() -> DpResult<()> {
     // Dochy Src can be converted to RootObject with "json_dir_to_root
     let mut root_obj : RootObject = json_dir_to_root(
-        /* dir_path */"src/a4_dochy_clist/cil",
+        /* dir_path */"src/a4_clist/cil",
         /* validation */ true)?;
 
     // Validation is useful. You should validate your Dochy Src,
@@ -21,7 +21,7 @@ fn cil_generate() -> DpResult<()> {
 
     // Creates the source file.
     std::fs::write(
-        "src/a4_dochy_clist/cil_accessor.rs",
+        "src/a4_clist/cil_accessor.rs",
         &ans.to_string(),
     ).unwrap();
     Ok(())
@@ -29,7 +29,7 @@ fn cil_generate() -> DpResult<()> {
 
 #[test]
 fn cil_test() -> DpResult<()> {
-    let root_obj : RootObject = json_dir_to_root("src/a4_dochy_clist/cil", false)?;
+    let root_obj : RootObject = json_dir_to_root("src/a4_clist/cil", false)?;
     // Running Validation twice is meaningless, so we didn't do it this time.
 
     // RootIntf is the wrapper object created from the source file.

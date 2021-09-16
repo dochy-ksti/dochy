@@ -9,8 +9,9 @@
 // #[cfg(test)]#[allow(dead_code)] mod a2_hello_history;
 
 #[cfg(test)]#[allow(dead_code)]mod a3_dochy_langs_basics;
-#[cfg(test)]#[allow(dead_code)]mod a4_dochy_clist;
-#[cfg(test)]#[allow(dead_code)]mod a5_dochy_mlist;
+#[cfg(test)]#[allow(dead_code)]mod a4_clist;
+#[cfg(test)]#[allow(dead_code)]mod a5_mlist;
+#[cfg(test)]#[allow(dead_code)]mod a6_table;
 
 
 
