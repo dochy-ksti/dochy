@@ -1,7 +1,8 @@
 use regex::Regex;
 use regex::Captures;
-use lazy_static::lazy_static;
+//use lazy_static::lazy_static;
 use crate::imp::structs::var_type::VarType;
+use once_cell::sync::Lazy;
 
 pub(crate) enum SystemNames{
     Old,
@@ -74,9 +75,7 @@ pub(crate) fn json_simple_name(s : &str) -> Option<String> {
 
 ///[@a-z_][a-zA-Z0-9_]*
 pub(crate) fn analyze_name(s : &str) -> Option<Captures>{
-    lazy_static! {
-        static ref RE : Regex = Regex::new(r"^([@a-z_][a-zA-Z0-9_]*)([!?]*)$").unwrap();
-    }
+    static RE : Lazy<Regex> = Lazy::new(|| Regex::new(r"^([@a-z_][a-zA-Z0-9_]*)([!?]*)$").unwrap());
     RE.captures(s)
 }
 

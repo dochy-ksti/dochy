@@ -1,9 +1,10 @@
 use crate::kval_enum::{KVal, Decimal};
 use regex::{Regex, Match};
 use crate::enc_dec::decode::decode;
-use lazy_static::lazy_static;
+//use lazy_static::lazy_static;
 use anyhow::Result;
 use crate::enc_dec::encode_to_vec::encode_to_vec;
+use once_cell::sync::Lazy;
 
 /// Get KVals from raw Strings. If the String represents a number,
 /// it's converted to number binary to reduce the size.
@@ -99,9 +100,8 @@ struct NumResult{
 }
 
 fn rex(s : &str) -> Option<regex::Captures>{
-    lazy_static! {
-        static ref RE: Regex = regex::Regex::new(r#"^(-?)(([0-9]+)(.?)([0-9]*))$"#).unwrap();
-    }
+    static RE: Lazy<Regex> = Lazy::new(|| regex::Regex::new(r#"^(-?)(([0-9]+)(.?)([0-9]*))$"#).unwrap());
+
     return RE.captures(s);
 }
 

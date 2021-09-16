@@ -8,9 +8,10 @@ use crate::imp::structs::ref_value::RefSabValue;
 use crate::imp::intf::citem::{get_enum_impl, get_ref_id_impl};
 use crate::imp::structs::rust_string::RustString;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
-use crate::structs::RustBinary;
+use crate::structs::{RustBinary, MutListDef};
 use crate::imp::structs::list_sab_value::ListSabValue;
 use crate::imp::structs::root_def_obj::RootDefObj;
+use crate::imp::structs::rust_list::{MutListVal};
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -42,15 +43,28 @@ impl MItemPtr {
 pub fn get_mil_mut<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
     let (item, list_def) = unsafe { (ps.item_mut(), &*ps.list_def) };
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
-        if let Some(ListSabValue::Mil(data)) = item.values_mut().get_mut(name) {
+        let sab_value = item.values_mut().get_mut(name);
+        if sab_value.is_some() {
+            return f::<T>(sab_value, md, ps);
+        }
+
+        item.values_mut().insert(name.to_string(), ListSabValue::Mil(Some(MutListVal::crate_empty_list())));
+        return f::<T>(item.values_mut().get_mut(name), md, ps);
+    } else{
+        return None;
+    }
+
+    fn f<U : From<MItemPtr>>(sab_value : Option<&mut ListSabValue>, md : &MutListDef, ps : MItemPtr) -> Option<Option<MListPtr<U>>>{
+        if let Some(ListSabValue::Mil(data)) =  sab_value {
             if let Some(inner) = data {
                 return Some(Some(MListPtr::new(inner.list_mut(), md.default(), ps.root_def)))
             } else {
                 return Some(None)
             }
+        } else{
+            None
         }
     }
-    return None
 }
 
 /// Mutation through this ptr is undefined behavior
@@ -61,8 +75,12 @@ pub fn get_mil_const<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<O
             if let Some(inner) = data {
                 return Some(Some(MListPtr::new(inner.list(), md.default(), ps.root_def)))
             } else {
-                return Some(None)
+                return Some(None);
             }
+        } else{
+            return Some(Some(MListPtr::new(
+                MutListVal::empty_lists_ref(),
+                md.default(), ps.root_def)));
         }
     }
     return None

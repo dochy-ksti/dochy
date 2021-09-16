@@ -5,7 +5,6 @@ use crate::imp::structs::root_value::RootValue;
 use crate::imp::structs::root_sab_value::RootSabValue;
 use std::sync::Arc;
 use crate::imp::structs::meta_table::MetaTable;
-use crate::imp::json_to_rust::set_empty_mils::set_empty_mils_root::set_empty_mils_root;
 
 ///root.jsonからとったRootに、各ファイルからとった個別のメンバを混ぜる。ファイルはアルファベット順に、root.jsonの末尾に加わっていく
 pub(crate) fn construct_root(root : RootObject, vec : Vec<(String, RootValue, Option<RootSabValue>)>, validation : bool) -> CoreResult<RootObject>{
@@ -24,8 +23,8 @@ pub(crate) fn construct_root(root : RootObject, vec : Vec<(String, RootValue, Op
         }
     }
     let meta = MetaTable::from_root(default_v.def());
-    let mut root = RootObject::construct(default_v, sabun_v, old, Arc::new(meta));
-    set_empty_mils_root(&mut root);
+    let root = RootObject::construct(default_v, sabun_v, old, Arc::new(meta));
+
     if validation{
         validate_root(&root, false)?
     }

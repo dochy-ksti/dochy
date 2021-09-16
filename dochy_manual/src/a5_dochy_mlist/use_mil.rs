@@ -50,14 +50,14 @@ fn mil_test() -> DpResult<()> {
     let mut first = mlist.first_mut().unwrap();
     let mut il = first.inner_list_mut();
     let mut item = il.insert_first();
-    item.set_name("first of inner list".to_string());
+    item.set_name("first of the first item".to_string());
 
     let mut last = mlist.last_mut().unwrap();
     let mut il = last.inner_list_mut();
     let mut item = il.insert();
     let name = item.name_mut();
     // You can also use mutable references. push_str appends string (the default value remains).
-    name.push_str("--last of inner list");
+    name.push_str("--last of the last item");
 
     // *** Not Important Note ***
 
@@ -95,11 +95,11 @@ fn mil_test() -> DpResult<()> {
 //
 // Item's ID is 0, val is 1
 // Inner List's len 3
-// item name first of inner list
+// item name first of the first item
 // item name p
 // item name q
 // Item's ID is 2, val is 100
 // Inner List's len 0
 // Item's ID is 1, val is 2
 // Inner List's len 1
-// item name x--last of inner list
+// item name x--last of the last item

@@ -9,7 +9,7 @@ use crate::imp::structs::linked_m::LinkedMap;
 use crate::imp::structs::util::hash_m::{HashS};
 use crate::imp::structs::list_sab_value::ListSabValue;
 use std::sync::Arc;
-use crate::imp::json_to_rust::set_empty_mils::initialize_empty_mils::initialize_empty_mils;
+use once_cell::sync::Lazy;
 
 
 ///アイテムごとにIDをもち、Refで参照することが可能である
@@ -107,6 +107,10 @@ impl MutListVal {
     pub fn list(&self) -> &LinkedMap<MutItem>{ self.list.as_ref() }
     pub fn list_mut(&mut self) -> &mut LinkedMap<MutItem>{ Arc::make_mut(&mut self.list) }
     pub fn crate_empty_list() -> MutListVal{ MutListVal { list : Arc::new(LinkedMap::new())}}
+    pub fn empty_lists_ref() -> &'static LinkedMap<MutItem> {
+        static EMP: Lazy<LinkedMap<MutItem>> = Lazy::new(|| LinkedMap::new());
+        &EMP
+    }
 }
 
 impl IdentityEqual for MutListVal {
@@ -162,8 +166,8 @@ impl MutItem {
     pub fn new(values : HashM<String, ListSabValue>, refs : HashM<String, RefSabValue>) -> MutItem {
         MutItem { values : Arc::new(values), refs : Arc::new(refs) }
     }
-    pub(crate) fn default(def : &ListDefObj) -> MutItem {
-        MutItem { values : Arc::new(initialize_empty_mils(def)), refs : Arc::new(HashMt::new()) }
+    pub(crate) fn default() -> MutItem {
+        MutItem { values : Arc::new(HashMt::new()), refs : Arc::new(HashMt::new()) }
     }
     pub fn muts(&mut self) -> (&mut HashM<String, ListSabValue>,
                                   &mut HashM<String, RefSabValue>){
