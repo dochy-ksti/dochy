@@ -91,7 +91,7 @@
     }],
     {
       Ref : {
-        table1 : "item2", // When the default value is empty string, existing ID must be set.
+        table1 : "item1", // When the default value is empty string, existing ID must be set.
         table2 : "a", // Other than default objects, the suffix "?" is not necessary.
       }
     },

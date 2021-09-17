@@ -387,7 +387,7 @@ pub fn get_ref(ps : MItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
     })
 }
 
-pub fn get_ref_id(ps : MItemPtr, list_name : &str) -> Option<Qv<String>>{
+pub fn get_ref_id<'a>(ps : MItemPtr, list_name : &str) -> Option<Qv<&'a String>>{
     let (item, list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
     get_ref_id_impl(item.refs(), list_def, list_name)
 }

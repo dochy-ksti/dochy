@@ -339,7 +339,7 @@ impl IniItemListCItem {
 		let qv = citem::get_ref(self.ptr, "weapon").unwrap();
 		WeaponCItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_weapon(&self) -> String{
+	pub fn ref_id_weapon(&self) -> &String{
 		let qv = citem::get_ref_id(self.ptr, "weapon").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -585,7 +585,7 @@ impl SomeDataCItem {
 		let qv = citem::get_ref(self.ptr, "unkoList").unwrap();
 		UnkoListCItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_unko_list(&self) -> String{
+	pub fn ref_id_unko_list(&self) -> &String{
 		let qv = citem::get_ref_id(self.ptr, "unkoList").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -692,7 +692,7 @@ impl ItemList3CItem {
 		let qv = citem::get_ref(self.ptr, "hogeList").unwrap();
 		HogeListCItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_hoge_list(&self) -> String{
+	pub fn ref_id_hoge_list(&self) -> &String{
 		let qv = citem::get_ref_id(self.ptr, "hogeList").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -700,7 +700,7 @@ impl ItemList3CItem {
 		let qv = citem::get_ref(self.ptr, "hegoList").unwrap();
 		HegoListCItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_hego_list(&self) -> String{
+	pub fn ref_id_hego_list(&self) -> &String{
 		let qv = citem::get_ref_id(self.ptr, "hegoList").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -708,7 +708,7 @@ impl ItemList3CItem {
 		let qv = citem::get_ref(self.ptr, "hugaList").unwrap();
 		NullOr::from_qv(qv).unwrap().map(|p| HugaListCItem::from(*p))
 	}
-	pub fn ref_id_huga_list(&self) -> NullOr<String>{
+	pub fn ref_id_huga_list(&self) -> NullOr<&String>{
 		let qv = citem::get_ref_id(self.ptr, "hugaList").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
@@ -775,7 +775,7 @@ impl InnerMutListMItem {
 		let qv = mitem::get_ref(self.ptr, "hegoList").unwrap();
 		HegoListCItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_hego_list(&self) -> String{
+	pub fn ref_id_hego_list(&self) -> &String{
 		let qv = mitem::get_ref_id(self.ptr, "hegoList").unwrap();
 		qv.into_value().unwrap()
 	}

@@ -110,7 +110,7 @@ impl Table2CItem {
 		let qv = citem::get_ref(self.ptr, "table1").unwrap();
 		Table1CItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_table1(&self) -> String{
+	pub fn ref_id_table1(&self) -> &String{
 		let qv = citem::get_ref_id(self.ptr, "table1").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -130,7 +130,7 @@ impl MlistMItem {
 		let qv = mitem::get_ref(self.ptr, "table2").unwrap();
 		NullOr::from_qv(qv).unwrap().map(|p| Table2CItem::from(*p))
 	}
-	pub fn ref_id_table2(&self) -> NullOr<String>{
+	pub fn ref_id_table2(&self) -> NullOr<&String>{
 		let qv = mitem::get_ref_id(self.ptr, "table2").unwrap();
 		NullOr::from_qv(qv).unwrap()
 	}
@@ -138,7 +138,7 @@ impl MlistMItem {
 		let qv = mitem::get_ref(self.ptr, "table1").unwrap();
 		Table1CItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_table1(&self) -> String{
+	pub fn ref_id_table1(&self) -> &String{
 		let qv = mitem::get_ref_id(self.ptr, "table1").unwrap();
 		qv.into_value().unwrap()
 	}
@@ -170,7 +170,7 @@ impl AListCItem {
 		let qv = citem::get_ref(self.ptr, "table1").unwrap();
 		Table1CItem::from(qv.into_value().unwrap())
 	}
-	pub fn ref_id_table1(&self) -> String{
+	pub fn ref_id_table1(&self) -> &String{
 		let qv = citem::get_ref_id(self.ptr, "table1").unwrap();
 		qv.into_value().unwrap()
 	}

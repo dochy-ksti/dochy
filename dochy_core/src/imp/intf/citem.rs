@@ -215,12 +215,13 @@ pub fn get_ref(ps : CItemPtr, list_name : &str) -> Option<Qv<CItemPtr>>{
     })
 }
 
-pub fn get_ref_id(ps : CItemPtr, list_name : &str) -> Option<Qv<String>>{
+pub fn get_ref_id<'a>(ps : CItemPtr, list_name : &str) -> Option<Qv<&'a String>>{
     let (item, list_def) = unsafe{ (&*ps.item, &*ps.list_def) };
     get_ref_id_impl(item.refs(), list_def, list_name)
 }
 
-pub fn get_ref_id_impl(refs : &HashM<String, RefSabValue>, list_def : &ListDefObj, list_name : &str) -> Option<Qv<String>>{
+/// returned reference can be dangling if refs is modified in the lifetime.
+pub fn get_ref_id_impl<'a>(refs : &HashM<String, RefSabValue>, list_def : &ListDefObj, list_name : &str) -> Option<Qv<&'a String>>{
     let qv = if let Some(sab) = refs.get(list_name){
         sab.value()
     } else{
@@ -228,7 +229,10 @@ pub fn get_ref_id_impl(refs : &HashM<String, RefSabValue>, list_def : &ListDefOb
             d.value()
         } else{ return None; }
     };
-    return Some(qv.clone());
+    return Some(qv.map(|b|unsafe{
+        let b : *const String = b;
+        &*b
+    }));
 }
 
 pub fn get_enum(ps : CItemPtr) -> Option<(String, String)>{
