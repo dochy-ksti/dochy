@@ -310,8 +310,15 @@ mod tests {
         assert_eq!(iter.prev_const(), Some((&1,&1)));
         assert_eq!(iter.prev_const(), None);
         assert_eq!(iter.prev_const(), None);
+    }
 
-
+    #[test]
+    fn iter_mut(){
+        let mut map = create_map3();
+        let mut iter = map.iter_mut();
+        let (_, a1) = iter.next().unwrap();
+        let (_, a2) = iter.next().unwrap();
+        println!("{} {}", a1, a2)
     }
 
     #[test]

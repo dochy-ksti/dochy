@@ -16,16 +16,16 @@ impl<'a, V> LinkedMapIterMut<'a, V>{
         self.iter.next_mut()
     }
 
-    ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
-    /// next2回でそれをとることも出来る。Cインターフェースやunsafe iterなら
-    ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
-    pub fn prev(&mut self) -> Option<(&'a u64, &'a mut V)> {
-        self.iter.prev_mut()
-    }
-
-    pub fn current(&mut self) -> Option<(&'a u64, &'a mut V)> {
-        self.iter.current_mut()
-    }
+    // ///前に戻ることが出来る。そして元あった場所を削除し、それによって削除されたアイテムの次にあったアイテムが現在のカーソルの次にくるので、
+    // /// next2回でそれをとることも出来る。Cインターフェースやunsafe iterなら
+    // ///今ある場所をremoveしたらポインタが不正になって安全にnext/prevできない
+    // pub fn prev(&mut self) -> Option<(&'a u64, &'a mut V)> {
+    //     self.iter.prev_mut()
+    // }
+    //
+    // pub fn current(&mut self) -> Option<(&'a u64, &'a mut V)> {
+    //     self.iter.current_mut()
+    // }
 
     ///nextもprevも現在のカーソルにあるアイテムを返す
     ///空であるか、最後/最初まで移動してアイテムが無くなったらfalse
