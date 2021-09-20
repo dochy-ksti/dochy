@@ -1,8 +1,3 @@
-//! [Dochy Params](dochy_params/root.json5)
-//! [Nullable Params](nullable_params/root.json5)
 mod dochy_params_generate;
 mod dochy_params_accessor;
-mod nullable_params_generate;
-mod nullable_params_accessor;
-mod undefiable_params_accessor;
-mod undefiable_params_generate;
+mod use_parameters;

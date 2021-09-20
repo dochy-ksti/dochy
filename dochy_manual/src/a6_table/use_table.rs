@@ -27,15 +27,15 @@ fn table_test() -> DpResult<()> {
 
     let table2 = root.table2();
 
-    // Iterating a table is tiresome (because it's not for iteration...)
+    // Iterating tables is tiresome (because it's not for iteration...)
 
     let len = Table2TableID::len();
     for n in 0..len{
         // We can get ID's information from [table-name]TableID struct
         let id = Table2TableID::from_num(n);
 
-        // We can get individual ID info by the sequential order ( 0..len )
-        // of the item which defines the ID
+        // from_num(n) can get individual ID info by the sequential order of the table items
+        // from_num(0) gets the first items's ID info....
 
         // Gets ID string
         let id_str = id.to_str().to_owned();
@@ -43,7 +43,7 @@ fn table_test() -> DpResult<()> {
         // Gets item from table by ID
         let item = table2.get_by_id(id);
 
-        // Gets the ref ID of table1
+        // Gets the ref ID of the item
         let ref_id = item.ref_id_table1();
 
         // Gets the ref item's val
@@ -53,7 +53,7 @@ fn table_test() -> DpResult<()> {
         // We can also get ID info by ID string
         // let id = Table2TableID::from_str("item1");
         //
-        // Gets the ID's num
+        // Gets the ID's num (sequential order)
         // let num = id.to_num()
     }
 
@@ -63,6 +63,7 @@ fn table_test() -> DpResult<()> {
     for (_id, item) in mlist.iter(){
         let t1_ref = item.ref_table1();
         match item.ref_table2(){
+            // Nullable values may be null, so we use pattern match
             NullOr::Val(t2_ref) => println!("t1_ref val {} t2_ref's t1_ref val {}",
                                             t1_ref.val(), t2_ref.ref_table1().val()),
             NullOr::Null => println!("t1_ref val {} t2_ref Null", t1_ref.val())
@@ -74,13 +75,19 @@ fn table_test() -> DpResult<()> {
     // Let's mutate MList
     let mut mlist = root.mlist_mut();
 
-    // Let's collect IDs
+    // Let's collect ID numbers
     let ids : Vec<u64> = mlist.iter().map(|(id, _)| id).collect();
 
-    // You can get an item from MList by ID
+    // You can get an item from MList by the ID number
+    // ids[1] is the second item's ID number, so we can get the second item by get_mut(ids[1])
     let mut item = mlist.get_mut(ids[1]).unwrap();
 
-    // Sets the table1_ref
+    // Obviously, the list hasn't been changed yet.
+    // Initial values of the ID numbers are the same as the sequential order in default.
+    // The first item's ID is 0, the second is 1...
+    // ids[1] is 1, so you can write it as get_mut(1).
+
+    // Sets the ref-table1
     item.set_ref_table1(Table1TableID::Item1);
 
     // ref_table2 is nullable, so NullOr::Val is needed
