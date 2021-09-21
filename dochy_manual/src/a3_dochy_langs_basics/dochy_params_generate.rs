@@ -5,7 +5,8 @@ use dochy::intf::generate_interface;
 use crate::a3_dochy_langs_basics::dochy_params_accessor::RootIntf;
 
 #[test]
-fn dochy_params_generate() -> DpResult<()> {
+fn dochy_params_generate() -> DpResult<()> { // DpResult can handle every error type of Dochy
+
     // You can convert Dochy Src into RootObject with json_dir_to_root
     // RootObject is the object representation of Dochy Src
     let mut root_obj : RootObject = json_dir_to_root(
