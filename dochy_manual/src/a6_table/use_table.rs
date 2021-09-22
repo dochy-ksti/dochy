@@ -1,7 +1,6 @@
 use dochy::error::DpResult;
 use dochy::core::structs::{RootObject, NullOr};
 use dochy::core::json_dir_to_root;
-use dochy::intf::generate_interface;
 use crate::a6_table::table_accessor::{RootIntf, Table2TableID, Table1TableID};
 
 

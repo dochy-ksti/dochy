@@ -1,14 +1,14 @@
 use dochy::error::DpResult;
-use crate::a1_hello_world::hello_world_accessor::RootIntf;
 use dochy::fs::filesys::{save_dochy_file, SaveDirInfo, list_dochy_files, load_dochy_file};
 use dochy::fs::common::{CurrentSrc};
+use crate::b1_save_dochy_files::save_dochy_files_accessor::RootIntf;
 
 #[test]
 fn save_dochy_files_test() -> DpResult<()> {
     // Let's save and load Dochy File
 
     // Dochy has two file formats, Dochy File and Dochy History File.
-    // Dochy File is the simplest format of the two.
+    // Dochy File is the simplest format of the two, but unfortunately, it's not very simple,
 
     let save_dir = "src/b1_save_dochy_files/save_dir";
 
@@ -17,17 +17,19 @@ fn save_dochy_files_test() -> DpResult<()> {
 
     let src_dir = "src/b1_save_dochy_files/src_dir";
 
-    // You need SaveDirInfo to save Dochy-files.
-    // save_dir and src_dir's paths are needed to create SaveDirInfo.
+    // You need SaveDirInfo to save Dochy Files.
+    // We need save_dir and src_dir paths to create SaveDirInfo.
     let info = SaveDirInfo::create(save_dir, CurrentSrc::from_src_dir(src_dir))?;
-    //SaveDirInfo::create returns FsResult, which is the result type of the module dochy_fs.
-    //It's automatically converted to DpResult with ? operator.
-    //Every other result type is automatically converted to DpResult, so basically, users of this library only need DpResult.
 
-
-    // RootObject is created from Dochy-source. It can be cloned via SaveDirInfo
+    // SaveDirInfo has RootObject of the Dochy Src
+    // You can clone and modify it.
+    // RootObject is basically Arc, so cloning can be done instantly.
     let root = info.clone_src_root();
+
+    // Wraps RootObject with RootIntf as usual
     let mut root = RootIntf::new(root);
+
+    // modify the cloned RootObject
     root.set_message("Hello the next world".to_string());
 
     let _saved_path = save_dochy_file(

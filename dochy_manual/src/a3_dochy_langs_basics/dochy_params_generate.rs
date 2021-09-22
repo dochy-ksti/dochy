@@ -1,5 +1,5 @@
 use dochy::error::DpResult;
-use dochy::core::structs::RootObject;
+use dochy::core::structs::{RootObject, NullOr};
 use dochy::core::json_dir_to_root;
 use dochy::intf::generate_interface;
 use crate::a3_dochy_langs_basics::dochy_params_accessor::RootIntf;
@@ -16,7 +16,12 @@ fn dochy_params_generate() -> DpResult<()> { // DpResult can handle every error 
     // Validation is useful. You should validate your Dochy Src,
     // but do it twice is meaningless. I think the cost of validation is negligible, though.
 
-    // generate_interface analyzes RootObject and generate the source code to access the RootObject in Rust
+    // "json_dir_to_root" returns CoreResult, which is the result type of the module "dochy_core".
+    // It's automatically converted to DpResult with the "?" operator.
+    // In Dochy, every other result type is automatically converted to DpResult,
+    // so basically, users of this library only need DpResult.
+
+    // "generate_interface" analyzes RootObject and generate the source code to access the RootObject in Rust
     let source_file = generate_interface(&mut root_obj);
 
     // writes the source file as a Rust source file.
@@ -31,13 +36,12 @@ fn dochy_params_generate() -> DpResult<()> { // DpResult can handle every error 
 
 #[test]
 fn params_test() -> DpResult<()> {
-    // You validated Dochy Src when you generated the Rust source, so validation is not needed now.
+    // You validated Dochy Src when you generated the source code, so validation is not needed now.
     let root_obj : RootObject = json_dir_to_root("src/a3_dochy_langs_basics/dochy_params", false)?;
 
     // RootIntf is the struct created in the generated source code.
     // It's always named "RootIntf".
     let mut root = RootIntf::new(root_obj);
-
 
     // Let's get values
     let ival : i64 = root.int_value();
@@ -63,8 +67,8 @@ fn params_test() -> DpResult<()> {
     let _farray : &Vec<f64> = root.float_array();
     let _bin : &Vec<u8> = root.binary();
 
-    // Int, Float, Bool are copyable, but String and Vec are not.
-    // These types return reference
+    // Int, Float, and Bool are copyable, but String and Vec are not.
+    // These types return references
 
     // "def_val" also returns reference
     let str_def_val : &String = root.string_value_def_val();
@@ -79,12 +83,18 @@ fn params_test() -> DpResult<()> {
     assert_eq!(root.int_array(), &[10,20,30]);
 
     // You can get mutable references
-    let mut sval : &mut String = root.string_value_mut();
+    let sval : &mut String = root.string_value_mut();
     sval.push_str(" push");
 
     assert_eq!(root.string_value(), "New String push");
 
-    let mut bin : &mut Vec<u8> = root.binary_mut();
+    // You can use "match" to use nullable values,
+    match root.nullable_int2(){
+        NullOr::Val(v) => assert_eq!(v, 5),
+        NullOr::Null => {},
+    }
+
+    let bin : &mut Vec<u8> = root.binary_mut();
 
     // Dochy doesn't have f32 types currently.
     // Binary type can be a workaround
@@ -95,7 +105,7 @@ fn params_test() -> DpResult<()> {
         bin.set_len(400);
         // Unsafely created uninitialized 400-byte Vec<u8>
 
-        let mut slice : &mut [f32] = std::slice::from_raw_parts_mut(bin.as_mut_ptr() as *mut f32, 100);
+        let slice : &mut [f32] = std::slice::from_raw_parts_mut(bin.as_mut_ptr() as *mut f32, 100);
 
         // regarded the 400-byte Vec<u8> as a mutable [f32] slice with 100 length.
 
@@ -117,7 +127,7 @@ fn params_test() -> DpResult<()> {
         // Normal allocators should allocate Vec to 8-byte alignment, but I believe it's not guaranteed,
         // so this code is technically invalid...?
 
-        // Dochy doesn't support transfer data to the system with different endianness currently
+        // Transferring data to the system with different endianness can be a problem for this kind of techniques.
     }
 
     Ok(())
