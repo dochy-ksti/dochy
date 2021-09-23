@@ -91,15 +91,7 @@ impl<'a, V : From<MItemPtr>> MListMut<'a, V>{
         MListIterMut::new(
             self.ptr.iter_mut(), self)
     }
-    pub fn iter_from_last(&mut self) -> MListIterMut<V>{
-        MListIterMut::new(
-            self.ptr.iter_from_last_mut(), self)
-    }
-    pub fn iter_from_id(&mut self, id : u64) -> Option<MListIterMut<V>>{
-        self.ptr.iter_from_id_mut(id).map(
-            move |iter|
-                MListIterMut::new(iter, self))
-    }
+
 }
 
 unsafe impl<'a, V> Send for MItemMut<'a, V>{}

@@ -1,5 +1,5 @@
 use dochy::error::DpResult;
-use dochy::core::structs::{RootObject, NullOr};
+use dochy::core::structs::{RootObject, NullOr, UndefOr, Qv};
 use dochy::core::json_dir_to_root;
 use dochy::intf::generate_interface;
 use crate::a3_dochy_langs_basics::dochy_params_accessor::RootIntf;
@@ -91,7 +91,20 @@ fn params_test() -> DpResult<()> {
     // You can use "match" to use nullable values,
     match root.nullable_int2(){
         NullOr::Val(v) => assert_eq!(v, 5),
-        NullOr::Null => {},
+        NullOr::Null => {assert!(false)},
+    }
+
+    // "undefiable" value
+    match root.undefiable_int(){
+        UndefOr::Val(_) => { assert!(false)},
+        UndefOr::Undefined =>{},
+    }
+
+    // Both "undefiable" and "nullable". Qv stands for "qualified value" (but I don't know why I named that)
+    match root.undef_nullable_int(){
+        Qv::Val(v) =>{ assert_eq!(v, 2) },
+        Qv::Null =>{assert!(false)},
+        Qv::Undefined =>{assert!(false)},
     }
 
     let bin : &mut Vec<u8> = root.binary_mut();

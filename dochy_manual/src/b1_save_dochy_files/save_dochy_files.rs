@@ -21,7 +21,7 @@ fn save_dochy_files_test() -> DpResult<()> {
     // We need save_dir and src_dir paths to create SaveDirInfo.
     let info = SaveDirInfo::create(save_dir, CurrentSrc::from_src_dir(src_dir))?;
 
-    // SaveDirInfo has RootObject of the Dochy Src
+    // SaveDirInfo has RootObject of the CurrentSrc
     // You can clone and modify it.
     // RootObject is basically Arc, so cloning can be done instantly.
     let root = info.clone_src_root();
@@ -32,6 +32,7 @@ fn save_dochy_files_test() -> DpResult<()> {
     // modify the cloned RootObject
     root.set_message("Hello the next world".to_string());
 
+    // SaveDirInfo, filename and RootObject are needed for saving
     let _saved_path = save_dochy_file(
         &info,
         "next_world.dochy",
