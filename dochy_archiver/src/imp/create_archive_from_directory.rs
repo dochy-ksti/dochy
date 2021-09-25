@@ -53,9 +53,9 @@ pub enum CreateArchiveFromDirectory{
 /// }
 ///```
 pub fn create_archive_from_directory<P : AsRef<Path>, W : Write>(dir_path: P,
-                                                      write : &mut W,
-                                                      cancel_by_hash : impl Fn(u128)->bool,
-                                                      opt : &ArchiveOptions) -> ArcResult<CreateArchiveFromDirectory>{
+                                                                 write : &mut W,
+                                                                 cancel_by_hash : impl Fn(u128)->bool,
+                                                                 opt : &ArchiveOptions) -> ArcResult<CreateArchiveFromDirectory>{
     let mut written_bytes : u64 = 0;
 
     let dir_path = dir_path.as_ref();
