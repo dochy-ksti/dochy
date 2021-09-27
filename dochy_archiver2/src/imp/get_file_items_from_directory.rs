@@ -1,6 +1,6 @@
 use std::path::Path;
 use crate::{ArcResult, ArchiveOptions};
-use crate::imp::structs::file_item::FileItem;
+use crate::imp::structs::file_item_b::FileItem;
 
 pub(crate) fn get_file_items_from_directory<P : AsRef<Path>>(path : P, opt : &ArchiveOptions) -> ArcResult<Vec<FileItem>>{
     let mut r : Vec<FileItem> = vec![];

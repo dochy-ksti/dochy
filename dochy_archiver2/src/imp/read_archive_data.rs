@@ -1,8 +1,8 @@
 use std::io::Read;
-use crate::imp::structs::metadata::Metadata;
+use crate::imp::structs::metadata_b::Metadata;
 use crate::ArcResult;
 use std::collections::{BTreeMap};
-use crate::imp::structs::archive_data::ArchiveData;
+use crate::imp::structs::archive_data_b::ArchiveData;
 use with_capacity_safe::vec_with_capacity_safe;
 
 

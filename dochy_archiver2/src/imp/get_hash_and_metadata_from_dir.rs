@@ -1,5 +1,5 @@
 use std::path::Path;
-use crate::imp::structs::metadata::Metadata;
+use crate::imp::structs::metadata_b::Metadata;
 use crate::imp::get_file_items_from_directory::get_file_items_from_directory;
 use crate::{ArcResult, ArchiveOptions};
 

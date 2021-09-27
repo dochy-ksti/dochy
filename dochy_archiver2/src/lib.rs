@@ -19,10 +19,10 @@ pub use imp::get_hash_and_metadata_from_archive::get_hash_and_metadata_from_arch
 
 pub use imp::resume_archive::resume_archive;
 
-pub use imp::structs::metadata::Metadata;
-pub use imp::structs::metadata_item::MetadataItem;
+pub use imp::structs::metadata_b::Metadata;
+pub use imp::structs::metadata_item_b::MetadataItem;
 pub use imp::create_archive_from_directory::CreateArchiveFromDirectory;
-pub use imp::structs::archive_data::ArchiveData;
+pub use imp::structs::archive_data_b::ArchiveData;
 
 
 pub use imp::structs::archive_options::ArchiveOptions;
