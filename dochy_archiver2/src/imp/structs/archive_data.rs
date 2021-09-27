@@ -1,5 +1,7 @@
+use std::collections::BTreeMap;
+
 pub struct ArchiveData<T>{
-    btree : BTreemap<String, ArchiveDataItem<T>>,
+    btree : BTreeMap<String, ArchiveDataItem<T>>,
     hash : u128,
 }
 

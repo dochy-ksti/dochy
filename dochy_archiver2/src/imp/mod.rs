@@ -7,4 +7,3 @@ pub(crate) mod get_hash_and_metadata_from_dir;
 pub(crate) mod get_hash_and_metadata_from_archive;
 pub(crate) mod resume_archive;
 pub mod create_archive_data_from_dir;
-pub mod archive;
