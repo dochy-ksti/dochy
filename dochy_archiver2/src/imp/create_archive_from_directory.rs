@@ -1,38 +1,45 @@
-// use std::path::{Path};
-// use crate::{ArcResult, ArchiveOptions};
-// use std::io::{Write};
-// use std::fs::File;
-// use crate::imp::get_hash_and_metadata_from_dir::{get_hash_metadata_and_bytes};
-//
-// pub enum CreateArchiveFromDirectory{
-//     Canceled(u128),
-//     WrittenSuccessfully(u64, u128)
-// }
-//
-//
-// pub fn create_archive_from_directory<P : AsRef<Path>, W : Write>(dir_path: P,
-//                                                                  write : &mut W,
-//                                                                  cancel_by_hash : impl Fn(u128)->bool,
-//                                                                  opt : &ArchiveOptions) -> ArcResult<CreateArchiveFromDirectory>{
-//     let mut written_bytes : u64 = 0;
-//
-//     let dir_path = dir_path.as_ref();
-//
-//     let (hash, meta, bytes) = get_hash_metadata_and_bytes(dir_path, opt)?;
-//     if cancel_by_hash(hash){
-//         return Ok(CreateArchiveFromDirectory::Canceled(hash));
-//     }
-//     written_bytes += bytes.len() as u64;
-//     write.write_all(&bytes)?;
-//
-//     let mut encoder = snap::write::FrameEncoder::new(write);
-//
-//     for item in meta.items(){
-//         let path = item.calc_full_path(dir_path);
-//         let mut file = File::open(&path)?;
-//         let bytes = std::io::copy(&mut file, &mut encoder)?;
-//         written_bytes += bytes;
-//     }
-//     //encoderがout of scopeになって自動的にflushされる(はず
-//     Ok(CreateArchiveFromDirectory::WrittenSuccessfully(written_bytes, hash))
-// }
+use std::path::Path;
+use crate::{ArcResult, ArchiveOptions};
+use crate::imp::structs::archiver::Archiver;
+use std::sync::Arc;
+use std::collections::BTreeSet;
+use crate::imp::structs::archive_data::ArchiveData;
+
+pub(crate) fn create_archive_data_from_directory<
+    P : AsRef<Path>,
+    T : Send + 'static>(path : P,
+                        converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync>,
+                        opt : &ArchiveOptions) -> ArcResult<ArchiveData<T>>{
+    let mut btree : BTreeSet<String> = BTreeSet::new();
+    get_paths_from_dir(path, opt, &mut btree)?;
+
+    let mut archiver = Archiver::new(converter);
+
+    for path in btree {
+        let data = std::fs::read(&path)?;
+        archiver.archive(path, data);
+    }
+    archiver.finish()
+}
+
+fn get_paths_from_dir<P : AsRef<Path>>(current_path : P, opt : &ArchiveOptions, btree : &mut BTreeSet<String>) -> ArcResult<()>{
+    let dirs = std::fs::read_dir(current_path)?;
+
+    for dir in dirs {
+        let de = dir?;
+
+        let meta = de.metadata()?;
+        if meta.is_file() {
+            let path = de.path();
+            let ext = path.extension().map_or("", |e| e.to_str().unwrap_or(""));
+            if opt.is_archived(ext){
+                btree.insert(path.to_string_lossy().to_string());
+            }
+        } else if meta.is_dir(){
+            if opt.archive_subfolders(){
+                get_paths_from_dir(de.path(), opt, btree)?;
+            }
+        }
+    }
+    Ok(())
+}

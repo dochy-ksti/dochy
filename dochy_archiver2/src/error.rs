@@ -46,7 +46,6 @@ impl From<NoneError> for NouArcError{
     }
 }
 
-
 impl From<anyhow::Error> for NouArcError{
     fn from(e: anyhow::Error) -> Self {
         Self::new(e)
@@ -63,7 +62,6 @@ impl From<StripPrefixError> for NouArcError{
     }
 }
 
-
 impl From<std::io::Error> for NouArcError{
     fn from(e : std::io::Error) -> Self { Self::new(e) }
 }
@@ -74,4 +72,12 @@ impl From<WcsError> for NouArcError{
 
 impl From<std::string::FromUtf8Error> for NouArcError{
     fn from(e : std::string::FromUtf8Error) -> Self { Self::new(e) }
+}
+
+impl From<std::sync::mpsc::RecvError> for NouArcError{
+    fn from(e : std::sync::mpsc::RecvError) -> Self { Self::new(e) }
+}
+
+impl From<&str> for NouArcError{
+    fn from(e : &str) -> Self { Self::new(anyhow!("{}", e)) }
 }

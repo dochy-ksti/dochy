@@ -23,7 +23,8 @@ pub type ArcResult<T> = std::result::Result<T, crate::error::NouArcError>;
 // pub use imp::structs::metadata_item_b::MetadataItem;
 // pub use imp::create_archive_from_directory::CreateArchiveFromDirectory;
 // pub use imp::structs::archive_data_b::ArchiveData;
-//
-//
-// pub use imp::structs::archive_options::ArchiveOptions;
-// pub use imp::structs::archive_options::ArchiveOptionsBuilder;
+
+pub use imp::structs::archive_options::ArchiveOptions;
+pub use imp::structs::archive_options::ArchiveOptionsBuilder;
+
+pub use imp::structs::archive_data::ArchiveData;
