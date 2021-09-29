@@ -16,7 +16,6 @@ pub(crate) struct Archiver<T : Send + 'static>{
 pub(crate) struct ArchiverItem<T : Send + 'static>{
     path : String,
     raw_data : Arc<Vec<u8>>,
-    compressed : Receiver<Vec<u8>>,
     processed : Receiver<T>,
 }
 
@@ -48,19 +47,18 @@ impl<T : Send + 'static> Archiver<T>{
             sender.send(t).unwrap();
         });
 
-        let (sender, compressed) = mpsc::channel();
-        let d = data.clone();
-
-        rayon::spawn(move ||{
-            let mut encoder = snap::raw::Encoder::new();
-            let vec = encoder.compress_vec(d.as_slice()).unwrap();
-            sender.send(vec).unwrap();
-        });
+        // let (sender, compressed) = mpsc::channel();
+        // let d = data.clone();
+        //
+        // rayon::spawn(move ||{
+        //     let mut encoder = snap::raw::Encoder::new();
+        //     let vec = encoder.compress_vec(d.as_slice()).unwrap();
+        //     sender.send(vec).unwrap();
+        // });
 
         self.data_receivers.push(ArchiverItem{
             path,
             raw_data : data,
-            compressed,
             processed
         });
     }
@@ -69,11 +67,10 @@ impl<T : Send + 'static> Archiver<T>{
         let mut btree : BTreeMap<String, ArchiveDataItem<T>> = BTreeMap::new();
         let hash = self.hash_receiver.recv()?;
         for item in self.data_receivers {
-            let compressed = item.compressed.recv()?;
+
             let processed = item.processed.recv()?;
             let path = item.path;
-            let raw_data = Arc::try_unwrap(item.raw_data).or(Err("Arc is using"))?;
-            let item = ArchiveDataItem::new(processed, compressed, raw_data);
+            let item = ArchiveDataItem::new(processed, item.raw_data);
 
             btree.insert(path, item);
         }

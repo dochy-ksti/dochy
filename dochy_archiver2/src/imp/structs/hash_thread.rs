@@ -30,7 +30,7 @@ impl HashThread{
         let hasher = self.hasher.clone();
         let sender = self.sender.clone();
         self.thread.spawn_fifo(move ||{
-            let mut locked = hasher.lock().unwrap();
+            let locked = hasher.lock().unwrap();
             let (l,r) = locked.finish128();
             let mut r = u128::from(r);
             r |= (l as u128) << 64;

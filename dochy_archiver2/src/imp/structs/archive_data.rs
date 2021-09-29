@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::sync::Arc;
 
 pub struct ArchiveData<T : Send + 'static>{
     btree : BTreeMap<String, ArchiveDataItem<T>>,
@@ -7,8 +8,7 @@ pub struct ArchiveData<T : Send + 'static>{
 
 pub struct ArchiveDataItem<T : Send + 'static>{
     converted_data : T,
-    compressed_data : Vec<u8>,
-    raw_data : Vec<u8>,
+    raw_data : Arc<Vec<u8>>,
 }
 
 impl<T : Send + 'static> ArchiveData<T>{
@@ -24,17 +24,14 @@ impl<T : Send + 'static> ArchiveData<T>{
 
 impl<T : Send + 'static> ArchiveDataItem<T>{
     pub fn new(converted_data : T,
-               compressed_data : Vec<u8>,
-               raw_data : Vec<u8>) -> ArchiveDataItem<T>{
+               raw_data : Arc<Vec<u8>>) -> ArchiveDataItem<T>{
         ArchiveDataItem{
             converted_data,
-            compressed_data,
             raw_data,
         }
     }
 
     pub fn converted_data(&self) -> &T{ &self.converted_data }
-    pub(crate) fn compressed_data(&self) -> &[u8]{ &self.compressed_data }
-    pub fn raw_data(&self) -> &[u8]{ &self.raw_data }
-    pub fn deconstruct(self) -> (T, Vec<u8>){ (self.converted_data, self.raw_data) }
+    pub fn raw_data(&self) -> &Arc<Vec<u8>>{ &self.raw_data }
+    pub fn deconstruct(self) -> (T, Arc<Vec<u8>>){ (self.converted_data, self.raw_data) }
 }
