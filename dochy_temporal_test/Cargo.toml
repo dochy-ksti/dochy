@@ -9,3 +9,6 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 # dochy_core = { path="../dochy_core" }
 dochy = { path="../../dochy" }
+bitvec = "0.22.3"
+rand = "0.8.4"
+rayon = "1.5.1"
