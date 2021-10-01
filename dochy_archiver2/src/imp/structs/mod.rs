@@ -1,4 +1,5 @@
-pub(crate) mod archive_options;
+pub mod archive_options;
 pub mod archive_data;
 pub mod archiver;
-pub(crate) mod hash_thread;
+pub mod hash_thread;
+pub mod arc_write_item;

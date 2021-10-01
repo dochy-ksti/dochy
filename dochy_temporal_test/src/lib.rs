@@ -12,6 +12,6 @@ extern crate test;
 // #[allow(dead_code)]
 // mod mlist_mut;
 
-#[cfg(test)]
-mod benchan;
+// #[cfg(test)]
+// mod benchan;
 
