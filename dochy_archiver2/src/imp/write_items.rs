@@ -18,8 +18,8 @@ pub(crate) fn write_items<W : Write>(items : BTreeMap<String, Vec<u8>>, writer :
 
     dochy_compaction::encode(&kvals, writer)?;
 
-    for comp in comps{
-        writer.write_all(&comp);
+    for comp in &comps{
+        writer.write_all(comp);
     }
 
     Ok(())

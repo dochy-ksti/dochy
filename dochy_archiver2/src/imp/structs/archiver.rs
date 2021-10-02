@@ -67,7 +67,6 @@ impl<T : Send + 'static> Archiver<T>{
         let mut btree : BTreeMap<String, ArchiveDataItem<T>> = BTreeMap::new();
         let hash = self.hash_receiver.recv()?;
         for item in self.data_receivers {
-
             let processed = item.processed.recv()?;
             let path = item.path;
             let item = ArchiveDataItem::new(processed, item.raw_data);
