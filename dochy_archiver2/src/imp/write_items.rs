@@ -12,10 +12,15 @@ pub(crate) fn write_items<W : Write>(items : BTreeMap<String, Vec<u8>>, writer :
     kvals.push(comp_int(items.len() as i64));
     for (path, compressed) in items{
         kvals.push(comp_str(path));
-        kvals.push(KVal::Binary(compressed));
+        kvals.push(comp_int(compressed.len() as i64));
+        comps.push(compressed);
     }
 
     dochy_compaction::encode(&kvals, writer)?;
+
+    for comp in comps{
+        writer.write_all(&comp);
+    }
 
     Ok(())
 }
