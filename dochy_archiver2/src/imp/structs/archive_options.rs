@@ -10,7 +10,7 @@ pub struct ArchiveOptions {
 
 impl ArchiveOptions {
 
-    /// If the file with the extension is archived
+    /// If the file with the extension is archived. true if "extension" is empty
     pub fn is_archived(&self, extension : &str) -> bool{
         if self.extensions_archived.len() == 0{
             true

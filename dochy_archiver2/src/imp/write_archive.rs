@@ -18,17 +18,17 @@ pub fn write_archive<W : Write, T : Send + 'static>(data : &ArchiveData<T>, writ
              let mut encoder = snap::raw::Encoder::new();
              match encoder.compress_vec(raw_data.as_slice()){
                  Ok(compressed) => {
-                     sender.send(Ok((key, compressed))).unwrap();
+                     sender.send(Ok((key, compressed))).ok();
                  },
                  Err(e) =>{
-                     sender.send(Err(e.into())).unwrap();
+                     sender.send(Err(e.into())).ok();
                  }
              }
          })
     }
 
     for _ in 0..data.btree().len(){
-        let (path, compressed) = receiver.recv().unwrap()?;
+        let (path, compressed) = receiver.recv()??;
         items.insert(path, compressed);
     }
 

@@ -2,10 +2,11 @@ use std::hash::Hasher;
 use metrohash::MetroHash128;
 use std::sync::{Arc};
 use std::sync::mpsc::{Sender, channel, Receiver};
+use crate::ArcResult;
 
 pub(crate) struct HashThread{
     vec_sender : Sender<Option<Arc<Vec<u8>>>>,
-    result_receiver : Receiver<u128>,
+    result_receiver : Receiver<ArcResult<u128>>,
 }
 
 impl HashThread{
@@ -15,16 +16,17 @@ impl HashThread{
         std::thread::spawn(move || {
             let mut hasher = MetroHash128::new();
             loop{
-                match vec_receiver.recv().unwrap(){
-                    Some(v) =>{
+                match vec_receiver.recv(){
+                    Ok(Some(v)) =>{
                         let v : Arc<Vec<u8>> = v;
                         hasher.write(v.as_ref())
                     },
-                    None => break,
+                    Ok(None) => break,
+                    Err(e) =>{ result_sender.send(Err(e.into())).ok(); return; }
                 }
             }
             let (l,r) = hasher.finish128();
-            result_sender.send(to_u128(l,r)).unwrap();
+            result_sender.send(Ok(to_u128(l,r))).ok();
         });
         HashThread{
             vec_sender,
@@ -33,12 +35,12 @@ impl HashThread{
     }
 
     pub fn calc_hash(&mut self, vec : Arc<Vec<u8>>){
-        self.vec_sender.send(Some(vec)).unwrap();
+        self.vec_sender.send(Some(vec)).ok();
     }
 
-    pub fn finish(&self) -> u128{
-        self.vec_sender.send(None).unwrap();
-        self.result_receiver.recv().unwrap()
+    pub fn finish(&self) -> ArcResult<u128>{
+        self.vec_sender.send(None).ok();
+        Ok(self.result_receiver.recv()??)
     }
 }
 

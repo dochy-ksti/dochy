@@ -29,15 +29,19 @@ pub fn read_archive<R : Read, T : Send + 'static>(converter : impl Fn(&[u8]) -> 
     std::thread::spawn(move ||{
         let mut archiver = Archiver::new(converter);
         for (path, data) in raw_receivers{
-            match data.recv().unwrap(){
-                Ok(v) =>{ archiver.archive(path, v); },
+            match data.recv(){
+                Ok(Ok(v)) =>{ archiver.archive(path, v) },
+                Ok(Err(e)) =>{
+                    archive_sender.send(Err(e)).ok();
+                    return;
+                }
                 Err(e) => {
-                    archive_sender.send(Err(e)).unwrap();
+                    archive_sender.send(Err(e.into())).ok();
                     return;
                 }
             }
         }
-        archive_sender.send(archiver.finish()).unwrap();
+        archive_sender.send(archiver.finish()).ok();
     });
     for (len, raw_sender) in raw_senders {
         let mut buf = vec_with_capacity_safe(len)?;
@@ -47,12 +51,12 @@ pub fn read_archive<R : Read, T : Send + 'static>(converter : impl Fn(&[u8]) -> 
         rayon::spawn_fifo(move ||{
             let mut decoder = snap::raw::Decoder::new();
             match decoder.decompress_vec(&buf) {
-                Ok(v) => raw_sender.send(Ok(v)).unwrap(),
-                Err(e) => raw_sender.send(Err(e.into())).unwrap(),
-            }
-        })
+                Ok(v) => raw_sender.send(Ok(v)).ok(),
+                Err(e) => raw_sender.send(Err(e.into())).ok(),
+            };
+        });
     }
 
 
-    archive_receiver.recv().unwrap()
+    archive_receiver.recv()?
 }

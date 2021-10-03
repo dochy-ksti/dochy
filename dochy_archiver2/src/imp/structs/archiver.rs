@@ -41,7 +41,7 @@ impl<T : Send + 'static> Archiver<T>{
         let d = data.clone();
         rayon::spawn(move ||{
             let t = converter(d.as_ref());
-            sender.send(t).unwrap();
+            sender.send(t).ok();
         });
 
         self.data_receivers.push(ArchiverItem{
@@ -61,7 +61,7 @@ impl<T : Send + 'static> Archiver<T>{
 
             btree.insert(path, item);
         }
-        let hash = self.hash_thread.finish();
+        let hash = self.hash_thread.finish()?;
 
         Ok(ArchiveData::new(btree, hash))
     }

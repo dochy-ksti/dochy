@@ -78,6 +78,10 @@ impl From<std::sync::mpsc::RecvError> for NouArcError{
     fn from(e : std::sync::mpsc::RecvError) -> Self { Self::new(e) }
 }
 
+impl<T> From<std::sync::mpsc::SendError<T>> for NouArcError{
+    fn from(e : std::sync::mpsc::SendError<T>) -> Self { Self::new(anyhow!("{}", e)) }
+}
+
 impl From<&str> for NouArcError{
     fn from(e : &str) -> Self { Self::new(anyhow!("{}", e)) }
 }
