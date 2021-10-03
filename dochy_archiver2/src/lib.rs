@@ -1,5 +1,6 @@
 #![feature(test)]
 #![feature(try_trait)]
+#![feature(once_cell)]
 extern crate test;
 
 mod imp;

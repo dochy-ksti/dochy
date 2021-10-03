@@ -4,13 +4,13 @@ use crate::ArcResult;
 
 #[derive(Debug, Clone)]
 pub struct ArchiveOptions {
-    extensions_archived : HashSet<String>,
-    archive_subfolders : bool,
+    pub(crate) extensions_archived : HashSet<String>,
+    pub(crate) archive_subfolders : bool,
 }
 
 impl ArchiveOptions {
 
-    /// If the file with the extension is archived?
+    /// If the file with the extension is archived
     pub fn is_archived(&self, extension : &str) -> bool{
         if self.extensions_archived.len() == 0{
             true
@@ -25,7 +25,7 @@ impl ArchiveOptions {
     /// construct with the default values.
     /// In the default configuration, every file is archived in the folder and the subfolders.
     pub fn new() -> ArchiveOptions {
-        Self::from(Default::default()).unwrap()
+        ArchiveOptionsBuilder::new().build().unwrap()
     }
 
     /// Construct ArchiveOptions from the builder
@@ -44,16 +44,28 @@ impl ArchiveOptions {
 
 ///Construct ArchiveOptions
 #[derive(Debug, Clone)]
-pub struct ArchiveOptionsBuilder<'a> {
-    pub extensions_archived : Vec<&'a str>,
-    pub archive_subfolders : bool,
+pub struct ArchiveOptionsBuilder {
+    extensions_archived : HashSet<String>,
+    archive_subfolders : bool,
 }
 
-impl<'a> Default for ArchiveOptionsBuilder<'a> {
-    fn default() -> Self {
-        Self{
-            extensions_archived : vec![],
-            archive_subfolders : true,
+impl ArchiveOptionsBuilder{
+    pub fn new() -> ArchiveOptionsBuilder{
+        ArchiveOptionsBuilder{
+            extensions_archived : HashSet::new(),
+            archive_subfolders : true
         }
+    }
+    pub fn add_extension(mut self, ext : &str) -> ArchiveOptionsBuilder{
+        self.extensions_archived.insert(ext.to_string());
+        self
+    }
+    pub fn archive_subfolders(mut self, archive_subfolders : bool) -> ArchiveOptionsBuilder{
+        self.archive_subfolders = archive_subfolders;
+        self
+    }
+
+    pub fn build(self) -> ArcResult<ArchiveOptions>{
+        ArchiveOptions::from(self)
     }
 }

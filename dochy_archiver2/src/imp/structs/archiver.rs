@@ -44,15 +44,6 @@ impl<T : Send + 'static> Archiver<T>{
             sender.send(t).unwrap();
         });
 
-        // let (sender, compressed) = mpsc::channel();
-        // let d = data.clone();
-        //
-        // rayon::spawn(move ||{
-        //     let mut encoder = snap::raw::Encoder::new();
-        //     let vec = encoder.compress_vec(d.as_slice()).unwrap();
-        //     sender.send(vec).unwrap();
-        // });
-
         self.data_receivers.push(ArchiverItem{
             path,
             raw_data : data,
@@ -62,7 +53,6 @@ impl<T : Send + 'static> Archiver<T>{
 
     pub fn finish(self) -> ArcResult<ArchiveData<T>>{
         let mut btree : BTreeMap<String, ArchiveDataItem<T>> = BTreeMap::new();
-        let hash = self.hash_thread.finish();
 
         for item in self.data_receivers {
             let processed = item.processed.recv()?;
@@ -71,6 +61,8 @@ impl<T : Send + 'static> Archiver<T>{
 
             btree.insert(path, item);
         }
+        let hash = self.hash_thread.finish();
+
         Ok(ArchiveData::new(btree, hash))
     }
 }
