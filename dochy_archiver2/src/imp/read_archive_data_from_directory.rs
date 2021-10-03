@@ -5,7 +5,7 @@ use std::sync::Arc;
 use std::collections::BTreeSet;
 use crate::imp::structs::archive_data::ArchiveData;
 
-pub(crate) fn create_archive_data_from_directory<
+pub fn read_archive_data_from_directory<
     P : AsRef<Path>,
     T : Send + 'static>(path : P,
                         converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync>,

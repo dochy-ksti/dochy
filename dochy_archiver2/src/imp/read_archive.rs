@@ -2,20 +2,13 @@ use std::io::Read;
 use crate::{ArchiveData, ArcResult};
 use with_capacity_safe::vec_with_capacity_safe;
 use std::sync::mpsc::{channel, Receiver, Sender};
-use crate::imp::decode::decode;
 use crate::imp::structs::archiver::Archiver;
-use std::collections::BTreeMap;
-use dochy_compaction::kval_enum::KVal;
-use std::intrinsics::maxnumf32;
 use std::sync::Arc;
 
 
-pub(crate) struct ReadItem{
-    pub(crate) path : String,
-    pub(crate) receiver : Receiver<Vec<u8>>,
-}
 
-pub(crate) fn read_archive<R : Read, T : Send + 'static>(converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync>, r : &mut R) -> ArcResult<ArchiveData<T>> {
+
+pub fn read_archive<R : Read, T : Send + 'static>(converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync>, r : &mut R) -> ArcResult<ArchiveData<T>> {
     let (kvals, _) = dochy_compaction::decode(r)?;
 
     let mut iter = kvals.into_iter();
@@ -40,12 +33,12 @@ pub(crate) fn read_archive<R : Read, T : Send + 'static>(converter : Arc<dyn Fn(
             match data.recv().unwrap(){
                 Ok(v) =>{ archiver.archive(path, v); },
                 Err(e) => {
-                    archive_sender.send(Err(e));
+                    archive_sender.send(Err(e)).unwrap();
                     return;
                 }
             }
         }
-        archive_sender.send(archiver.finish())
+        archive_sender.send(archiver.finish()).unwrap();
     });
     for (len, raw_sender) in raw_senders {
         let mut buf = vec_with_capacity_safe(len)?;

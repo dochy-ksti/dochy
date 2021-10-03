@@ -8,7 +8,6 @@ use crate::ArcResult;
 
 pub(crate) struct Archiver<T : Send + 'static>{
     hash_thread : HashThread,
-    hash_receiver :Receiver<u128>,
     converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync>,
     data_receivers : Vec<ArchiverItem<T>>,
 }
@@ -23,12 +22,10 @@ pub(crate) struct ArchiverItem<T : Send + 'static>{
 impl<T : Send + 'static> Archiver<T>{
 
     pub fn new(f : Arc<dyn Fn(&[u8]) -> T + Send + Sync>) -> Archiver<T>{
-        let (sender, receiver) = mpsc::channel();
-        let hash_thread = HashThread::new(sender);
 
+        let hash_thread = HashThread::new();
         Archiver{
             hash_thread,
-            hash_receiver : receiver,
             converter : f,
             data_receivers : Vec::new(),
         }
@@ -65,7 +62,8 @@ impl<T : Send + 'static> Archiver<T>{
 
     pub fn finish(self) -> ArcResult<ArchiveData<T>>{
         let mut btree : BTreeMap<String, ArchiveDataItem<T>> = BTreeMap::new();
-        let hash = self.hash_receiver.recv()?;
+        let hash = self.hash_thread.finish();
+
         for item in self.data_receivers {
             let processed = item.processed.recv()?;
             let path = item.path;

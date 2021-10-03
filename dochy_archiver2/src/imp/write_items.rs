@@ -1,4 +1,3 @@
-use crate::imp::structs::arc_write_item::ArcWriteItem;
 use crate::ArcResult;
 use std::io::Write;
 use dochy_compaction::kval_enum::KVal;
@@ -19,7 +18,7 @@ pub(crate) fn write_items<W : Write>(items : BTreeMap<String, Vec<u8>>, writer :
     dochy_compaction::encode(&kvals, writer)?;
 
     for comp in &comps{
-        writer.write_all(comp);
+        writer.write_all(comp)?;
     }
 
     Ok(())

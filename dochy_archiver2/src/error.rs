@@ -85,3 +85,7 @@ impl From<&str> for NouArcError{
 impl From<String> for NouArcError{
     fn from(e : String) -> Self { Self::new(anyhow!("{}", e)) }
 }
+
+impl From<snap::Error> for NouArcError{
+    fn from(e : snap::Error) -> Self { Self::new(e) }
+}

@@ -1,15 +1,12 @@
 use crate::{ArchiveData, ArcResult};
-use dochy_compaction::kval_enum::KVal;
 use std::collections::BTreeMap;
 use std::sync::mpsc::{channel, Sender};
-use dochy_compaction::basic_compaction::{comp_str, comp_int};
 use std::io::Write;
-use crate::imp::structs::arc_write_item::ArcWriteItem;
 use crate::imp::write_items::write_items;
 
 
-pub fn write_archive<W : Write, T : Send + 'static>(writer : &mut W, data : ArchiveData<T>) -> ArcResult<()>{
-    let mut items : BTreeMap<String, Vec<u8>> = BTreeMap::new();;
+pub fn write_archive<W : Write, T : Send + 'static>(data : ArchiveData<T>, writer : &mut W) -> ArcResult<()>{
+    let mut items : BTreeMap<String, Vec<u8>> = BTreeMap::new();
 
     let (sender , receiver) = channel();
 
@@ -24,7 +21,7 @@ pub fn write_archive<W : Write, T : Send + 'static>(writer : &mut W, data : Arch
                      sender.send(Ok((key, compressed))).unwrap();
                  },
                  Err(e) =>{
-                     sender.send(Err(format!("{}", e)).into());
+                     sender.send(Err(e.into())).unwrap();
                  }
              }
          })

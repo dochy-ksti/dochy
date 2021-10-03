@@ -1,40 +1,49 @@
 use std::hash::Hasher;
 use metrohash::MetroHash128;
-use std::sync::{Arc, Mutex};
-use std::sync::mpsc::Sender;
+use std::sync::{Arc};
+use std::sync::mpsc::{Sender, channel, Receiver};
 
 pub(crate) struct HashThread{
-    thread : rayon::ThreadPool,
-    hasher : Arc<Mutex<MetroHash128>>,
-    sender : Sender<u128>,
+    vec_sender : Sender<Option<Arc<Vec<u8>>>>,
+    result_receiver : Receiver<u128>,
 }
 
 impl HashThread{
-    pub fn new(sender : Sender<u128>) -> HashThread{
+    pub fn new() -> HashThread{
+        let (vec_sender, vec_receiver) = channel();
+        let (result_sender, result_receiver) = channel();
+        std::thread::spawn(move || {
+            let mut hasher = MetroHash128::new();
+            loop{
+                match vec_receiver.recv().unwrap(){
+                    Some(v) =>{
+                        let v : Arc<Vec<u8>> = v;
+                        hasher.write(v.as_ref())
+                    },
+                    None => break,
+                }
+            }
+            let (l,r) = hasher.finish128();
+            result_sender.send(to_u128(l,r)).unwrap();
+        });
         HashThread{
-            thread : rayon::ThreadPoolBuilder::new().num_threads(1).build().unwrap(),
-            hasher : Arc::new(Mutex::new(MetroHash128::new())),
-            sender,
+            vec_sender,
+            result_receiver,
         }
     }
 
     pub fn calc_hash(&mut self, vec : Arc<Vec<u8>>){
-        let hasher = self.hasher.clone();
-        self.thread.spawn_fifo(move ||{
-            let mut locked = hasher.lock().unwrap();
-            locked.write(vec.as_ref())
-        })
+        self.vec_sender.send(Some(vec)).unwrap();
     }
 
-    pub fn finish(&mut self){
-        let hasher = self.hasher.clone();
-        let sender = self.sender.clone();
-        self.thread.spawn_fifo(move ||{
-            let locked = hasher.lock().unwrap();
-            let (l,r) = locked.finish128();
-            let mut r = u128::from(r);
-            r |= (l as u128) << 64;
-            sender.send(r).unwrap();
-        })
+    pub fn finish(&self) -> u128{
+        self.vec_sender.send(None).unwrap();
+        self.result_receiver.recv().unwrap()
     }
+}
+
+fn to_u128(l : u64, r : u64) -> u128{
+    let mut r = u128::from(r);
+    r |= (l as u128) << 64;
+    r
 }
