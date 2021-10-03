@@ -1,14 +1,13 @@
 use std::path::Path;
 use crate::{ArcResult, ArchiveOptions};
 use crate::imp::structs::archiver::Archiver;
-use std::sync::Arc;
 use std::collections::BTreeSet;
 use crate::imp::structs::archive_data::ArchiveData;
 
 pub fn read_archive_data_from_directory<
     P : AsRef<Path>,
     T : Send + 'static>(path : P,
-                        converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync>,
+                        converter : impl Fn(&[u8]) -> T + Send + Sync + 'static,
                         opt : &ArchiveOptions) -> ArcResult<ArchiveData<T>>{
     let mut btree : BTreeSet<String> = BTreeSet::new();
     get_paths_from_dir(path, opt, &mut btree)?;

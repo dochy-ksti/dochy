@@ -3,12 +3,11 @@ use crate::{ArchiveData, ArcResult};
 use with_capacity_safe::vec_with_capacity_safe;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use crate::imp::structs::archiver::Archiver;
-use std::sync::Arc;
 
 
 
 
-pub fn read_archive<R : Read, T : Send + 'static>(converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync>, r : &mut R) -> ArcResult<ArchiveData<T>> {
+pub fn read_archive<R : Read, T : Send + 'static>(converter : impl Fn(&[u8]) -> T + Send + Sync + 'static, r : &mut R) -> ArcResult<ArchiveData<T>> {
     let (kvals, _) = dochy_compaction::decode(r)?;
 
     let mut iter = kvals.into_iter();
@@ -42,6 +41,7 @@ pub fn read_archive<R : Read, T : Send + 'static>(converter : Arc<dyn Fn(&[u8]) 
     });
     for (len, raw_sender) in raw_senders {
         let mut buf = vec_with_capacity_safe(len)?;
+        unsafe{ buf.set_len(len); }
 
         r.read_exact(&mut buf)?;
         rayon::spawn_fifo(move ||{

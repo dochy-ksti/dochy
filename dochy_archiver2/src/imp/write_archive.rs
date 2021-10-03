@@ -5,7 +5,7 @@ use std::io::Write;
 use crate::imp::write_items::write_items;
 
 
-pub fn write_archive<W : Write, T : Send + 'static>(data : ArchiveData<T>, writer : &mut W) -> ArcResult<()>{
+pub fn write_archive<W : Write, T : Send + 'static>(data : &ArchiveData<T>, writer : &mut W) -> ArcResult<()>{
     let mut items : BTreeMap<String, Vec<u8>> = BTreeMap::new();
 
     let (sender , receiver) = channel();

@@ -8,7 +8,7 @@ use crate::ArcResult;
 
 pub(crate) struct Archiver<T : Send + 'static>{
     hash_thread : HashThread,
-    converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync>,
+    converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync + 'static>,
     data_receivers : Vec<ArchiverItem<T>>,
 }
 
@@ -21,12 +21,12 @@ pub(crate) struct ArchiverItem<T : Send + 'static>{
 
 impl<T : Send + 'static> Archiver<T>{
 
-    pub fn new(f : Arc<dyn Fn(&[u8]) -> T + Send + Sync>) -> Archiver<T>{
+    pub fn new(f : impl Fn(&[u8]) -> T + Send + Sync + 'static) -> Archiver<T>{
 
         let hash_thread = HashThread::new();
         Archiver{
             hash_thread,
-            converter : f,
+            converter : Arc::new(f),
             data_receivers : Vec::new(),
         }
     }
