@@ -13,7 +13,7 @@ keywords = ["data","management","file","system", "diff"]
 [dependencies]
 dochy_core = {path="../dochy_core", version="0.8.0" }
 anyhow = "1.0.34"
-dochy_archiver = {path="../dochy_archiver", version="0.8.0"}
+dochy_archiver2 = {path="../dochy_archiver2", version="0.8.0"}
 dochy_diff = {path="../dochy_diff", version="0.8.0"}
 dochy_compaction = {path="../dochy_compaction", version="0.8.0" }
 tempfile = "3.2.0"

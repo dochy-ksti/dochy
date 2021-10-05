@@ -1,5 +1,7 @@
 use anyhow::anyhow;
 use std::fmt::{Debug, Formatter, Display};
+use std::str::Utf8Error;
+use dochy_archiver2::error::NouArcError;
 
 pub type CoreResult<T> = std::result::Result<T, CoreError>;
 
@@ -50,8 +52,17 @@ impl From<&str> for CoreError {
     }
 }
 
+impl From<Utf8Error> for CoreError{
+    fn from(e : Utf8Error) -> Self{ Self::new(e) }
+}
+
+impl From<NouArcError> for CoreError{
+    fn from(e : NouArcError) -> Self{ Self::new(e) }
+}
+
 impl Into<anyhow::Error> for CoreError {
     fn into(self) -> anyhow::Error {
         self.e
     }
 }
+

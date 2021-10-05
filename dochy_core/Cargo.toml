@@ -12,6 +12,7 @@ keywords = ["data","language"]
 
 [dependencies]
 dochy_json5 ={ path="../dochy_json5", version="0.8.0" }
+dochy_archiver2 = {path="../dochy_archiver2", version="0.8.0"}
 regex = "1.3.1"
 
 linked-hash-map = "0.5.2"

@@ -8,7 +8,7 @@ use crate::ArcResult;
 
 pub(crate) struct Archiver<T : Send + 'static>{
     hash_thread : HashThread,
-    converter : Arc<dyn Fn(&[u8]) -> T + Send + Sync + 'static>,
+    converter : Arc<dyn Fn(&str, &[u8]) -> T + Send + Sync + 'static>,
     data_receivers : Vec<ArchiverItem<T>>,
 }
 
@@ -21,7 +21,7 @@ pub(crate) struct ArchiverItem<T : Send + 'static>{
 
 impl<T : Send + 'static> Archiver<T>{
 
-    pub fn new(f : impl Fn(&[u8]) -> T + Send + Sync + 'static) -> Archiver<T>{
+    pub fn new(f : impl Fn(&str, &[u8]) -> T + Send + Sync + 'static) -> Archiver<T>{
 
         let hash_thread = HashThread::new();
         Archiver{
@@ -39,8 +39,9 @@ impl<T : Send + 'static> Archiver<T>{
         let (sender, processed) = mpsc::channel();
         let converter = self.converter.clone();
         let d = data.clone();
+        let p = path.clone();
         rayon::spawn(move ||{
-            let t = converter(d.as_ref());
+            let t = converter(&p, d.as_ref());
             sender.send(t).ok();
         });
 

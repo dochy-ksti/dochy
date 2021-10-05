@@ -7,7 +7,7 @@ use crate::imp::structs::archiver::Archiver;
 
 
 
-pub fn read_archive<R : Read, T : Send + 'static>(converter : impl Fn(&[u8]) -> T + Send + Sync + 'static, r : &mut R) -> ArcResult<ArchiveData<T>> {
+pub fn read_archive<R : Read, T : Send + 'static>(converter : impl Fn(&str, &[u8]) -> T + Send + Sync + 'static, r : &mut R) -> ArcResult<ArchiveData<T>> {
     let (kvals, _) = dochy_compaction::decode(r)?;
 
     let mut iter = kvals.into_iter();

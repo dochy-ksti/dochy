@@ -317,8 +317,9 @@ mod tests {
         let mut map = create_map3();
         let mut iter = map.iter_mut();
         let (_, a1) = iter.next().unwrap();
+        assert_eq!(*a1, 0);
         let (_, a2) = iter.next().unwrap();
-        println!("{} {}", a1, a2)
+        assert_eq!(*a2, 1);
     }
 
     #[test]

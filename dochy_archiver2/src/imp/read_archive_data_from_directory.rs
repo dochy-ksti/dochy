@@ -7,8 +7,8 @@ use crate::imp::structs::archive_data::ArchiveData;
 pub fn read_archive_data_from_directory<
     P : AsRef<Path>,
     T : Send + 'static>(path : P,
-                        converter : impl Fn(&[u8]) -> T + Send + Sync + 'static,
-                        opt : &ArchiveOptions) -> ArcResult<ArchiveData<T>>{
+                        opt : &ArchiveOptions,
+                        converter : impl Fn(&str, &[u8]) -> T + Send + Sync + 'static) -> ArcResult<ArchiveData<T>>{
     let mut btree : BTreeSet<String> = BTreeSet::new();
     get_paths_from_dir(path, opt, &mut btree)?;
 
