@@ -5,10 +5,7 @@ use std::path::Path;
 use crate::imp::json_to_rust::json_name::{json_name, NameType};
 use crate::imp::json_to_rust::{json_item_str_to_rust, json_root_to_rust};
 
-pub(crate) enum ArchivingItem{
-    Root(RootObject),
-    Item((String, RootValue, Option<RootSabValue>)),
-}
+
 
 pub(crate) fn json_file_to_rust(path : &str, dat : &[u8]) -> CoreResult<ArchivingItem>{
     let s = from_utf8(dat)?;

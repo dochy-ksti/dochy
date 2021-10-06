@@ -19,15 +19,16 @@ fn hoge<'a, T:Send + 'static>(f : impl Fn(&'a [u8]) -> T + Send + Sync + 'static
 fn archive_test() -> ArcResult<()>{
     let archive_data : ArchiveData<()> = read_archive_data_from_directory(
         "./src/json/simple",
-        |_slice| (),
-        &JSON_ARC_OPT.deref().clone(),
+        &*JSON_ARC_OPT,
+        |_name, _dat| (),
+
     )?;
     for (path, _) in archive_data.btree(){
         println!("{}", path);
     }
     let mut buf = Vec::new();
     write_archive(&archive_data, &mut buf)?;
-    let read : ArchiveData<()> = read_archive(|_slice| (), &mut buf.as_slice())?;
+    let read : ArchiveData<()> = read_archive(|_name, _slice| (), &mut buf.as_slice())?;
     for (path, dat) in archive_data.btree(){
         let got = read.btree().get(path)?;
         assert_eq!(got.raw_data(), dat.raw_data());

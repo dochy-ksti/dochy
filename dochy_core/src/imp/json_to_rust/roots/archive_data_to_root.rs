@@ -1,8 +1,13 @@
 use dochy_archiver2::ArchiveData;
 use crate::error::{CoreResult};
 use crate::structs::{ RootObject};
-use crate::imp::json_to_rust::json_file_to_rust::ArchivingItem;
 use crate::imp::json_to_rust::construct_root::construct_root;
+use crate::imp::structs::dochy_archive::{ArchivingItem, DochyArchive};
+
+pub fn archive_to_root(archive : DochyArchive) -> CoreResult<RootObject>{
+    let (root, hash) = archive_data_to_root_with_hash(archive.data)?;
+    Ok(root)
+}
 
 pub(crate) fn archive_data_to_root_with_hash(data : ArchiveData<CoreResult<ArchivingItem>>)
     -> CoreResult<(RootObject, u128)> {

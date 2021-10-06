@@ -9,6 +9,7 @@ use crate::JSON_ARC_OPT;
 use crate::imp::json_to_rust::archive_data_to_root::archive_data_to_root_with_hash;
 use crate::imp::json_to_rust::json_file_to_rust::json_file_to_rust;
 use crate::imp::json_to_rust::validation::validate_root::validate_root;
+use crate::imp::json_to_rust::roots::archive_data_to_root::archive_data_to_root_with_hash;
 
 /// Converts Dochy source files to RootObject
 /// Does extra checks when validation=true
