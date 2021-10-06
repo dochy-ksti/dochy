@@ -3,9 +3,13 @@ use crate::error::{CoreResult};
 use crate::structs::{ RootObject};
 use crate::imp::json_to_rust::construct_root::construct_root;
 use crate::imp::structs::dochy_archive::{ArchivingItem, DochyArchive};
+use crate::imp::json_to_rust::validation::validate_root::validate_root;
 
-pub fn archive_to_root(archive : DochyArchive) -> CoreResult<RootObject>{
-    let (root, hash) = archive_data_to_root_with_hash(archive.data)?;
+pub fn archive_to_root(archive : DochyArchive, validation : bool) -> CoreResult<RootObject>{
+    let (root, _hash) = archive_data_to_root_with_hash(archive.data)?;
+    if validation{
+        validate_root(&root, false)?;
+    }
     Ok(root)
 }
 
@@ -46,7 +50,7 @@ pub(crate) fn archive_data_to_root_with_hash(data : ArchiveData<CoreResult<Archi
                 vec.push((name, val, sab));
             }
             Err(e) =>{ return Err(e); }
-            _ => { unreachable!() }
+            _ => { Err("Multiple Root?")? } //Rootが複数なければここにはこれない・・・
         }
     }
 

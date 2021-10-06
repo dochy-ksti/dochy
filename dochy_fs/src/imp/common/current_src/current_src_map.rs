@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::common::{CurrentSrc};
 use crate::error::FsResult;
 use dochy_core::structs::RootObject;
-use dochy_core::json_dir_to_root;
+use dochy_core::{json_dir_to_root, JSON_ARC_OPT};
 use crate::imp::common::archive::load_archive::load_archive_and_hash;
 use crate::imp::common::current_src::current_src_info::CurrentSrcInfo;
 use std::sync::Mutex;

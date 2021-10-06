@@ -15,10 +15,10 @@ pub static JSON_ARC_OPT : SyncLazy<ArchiveOptions> = SyncLazy::new(|| {
 });
 
 pub use imp::rust_to_json::root_to_json::root_to_json_new_default;
-pub use imp::json_to_rust::json_dir_to_rust::json_dir_to_root;
-pub use imp::json_to_rust::json_dir_to_rust::json_dir_to_root_with_hash;
-pub use imp::json_to_rust::archive_file_to_rust::archive_file_to_rust_with_hash;
-pub use imp::json_to_rust::archive_file_to_rust::archive_file_to_rust;
+pub use imp::json_to_rust::roots::json_dir_to_rust::json_dir_to_root;
+pub use imp::json_to_rust::roots::json_dir_to_rust::json_dir_to_root_with_hash;
+pub use imp::json_to_rust::roots::archive_file_to_rust::archive_file_to_rust_with_hash;
+pub use imp::json_to_rust::roots::archive_file_to_rust::archive_file_to_rust;
 pub use imp::version_adjuster::version_adjuster::adjust_versions;
 pub use imp::intf;
 
