@@ -25,7 +25,6 @@ pub mod common{
     pub use crate::imp::common::path::get_hash_times::get_hash_times;
     pub use crate::imp::common::path::remove_hash_dir::remove_hash_dir;
 
-    pub use crate::imp::common::archive::archive_opt::JSON_ARC_OPT;
     pub use crate::imp::common::path::reserved_filename;
 
     pub use crate::imp::common::list::file_data::FileData;

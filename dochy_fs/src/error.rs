@@ -54,8 +54,8 @@ impl From<std::io::Error> for FsError {
     fn from(e : std::io::Error) -> Self { Self::new(e) }
 }
 
-impl From<dochy_archiver::error::NouArcError> for FsError{
-    fn from(e : dochy_archiver::error::NouArcError) -> Self{ Self::new(e) }
+impl From<dochy_archiver2::error::NouArcError> for FsError{
+    fn from(e : dochy_archiver2::error::NouArcError) -> Self{ Self::new(e) }
 }
 
 impl From<dochy_core::error::CoreError> for FsError{
