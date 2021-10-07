@@ -1,7 +1,7 @@
 {
   // Dochy Lang is a language to define static types and initial values of data
   // The source files of the language is called Dochy Src.
-  // It's written in JSON5. It's an improved JSON and comments can be written in it (as you can see).
+  // It's written in "JSON5". It's an improved JSON and comments can be written in it (as you can see).
 
   // Firstly, you need to crate a directory to place JSON5 files. It's kind of cumbersome, but it's for scalability.
   // The directory must have "root.json5"(It's also bothersome, but it's also for scalability).
@@ -20,7 +20,7 @@
   // In Dochy Lang, ints (1) and floats (1.0) are distinguishable.
   // Right value's type determines the variable's static type.
 
-  // Let's call Dochy Lang's parameters Dochy Params.
+  // Let's call Dochy Lang's parameters "Dochy Params".
   // Let's enumerate all the Dochy Param types other than above.
 
   int_array : ["IntArray", 1, 2],
