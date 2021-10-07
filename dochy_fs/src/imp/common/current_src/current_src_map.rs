@@ -3,8 +3,7 @@ use std::collections::HashMap;
 use crate::common::{CurrentSrc};
 use crate::error::FsResult;
 use dochy_core::structs::RootObject;
-use dochy_core::{json_dir_to_root, JSON_ARC_OPT};
-use crate::imp::common::archive::load_archive::load_archive_and_hash;
+use dochy_core::{json_dir_to_root_with_hash, archive_file_to_root_with_hash};
 use crate::imp::common::current_src::current_src_info::CurrentSrcInfo;
 use std::sync::Mutex;
 
@@ -27,12 +26,11 @@ pub(crate) fn get_current_src_info(current_src : CurrentSrc) -> FsResult<Current
 fn create_root_and_hash(current_src : &CurrentSrc) -> FsResult<(RootObject, u128)>{
     match current_src{
         CurrentSrc::SrcDir(src_dir) => {
-            let root = json_dir_to_root(src_dir, false)?;
-            let (hash, _meta) = get_hash_and_metadata_from_dir(src_dir, &JSON_ARC_OPT)?;
+        let (root,hash) = json_dir_to_root_with_hash(src_dir, false)?;
             Ok((root, hash))
         },
         CurrentSrc::ArchiveFile(path) =>{
-            load_archive_and_hash(path, false)
+            Ok(archive_file_to_root_with_hash(path,false)?)
         }
     }
 }

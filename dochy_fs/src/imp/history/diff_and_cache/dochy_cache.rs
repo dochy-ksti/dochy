@@ -4,9 +4,10 @@ use dochy_core::structs::{RootObject};
 use std::collections::{BTreeMap};
 use crate::imp::common::apply_items::{apply_items_st, apply_items_mt};
 use crate::history::HistoryOptions;
-use crate::common::{load_archive, CurrentSrc};
+use crate::common::{ CurrentSrc};
 use crate::imp::common::archive::get_archive_path::get_archive_path2;
 use crate::imp::common::current_src::current_src_map::get_current_src_info;
+use dochy_core::archive_file_to_root;
 
 
 pub(crate) struct DochyCache{
@@ -22,7 +23,7 @@ impl DochyCache{
 
     pub fn get_or_create_hash_root<P:AsRef<Path>>(&self, history_dir : P, hash : u128) -> FsResult<RootObject>{
         if self.hash() != hash {
-            load_archive(get_archive_path2(history_dir, hash), false)
+            Ok(archive_file_to_root(get_archive_path2(history_dir, hash), false)?)
         } else{
             Ok(self.clone_src_root())
         }

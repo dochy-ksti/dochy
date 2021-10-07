@@ -1,7 +1,6 @@
 use std::path::{PathBuf, Path};
 use crate::error::FsResult;
 use std::io::Write;
-use dochy_core::JSON_ARC_OPT;
 
 /// We always have an archive of json src files which corresponds to save files.
 /// if there's no change in json src files, we don't need current src.
@@ -26,7 +25,7 @@ impl CurrentSrc{
     pub fn create_archive<W : Write>(&self, write : &mut W) -> FsResult<()>{
         match &self{
             CurrentSrc::SrcDir(src_dir) => {
-
+                dochy_core::archive_src_dir(src_dir, write)?;
                 Ok(())
             },
             CurrentSrc::ArchiveFile(path) =>{

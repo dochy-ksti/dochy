@@ -6,7 +6,7 @@ pub mod common{
     pub use dochy_fs::common::get_hash_times;
     pub use dochy_fs::common::remove_hash_dir;
 
-    pub use dochy_fs::common::JSON_ARC_OPT;
+
     pub use dochy_fs::common::reserved_filename;
 
     pub use dochy_fs::common::FileData;

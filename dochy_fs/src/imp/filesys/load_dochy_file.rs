@@ -3,8 +3,7 @@ use crate::error::FsResult;
 use dochy_core::structs::RootObject;
 use std::fs::File;
 use dochy_diff::apply_diff;
-use dochy_core::{adjust_versions};
-use crate::imp::common::archive::load_archive::load_archive;
+use dochy_core::{adjust_versions, archive_file_to_root};
 use crate::imp::common::path::reserved_filename::ARCHIVE_DEFAULT_NAME;
 use crate::common::hash::folder_name_to_hash;
 use crate::imp::filesys::save_dir_info::SaveDirInfo;
@@ -24,7 +23,7 @@ pub fn load_dochy_file<P : AsRef<Path>>(file_path : P,
     } else {
         //archiveに関しては、カレントしかキャッシュしないことにする
         let archive_path = dir_path.join(ARCHIVE_DEFAULT_NAME);
-        load_archive(archive_path, validation)?
+        archive_file_to_root(archive_path, validation)?
     };
 
     let mut file = File::open(file_path)?;

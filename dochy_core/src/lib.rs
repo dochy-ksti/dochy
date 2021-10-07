@@ -19,7 +19,10 @@ pub use imp::json_to_rust::roots::json_dir_to_root::json_dir_to_root;
 pub use imp::json_to_rust::roots::json_dir_to_root::json_dir_to_root_with_hash;
 pub use imp::json_to_rust::roots::archive_file_to_root::archive_file_to_root_with_hash;
 pub use imp::json_to_rust::roots::archive_file_to_root::archive_file_to_root;
+pub use imp::json_to_rust::roots::archive_file_to_root::read_archive_to_root_with_hash;
+pub use imp::json_to_rust::roots::archive_file_to_root::read_archive_to_root;
 pub use imp::json_to_rust::roots::archive_src_dir::archive_src_dir;
+pub use imp::json_to_rust::roots::archive_data_to_root::archive_to_root;
 pub use imp::version_adjuster::version_adjuster::adjust_versions;
 pub use imp::intf;
 
