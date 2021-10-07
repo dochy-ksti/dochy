@@ -5,7 +5,7 @@ use crate::imp::json_to_rust::validation::validate_root::validate_root;
 use crate::imp::json_to_rust::roots::json_file_to_rust::json_file_to_rust;
 use crate::imp::json_to_rust::roots::archive_data_to_root::archive_data_to_root_with_hash;
 
-pub fn archive_file_to_rust_with_hash<R : Read>(r : &mut R, validation : bool) -> CoreResult<(RootObject, u128)>{
+pub fn archive_file_to_root_with_hash<R : Read>(r : &mut R, validation : bool) -> CoreResult<(RootObject, u128)>{
     let data = dochy_archiver2::read_archive(json_file_to_rust, r)?;
     let (root, hash) = archive_data_to_root_with_hash(data)?;
     if validation{
@@ -14,6 +14,6 @@ pub fn archive_file_to_rust_with_hash<R : Read>(r : &mut R, validation : bool) -
     Ok((root, hash))
 }
 
-pub fn archive_file_to_rust<R : Read>(r : &mut R, validation : bool) -> CoreResult<RootObject>{
-    archive_file_to_rust_with_hash(r, validation).map(|(root,_)| root)
+pub fn archive_file_to_root<R : Read>(r : &mut R, validation : bool) -> CoreResult<RootObject>{
+    archive_file_to_root_with_hash(r, validation).map(|(root,_)| root)
 }
