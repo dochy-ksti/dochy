@@ -4,7 +4,7 @@ use dochy::core::json_dir_to_root;
 use crate::a6_table::table_accessor::{RootIntf, Table2TableID, Table1TableID};
 
 
-#[test]
+//#[test]
 fn table_test() -> DpResult<()> {
     let root_obj : RootObject = json_dir_to_root("src/a6_table/table", false)?;
 

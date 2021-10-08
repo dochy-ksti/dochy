@@ -22,14 +22,14 @@ fn mil_test() -> DpResult<()> {
     let mut item = mlist.insert();
     item.set_val(100);
 
-    // we can change orders of items in the Linked-List way.
+    // we can change orders of items in a Linked-List way.
 
-    // Gets the last-item's ID
+    // Gets the last item's ID
     let last_id = mlist.last_id().unwrap();
-    // Gets the first-item's ID
+    // Gets the first item's ID
     let first_id = mlist.first_id().unwrap();
 
-    // Places the newly-created last-item into the next position of the first-item.
+    // Puts the newly created last item into the next position of the first-item.
     mlist.move_to_next(
         /* prev_items_id */ first_id,
         /* id */ last_id);

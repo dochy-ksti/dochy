@@ -5,7 +5,7 @@ use std::sync::mpsc::{Sender, channel, Receiver};
 use crate::ArcResult;
 
 pub(crate) struct HashThread{
-    vec_sender : Sender<Option<Arc<Vec<u8>>>>,
+    vec_sender : Sender<Option<(String, Arc<Vec<u8>>)>>,
     result_receiver : Receiver<ArcResult<u128>>,
 }
 
@@ -17,8 +17,10 @@ impl HashThread{
             let mut hasher = MetroHash128::new();
             loop{
                 match vec_receiver.recv(){
-                    Ok(Some(v)) =>{
+                    Ok(Some((path, v))) =>{
+                        let path : String = path;
                         let v : Arc<Vec<u8>> = v;
+                        hasher.write(path.as_bytes());
                         hasher.write(v.as_ref())
                     },
                     Ok(None) => break,
@@ -34,8 +36,8 @@ impl HashThread{
         }
     }
 
-    pub fn calc_hash(&mut self, vec : Arc<Vec<u8>>){
-        self.vec_sender.send(Some(vec)).ok();
+    pub fn calc_hash(&mut self, path : String, vec : Arc<Vec<u8>>){
+        self.vec_sender.send(Some((path, vec))).ok();
     }
 
     pub fn finish(&self) -> ArcResult<u128>{

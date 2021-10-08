@@ -34,7 +34,7 @@ impl<T : Send + 'static> Archiver<T>{
     /// path をアルファベット順にして この fn を何度も呼び出すべし。スレッドに流されて非同期に実行される
     pub fn archive(&mut self, path : String, data : Vec<u8>){
         let data = Arc::new(data);
-        self.hash_thread.calc_hash(data.clone());
+        self.hash_thread.calc_hash(path.clone(), data.clone());
 
         let (sender, processed) = mpsc::channel();
         let converter = self.converter.clone();

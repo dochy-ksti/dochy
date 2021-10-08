@@ -27,6 +27,15 @@ fn cil_generate() -> DpResult<()> {
     Ok(())
 }
 
+// DpResult is the Result Type of Dochy
+
+// The function "json_dir_to_root" returns CoreResult<RootObject>,
+// which is the Result type of the module "dochy_core".
+// It's automatically converted to DpResult with the "?" operator.
+
+// Any error type of Dochy modules can be converted to DpResult automatically,
+// so basically end-users should always use DpResult.
+
 #[test]
 fn cil_test() -> DpResult<()> {
     let root_obj : RootObject = json_dir_to_root("src/a4_clist/cil", false)?;
