@@ -1,4 +1,4 @@
-Let's save data of Dochy.
+Let's save data in Dochy.
 
 There's two types of save files in Dochy, 
 "Dochy Data" and "Dochy History".

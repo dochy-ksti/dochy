@@ -37,6 +37,24 @@ fn save_dochy_file_test() -> DpResult<()>
     // "save_dochy_file" saves the difference of the two.
     // (The difference is "Hello World" -> "Hello the next world")
 
+    // Saving completed. Now let's check out what we just created.
+
+    // save_dir - 80a3e5062f0fbeede35cab8cab5d0826 ┬- created_time.dat
+    //                                             ├- next_world.dochy
+    //                                             └- src.archive
+
+    // "80a3e5062f0fbeede35cab8cab5d0826" is the hash code created from Dochy Src. It's 128 bit hex value and the algorithm is MetroHash.
+    //
+    // "src.archive" is the file which archives Dochy Src. Archiving algorithm is original (Dochy Archiver2) and the archiver also calculates the hash.
+    // "created_time.dat" is the file to store when this directory is created. (Copying directories often confuses the OS-managed created-time property, so we decided to manage it ourself).
+    // "next_world.dochy" is the save file. We designated the filename.
+
+    // Dochy Data (and History) file is placed with "src.archive", which is the Dochy Src the file is originated from.
+    // They are placed in a hash-named directory calculated from the Src.
+    // When the Src is modified, new hash is calculated and new "src.archive" is created in the new hash-directory and new save files are placed in it.
+    // When an old data file is loaded, the data is composed from the correspond old "src.archive" placed in the same directory,
+    // and converted to the new version automatically referencing the new version of Dochy Src.
+
     load_dochy_file_test()?;
 
     Ok(())
