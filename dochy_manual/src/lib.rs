@@ -13,6 +13,7 @@
 #[cfg(test)]#[allow(dead_code)]mod a5_mlist;
 #[cfg(test)]#[allow(dead_code)]mod a6_table;
 #[cfg(test)]#[allow(dead_code)]mod b1_save_dochy_files;
+#[cfg(test)]#[allow(dead_code)]mod b2_save_history_files;
 
 
 
