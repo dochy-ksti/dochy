@@ -25,12 +25,13 @@ fn save_dochy_file_test() -> DpResult<()>
     let mut root = RootIntf::new(root);
     root.set_message("Hello the next world".to_string());
 
-
+    // To save Dochy Data file, use "save_dochy_file" function.
+    // Dochy Data file is often abbreviated to "dochy file".
     let _saved_path = save_dochy_file(
         &info, // SaveDirInfo to specify save_dir, and Dochy Src
         "next_world.dochy", // filename
         root.root_obj_ref(), // the reference of the data. We can get it from "RootIntf::root_obj_ref"
-        true)?;
+        /* overwrite flag */true)?;
 
     // SaveDirInfo contains RootObject created from Dochy Src
     // RootIntf contains modified RootObject, and "root_obj_ref()" can get the reference
@@ -55,6 +56,13 @@ fn save_dochy_file_test() -> DpResult<()>
     // When an old data file is loaded, the data is composed from the correspond old "src.archive" placed in the same directory,
     // and converted to the new version automatically referencing the new version of Dochy Src.
 
+    // We'll talk about the conversion later.
+
+    // There's very little chance that some 128 bit hashes accidentally collides.
+    // Should it happen, append the space character at tha end of the Dochy Src and change the hash.
+
+    // Now let's see how to load.
+
     load_dochy_file_test()?;
 
     Ok(())
@@ -65,23 +73,24 @@ fn load_dochy_file_test() -> DpResult<()> {
     let src_dir = "src/b1_save_dochy_files/src_dir";
     let info = SaveDirInfo::create(save_dir, CurrentSrc::from_src_dir(src_dir))?;
 
+    // Gets the file list.
     let files = list_dochy_files(save_dir)?;
 
-    // find the file to load.
+    // Finds the file to load.
     let file = files.iter().find(|f| f.name() == "next_world.dochy")?;
 
-    // Dochy Data files are placed in "hash" directory.
-    // Let's take a look at the save_dir
-    // save_dir - 9b945bdd6f75d246a40f6e11555559cb ┬- created_time.dat
-    //                                             ├- next_world.dochy
-    //                                             └- src.archive
+    // "file" needs "save_dir" to calculate the file path. (It's not ergonomic, but efficient...
+    let file_path = file.calc_path(save_dir);
 
+    // To load a Dochy Data file, use "load_dochy_file"
     let root = load_dochy_file(
-        file.calc_path(save_dir),
+        file_path,
         &info,
-        true
+        /* validation flag */true
     )?;
     let root = RootIntf::new(root);
+
+    // Make sure the message is modified.
     assert_eq!(root.message(), "Hello the next world");
 
     Ok(())
