@@ -10,28 +10,22 @@ use once_cell::sync::Lazy;
 /// ```
 /// If you want to customize, you can use builders.
 ///
-/// Appending "..Default::default()" could make your source code
-/// compatible with future versions of this library.
 /// ```
 /// use dochy_fs::error::FsResult;
 /// use dochy_fs::history::{HistoryOptions, HistoryOptionsBuilder, CumulativeOptionsBuilder};
 ///
 /// fn main() -> FsResult<()>{
-/// let op = HistoryOptions::from(
-///         HistoryOptionsBuilder {
-///            max_phase: 5,
-///            cumulative: Some(CumulativeOptionsBuilder {
-///                limit_nth: Some(2),
-///                limit_count: Some(100),
-///                 ..Default::default()
-///            }),
-///            ..Default::default()
-///        })?;
+///     let op = HistoryOptions::from(
+///         HistoryOptionsBuilder::new()
+///             .max_phase(5)
+///             .cumulative(Some(CumulativeOptionsBuilder::new())
+///                .limit_nth(Some(2))
+///                .limit_count(Some(100))))?;
 ///     Ok(())
 /// }
 /// ```
 /// You need to use the same options for a history_hash_dir.
-/// Changing the value causes an undefined behavior.
+/// Changing the options causes an undefined behavior.
 ///
 /// When you modify the source Dochy file, a new history_hash_dir will be created,
 /// so you can change the options at the very time.
@@ -130,23 +124,39 @@ impl CumulativeOptions {
 ///Construct HistoryOption with error check
 #[derive(Debug, Clone)]
 pub struct HistoryOptionsBuilder {
-    /// Phase-A=0, Phase-B=1...
-    /// if max_phase == 1, there will be no Phase-C.
-    pub max_phase : usize,
+    max_phase : usize,
+    update_phase_0 : bool,
+    mt_save : bool,
+    mt_load : bool,
 
-    /// if false, Phase-0 isn't created in deriving.
-    /// (It's updated in saving a new RooObject.)
-    pub update_phase_0 : bool,
+    cumulative : Option<CumulativeOptionsBuilder>,
 
-    /// If this is Some, the max phase will be cumulative
-    pub cumulative : Option<CumulativeOptionsBuilder>,
+}
 
+impl HistoryOptionsBuilder{
+    pub fn new() -> Self{ Default::default() }
 
+    /// if max_phase == 1, there will be no phase_2
+    pub fn max_phase(mut self, max_phase : usize) -> Self{
+        self.max_phase = max_phase; self
+    }
+    /// if false, Phase-0 wonYt be created by deriving,
+    /// (but when you save a new history file without deriving, phase_0 will be created.)
+    pub fn update_phase_0(mut self, update_phase_0 : bool) -> Self{
+        self.update_phase_0 = update_phase_0; self
+    }
     /// If multi-threaded saving is enabled
-    pub mt_save : bool,
-
+    pub fn mt_save(mut self, mt_save : bool) -> Self{
+        self.mt_save = mt_save; self
+    }
     /// If multi-threaded loading is enabled
-    pub mt_load : bool,
+    pub fn mt_load(mut self, mt_load : bool) -> Self{
+        self.mt_load = mt_load; self
+    }
+    /// If Some, the max phase will be cumulative
+    pub fn cumulative(mut self, cumulative : Option<CumulativeOptionsBuilder>) -> Self{
+        self.cumulative = cumulative; self
+    }
 }
 
 impl Default for HistoryOptionsBuilder {
@@ -164,13 +174,24 @@ impl Default for HistoryOptionsBuilder {
 ///Construct CumulativeOption with error check
 #[derive(Debug, Clone)]
 pub struct CumulativeOptionsBuilder {
-    ///The total size of a Cumulative-Phase must be less than nth largest diff file in its ancestors
+    limit_nth : Option<usize>,
+    limit_count : Option<usize>,
+}
+
+impl CumulativeOptionsBuilder{
+    pub fn new() -> Self{ Default::default() }
+
+    /// Sum of file size in a Cumulative-Phase must be less than nth largest file in its ancestors
     ///
-    /// Basically the most largest file should be Phase-A. the 2nd largest should be Phase-B...
-    pub limit_nth : Option<usize>,
+    /// Basically the most largest file should be Phase-0. the 2nd largest should be Phase-1...
+    pub fn limit_nth(mut self, limit_nth : Option<usize>) -> Self{
+        self.limit_nth = limit_nth; self
+    }
 
     /// The total number of diff files in a Cumulative-phase must be fewer than this
-    pub limit_count : Option<usize>,
+    pub fn limit_count(mut self, limit_count : Option<usize>) -> Self{
+        self.limit_count = limit_count; self
+    }
 }
 
 impl Default for CumulativeOptionsBuilder {

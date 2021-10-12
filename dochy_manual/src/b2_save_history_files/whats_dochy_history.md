@@ -14,22 +14,3 @@ so removing single file is basically impossible, and retaining only single file 
 You must remove all dependants, and retain all dependencies.
 This library has a removing policy, "retain last N files and dependencies".
 Besides, you can specify files to retain and remove all the other files without their dependencies.
-
-This is the typical directory composition.
-
-─ proj_dir ┬─ history_dit
-           ├─ save_dir
-           └─ src_dir
-
-Maybe you want to use multiple data for your project.
-
-─ proj_dir ┬─ data_a_dir ┬─ history_dir_a
-           │             ├─ save_dir_a
-           │             └─ src_dir_a
-           └─ data_b_dir ┬─ history_dir_b
-                         ├─ save_dir_b
-                         └─ src_dir_b
-
-But you don't need to obey this.
-There's no limitation about directory compositions in Dochy.
-(but history_dir, save_dir, and src_dir need to be a dedicated directory.)
