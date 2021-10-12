@@ -69,7 +69,7 @@ impl HistoryOptions {
     }
 
     /// Construct HistoryOption from builders
-    pub fn from(builder : HistoryOptionsBuilder) -> FsResult<HistoryOptions>{
+    fn from(builder : HistoryOptionsBuilder) -> FsResult<HistoryOptions>{
         if builder.max_phase == 0{
             if builder.update_phase_0 == false {
                 return Err(format!("max_phase == 0 && update_phase_a == false is inconsistent."))?;
@@ -156,6 +156,9 @@ impl HistoryOptionsBuilder{
     /// If Some, the max phase will be cumulative
     pub fn cumulative(mut self, cumulative : Option<CumulativeOptionsBuilder>) -> Self{
         self.cumulative = cumulative; self
+    }
+    pub fn build(self) -> FsResult<HistoryOptions>{
+        HistoryOptions::from(self)
     }
 }
 

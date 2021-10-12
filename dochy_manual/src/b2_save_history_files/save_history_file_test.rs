@@ -1,6 +1,6 @@
 use dochy::error::DpResult;
 use dochy::fs::common::CurrentSrc;
-use dochy::fs::history::{HistoryInfo, HistoryOptions, save_history_file};
+use dochy::fs::history::{HistoryInfo, HistoryOptions, save_history_file, HistoryOptionsBuilder};
 use crate::b2_save_history_files::save_history_files_accessor::RootIntf;
 
 #[test]
