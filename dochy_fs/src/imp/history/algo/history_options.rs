@@ -104,7 +104,9 @@ pub struct CumulativeOptions {
 impl CumulativeOptions {
     /// The total size of a Cumulative-Phase must be less than nth largest diff file in its ancestors
     ///
-    /// Basically the most largest file should be phase-A. the 2nd largest should be Phase-B...
+    /// Basically the most largest file should be phase-0. the 2nd largest should be Phase-1...
+    ///
+    /// When it's 0, we pretend it's 1 (1st)
     pub fn limit_nth(&self) -> Option<usize>{ self.limit_nth }
 
     /// The total number of diff files in a Cumulative-Phase must be fewer than this
