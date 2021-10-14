@@ -3,7 +3,7 @@ use dochy::core::structs::RootObject;
 use dochy::core::json_dir_to_root;
 use crate::a5_mlist::mil_accessor::RootIntf;
 
-#[test]
+//#[test]
 fn mil_test() -> DpResult<()> {
     let root_obj : RootObject = json_dir_to_root("src/a5_mlist/mil", false)?;
 
