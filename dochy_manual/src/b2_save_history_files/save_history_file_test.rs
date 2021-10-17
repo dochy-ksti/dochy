@@ -41,56 +41,64 @@ fn save_history_file_test() -> DpResult<()> {
     // Let's see what we created.
     //
     // created_time.dat 12 bytes
-    // src.archive 96 bytes
-    // _0_0.his 15 bytes
+    // src.archive 130 bytes
+    // _0_0.his 28 bytes
 
     // "crated_time.dat" and "src.archive" were already explained.
-    // _0_0.dat is the history file we just created.
-    // The first number _0 is what we call "control number". It's appended to make the filename unique.
-    // the second _0 is "phase-0 number". It's 0 because it's the first phase-0 file.
-    // Phase-0 file only depends on Dochy Src. It's almost the same as Dochy Data file.
-    // Dochy History files have some metadata, so they are not identical, though.
-    // ".his" is the Dochy History file's extension
-
-    modify(&mut root, &mut count);
-    let _file = save_history_file(&info, None, root.root_obj_ref())?;
-    print_dir(&hash_dir)?;
-
-    // "_0_0_0.his 20 bytes" is just created.
-    // It means "control 0 phase-0 0 phase-1 0"
-    // The last number is phase-1, so this file is phase-1.
-    // A Phase-1 file is derived from a phase-0 file.
-    // The parent file can be specified from the filename.
-    // In this case, it's _0_0 (control 0, phase-0 0),
-    // so the file is derived from _0_0.
-    // It means Dochy calculated diff from _0_0.his, and save it as "_0_0_0.his"
-
-    modify(&mut root, &mut count);
-    let _file = save_history_file(&info, None, root.root_obj_ref())?;
-    print_dir(&hash_dir)?;
-
-    // _0_0_0_0.his 24 bytes is just created.
-    // It means "control 0 phase-0 0 phase-1 0 phase-2 0"
-    // The parent file is _0_0_0, and this is phase-2 file.
+    // "_0_0.his" is the history file we just created.
+    // ".his" is the Dochy History file's extension.
     //
-    // Dochy Calculated diff from _0_0_0.his.
+    // The first number "_0" is what we call "control number". It's appended to make the filename unique.
+    // the second "_0" is "phase-0 number". It's 0 because it's the first phase-0 file.
+    // Phase-0 files only depend on Dochy Src. It's almost the same as Dochy Data files.
+    // Dochy History files have some metadata, so they are not identical, though.
+
+    modify(&mut root, &mut count);
+    let _file = save_history_file(&info, None, root.root_obj_ref())?;
+    print_dir(&hash_dir)?;
+
+    // "_0_0_0.his 33 bytes" is just created.
+    // It means "control 0 phase-0 0 phase-1 0"
+    // The last number is phase-1, so this file is a phase-1 file.
+    // Phase-1 files are derived from phase-0 files.
+    // The parent file can be specified from the filename.
+    // In this case, it's "_0_0" (control 0, phase-0 0).
+    // Phase numbers other than the last number is always identical with the parent's phase numbers,
+    // and the control number is also basically the same with the parent's.
+    //
+    // The parent file is "_0_0.his", so Dochy calculated diff from "_0_0.his", and save it as "_0_0_0.his"
+    //
+    // Each time, the modification is always "appending 10 bytes string".
+    // So the size of diff is basically the same.
+    // But the more the phase is increased, the more data is needed in the metadata,
+    // so the file size is slightly increased each time.
+
+    modify(&mut root, &mut count);
+    let _file = save_history_file(&info, None, root.root_obj_ref())?;
+    print_dir(&hash_dir)?;
+
+    // "_0_0_0_0.his 37 bytes" is just created.
+    // It means "control 0 phase-0 0 phase-1 0 phase-2 0"
+    // This is the first phase-2 file, and the parent file is "_0_0_0.his".
+    //
+    // Dochy Calculated diff from "_0_0_0.his".
     // It means, theoretically, first, Dochy created a RootObject from Dochy Src,
-    // and Dochy opened _0_0.his, and applied the diff to the object,
-    // and opened _0_0_0.his, and applied the diff to the object,
-    // and calculated diff from the object to the current object, and save it as _0_0_0_0.his.
+    // and Dochy opened "_0_0.his", and applied the diff to the object,
+    // and opened "_0_0_0.his", and applied the diff to the object,
+    // and calculated diff from the object to the current object, and save it as "_0_0_0_0.his".
     //
     // Actually, Dochy has cache data of them. The latest phase files are always cached(and Dochy Src, too),
     // so Dochy Src, phase-0, phase-1 files are already cached.
-    // So Dochy did compare Phase-1 cache data to the current object, and save it as _0_0_0_0.his
+    // So Dochy did compare the phase-1 cache data to the current object, and save it as "_0_0_0_0.his".
     //
     // We set max_phase 2 in the HistoryOptions, so phase-2 is the max phase.
     //
-    // _0_0_0_0.his is 24 bytes, so there's 24 bytes in the max_phase. The total file size of the the max_phase is 24.
-    // (Actually, most of the 24 bytes is metadata, and the total file size must be calculated without metadata,
+    // "_0_0_0_0.his" is 37 bytes, so there's 37 bytes in the max_phase. The total file size of the the max_phase is currently 37.
+    // (Actually, most of the 37 bytes is metadata, and the total file size must be calculated without metadata,
     // so the statement above is very inaccurate)
 
     // We set limit_nth "1". so the max_phase is limited by the most largest file in its ancestors.
-    // The most largest file in its ancestors is "_0_0_0.his 20 bytes".
+    // The most largest file in its ancestors is "_0_0_0.his 33 bytes".
     // The total file size of the max phase is already larger than the most largest file,
     // so Dochy considers the max phase is too large.
 
@@ -98,20 +106,73 @@ fn save_history_file_test() -> DpResult<()> {
     let _file = save_history_file(&info, None, root.root_obj_ref())?;
     print_dir(&hash_dir)?;
 
-    // "_0_1.his 25 bytes" is just created. It means "control 0 phase-0 1"
+    // "_0_1.his 77 bytes" is just created. It means "control 0 phase-0 1"
     // When max_phase is overflowed, Dochy calculates which phase the next file should be shifted to( [algorithm](...) ).
-    // And the file was shifted to Phase-0.
-    // The diff is calculated from the Dochy Src, and saved.
+    // And the file was shifted to the phase-0.
+    // The diff is calculated from the Dochy Src, and saved as "0_1.his".
+    //
+    // The data is modified four times. Each time, 10 bytes string is appended, so theoretically, the total diff size is about 40 bytes.
+    // The actual file size is 77 bytes.
+    // "0_0.his" was 28 bytes, and the data is modified three times since then. the diff is theoretically 30 bytes,
+    // so you may think it should be 58 bytes.
+    //
+    // Actually, Dochy doesn't compare values without Int and Float.
+    // Dochy doesn't compare strings and create diff of strings.
+    // Dochy only confirm whether it's modified, and if it's modified, the entire value is saved.
+    // The initial string is 5 bytes, and appended 10 bytes, so the diff is actually 15 bytes.
+    //
+    // It modified three times so the total diff is 45 bytes.
+    // "0_0.his" was 28 bytes and "_0_1.his" was 77 bytes.
+    // It should be theoretically 73 bytes. The difference is 4 bytes.
+    //
+    // Dochy encodes numbers to variable bytes.
+    // When a number is increased, the data size can be grown. Maybe the size grown was 4 bytes.
 
     modify(&mut root, &mut count);
     let _file = save_history_file(&info, None, root.root_obj_ref())?;
     print_dir(&hash_dir)?;
 
+    // "_0_1_0.his 33 bytes" is just created. It means "control 0 phase-0 1 phase-1 0".
+    // The parent is "_0_1.his", and it is the first phase-1 file which has the parent "_0_1.his",
+    // so it's called "0_1_0.his".
+    //
+    // The size is 33 bytes. "0_0_0.his" was 33 bytes, so they have the same size.
+
+    modify(&mut root, &mut count);
+    let _file = save_history_file(&info, None, root.root_obj_ref())?;
+    print_dir(&hash_dir)?;
+
+    // "_0_1_0_0.his 37 bytes" is just created. It means "control 0 phase-0 1 phase-1 0 phase-2 0".
+    // The parent is "_0_1_0.his", and it is the first phase-2 file which has the parent "_0_1_0.his",
+    // so it's called "0_1_0_0.his".
+    //
+    // The size is 37 bytes. "0_0_0_0.his" was 37 bytes, so they have the same size.
+
+    modify(&mut root, &mut count);
+    let _file = save_history_file(&info, None, root.root_obj_ref())?;
+    print_dir(&hash_dir)?;
+
+    // "_0_1_0_1.his 38 bytes" is just created. It means "control 0 phase-0 1 phase-1 0 phase-2 1".
+    // The second phase-2 file is created, and the phase-2 is the "max_phase".
+    // The "max_phase" is limited by the most largest file size in its ancestors.
+    // It's "_0_1.his 77 byes".
+    // The sum of "_0_1_0_0.his 37 bytes" and "_0_1_0_1.his 38 bytes" is 75 bytes.
+    // It's smaller than the largest ancestor, so "max_phase" is not overflown yet. (As I said before, this statement is very inaccurate...)
+
+    modify(&mut root, &mut count);
+    let _file = save_history_file(&info, None, root.root_obj_ref())?;
+    print_dir(&hash_dir)?;
+
+    modify(&mut root, &mut count);
+    let _file = save_history_file(&info, None, root.root_obj_ref())?;
+    print_dir(&hash_dir)?;
+
+
     Ok(())
 }
 
 fn modify(root : &mut RootIntf, count : &mut usize){
-    let c = *count % 5;
+    let c = *count % 10;
     *count += 1;
     let m = match c{
         0 => root.d0_mut(),
@@ -119,6 +180,11 @@ fn modify(root : &mut RootIntf, count : &mut usize){
         2 => root.d2_mut(),
         3 => root.d3_mut(),
         4 => root.d4_mut(),
+        5 => root.d5_mut(),
+        6 => root.d6_mut(),
+        7 => root.d7_mut(),
+        8 => root.d8_mut(),
+        9 => root.d9_mut(),
         _ => unreachable!(),
     };
     m.push_str("0123456789");
