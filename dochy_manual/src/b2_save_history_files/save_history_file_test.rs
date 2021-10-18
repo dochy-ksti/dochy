@@ -107,16 +107,16 @@ fn save_history_file_test() -> DpResult<()> {
     print_dir(&hash_dir)?;
 
     // "_0_1.his 77 bytes" is just created. It means "control 0 phase-0 1"
-    // When max_phase is overflowed, Dochy calculates which phase the next file should be shifted to( [algorithm](...) ).
-    // And the file was shifted to the phase-0.
+    // When max_phase is overflowed, Dochy calculates which phase the next file should be shifted to( [algorithm](...) ),
+    // and the file is shifted to the phase-0.
     // The diff is calculated from the Dochy Src, and saved as "0_1.his".
     //
-    // The data is modified four times. Each time, 10 bytes string is appended, so theoretically, the total diff size is about 40 bytes.
-    // The actual file size is 77 bytes.
+    // The data is modified four times. Each time, 10 bytes string is appended, so theoretically, the total diff size is 40 bytes.
+    // The actual file size is 77 bytes. It's kind of bloated?
     // "0_0.his" was 28 bytes, and the data is modified three times since then. the diff is theoretically 30 bytes,
     // so you may think it should be 58 bytes.
     //
-    // Actually, Dochy doesn't compare values without Int and Float.
+    // Actually, Dochy doesn't compare values without Int, Float and Bool.
     // Dochy doesn't compare strings and create diff of strings.
     // Dochy only confirm whether it's modified, and if it's modified, the entire value is saved.
     // The initial string is 5 bytes, and appended 10 bytes, so the diff is actually 15 bytes.
@@ -154,19 +154,40 @@ fn save_history_file_test() -> DpResult<()> {
 
     // "_0_1_0_1.his 38 bytes" is just created. It means "control 0 phase-0 1 phase-1 0 phase-2 1".
     // The second phase-2 file is created, and the phase-2 is the "max_phase".
+    // When "cumulative" option is Some, max_phase will be "cumulative".
+    // When it's cumulative, the parent of a file is the previous file in max_phase.
+    // We enabled the option, so the parent of "_0_1_0_1.his" is "_0_1_0_0.his".
+    //
+    // If "cumulative" option is off, the parent of "_0_1_0_1.his" is "_0_1_0.his".
+    // The modification occurred twice since then, so the file size would be much bigger.
+    // (I don't think "cumulative off" has useful use cases, so I might get rid of the option.)
+    //
     // The "max_phase" is limited by the most largest file size in its ancestors.
     // It's "_0_1.his 77 byes".
     // The sum of "_0_1_0_0.his 37 bytes" and "_0_1_0_1.his 38 bytes" is 75 bytes.
-    // It's smaller than the largest ancestor, so "max_phase" is not overflown yet. (As I said before, this statement is very inaccurate...)
+    // It's smaller than the largest ancestor, so "max_phase" is not overflown yet.
+    // (As I said before, this statement is very inaccurate...)
 
     modify(&mut root, &mut count);
     let _file = save_history_file(&info, None, root.root_obj_ref())?;
     print_dir(&hash_dir)?;
 
+    // "_0_1_0_2.his 40 bytes" is just created.
+    // Comparing it with "_0_1_0_0.his 37 bytes" and "_0_1_0_1.his 38 bytes",
+    // they are cumulative, so the file size is almost the same,
+    // but the file size is slightly increasing with the metadata grown.
+    //
+    // The max_phase is also limited by the option "limit_count".
+    // We set the limit '3", so a max_phase must have less than three files.
+    // "_0_1_0_2.his" is the third file of the max_phase, so Dochy thinks the max_phase is overflown.
+
     modify(&mut root, &mut count);
     let _file = save_history_file(&info, None, root.root_obj_ref())?;
     print_dir(&hash_dir)?;
 
+    // "_0_1_1.his 101 bytes" is just created.
+    // The parent is "_0_1.his 77 bytes". It's rare that a younger phase file has bigger file size.
+    // It's modified five times, so the total diff size is 75 bytes.
 
     Ok(())
 }
