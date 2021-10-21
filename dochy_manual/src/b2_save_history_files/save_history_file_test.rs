@@ -3,6 +3,7 @@ use dochy::fs::common::{CurrentSrc, hash_dir_path};
 use dochy::fs::history::{HistoryInfo, save_history_file, HistoryOptionsBuilder, CumulativeOptionsBuilder};
 use crate::b2_save_history_files::save_history_files_accessor::RootIntf;
 use std::path::Path;
+use crate::b2_save_history_files::load_history_file_test::load_history_file_test;
 
 #[test]
 fn save_history_file_test() -> DpResult<()> {
@@ -189,10 +190,22 @@ fn save_history_file_test() -> DpResult<()> {
     // The parent is "_0_1.his 77 bytes". It's rare that a younger phase file has bigger file size.
     // It's modified five times, so the total diff size is 75 bytes.
 
+    modify(&mut root, &mut count);
+    let _file = save_history_file(&info,
+                                  Some(format!("You_Can_Append_Tag")),
+                                  root.root_obj_ref())?;
+    print_dir(&hash_dir)?;
+
+    // "#You_Can_Append_Tag#_0_1_1_0.his 40 bytes" is just created.
+    // You can append a tag to a history file to characterize it.
+
+    // Let's move on to loading, and we can explain saving more with it.
+    load_history_file_test()?;
+
     Ok(())
 }
 
-fn modify(root : &mut RootIntf, count : &mut usize){
+pub(crate) fn modify(root : &mut RootIntf, count : &mut usize){
     let c = *count % 10;
     *count += 1;
     let m = match c{
@@ -211,7 +224,7 @@ fn modify(root : &mut RootIntf, count : &mut usize){
     m.push_str("0123456789");
 }
 
-fn print_dir<P : AsRef<Path>>(dir : P) -> DpResult<()>{
+pub(crate) fn print_dir<P : AsRef<Path>>(dir : P) -> DpResult<()>{
     for entry in std::fs::read_dir(dir)?{
         let entry = entry?;
         let name = entry.file_name().to_str()?.to_string();

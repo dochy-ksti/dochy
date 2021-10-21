@@ -4,7 +4,7 @@ use crate::test_simple_history::simple_diff::sd_data::SdData;
 use crate::imp::history::fs::next::_next;
 use rand::Rng;
 use crate::test_simple_history::simple_diff::sd_cache::SdCache;
-use crate::imp::history::algo::history_options::{HistoryOptions, HistoryOptionsBuilder};
+use crate::imp::history::algo::history_options::{HistoryOptionsBuilder};
 use crate::imp::history::fs::load::load;
 use crate::imp::history::file_hist::create_file_history::create_file_history;
 use crate::history::CumulativeOptionsBuilder;
@@ -19,16 +19,13 @@ fn test_max_phase0_with_cumu() -> FsResult<()> {
     //std::filesys::remove_dir(&dir).ok();
     std::fs::create_dir(&dir).ok();
 
-    let op = HistoryOptions::from(
-        HistoryOptionsBuilder {
-            max_phase: 0,
-            update_phase_0 : true,
-            cumulative: Some(CumulativeOptionsBuilder{
-                limit_count : None,
-                limit_nth : None,
-            }),
-            ..Default::default()
-        })?;
+    let op = HistoryOptionsBuilder::new()
+        .max_phase(0)
+        .update_phase_0(true)
+        .cumulative(Some(CumulativeOptionsBuilder::new()
+                        .limit_count(None)
+                        .limit_nth(None)))
+        .build()?;
 
     let mut data : SdData = SdData::new(None);
     let mut cache = SdCache::new(None);

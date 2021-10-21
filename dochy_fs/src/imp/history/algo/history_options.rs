@@ -15,12 +15,12 @@ use once_cell::sync::Lazy;
 /// use dochy_fs::history::{HistoryOptions, HistoryOptionsBuilder, CumulativeOptionsBuilder};
 ///
 /// fn main() -> FsResult<()>{
-///     let op = HistoryOptions::from(
-///         HistoryOptionsBuilder::new()
+///     let op =  HistoryOptionsBuilder::new()
 ///             .max_phase(5)
-///             .cumulative(Some(CumulativeOptionsBuilder::new())
+///             .cumulative(Some(CumulativeOptionsBuilder::new()
 ///                .limit_nth(Some(2))
-///                .limit_count(Some(100))))?;
+///                .limit_count(Some(100))))
+///             .build()?;
 ///     Ok(())
 /// }
 /// ```

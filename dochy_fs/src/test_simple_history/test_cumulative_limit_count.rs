@@ -4,7 +4,7 @@ use crate::test_simple_history::simple_diff::sd_data::SdData;
 use crate::imp::history::fs::next::_next;
 use rand::Rng;
 use crate::test_simple_history::simple_diff::sd_cache::SdCache;
-use crate::imp::history::algo::history_options::{HistoryOptions, HistoryOptionsBuilder, CumulativeOptionsBuilder};
+use crate::imp::history::algo::history_options::{HistoryOptionsBuilder, CumulativeOptionsBuilder};
 use crate::test_simple_history::history2::file_history2::FileHistory2;
 use crate::test_simple_history::history2::file_history_item2::FileHistoryItem2;
 use std::collections::BTreeMap;
@@ -20,16 +20,13 @@ fn test_cumulative_limit_count() -> FsResult<()> {
     std::fs::create_dir(&dir).ok();
 
     let limit_count = 3;
-    let op = HistoryOptions::from(
-        HistoryOptionsBuilder {
-            max_phase: 2,
-            update_phase_0: true,
-            cumulative: Some(CumulativeOptionsBuilder {
-                limit_nth: None,
-                limit_count: Some(limit_count),
-            }),
-            ..Default::default()
-        })?;
+    let op = HistoryOptionsBuilder::new()
+        .max_phase(2)
+        .update_phase_0(true)
+        .cumulative(Some(CumulativeOptionsBuilder::new()
+                             .limit_nth(None)
+                             .limit_count(Some(limit_count))))
+        .build()?;
 
     let mut data : SdData = SdData::new(None);
     let mut cache = SdCache::new(None);
