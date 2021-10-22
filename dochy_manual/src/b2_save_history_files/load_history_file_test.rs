@@ -53,16 +53,17 @@ pub(crate) fn load_history_file_test() -> DpResult<()>{
 
     // "(0)_1_1_0_0.his 64 bytes" is just created.
     // The first number "(0)" is the control number of the parent.
-    // The next number "_1" is the control number of this file,
-    // so "Control 1 Phase-0 1 Phase-1 0 Phase-2 0"
-    // The parent file is always known from the child's filename.
-    // The phase numbers except the last is always identical with the parent.
-    // The parent's control number is described in the number with "()",
-    // so the parent's number is "Control 0 Phase-0 1 Phase-1 0".
-    // The filename we opened is "_0_1_0.his", and they are matched.
+    // "(0)_1_1_0_0" means "Parent's Control 0 Control 1 Phase-0 1 Phase-1 0 Phase-2 0"
+    // Parent files can be always identified from child file's filenames.
+    // Child file's phase numbers except the last is always identical with the parent's.
+    // The parent's control is 0, so the parent's number is "Control 0 Phase-0 1 Phase-1 0".
+    // The filename was "_0_1_0.his", so they are matched.
 
-    // When a history file is derived from a file which is not the latest,
-    // or created without a parent, new control number is attached to the new file.
+    // We can't identify the grandparent because we can't know the grandparent's control number from a filename,
+    // so we need entire FileHistory to enumerate its ancestors
+
+    // When history files are derived from files which is not the latest,
+    // or created without their parents, new control numbers are attached to their new filenames.
 
     Ok(())
 }
