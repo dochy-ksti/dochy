@@ -31,6 +31,10 @@ impl FileHistories{
                                      HistoryFileData::new(*hash, his, prop)))
     }
 
+    pub fn iter(&self) -> impl Iterator<Item=&(u128, FileHistory)>{
+        self.vec.iter()
+    }
+
     /// remove old files other than latest n files. This function consumes history data
     pub fn remove_old_files<P : AsRef<Path>>(self, keep_latest : usize, history_dir : P) -> FsResult<()>{
         let mut s = self;

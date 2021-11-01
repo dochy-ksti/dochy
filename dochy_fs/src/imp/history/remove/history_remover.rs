@@ -5,6 +5,7 @@ use crate::imp::history::file_name::file_name_props::FileNameProps;
 use crate::error::FsResult;
 use crate::imp::history::file_hist::file_history_item::FileHistoryItem;
 use crate::imp::history::remove::composite_remover::composite_remover;
+use std::path::{Path, PathBuf};
 
 /// Determines if files are safe to be removed
 pub struct HistoryRemover<'a>{
@@ -43,7 +44,16 @@ impl<'a> HistoryRemover<'a>{
         vec
     }
 
-    pub(crate) fn from(history : &'a FileHistory) -> FsResult<HistoryRemover<'a>>{
+    /// remove all the files without the files to be kept and their dependencies
+    /// returns the paths which is failed to remove
+    pub fn remove<P : AsRef<Path>>(self, history_hash_dir : P) -> Vec<PathBuf>{
+        let removables = self.get_removable_props();
+        unsafe{
+            FileHistory::remove_files(removables.into_iter(), history_hash_dir)
+        }
+    }
+
+    pub fn from(history : &'a FileHistory) -> FsResult<HistoryRemover<'a>>{
         let src_ctls = history.ctls();
         let mut r_ctls : HashMap<u32, HistoryRemoverCtlItem> = HashMap::with_capacity(src_ctls.len());
         for (index, ctl) in src_ctls{

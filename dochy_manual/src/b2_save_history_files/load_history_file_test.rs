@@ -1,5 +1,5 @@
 use dochy::error::DpResult;
-use dochy::fs::history::{HistoryInfo, HistoryOptionsBuilder, CumulativeOptionsBuilder, load_history_file, list_histories, save_history_file, FileHistories};
+use dochy::fs::history::{HistoryInfo, HistoryOptionsBuilder, CumulativeOptionsBuilder, load_history_file, list_histories, save_history_file, FileHistories, HistoryRemover};
 use dochy::fs::common::{CurrentSrc, hash_dir_path};
 use crate::b2_save_history_files::save_history_files_accessor::RootIntf;
 use crate::b2_save_history_files::save_history_file_test::{modify, print_dir};
@@ -55,11 +55,60 @@ pub(crate) fn load_history_file_test() -> DpResult<()>{
     // The parent's control is 0, so the parent's numbers are "Control 0 Phase-0 1 Phase-1 0".
     // The filename was "_0_1_0.his", so they are matched.
 
-    // The filenames don't have parent's tags, so the parent's filenames can't be always restored from the child's filenames.
-    // FileHistory is a file list, and it can always restore filenames from phase and control numbers.
+    // Filenames don't have parent's tags. Parent's filenames cannot always be restored from the child's filenames.
+    // FileHistory is needed to get a filename from phase numbers and a control number.
 
     // When the parent file is not the latest,
     // or a file is created without a parent, a new control number will be provided to the new save file's filename.
+
+    let condition = false;
+
+    if condition{
+        // remove all but the latest two files
+        his.remove_old_files(2, history_dir)?;
+        print_dir(&hash_dir)?;
+        //_0_1.his 77 bytes
+        //_0_1_0.his 33 bytes
+        //_0_1_0_0.his 37 bytes
+        //_0_1_0_1.his 38 bytes
+        //_0_1_0_2.his 40 bytes
+        //_0_1_1.his 101 bytes
+
+        // the latest two files are
+        //_0_1_0_2.his 40 bytes
+        //_0_1_1.his 101 bytes
+
+        // but the "_0_1_0_2.his" depends on these files
+        //_0_1.his 77 bytes
+        //_0_1_0.his 33 bytes
+        //_0_1_0_0.his 37 bytes
+        //_0_1_0_1.his 38 bytes
+        // so they are kept.
+    } else{
+        let list = his.list_files();
+
+        // gets the first file's FileHistory. FileHistory is the file list of hash_dir,
+        // so it's the file list of the hash_dir which contains the first file.
+        let history = list.first().unwrap().history();
+        let remover = HistoryRemover::from(history)?;
+
+        for item in &list{
+            if item.props().phase() == 0{
+                // keeps the phase-0 files
+                remover.keep(item.props())?;
+            }
+        }
+
+        remover.remove(&hash_dir);
+        print_dir(&hash_dir)?;
+
+        //_0_0.his 28 bytes
+        //_0_1.his 77 bytes
+
+        // removed without phase-0 files
+        // phase-0 files don't have dependencies without the source file,
+        // so they may be suited to keep for a long time.
+    }
 
     Ok(())
 }
