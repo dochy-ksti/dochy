@@ -61,53 +61,84 @@ pub(crate) fn load_history_file_test() -> DpResult<()>{
     // When the parent file is not the latest,
     // or a file is created without a parent, a new control number will be provided to the new save file's filename.
 
-    let condition = false;
+    // Let's remove history files.
+    let condition = 2;
 
-    if condition{
-        // remove all but the latest two files
-        his.remove_old_files(2, history_dir)?;
-        print_dir(&hash_dir)?;
-        //_0_1.his 77 bytes
-        //_0_1_0.his 33 bytes
-        //_0_1_0_0.his 37 bytes
-        //_0_1_0_1.his 38 bytes
-        //_0_1_0_2.his 40 bytes
-        //_0_1_1.his 101 bytes
+    match condition{
+        0 => {
+            // remove all but the latest two files
+            his.remove_old_files(2, history_dir)?;
+            print_dir(&hash_dir)?;
+            //_0_1.his 77 bytes
+            //_0_1_0.his 33 bytes
+            //_0_1_0_0.his 37 bytes
+            //_0_1_0_1.his 38 bytes
+            //_0_1_0_2.his 40 bytes
+            //_0_1_1.his 101 bytes
 
-        // the latest two files are
-        //_0_1_0_2.his 40 bytes
-        //_0_1_1.his 101 bytes
+            // the latest two files are
+            //_0_1_0_2.his 40 bytes
+            //_0_1_1.his 101 bytes
 
-        // but the "_0_1_0_2.his" depends on these files
-        //_0_1.his 77 bytes
-        //_0_1_0.his 33 bytes
-        //_0_1_0_0.his 37 bytes
-        //_0_1_0_1.his 38 bytes
-        // so they are kept.
-    } else{
-        let list = his.list_files();
+            // but the "_0_1_0_2.his" depends on these files
+            //_0_1.his 77 bytes
+            //_0_1_0.his 33 bytes
+            //_0_1_0_0.his 37 bytes
+            //_0_1_0_1.his 38 bytes
+            // so they are kept.
+        },
+        1 => {
+            let list = his.list_files();
 
-        // gets the first file's FileHistory. FileHistory is the file list of hash_dir,
-        // so it's the file list of the hash_dir which contains the first file.
-        let history = list.first().unwrap().history();
-        let remover = HistoryRemover::from(history)?;
+            // gets the first file's FileHistory. FileHistory is the file list of hash_dir,
+            // so it's the file list of the hash_dir which contains the first file.
+            let history = list.first().unwrap().history();
+            let remover = HistoryRemover::from(history)?;
 
-        for item in &list{
-            if item.props().phase() == 0{
-                // keeps the phase-0 files
-                remover.keep(item.props())?;
+            for item in &list {
+                if item.props().order() == &[1, 0, 1] {
+                    // keeps the file with "Phase-0 1 Phase-1 0 Phase-2 1"
+                    remover.keep(item.props())?;
+                }
             }
+
+            remover.remove(&hash_dir);
+            print_dir(&hash_dir)?;
+
+            // _0_1.his 77 bytes
+            // _0_1_0.his 33 bytes
+            // _0_1_0_0.his 37 bytes
+            // _0_1_0_1.his 38 bytes
+
+            // The "Phase-0 1 Phase-1 0 Phase-2 1" file depends on the three files,
+            // "Phase-0 1 Phase-1 0 Phase-2 0", "Phase-0 1 Phase-1 0", "Phase-0 1"
+            // They are kept.
         }
+        _ => {
+            let list = his.list_files();
 
-        remover.remove(&hash_dir);
-        print_dir(&hash_dir)?;
+            // gets the first file's FileHistory. FileHistory is the file list of hash_dir,
+            // so it's the file list of the hash_dir which contains the first file.
+            let history = list.first().unwrap().history();
+            let remover = HistoryRemover::from(history)?;
 
-        //_0_0.his 28 bytes
-        //_0_1.his 77 bytes
+            for item in &list {
+                if item.props().phase() == 0 {
+                    // keeps the phase-0 files
+                    remover.keep(item.props())?;
+                }
+            }
 
-        // removed without phase-0 files
-        // phase-0 files don't have dependencies without the source file,
-        // so they may be suited to keep for a long time.
+            remover.remove(&hash_dir);
+            print_dir(&hash_dir)?;
+
+            //_0_0.his 28 bytes
+            //_0_1.his 77 bytes
+
+            // removed without phase-0 files
+            // phase-0 files don't have dependencies without the source file,
+            // so they may be suited to keep for a long time.
+        }
     }
 
     Ok(())
