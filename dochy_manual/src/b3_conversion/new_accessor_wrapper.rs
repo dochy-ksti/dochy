@@ -1,12 +1,13 @@
-use crate::sample_test::sample_code::version_awareness_accessor::RootIntf;
 use dochy::core::structs::{UndefOr, NullOr};
+use crate::b3_conversion::new_accessor::RootIntf;
+use std::ops::{Deref, DerefMut};
 
-pub(crate) struct VeraAccessorWrapper{
+pub(crate) struct NewWrapper {
     root : RootIntf
 }
 
-impl VeraAccessorWrapper {
-    pub fn new(root: RootIntf) -> VeraAccessorWrapper { VeraAccessorWrapper { root } }
+impl NewWrapper {
+    pub fn new(root: RootIntf) -> NewWrapper { NewWrapper { root } }
 
     pub fn new_value(&self) -> i64 {
         Self::new_value_impl(&self.root)
@@ -14,7 +15,7 @@ impl VeraAccessorWrapper {
 
     fn new_value_impl(root: &RootIntf) -> i64 {
         match root.new_value() {
-            //If data is old, the variable "new_value" will be "undefined" because it was not defined at the time.
+            //If data is the old version, the variable "new_value" will be "undefined" because it was not defined at the time.
             UndefOr::Undefined => {
                 match root.old_value(){
                     NullOr::Null => root.new_value_def_val().into_value().unwrap(),
@@ -27,3 +28,4 @@ impl VeraAccessorWrapper {
         }
     }
 }
+

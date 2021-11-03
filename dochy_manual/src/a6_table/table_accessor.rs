@@ -15,6 +15,7 @@ impl RootIntf{
 	}
     pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+    pub fn deconstruct(self) -> RootObject{ *self.root }
 
 	pub fn table2(&self) -> CTableConst<Table2Table>{
 		let t = Table2Table::new(root::get_table(self.ptr.def(), "table2").unwrap());

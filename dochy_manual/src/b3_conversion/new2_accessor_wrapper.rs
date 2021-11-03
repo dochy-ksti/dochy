@@ -1,7 +1,8 @@
-use crate::sample_test::sample_code::version_awareness_accessor2::RootIntf;
-use dochy::core::structs::{UndefOr, NullOr, Qv};
 
-pub(crate) struct VeraAccessorWrapper2 {
+use dochy::core::structs::{UndefOr, NullOr, Qv};
+use crate::b3_conversion::new2_accessor::RootIntf;
+
+pub(crate) struct New2Wrapper {
     root: RootIntf,
 }
 

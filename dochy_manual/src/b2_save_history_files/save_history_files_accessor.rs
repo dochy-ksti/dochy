@@ -15,6 +15,7 @@ impl RootIntf{
 	}
     pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+    pub fn deconstruct(self) -> RootObject{ *self.root }
 
 	pub fn d6_def_val(&self) -> &String{
 		let qv = root::get_str_def(self.ptr, "d6").unwrap();

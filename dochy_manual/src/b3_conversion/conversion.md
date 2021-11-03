@@ -1,14 +1,14 @@
-### Version Awareness
+### Conversion
 
 Dochy File System forces the diff files to be placed with 
  an archived source JSON5 file in the same directory.
 
 When the source is modified, diff files will be invalid unless 
-the source file at the time is preserved, and Dochy File System makes sure
+the source file at the time is preserved, and Dochy makes sure
 the corresponding archive file is always preserved in the same directory.
 
 When the source is modified, we'll have the current and old source files.
-Since we can get the old and current type data from them,
+Since we can get the old and the current type data from them,
 we can adjust the old data to be compatible with the current version.
 
 In Dochy, if a variable is removed in a new version, 
@@ -26,9 +26,9 @@ Let's pretend we need a variable which is ten times bigger than an old variable.
 
 How should we implement the conversion. We can write,
 
-"If the data is old, multiply the variable by ten and update the variable."
+"If the data file is the old version, multiply the variable by ten and update the variable."
 
-But is that the right way? Accumulation of the conversion may cause problems in the future.
+But is that the right way? We have old and new type data, and we could take advantage of them.  
 
 In Dochy, when a variable is undefined in an old data, 
 the system can set the special value "undefined" to the variable in the adjustment process.
@@ -40,16 +40,10 @@ the system can set the special value "undefined" to the variable in the adjustme
 ```
  This is the old source file.
 ```
-//Comments can be written in JSON5
 {
- // ? means "nullable". It's not valid syntax in JSON5, but Dochy's parser accepts it
- // Like normal JSON, you can quote the member name "oldValue?" and make the name legal    
  oldValue? : ["Int", null], 
- // every variable must have its static type. and the static type "null" is prohibited (and meaningless)
- // ["Int", null] means the null's type is Int, and the variable's static type is "nullable Int"
  
- newValue! : 100, // ! means "can be undefined". It's also invalid in JSON5 syntax but Dochy's parser accepts it.
- //newValue's default value is 100, which is 10 times bigger than the old.
+ newValue! : 100, // ! means "can be undefined". 
 }
  ```
 This is the new version. oldValue's default value has been changed into null
@@ -64,10 +58,11 @@ Dochy generates a source code to access the data.
 The generated code from the new source is this. 
 (You don't need to read. It's just a generated code)
 ```Rust
-use dochy_core::intf::*;
-use dochy_core::structs::*;
-unsafe impl Send for RootIntf{}
-#[derive(Debug, PartialEq)]
+use dochy::core::intf::*;
+use dochy::core::structs::*;
+unsafe impl Send for RootIntf {}
+unsafe impl Sync for RootIntf {}
+#[derive(Debug)]
 pub struct RootIntf{
  root : Box<RootObject>,
  ptr : RootObjectPtr,
@@ -78,8 +73,8 @@ impl RootIntf{
   let ptr = RootObjectPtr::new(root.as_mut());
   RootIntf { root, ptr }
  }
- pub unsafe fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
- pub unsafe fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+ pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
+ pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
 
  pub fn old_value(&self) -> NullOr<i64>{
   let qv = root::get_int(self.ptr, "oldValue").unwrap();
@@ -108,15 +103,16 @@ impl RootIntf{
 You can use the generated code directly, but we suppose 
 a handmade wrapper should be created for more convenience.
 ```Rust
-use crate::sample_test::sample_code::version_awareness_accessor::RootIntf;
-use dochy_core::structs::{UndefOr, NullOr};
+use dochy::core::structs::{UndefOr, NullOr};
+use crate::b3_conversion::new_accessor::RootIntf;
+use std::ops::{Deref, DerefMut};
 
-pub(crate) struct VeraAccessorWrapper{
+pub(crate) struct NewWrapper {
  root : RootIntf
 }
 
-impl VeraAccessorWrapper {
- pub fn new(root: RootIntf) -> VeraAccessorWrapper { VeraAccessorWrapper { root } }
+impl NewWrapper {
+ pub fn new(root: RootIntf) -> NewWrapper { NewWrapper { root } }
 
  pub fn new_value(&self) -> i64 {
   Self::new_value_impl(&self.root)
@@ -124,7 +120,7 @@ impl VeraAccessorWrapper {
 
  fn new_value_impl(root: &RootIntf) -> i64 {
   match root.new_value() {
-   //If data is old, the variable "new_value" will be "undefined" because it was not defined at the time.
+   //If data is the old version, the variable "new_value" will be "undefined" because it was not defined at the time.
    UndefOr::Undefined => {
     match root.old_value(){
      NullOr::Null => root.new_value_def_val().into_value().unwrap(),

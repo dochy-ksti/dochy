@@ -5,7 +5,7 @@ use crate::b2_save_history_files::save_history_files_accessor::RootIntf;
 use std::path::Path;
 use crate::b2_save_history_files::load_history_file_test::load_history_file_test;
 
-#[test]
+//#[test]
 fn save_history_file_test() -> DpResult<()> {
     let history_dir = "src/b2_save_history_files/history_dir";
 
