@@ -52,7 +52,7 @@ impl RustArray{
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RustFloatArray{
     b : Box<Vec<f64>>,
 }
@@ -77,7 +77,7 @@ impl IdentityEqual for RustFloatArray{
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RustIntArray{
     b : Arc<Vec<i64>>,
 }
@@ -102,7 +102,7 @@ impl IdentityEqual for RustIntArray{
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RustBinary{
     b : Arc<Vec<u8>>,
 }

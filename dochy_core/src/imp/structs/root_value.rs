@@ -7,7 +7,7 @@ use crate::imp::structs::mut_list_def::MutListDef;
 use crate::error::CoreResult;
 use crate::imp::structs::root_sab_value::RootSabValue;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum RootValue{
     Param(RustParam, VarType),
     Table(ConstTable),

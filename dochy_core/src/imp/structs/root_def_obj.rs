@@ -1,7 +1,7 @@
 use crate::{HashM};
 use crate::imp::structs::root_value::RootValue;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RootDefObj{
     def : HashM<String, (usize, RootValue)>,
 }

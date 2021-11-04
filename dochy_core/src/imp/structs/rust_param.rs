@@ -5,7 +5,7 @@ use crate::imp::structs::rust_array::{RustArray, RustIntArray, RustFloatArray, R
 use crate::imp::structs::array_type::ArrayType;
 use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
 
-#[derive(Debug,  Clone)]
+#[derive(Debug,  Clone, PartialEq)]
 pub enum RustParam{
     Bool(Qv<bool>),
     Float(Qv<f64>),

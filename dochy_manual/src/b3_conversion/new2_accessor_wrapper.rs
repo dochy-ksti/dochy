@@ -6,8 +6,8 @@ pub(crate) struct New2Wrapper {
     root: RootIntf,
 }
 
-impl VeraAccessorWrapper2 {
-    pub fn new(root: RootIntf) -> VeraAccessorWrapper2 { VeraAccessorWrapper2 { root } }
+impl New2Wrapper {
+    pub fn new(root: RootIntf) -> New2Wrapper { New2Wrapper { root } }
 
     pub fn new_value2(&self) -> i64 {
         Self::new_value2_impl(&self.root)

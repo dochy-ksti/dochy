@@ -1,6 +1,6 @@
 use crate::imp::structs::list_def_obj::ListDefObj;
 
-#[derive(Debug,  Clone)]
+#[derive(Debug,  Clone, PartialEq)]
 pub struct MutListDef {
     default: Box<ListDefObj>,
     undefiable: bool,

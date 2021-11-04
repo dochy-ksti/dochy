@@ -100,7 +100,7 @@ fn params_test() -> DpResult<()> {
         UndefOr::Undefined =>{},
     }
 
-    // Both "undefiable" and "nullable". Qv stands for "qualified value" (but I don't know why I named that)
+    // Both "undefiable" and "nullable". Qv stands for "Questionable value"
     match root.undef_nullable_int(){
         Qv::Val(v) =>{ assert_eq!(v, 2) },
         Qv::Null =>{assert!(false)},

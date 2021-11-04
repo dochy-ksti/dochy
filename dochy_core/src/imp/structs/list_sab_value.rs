@@ -5,7 +5,7 @@ use crate::imp::structs::var_type::VarType;
 use crate::imp::structs::qv::QvType;
 use crate::IdentityEqual;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum ListSabValue{
     Param(RustParam),
     //InnerData(InnerData),

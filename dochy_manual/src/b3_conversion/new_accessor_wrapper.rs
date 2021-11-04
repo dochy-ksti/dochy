@@ -1,6 +1,5 @@
 use dochy::core::structs::{UndefOr, NullOr};
 use crate::b3_conversion::new_accessor::RootIntf;
-use std::ops::{Deref, DerefMut};
 
 pub(crate) struct NewWrapper {
     root : RootIntf

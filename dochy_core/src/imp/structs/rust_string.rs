@@ -2,7 +2,7 @@ use std::fmt::{Display, Formatter};
 use crate::imp::structs::util::identity_equal_trait::IdentityEqual;
 use std::sync::Arc;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RustString{
     str : Arc<String>,
 }

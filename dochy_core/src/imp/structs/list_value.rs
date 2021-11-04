@@ -5,7 +5,7 @@ use crate::imp::structs::list_def_obj::ListDefObj;
 use crate::imp::structs::mut_list_def::MutListDef;
 use crate::imp::structs::list_sab_value::ListSabValue;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum ListDefValue{
     Param(RustParam, VarType),
     //InnerDataDef(ListDefObj),
