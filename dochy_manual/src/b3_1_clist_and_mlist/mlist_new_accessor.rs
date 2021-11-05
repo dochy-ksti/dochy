@@ -22,7 +22,7 @@ impl RootIntf{
 		MListConst::new(mil, self)
 	}
 	pub fn mlist_mut(&mut self) -> MListMut<MlistMItem>{
-		let mil = root::get_mlist_mut(self.ptr, "mlist").unwrap().unwrap();
+		let mil = root::get_mlist_mut(self.ptr, "mlist").unwrap();
 		MListMut::new(mil, self)
 	}
 }

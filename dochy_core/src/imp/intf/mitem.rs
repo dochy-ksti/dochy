@@ -35,32 +35,31 @@ impl MItemPtr {
     }
     pub fn item(&self) -> *const MutItem { self.item }
     /// *const MutItem must be obtained from &mut when this is mutated
-    pub unsafe fn item_mut<'a>(&self) -> &'a mut MutItem { &mut *(self.item as *mut _) }
+    unsafe fn item_mut<'a>(&self) -> &'a mut MutItem { &mut *(self.item as *mut _) }
     pub fn list_def(&self) -> *const ListDefObj{ self.list_def }
 
 }
 
-pub fn get_mil_mut<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<Option<MListPtr<T>>> {
+pub fn get_mil_mut<T : From<MItemPtr>>(ps : MItemPtr, name : &str) -> Option<MListPtr<T>> {
     let (item, list_def) = unsafe { (ps.item_mut(), &*ps.list_def) };
     if let Some(ListDefValue::MilDef(md)) = list_def.default().get(name) {
-        let sab_value = item.values_mut().get_mut(name);
-        if sab_value.is_some() {
-            return f::<T>(sab_value, md, ps);
+        if let Some(v) = f::<T>(item.values_mut().get_mut(name), md, ps){
+            return Some(v);
         }
 
         item.values_mut().insert(name.to_string(), ListSabValue::Mil(Some(MutListVal::crate_empty_list())));
-        return f::<T>(item.values_mut().get_mut(name), md, ps);
+        if let Some(v) = f::<T>(item.values_mut().get_mut(name), md, ps){
+            return Some(v);
+        } else{
+            unreachable!()
+        }
     } else{
         return None;
     }
 
-    fn f<U : From<MItemPtr>>(sab_value : Option<&mut ListSabValue>, md : &MutListDef, ps : MItemPtr) -> Option<Option<MListPtr<U>>>{
-        if let Some(ListSabValue::Mil(data)) =  sab_value {
-            if let Some(inner) = data {
-                return Some(Some(MListPtr::new(inner.list_mut(), md.default(), ps.root_def)))
-            } else {
-                return Some(None)
-            }
+    fn f<U : From<MItemPtr>>(sab_value : Option<&mut ListSabValue>, md : &MutListDef, ps : MItemPtr) -> Option<MListPtr<U>>{
+        if let Some(ListSabValue::Mil(Some(l))) =  sab_value {
+            Some(MListPtr::new(l.list_mut(), md.default(), ps.root_def))
         } else{
             None
         }

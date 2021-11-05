@@ -21,9 +21,9 @@ impl RootIntf{
 		let mil = root::get_mlist_const(self.ptr, "list").unwrap();
 		mil.map(move |p| MListConst::new(p, self))
 	}
-	pub fn list_mut(&mut self) -> Option<MListMut<ListMItem>>{
+	pub fn list_mut(&mut self) -> MListMut<ListMItem>{
 		let mil = root::get_mlist_mut(self.ptr, "list").unwrap();
-		mil.map(move |p| MListMut::new(p, self))
+		MListMut::new(mil, self)
 	}
 }
 #[derive(Debug, PartialEq, Clone, Copy)]

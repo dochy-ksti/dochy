@@ -15,6 +15,7 @@ impl RootIntf{
 	}
     pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
     pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+    pub fn deconstruct(self) -> RootObject{ *self.root }
 
 	pub fn pugya_int(&self) -> UndefOr<i64>{
 		let qv = root::get_int(self.ptr, "pugyaInt").unwrap();
@@ -210,7 +211,7 @@ impl RootIntf{
 		MListConst::new(mil, self)
 	}
 	pub fn mut1_mut(&mut self) -> MListMut<Mut1MItem>{
-		let mil = root::get_mlist_mut(self.ptr, "mut1").unwrap().unwrap();
+		let mil = root::get_mlist_mut(self.ptr, "mut1").unwrap();
 		MListMut::new(mil, self)
 	}
 	pub fn hego_int(&self) -> NullOr<i64>{
@@ -260,7 +261,7 @@ impl RootIntf{
 		MListConst::new(mil, self)
 	}
 	pub fn mut2_mut(&mut self) -> MListMut<Mut2MItem>{
-		let mil = root::get_mlist_mut(self.ptr, "mut2").unwrap().unwrap();
+		let mil = root::get_mlist_mut(self.ptr, "mut2").unwrap();
 		MListMut::new(mil, self)
 	}
 	pub fn old_name2_old(&self) -> NullOr<i64>{
@@ -729,8 +730,8 @@ impl Mut1MItem {
 		MListConst::new(mil, self)
 	}
 	pub fn inner_mut_list_mut(&mut self) -> MListMut<InnerMutListMItem>{
-		let mil = mitem::get_mil_mut(self.ptr, "innerMutList").unwrap().unwrap();
-		MListMut::new(mil, self)
+		let p = mitem::get_mil_mut(self.ptr, "innerMutList").unwrap();
+		MListMut::new(p, self)
 	}
 	pub fn some_name_def_val(&self) -> &String{
 		let qv = mitem::get_str_def(self.ptr, "someName").unwrap();

@@ -7,7 +7,7 @@ use crate::imp::intf::clist::CListPtr;
 use crate::imp::intf::table::TablePtr;
 use crate::imp::intf::citem::CItemPtr;
 use crate::imp::structs::rust_array::{RustIntArray, RustFloatArray};
-use crate::structs::{RustBinary};
+use crate::structs::{RustBinary, MutListDef, MutListVal};
 use crate::imp::structs::root_sab_value::RootSabValue;
 use crate::imp::structs::root_def_obj::RootDefObj;
 use crate::imp::intf::{MListPtr, MItemPtr};
@@ -256,18 +256,28 @@ pub fn get_clist<T : From<CItemPtr>>(root_ptr : RootObjectPtr, name : &str) -> O
     }
 }
 
-pub fn get_mlist_mut<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
+pub fn get_mlist_mut<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<MListPtr<T>>{
     let (def, sabun, _meta) = unsafe{  (*root.ptr).def_and_mut_sab() };
     if let Some(RootValue::MList(l)) = def.get(name){
-        if let Some(RootSabValue::Mut(m)) = sabun.get_mut(name) {
-            if let Some(m) = m {
-                return Some(Some(MListPtr::new(m.list_mut(), l.default(), def)));
-            } else{
-                return Some(None);
-            }
+        if let Some(v) = f::<T>(sabun.get_mut(name), l, def) {
+            return Some(v);
+        }
+        sabun.insert(name.to_string(), RootSabValue::Mut(Some(MutListVal::crate_empty_list())));
+        if let Some(v) = f::<T>(sabun.get_mut(name), l, def) {
+            return Some(v);
+        } else{
+            unreachable!()
         }
     }
     return None;
+
+    fn f<U : From<MItemPtr>>(sab : Option<&mut RootSabValue>, list_def : &MutListDef, root_def : &RootDefObj) -> Option<MListPtr<U>>{
+        if let Some(RootSabValue::Mut(Some(m))) = sab {
+            Some(MListPtr::new(m.list_mut(), list_def.default(), root_def))
+        } else{
+            None
+        }
+    }
 }
 
 pub fn get_mlist_const<T : From<MItemPtr>>(root : RootObjectPtr, name : &str) -> Option<Option<MListPtr<T>>>{
