@@ -17,6 +17,7 @@
 #[cfg(test)]#[allow(dead_code)]mod b2_save_history_files;
 #[cfg(test)]#[allow(dead_code)]mod b3_conversion;
 #[cfg(test)]#[allow(dead_code)]mod b3_1_clist_and_mlist;
+#[cfg(test)]mod make_manual;
 
 
 
