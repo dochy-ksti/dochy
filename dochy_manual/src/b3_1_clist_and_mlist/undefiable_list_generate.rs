@@ -3,7 +3,7 @@ use dochy::intf::generate_interface;
 
 #[test]
 fn undefiable_list_generate() {
-    match json_dir_to_root("src/b3_1_clist_and_mlist/jsons/undefiable_list", true) {
+    match json_dir_to_root("src/b3_1_clist_and_mlist/jsons/undefiable_list_separated", true) {
         Ok(mut a) => {
             let ans = generate_interface(&mut a);
             std::fs::write(

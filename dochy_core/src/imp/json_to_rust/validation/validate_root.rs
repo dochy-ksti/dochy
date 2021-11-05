@@ -59,7 +59,7 @@ pub(crate) fn validate_root(root : &RootObject, can_use_old: bool) -> CoreResult
                         if let Some(list) = sab {
                             validate_mut_list(m.default(), list.list(), root, can_use_old, names)?
                         } else {
-                            if m.undefiable() {
+                            if !m.undefiable() {
                                 Err(format!("Root's member {} can't be undefined", name))?
                             }
                         }

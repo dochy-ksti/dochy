@@ -2,7 +2,7 @@ Dochy doesn't have nullable/undefiable collections except undefiable MList.
 ```
 {
  list : [
-  "CList",
+  "MList",
   // every list must have the default object which is enclosed by "[{" and "}]"
   [{
    //Variables must be defined in the default object with its initial value
