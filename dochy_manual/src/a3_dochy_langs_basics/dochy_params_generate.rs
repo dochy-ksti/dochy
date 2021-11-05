@@ -1,8 +1,7 @@
 use dochy::error::DpResult;
-use dochy::core::structs::{RootObject, NullOr, UndefOr, Qv};
+use dochy::core::structs::{RootObject};
 use dochy::core::json_dir_to_root;
 use dochy::intf::generate_interface;
-use crate::a3_dochy_langs_basics::dochy_params_accessor::RootIntf;
 
 #[test]
 fn dochy_params_generate() -> DpResult<()> { // DpResult can handle every error type of Dochy

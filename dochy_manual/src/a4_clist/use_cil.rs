@@ -1,7 +1,6 @@
 use dochy::error::DpResult;
 use dochy::core::structs::RootObject;
 use dochy::core::json_dir_to_root;
-use dochy::intf::generate_interface;
 use crate::a4_clist::cil_accessor::RootIntf;
 
 //#[test]
