@@ -45,7 +45,7 @@ fn undefiable_list_test() -> DpResult<()> {
     let r = adjust_versions(new, old, true)?;
 
     let mut r = RootIntf::new(r);
-    //"list" is undefined, therefore it returns None.
+    //"list" is undefined in the old version, therefore it returns None.
     assert!(r.list().is_none());
     let a = r.list_mut();
     // When "list_mut" is called for the first time, an empty list is created and inserted, and the list is returned.

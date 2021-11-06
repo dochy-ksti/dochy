@@ -1,11 +1,11 @@
 
-Dochy Data can be used like a normal data file,
+Dochy File can be used like a normal data file,
 while Dochy History is intended to handle sequential (often small) changes,
 like "undo", "auto-save", etc.
 
 Basically, if you want to use Dochy History, you should also use
-Dochy Data to save data permanently.
-Otherwise, just retain every Dochy History file.
+Dochy File to save data permanently.
+Otherwise, just retain Dochy History files forever.
 If you don't remove, it's permanent (but storage drives have their limits...).
 
 Dochy History files have dependencies on previously saved files,

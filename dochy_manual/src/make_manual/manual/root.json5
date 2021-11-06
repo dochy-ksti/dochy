@@ -6,7 +6,7 @@
       src : "",
     }],
     {
-      title : "some first words"
+      title : "Dochy's Users Manual"
     },
     {
       title : "1. Dochy Lang"
@@ -62,6 +62,50 @@
     {
       title : "5. Split Dochy Src",
       src : "a7_split_dochy_src/split_src.md"
+    },
+    {
+      title : "6. Dochy File",
+      src : "b1_save_dochy_files/save_dochy_files.md"
+    },
+    {
+      title : "6-1. Save Dochy File",
+      src : "b1_save_dochy_files/save_dochy_file_test.rs"
+    },
+    {
+      title : "6-2. Load And Remove Dochy File",
+      src : "b1_save_dochy_files/load_dochy_file.rs"
+    },
+    {
+      title : "7. Dochy History",
+      src : "b2_save_history_files/whats_dochy_history.md"
+    },
+    {
+      title : "7-1. Save History File",
+      src : "b2_save_history_files/save_history_file_test.rs"
+    },
+    {
+      title : "7-2. Load And Remove History File",
+      src : "b2_save_history_files/load_history_file_test.md"
+    },
+    {
+      title : "7-3. Algorithm Of Dochy History",
+      src : "b2_save_history_files/whats_dochy_history.md"
+    },
+    {
+      title : "8. Directory Composition And How To Handle",
+      src : "b2_save_history_files/directory_composition_and_how_to_handle.md"
+    },
+    {
+      title : "9. Conversion",
+      src : "b3_conversion/conversion.md"
+    },
+    {
+      title : "9-1. Convert CList And MList",
+      src : "b3_1_clist_and_mlist/clist_and_mlist.md"
+    },
+    {
+      title : "9-2. Undefined MList",
+      src : "b3_1_clist_and_mlist/separete_undefined_list.md"
     }
   ]
 }

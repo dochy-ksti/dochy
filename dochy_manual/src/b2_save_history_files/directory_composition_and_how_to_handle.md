@@ -27,3 +27,5 @@ except .dochy files in save_dir.
 
 You can add and remove files in save and history dirs with API.
 (Currently no functions to modify are available.)
+
+You can remove entire hash_dirs in save and history dirs.
