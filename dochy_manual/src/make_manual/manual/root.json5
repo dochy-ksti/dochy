@@ -5,9 +5,7 @@
       title : "",
       src : "",
     }],
-    {
-      title : "Dochy's Users Manual"
-    },
+
     {
       title : "1. Dochy Lang"
     },
@@ -81,11 +79,11 @@
     },
     {
       title : "7-2. Load And Remove History File",
-      src : "b2_save_history_files/load_history_file_test.md"
+      src : "b2_save_history_files/load_history_file_test.rs"
     },
     {
       title : "7-3. Algorithm Of Dochy History",
-      src : "b2_save_history_files/whats_dochy_history.md"
+      src : "b2_save_history_files/algorithm_of_history.md"
     },
     {
       title : "8. Directory Composition And How To Handle",
@@ -101,7 +99,7 @@
     },
     {
       title : "9-2. Undefined MList",
-      src : "b3_1_clist_and_mlist/separete_undefined_list.md"
+      src : "b3_1_clist_and_mlist/separate_undefined_list.md"
     }
   ]
 }
