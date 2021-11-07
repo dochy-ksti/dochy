@@ -4,8 +4,6 @@ Hogehoge
 
 ## [Huga](b.md)
 
-### [3.1 Hego](c.md)
-
+### [3.1 Hego](c.md)  
 #### [3.1.1 Hugego](d.md)
-
-##### [3.1.1.1 Bonbabon](e.md)
+##### [3.1.1.1 Bonbabon](e.md)  
