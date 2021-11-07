@@ -62,11 +62,5 @@ pub mod filesys{
     pub use dochy_fs::filesys::remove_dochy_file;
     pub use dochy_fs::filesys::force_update_and_get_info_us;
     pub use dochy_fs::filesys::SaveDirInfo;
-
-}
-
-pub mod error{
-    pub use dochy_fs::error::FsResult;
-    pub use dochy_fs::error::FsError;
 }
 

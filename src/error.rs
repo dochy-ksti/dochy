@@ -54,20 +54,24 @@ impl From<std::io::Error> for DpError {
     fn from(e : std::io::Error) -> Self { Self::new(e) }
 }
 
-impl From<dochy_archiver2::error::NouArcError> for DpError{
-    fn from(e : dochy_archiver2::error::NouArcError) -> Self{ Self::new(e) }
+impl From<dochy_archiver2::NouArcError> for DpError{
+    fn from(e : dochy_archiver2::NouArcError) -> Self{ Self::new(e) }
 }
 
-impl From<dochy_core::error::CoreError> for DpError{
-    fn from(e : dochy_core::error::CoreError) -> Self{ Self::new(e) }
+impl From<dochy_core::CoreError> for DpError{
+    fn from(e : dochy_core::CoreError) -> Self{ Self::new(e) }
 }
 
-impl From<dochy_diff::diff_error::DiffError> for DpError{
-    fn from(e : dochy_diff::diff_error::DiffError) -> Self{ Self::new(e) }
+impl From<dochy_intf::IntfError> for DpError{
+    fn from(e : dochy_intf::IntfError) -> Self{ Self::new(e) }
 }
 
-impl From<dochy_fs::error::FsError> for DpError{
-    fn from(e : dochy_fs::error::FsError) -> Self{ Self::new(e) }
+impl From<dochy_diff::DiffError> for DpError{
+    fn from(e : dochy_diff::DiffError) -> Self{ Self::new(e) }
+}
+
+impl From<dochy_fs::FsError> for DpError{
+    fn from(e : dochy_fs::FsError) -> Self{ Self::new(e) }
 }
 
 

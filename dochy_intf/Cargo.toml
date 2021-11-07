@@ -12,3 +12,4 @@ keywords = ["data", "management"]
 
 [dependencies]
 dochy_core = {path="../dochy_core", version="0.8.0"}
+anyhow = "1.0.34"

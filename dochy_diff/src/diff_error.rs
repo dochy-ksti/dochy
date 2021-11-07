@@ -3,6 +3,8 @@ use anyhow::anyhow;
 use std::fmt::{Debug, Display, Formatter};
 use with_capacity_safe::WcsError;
 
+pub type DiffResult<T> = std::result::Result<T, DiffError>;
+
 ///The error type of dochy_diff
 pub struct DiffError {
     e : anyhow::Error

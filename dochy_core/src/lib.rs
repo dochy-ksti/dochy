@@ -1,7 +1,7 @@
 #![feature(once_cell)]
 
 mod old;
-pub mod error;
+mod error;
 mod imp;
 pub mod structs;
 #[allow(dead_code)]
@@ -36,4 +36,5 @@ pub use imp::structs::json_file::JsonFileImpl;
 use std::lazy::SyncLazy;
 use dochy_archiver2::{ArchiveOptions, ArchiveOptionsBuilder};
 
+pub use error::{CoreError, CoreResult};
 

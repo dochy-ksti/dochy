@@ -7,11 +7,12 @@ mod imp;
 #[cfg(test)]
 #[allow(dead_code, unused_imports)]
 mod testing;
-pub mod error;
+mod error;
 
 
 
 pub type ArcResult<T> = std::result::Result<T, crate::error::NouArcError>;
+pub use error::NouArcError;
 
 pub use imp::read_archive_data_from_directory::read_archive_data_from_directory;
 pub use imp::read_archive::read_archive;

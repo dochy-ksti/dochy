@@ -3,7 +3,7 @@
 extern crate test;
 
 
-pub mod error;
+mod error;
 
 #[allow(dead_code)]
 #[cfg(test)]
@@ -16,6 +16,8 @@ mod test_fs;
 mod test_simple_history;
 //#[allow(dead_code)]
 mod imp;
+
+pub use crate::error::{FsResult, FsError};
 
 pub mod common{
     pub use crate::imp::common::current_src::current_src::CurrentSrc;

@@ -54,16 +54,16 @@ impl From<std::io::Error> for FsError {
     fn from(e : std::io::Error) -> Self { Self::new(e) }
 }
 
-impl From<dochy_archiver2::error::NouArcError> for FsError{
-    fn from(e : dochy_archiver2::error::NouArcError) -> Self{ Self::new(e) }
+impl From<dochy_archiver2::NouArcError> for FsError{
+    fn from(e : dochy_archiver2::NouArcError) -> Self{ Self::new(e) }
 }
 
-impl From<dochy_core::error::CoreError> for FsError{
-    fn from(e : dochy_core::error::CoreError) -> Self{ Self::new(e) }
+impl From<dochy_core::CoreError> for FsError{
+    fn from(e : dochy_core::CoreError) -> Self{ Self::new(e) }
 }
 
-impl From<dochy_diff::diff_error::DiffError> for FsError{
-    fn from(e : dochy_diff::diff_error::DiffError) -> Self{ Self::new(e) }
+impl From<dochy_diff::DiffError> for FsError{
+    fn from(e : dochy_diff::DiffError) -> Self{ Self::new(e) }
 }
 
 impl From<WcsError> for FsError{

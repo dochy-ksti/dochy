@@ -1,49 +1,20 @@
-use dochy::core::{json_dir_to_root};
-use dochy::intf::generate_interface;
+
+use dochy::intf::{generate_accessor_from_json_dir};
+use dochy::error::DpResult;
 
 #[test]
-fn generate_old() {
-    match json_dir_to_root("src/b3_conversion/jsons/old", true) {
-        Ok(mut a) => {
-            let ans = generate_interface(&mut a);
-            std::fs::write(
-                "src/b3_conversion/old_accessor.rs",
-                &ans.to_string(),
-            ).unwrap();
-        }
-        Err(_e) => {
-            assert!(false);
-        }
-    }
+fn generate_old() -> DpResult<()>{
+    generate_accessor_from_json_dir("src/b3_conversion/jsons/old", "src/b3_conversion/old_accessor.rs",true)?;
+    Ok(())
 }
 #[test]
-fn generate_new() {
-    match json_dir_to_root("src/b3_conversion/jsons/new", true) {
-        Ok(mut a) => {
-            let ans = generate_interface(&mut a);
-            std::fs::write(
-                "src/b3_conversion/new_accessor.rs",
-                &ans.to_string(),
-            ).unwrap();
-        }
-        Err(_e) => {
-            assert!(false);
-        }
-    }
+fn generate_new() -> DpResult<()>{
+    generate_accessor_from_json_dir("src/b3_conversion/jsons/new", "src/b3_conversion/new_accessor.rs",true)?;
+    Ok(())
 }
 #[test]
-fn generate_new2() {
-    match json_dir_to_root("src/b3_conversion/jsons/new2", true) {
-        Ok(mut a) => {
-            let ans = generate_interface(&mut a);
-            std::fs::write(
-                "src/b3_conversion/new2_accessor.rs",
-                &ans.to_string(),
-            ).unwrap();
-        }
-        Err(_e) => {
-            assert!(false);
-        }
-    }
+fn generate_new2() -> DpResult<()>{
+    generate_accessor_from_json_dir("src/b3_conversion/jsons/new2", "src/b3_conversion/new2_accessor.rs",true)?;
+    Ok(())
 }
 

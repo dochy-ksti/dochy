@@ -30,5 +30,11 @@ fn dochy_params_generate() -> DpResult<()> { // DpResult can handle every error 
     ).unwrap();
 
     // Generating source code in [test] code is not sophisticated, but easy. I like it.
+
+    // This entire function can be written with one function.
+
+    // generate_accessor_from_json_dir("src/a3_dochy_langs_basics/dochy_params", "src/a3_dochy_langs_basics/dochy_params_accessor.rs", true)?;
+
+    // We'll use it hereafter.
     Ok(())
 }
