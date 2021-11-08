@@ -39,7 +39,7 @@ pub(crate) fn get_ref(v : &LinkedHashMap<String, JVal>, span : &Span, names : &N
                     },
                     _ =>{},
                 }
-                map.insert(k.to_string(), (idx, RefValue::new(v.map(|s| s.str().to_string()), vt.clone())));
+                map.insert(k.to_string(), (idx, RefValue::new(v.as_ref().map(|s| s.str().to_string()), vt.clone())));
             },
             _ => {
                 Err(format!(r#"{} {} Ref's value must be a string or null {}"#, span.line_str(), k, names))?

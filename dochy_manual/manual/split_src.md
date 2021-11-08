@@ -1,6 +1,6 @@
-[prev](use_table.md.md)
+[prev](use_table.md)
 [index](index.md)
-[next](save_dochy_files.md.md)
+[next](save_dochy_files.md)
 
 ### 5. Split Dochy Src
 
@@ -61,6 +61,6 @@ and the content is considered as the value.
 Nullable variables can't be separated because "?" can't be used in filenames.
 
 
-[prev](use_table.md.md)
+[prev](use_table.md)
 [index](index.md)
-[next](save_dochy_files.md.md)
+[next](save_dochy_files.md)

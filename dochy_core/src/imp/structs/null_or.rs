@@ -12,25 +12,36 @@ pub enum UndefOr<T>{
 
 impl<T : Clone> Clone for NullOr<T>{
     fn clone(&self) -> Self {
-        self.map(|t| t.clone())
+        self.as_ref().map(|t| t.clone())
     }
 }
 
 impl<T : Clone> Clone for UndefOr<T>{
     fn clone(&self) -> Self {
-        self.map(|t| t.clone())
+        self.as_ref().map(|t| t.clone())
     }
 }
 
+impl<T : Copy> Copy for NullOr<T>{}
+impl<T : Copy> Copy for UndefOr<T>{}
+
+
 impl<T> NullOr<T>{
-    pub fn map<U>(&self, f : impl Fn(&T) -> U) -> NullOr<U> {
+    pub fn as_ref(&self) -> NullOr<&T>{
+        match self{
+            NullOr::Val(v) => NullOr::Val(v),
+            NullOr::Null => NullOr::Null,
+        }
+    }
+
+    pub fn map<U>(self, f : impl FnOnce(T) -> U) -> NullOr<U> {
         match self {
             NullOr::Val(v) => NullOr::Val(f(v)),
             NullOr::Null => NullOr::Null,
         }
     }
 
-    pub fn opt_map<U>(&self, f : impl Fn(&T) -> Option<U>) -> Option<NullOr<U>>{
+    pub fn opt_map<U>(self, f : impl FnOnce(T) -> Option<U>) -> Option<NullOr<U>>{
         match self {
             NullOr::Val(v) => f(v).map(|r| NullOr::Val(r)),
             NullOr::Null => Some(NullOr::Null),
@@ -63,14 +74,22 @@ impl<T> NullOr<T>{
 
 
 impl<T> UndefOr<T>{
-    pub fn map<U>(&self, f : impl Fn(&T) -> U) -> UndefOr<U> {
+    pub fn as_ref(&self) -> UndefOr<&T>{
+        match self{
+            UndefOr::Val(v) => UndefOr::Val(v),
+            UndefOr::Undefined => UndefOr::Undefined,
+        }
+    }
+
+    pub fn map<U>(self, f : impl FnOnce(T) -> U) -> UndefOr<U> {
         match self {
             UndefOr::Val(v) => UndefOr::Val(f(v)),
             UndefOr::Undefined => UndefOr::Undefined,
         }
     }
 
-    pub fn opt_map<U>(&self, f : impl Fn(&T) -> Option<U>) -> Option<UndefOr<U>>{
+
+    pub fn opt_map<U>(self, f : impl FnOnce(T) -> Option<U>) -> Option<UndefOr<U>>{
         match self {
             UndefOr::Val(v) => f(v).map(|r| UndefOr::Val(r)),
             UndefOr::Undefined => Some(UndefOr::Undefined),

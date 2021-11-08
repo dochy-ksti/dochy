@@ -1,6 +1,6 @@
-[prev](dochy_params_generate.md.md)
+[prev](dochy_params_generate.md)
 [index](index.md)
-[next](root.md.md)
+[next](root.md)
 
 ### 1-1-2. Use Generated Source Code
 
@@ -127,6 +127,6 @@ fn params_test() -> DpResult<()> {
 ```
 
 
-[prev](dochy_params_generate.md.md)
+[prev](dochy_params_generate.md)
 [index](index.md)
-[next](root.md.md)
+[next](root.md)

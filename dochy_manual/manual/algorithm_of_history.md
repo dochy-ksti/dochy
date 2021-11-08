@@ -1,6 +1,6 @@
-[prev](load_history_file_test.md.md)
+[prev](load_history_file_test.md)
 [index](index.md)
-[next](directory_composition_and_how_to_handle.md.md)
+[next](directory_composition_and_how_to_handle.md)
 
 ### 7-3. Algorithm Of Dochy History
 
@@ -194,6 +194,6 @@ It would result too many files to get a state, so you may need customize the con
 
 
 
-[prev](load_history_file_test.md.md)
+[prev](load_history_file_test.md)
 [index](index.md)
-[next](directory_composition_and_how_to_handle.md.md)
+[next](directory_composition_and_how_to_handle.md)

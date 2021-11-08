@@ -1,6 +1,6 @@
-[prev](conversion.md.md)
+[prev](conversion.md)
 [index](index.md)
-[next](separate_undefined_list.md.md)
+[next](separate_undefined_list.md)
 
 ### 9-1. Convert CList And MList
 
@@ -204,6 +204,6 @@ All the objects in the initial list of the new version is discarded,
 and replaced by the old version's objects with the new type data. 
 
 
-[prev](conversion.md.md)
+[prev](conversion.md)
 [index](index.md)
-[next](separate_undefined_list.md.md)
+[next](separate_undefined_list.md)

@@ -1,6 +1,6 @@
-[prev](root.md.md)
+[prev](root.md)
 [index](index.md)
-[next](root.md.md)
+[next](root.md)
 
 ### 3-2. Use Mil
 
@@ -100,6 +100,6 @@ fn mil_test() -> DpResult<()> {
 ```
 
 
-[prev](root.md.md)
+[prev](root.md)
 [index](index.md)
-[next](root.md.md)
+[next](root.md)

@@ -1,4 +1,4 @@
-[prev](clist_and_mlist.md.md)
+[prev](clist_and_mlist.md)
 [index](index.md)
 
 ### 9-2. Undefined MList
@@ -60,5 +60,5 @@ fn undefiable_list_test() -> DpResult<()> {
 ```
 
 
-[prev](clist_and_mlist.md.md)
+[prev](clist_and_mlist.md)
 [index](index.md)

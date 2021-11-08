@@ -3,6 +3,7 @@ use dochy::error::DpResult;
 use crate::make_manual::make_page::make_page;
 use crate::make_manual::write_page::{write_page, write_index_page};
 use crate::make_manual::make_index_page::make_index_page;
+use dochy::core::structs::NullOr;
 
 pub(crate) struct ManualBuilder {
     vec : Vec<ManualBuilderItem>
@@ -10,20 +11,20 @@ pub(crate) struct ManualBuilder {
 
 pub(crate) struct ManualBuilderItem {
     title : String,
-    src : String
+    src : NullOr<String>,
 }
 
 impl ManualBuilderItem {
-    pub(crate) fn new(title : String, src : String) -> ManualBuilderItem {
+    pub(crate) fn new(title : String, src : NullOr<String>) -> ManualBuilderItem {
         ManualBuilderItem { title, src }
     }
     pub(crate) fn title(&self) -> &str{ &self.title }
-    pub(crate) fn src(&self) -> &str{ &self.src }
+    pub(crate) fn src(&self) -> NullOr<&str>{ self.src.as_ref().map(|s| s.as_str()) }
 }
 
 impl ManualBuilder {
     pub(crate) fn new() -> ManualBuilder { ManualBuilder { vec : vec![] } }
-    pub(crate) fn add(&mut self, title : String, src : String){
+    pub(crate) fn add(&mut self, title : String, src : NullOr<String>){
         self.vec.push(ManualBuilderItem::new(title, src))
     }
 
@@ -33,25 +34,23 @@ impl ManualBuilder {
         let vec = &self.vec;
         for i in 0..vec.len(){
             let item = vec.get(i)?;
-            if item.src.len() != 0 {
+            if let NullOr::Val(src) = &item.src {
                 let prev = get_src(vec, i.overflowing_sub(1).0);
                 let next = get_src(vec, i + 1);
 
-                let page = make_page(prev, next, item.title(), item.src())?;
-                write_page(item.src(), &page, manual_dir)?;
+                let page = make_page(prev, next, item.title(), src)?;
+                write_page(src, &page, manual_dir)?;
             }
         }
         let index_page = make_index_page(vec)?;
-        write_index_page(&index_page, manual_dir);
+        write_index_page(&index_page, manual_dir)?;
         Ok(())
     }
 }
 
-fn get_src(vec : &[ManualBuilderItem], index : usize) -> Option<&str>{
-    vec.get(index).and_then(|item|
-        if item.src.len() == 0 {
-            None
-        } else{
-            Some(item.src.as_str())
-        })
+fn get_src(vec : &[ManualBuilderItem], index : usize) -> NullOr<&str>{
+    match vec.get(index) {
+        Some(v) => v.src.as_ref().map(|s| s.as_str()),
+        None => NullOr::Null
+    }
 }

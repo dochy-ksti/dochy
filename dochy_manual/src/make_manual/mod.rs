@@ -1,6 +1,6 @@
 mod make_manual;
 mod manual_generate;
-mod manual_accessor;
+#[allow(dead_code)]mod manual_accessor;
 mod manual_builder;
 mod make_index_page;
 mod make_page;

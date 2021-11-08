@@ -1,6 +1,6 @@
-[prev](load_dochy_file.md.md)
+[prev](load_dochy_file.md)
 [index](index.md)
-[next](save_history_file_test.md.md)
+[next](save_history_file_test.md)
 
 ### 7. Dochy History
 
@@ -23,6 +23,6 @@ Besides, you can specify files to retain and remove all the other files without 
 
 
 
-[prev](load_dochy_file.md.md)
+[prev](load_dochy_file.md)
 [index](index.md)
-[next](save_history_file_test.md.md)
+[next](save_history_file_test.md)

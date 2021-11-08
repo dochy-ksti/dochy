@@ -20,15 +20,23 @@ impl<T> Qv<T>{
         }
     }
 
-    pub fn map<U>(&self, f : impl Fn(&T) -> U) -> Qv<U> {
-        match self {
-            Qv::Val(v) => Qv::Val(f(v)),
+    pub fn as_ref(&self) -> Qv<&T>{
+        match self{
+            Qv::Val(v) => Qv::Val(v),
             Qv::Null => Qv::Null,
-            Qv::Undefined => Qv::Undefined
+            Qv::Undefined => Qv::Undefined,
         }
     }
 
-    pub fn into_map<U>(self, f : impl Fn(T) -> U) -> Qv<U>{
+    // pub fn map<U>(&self, f : impl Fn(&T) -> U) -> Qv<U> {
+    //     match self {
+    //         Qv::Val(v) => Qv::Val(f(v)),
+    //         Qv::Null => Qv::Null,
+    //         Qv::Undefined => Qv::Undefined
+    //     }
+    // }
+
+    pub fn map<U>(self, f : impl Fn(T) -> U) -> Qv<U>{
         match self {
             Qv::Val(v) => Qv::Val(f(v)),
             Qv::Null => Qv::Null,

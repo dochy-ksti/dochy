@@ -17,7 +17,7 @@ impl New2Wrapper {
         match root.new_value() {
             // We call a value "Qv" which can be "null" or "undefined". Maybe Qv stands for "Questionable value"
             Qv::Undefined => {
-                root.old_value().map(|&old| old * 10)
+                root.old_value().map(|old| old * 10)
             },
             Qv::Null => NullOr::Null,
             Qv::Val(v) => { NullOr::Val(v) }

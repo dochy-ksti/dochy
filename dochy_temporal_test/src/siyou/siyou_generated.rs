@@ -707,7 +707,7 @@ impl ItemList3CItem {
 	}
 	pub fn ref_huga_list(&self) -> NullOr<HugaListCItem>{
 		let qv = citem::get_ref(self.ptr, "hugaList").unwrap();
-		NullOr::from_qv(qv).unwrap().map(|p| HugaListCItem::from(*p))
+		NullOr::from_qv(qv).unwrap().map(|p| HugaListCItem::from(p))
 	}
 	pub fn ref_id_huga_list(&self) -> NullOr<&String>{
 		let qv = citem::get_ref_id(self.ptr, "hugaList").unwrap();

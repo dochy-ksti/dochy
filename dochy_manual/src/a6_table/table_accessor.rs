@@ -129,7 +129,7 @@ impl From<MItemPtr> for MlistMItem {
 impl MlistMItem {
 	pub fn ref_table2(&self) -> NullOr<Table2CItem>{
 		let qv = mitem::get_ref(self.ptr, "table2").unwrap();
-		NullOr::from_qv(qv).unwrap().map(|p| Table2CItem::from(*p))
+		NullOr::from_qv(qv).unwrap().map(|p| Table2CItem::from(p))
 	}
 	pub fn ref_id_table2(&self) -> NullOr<&String>{
 		let qv = mitem::get_ref_id(self.ptr, "table2").unwrap();

@@ -1,6 +1,6 @@
-[prev](whats_dochy_history.md.md)
+[prev](whats_dochy_history.md)
 [index](index.md)
-[next](load_history_file_test.md.md)
+[next](load_history_file_test.md)
 
 ### 7-1. Save History File
 
@@ -243,6 +243,6 @@ pub(crate) fn print_dir<P : AsRef<Path>>(dir : P) -> DpResult<()>{
 ```
 
 
-[prev](whats_dochy_history.md.md)
+[prev](whats_dochy_history.md)
 [index](index.md)
-[next](load_history_file_test.md.md)
+[next](load_history_file_test.md)

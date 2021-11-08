@@ -1,6 +1,6 @@
-[prev](save_dochy_file_test.md.md)
+[prev](save_dochy_file_test.md)
 [index](index.md)
-[next](whats_dochy_history.md.md)
+[next](whats_dochy_history.md)
 
 ### 6-2. Load And Remove Dochy File
 
@@ -49,6 +49,6 @@ pub(crate) fn load_dochy_file_test() -> DpResult<()> {
 ```
 
 
-[prev](save_dochy_file_test.md.md)
+[prev](save_dochy_file_test.md)
 [index](index.md)
-[next](whats_dochy_history.md.md)
+[next](whats_dochy_history.md)

@@ -1,6 +1,6 @@
-[prev](root.md.md)
+[prev](root.md)
 [index](index.md)
-[next](split_src.md.md)
+[next](split_src.md)
 
 ### 4-1. Use Table
 
@@ -126,6 +126,6 @@ fn table_test() -> DpResult<()> {
 ```
 
 
-[prev](root.md.md)
+[prev](root.md)
 [index](index.md)
-[next](split_src.md.md)
+[next](split_src.md)

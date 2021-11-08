@@ -74,7 +74,7 @@ pub fn get_int_def(ps : CItemPtr, name : &str) -> Option<Qv<i64>>{
 
 pub fn get_str(ps : CItemPtr, name : &str) -> Option<Qv<String>>{
     if let Some(RustParam::String(b)) = get_param(ps, name){
-        Some(b.map(|s| s.str().to_string()))
+        Some(b.as_ref().map(|s| s.str().to_string()))
     } else{ None }
 }
 
@@ -90,7 +90,7 @@ pub fn get_str_def<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b Strin
 
 pub fn get_int_array(ps : CItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
     if let Some(RustParam::IntArray(b)) = get_param(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -108,7 +108,7 @@ pub fn get_int_array_def<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&'b
 
 pub fn get_float_array(ps : CItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
     if let Some(RustParam::FloatArray(b)) = get_param(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -126,7 +126,7 @@ pub fn get_float_array_def<'a, 'b>(ps : CItemPtr, name : &'a str) -> Option<Qv<&
 
 pub fn get_binary(ps : CItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -229,7 +229,7 @@ pub fn get_ref_id_impl<'a>(refs : &HashM<String, RefSabValue>, list_def : &ListD
             d.value()
         } else{ return None; }
     };
-    return Some(qv.map(|b|unsafe{
+    return Some(qv.as_ref().map(|b|unsafe{
         let b : *const String = b;
         &*b
     }));

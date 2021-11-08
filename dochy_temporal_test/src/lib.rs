@@ -4,6 +4,7 @@ extern crate test;
 #[cfg(test)]
 #[allow(dead_code)]
 mod siyou;
+mod temporal_test;
 //
 // #[cfg(test)]
 // #[allow(dead_code)]

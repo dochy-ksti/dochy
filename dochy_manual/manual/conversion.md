@@ -1,6 +1,6 @@
-[prev](directory_composition_and_how_to_handle.md.md)
+[prev](directory_composition_and_how_to_handle.md)
 [index](index.md)
-[next](clist_and_mlist.md.md)
+[next](clist_and_mlist.md)
 
 ### 9. Conversion
 
@@ -210,6 +210,6 @@ but if old_value and new_value haven't been modified, the default value is retur
 
 
 
-[prev](directory_composition_and_how_to_handle.md.md)
+[prev](directory_composition_and_how_to_handle.md)
 [index](index.md)
-[next](clist_and_mlist.md.md)
+[next](clist_and_mlist.md)

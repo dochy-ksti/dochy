@@ -37,13 +37,13 @@ impl ListCItem {
 		let qv = citem::get_immutable_str(self.ptr, "title").unwrap();
 		qv.into_value().unwrap()
 	}
-	pub fn src_def_val(&self) -> &String{
+	pub fn src_def_val(&self) -> NullOr<&String>{
 		let qv = citem::get_str_def(self.ptr, "src").unwrap();
-		qv.into_value().unwrap()
+		NullOr::from_qv(qv).unwrap()
 	}
-	pub fn src(&self) -> &String{
+	pub fn src(&self) -> NullOr<&String>{
 		let qv = citem::get_immutable_str(self.ptr, "src").unwrap();
-		qv.into_value().unwrap()
+		NullOr::from_qv(qv).unwrap()
 	}
 	
 }

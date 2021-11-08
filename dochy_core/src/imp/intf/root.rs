@@ -72,7 +72,7 @@ pub fn get_int_def(root : RootObjectPtr, name : &str) -> Option<Qv<i64>>{
 
 pub fn get_str(root : RootObjectPtr, name : &str) -> Option<Qv<String>>{
     if let Some(RustParam::String(b)) = get_param(root, name){
-        Some(b.map(|s| s.str().to_string()))
+        Some(b.as_ref().map(|s| s.str().to_string()))
     } else{
         None
     }
@@ -92,7 +92,7 @@ pub fn get_str_def<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option<Qv<&'
 
 pub fn get_int_array(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<i64>>>{
     if let Some(RustParam::IntArray(b)) = get_param(root, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -112,7 +112,7 @@ pub fn get_int_array_def<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Option
 
 pub fn get_float_array(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<f64>>>{
     if let Some(RustParam::FloatArray(b)) = get_param(root, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -131,7 +131,7 @@ pub fn get_float_array_def<'a, 'b>(root : RootObjectPtr, name : &'a str) -> Opti
 }
 pub fn get_binary(root : RootObjectPtr, name : &str) -> Option<Qv<Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param(root, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -353,16 +353,16 @@ pub fn set_int(root : RootObjectPtr, name : &str, val : Qv<i64>) -> bool{
     set_sabun(root, name, RustParam::Int(val))
 }
 pub fn set_str(root : RootObjectPtr, name : &str, val : Qv<String>) -> bool{
-    set_sabun(root,name, RustParam::String(val.into_map(|s| RustString::new(s))))
+    set_sabun(root,name, RustParam::String(val.map(|s| RustString::new(s))))
 }
 pub fn set_int_array(root : RootObjectPtr, name : &str, val : Qv<Vec<i64>>) -> bool{
-    set_sabun(root,name, RustParam::IntArray(val.into_map(|s| RustIntArray::new(s))))
+    set_sabun(root,name, RustParam::IntArray(val.map(|s| RustIntArray::new(s))))
 }
 pub fn set_float_array(root : RootObjectPtr, name : &str, val : Qv<Vec<f64>>) -> bool{
-    set_sabun(root,name, RustParam::FloatArray(val.into_map(|s| RustFloatArray::new(s))))
+    set_sabun(root,name, RustParam::FloatArray(val.map(|s| RustFloatArray::new(s))))
 }
 pub fn set_binary(root : RootObjectPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
-    set_sabun(root,name, RustParam::Binary(val.into_map(|s| RustBinary::new(s))))
+    set_sabun(root,name, RustParam::Binary(val.map(|s| RustBinary::new(s))))
 }
 /// Sets itinital value(0, empty string, zero-filled vec) to the parameter.
 /// len is ignored except for vec-types.

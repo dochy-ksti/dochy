@@ -1,6 +1,6 @@
-[prev](save_dochy_files.md.md)
+[prev](save_dochy_files.md)
 [index](index.md)
-[next](load_dochy_file.md.md)
+[next](load_dochy_file.md)
 
 ### 6-1. Save Dochy File
 
@@ -80,6 +80,6 @@ fn save_dochy_file_test() -> DpResult<()>
 ```
 
 
-[prev](save_dochy_files.md.md)
+[prev](save_dochy_files.md)
 [index](index.md)
-[next](load_dochy_file.md.md)
+[next](load_dochy_file.md)

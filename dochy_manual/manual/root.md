@@ -1,6 +1,6 @@
-[prev](use_mil.md.md)
+[prev](use_mil.md)
 [index](index.md)
-[next](use_table.md.md)
+[next](use_table.md)
 
 ### 4. Table
 
@@ -113,6 +113,6 @@
 ```
 
 
-[prev](use_mil.md.md)
+[prev](use_mil.md)
 [index](index.md)
-[next](use_table.md.md)
+[next](use_table.md)

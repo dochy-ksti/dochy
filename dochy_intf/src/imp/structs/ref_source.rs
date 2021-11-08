@@ -45,9 +45,9 @@ impl RefSource{
         sb.push(1,&format!("let qv = {}::get_ref(self.ptr, \"{}\").unwrap();", mod_name, id));
         let s = match var_type{
             VarType::Normal => format!("{}::from(qv.into_value().unwrap())", item_type_name),
-            VarType::Nullable => format!("NullOr::from_qv(qv).unwrap().map(|p| {}::from(*p))", item_type_name),
-            VarType::Undefiable => format!("UndefOr::from_qv(qv).unwrap().map(|p| {}::from(*p))", item_type_name),
-            VarType::UndefNullable => format!("qv.map(|p| {}::from(*p))", item_type_name),
+            VarType::Nullable => format!("NullOr::from_qv(qv).unwrap().map(|p| {}::from(p))", item_type_name),
+            VarType::Undefiable => format!("UndefOr::from_qv(qv).unwrap().map(|p| {}::from(p))", item_type_name),
+            VarType::UndefNullable => format!("qv.map(|p| {}::from(p))", item_type_name),
         };
         sb.push(1, &s);
         sb.push(0, "}");

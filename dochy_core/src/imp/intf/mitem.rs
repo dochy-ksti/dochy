@@ -124,7 +124,7 @@ pub fn get_float_def(ps : MItemPtr, name : &str) -> Option<Qv<f64>>{
 
 pub fn get_str(ps : MItemPtr, name : &str) -> Option<Qv<String>>{
     if let Some(RustParam::String(b)) = get_param(ps, name){
-        Some(b.map(|s| s.str().to_string()))
+        Some(b.as_ref().map(|s| s.str().to_string()))
     } else{ None }
 }
 
@@ -140,7 +140,7 @@ pub fn get_str_def<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b Strin
 
 pub fn get_int_array(ps : MItemPtr, name : &str) -> Option<Qv<Vec<i64>>>{
     if let Some(RustParam::IntArray(b)) = get_param(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -159,7 +159,7 @@ pub fn get_int_array_def<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&'b
 }
 pub fn get_float_array(ps : MItemPtr, name : &str) -> Option<Qv<Vec<f64>>>{
     if let Some(RustParam::FloatArray(b)) = get_param(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -177,7 +177,7 @@ pub fn get_float_array_def<'a, 'b>(ps : MItemPtr, name : &'a str) -> Option<Qv<&
 }
 pub fn get_binary(ps : MItemPtr, name : &str) -> Option<Qv<Vec<u8>>>{
     if let Some(RustParam::Binary(b)) = get_param(ps, name){
-        Some(b.map(|s| s.vec().clone()))
+        Some(b.as_ref().map(|s| s.vec().clone()))
     } else{
         None
     }
@@ -312,16 +312,16 @@ pub fn set_float(ps : MItemPtr, name : &str, val : Qv<f64>) -> bool{
     set_sabun(ps, name, RustParam::Float(val))
 }
 pub fn set_str(ps : MItemPtr, name : &str, val : Qv<String>) -> bool{
-    set_sabun(ps, name, RustParam::String(val.into_map(|s| RustString::new(s))))
+    set_sabun(ps, name, RustParam::String(val.map(|s| RustString::new(s))))
 }
 pub fn set_int_array(ps : MItemPtr, name : &str, val : Qv<Vec<i64>>) -> bool{
-    set_sabun(ps, name, RustParam::IntArray(val.into_map(|s| RustIntArray::new(s))))
+    set_sabun(ps, name, RustParam::IntArray(val.map(|s| RustIntArray::new(s))))
 }
 pub fn set_float_array(ps : MItemPtr, name : &str, val : Qv<Vec<f64>>) -> bool{
-    set_sabun(ps, name, RustParam::FloatArray(val.into_map(|s| RustFloatArray::new(s))))
+    set_sabun(ps, name, RustParam::FloatArray(val.map(|s| RustFloatArray::new(s))))
 }
 pub fn set_binary(ps : MItemPtr, name : &str, val : Qv<Vec<u8>>) -> bool{
-    set_sabun(ps, name, RustParam::Binary(val.into_map(|s| RustBinary::new(s))))
+    set_sabun(ps, name, RustParam::Binary(val.map(|s| RustBinary::new(s))))
 }
 
 pub fn set_sabun(ps : MItemPtr, name : &str, p : RustParam) -> bool {

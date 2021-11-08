@@ -3,9 +3,8 @@
     "CList",
     [{
       title : "",
-      src : "",
+      "src?" : ["Str",null],
     }],
-
     {
       title : "1. Dochy Lang"
     },

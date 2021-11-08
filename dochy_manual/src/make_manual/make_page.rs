@@ -1,18 +1,19 @@
-use crate::make_manual::get_content::{get_content, get_file_stem, get_md_filename};
+use crate::make_manual::get_content::{get_content, get_md_filename};
 use dochy::error::DpResult;
+use dochy::core::structs::NullOr;
 
-pub(crate) fn make_page(prev_src: Option<&str>, next_src: Option<&str>, title : &str, src : &str)
+pub(crate) fn make_page(prev_src: NullOr<&str>, next_src: NullOr<&str>, title : &str, src : &str)
                         -> DpResult<String>{
 
     let mut r = String::new();
     {
         let r = &mut r;
-        if let Some(prev) = prev_src {
-            l(r, &format!("[prev]({}.md)", get_md_filename(prev)?));
+        if let NullOr::Val(prev) = prev_src {
+            l(r, &format!("[prev]({})", get_md_filename(prev)?));
         }
         l(r, "[index](index.md)");
-        if let Some(next) = next_src {
-            l(r, &format!("[next]({}.md)", get_md_filename(next)?));
+        if let NullOr::Val(next) = next_src {
+            l(r, &format!("[next]({})", get_md_filename(next)?));
         }
         r.push('\n');
         l(r, &format!("### {}", title));
@@ -21,12 +22,12 @@ pub(crate) fn make_page(prev_src: Option<&str>, next_src: Option<&str>, title : 
         l(r, &content);
         r.push('\n');
         r.push('\n');
-        if let Some(prev) = prev_src {
-            l(r, &format!("[prev]({}.md)", get_md_filename(prev)?));
+        if let NullOr::Val(prev) = prev_src {
+            l(r, &format!("[prev]({})", get_md_filename(prev)?));
         }
         l(r, "[index](index.md)");
-        if let Some(next) = next_src {
-            l(r, &format!("[next]({}.md)", get_md_filename(next)?));
+        if let NullOr::Val(next) = next_src {
+            l(r, &format!("[next]({})", get_md_filename(next)?));
         }
     }
     Ok(r)

@@ -1,6 +1,6 @@
-[prev](split_src.md.md)
+[prev](split_src.md)
 [index](index.md)
-[next](save_dochy_file_test.md.md)
+[next](save_dochy_file_test.md)
 
 ### 6. Dochy File
 
@@ -23,6 +23,6 @@ This is the Dochy Src for this section.
 
 
 
-[prev](split_src.md.md)
+[prev](split_src.md)
 [index](index.md)
-[next](save_dochy_file_test.md.md)
+[next](save_dochy_file_test.md)

@@ -1,6 +1,6 @@
-[prev](root.md.md)
+[prev](root.md)
 [index](index.md)
-[next](root.md.md)
+[next](root.md)
 
 ### 2-2. Use Clist And Cil
 
@@ -39,6 +39,6 @@ fn cil_test() -> DpResult<()> {
 ```
 
 
-[prev](root.md.md)
+[prev](root.md)
 [index](index.md)
-[next](root.md.md)
+[next](root.md)

@@ -16,15 +16,15 @@ impl RustArray{
     }
 
     pub(crate) fn from_int_array(qv : &Qv<RustIntArray>) -> RustArray{
-        RustArray::new(qv.map(|a| a.to_params()))
+        RustArray::new(qv.as_ref().map(|a| a.to_params()))
     }
 
     pub(crate) fn from_float_array(qv : &Qv<RustFloatArray>) -> RustArray{
-        RustArray::new(qv.map(|a| a.to_params()))
+        RustArray::new(qv.as_ref().map(|a| a.to_params()))
     }
 
     pub(crate) fn from_binary(qv : &Qv<RustBinary>) -> RustArray{
-        RustArray::new(qv.map(|a| a.to_params()))
+        RustArray::new(qv.as_ref().map(|a| a.to_params()))
     }
 
     pub(crate) fn qv(&self) -> &Qv<Vec<RustParam>>{ self.array.as_ref() }
