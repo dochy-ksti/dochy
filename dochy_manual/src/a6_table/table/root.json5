@@ -8,8 +8,7 @@
       val: 0,
     }],
     {
-      ID: "item1",
-      //<- ID is needed
+      ID: "item1", //<- ID is needed
       val: 10,
     },
     {
