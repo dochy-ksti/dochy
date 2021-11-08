@@ -11,9 +11,7 @@ pub enum UndefOr<T>{
 }
 
 impl<T : Clone> Clone for NullOr<T>{
-    fn clone(&self) -> Self {
-        self.as_ref().map(|t| t.clone())
-    }
+    fn clone(&self) -> Self { self.as_ref().map(|t| t.clone()) }
 }
 
 impl<T : Clone> Clone for UndefOr<T>{
@@ -25,6 +23,18 @@ impl<T : Clone> Clone for UndefOr<T>{
 impl<T : Copy> Copy for NullOr<T>{}
 impl<T : Copy> Copy for UndefOr<T>{}
 
+impl<T> From<Option<T>> for NullOr<T>{
+    fn from(opt: Option<T>) -> Self { NullOr::from_opt(opt) }
+}
+impl<T> From<Option<T>> for UndefOr<T> {
+    fn from(opt: Option<T>) -> Self { UndefOr::from_opt(opt) }
+}
+impl<T> From<NullOr<T>> for Option<T>{
+    fn from(n: NullOr<T>) -> Self { n.into_value() }
+}
+impl<T> From<UndefOr<T>> for Option<T> {
+    fn from(u: UndefOr<T>) -> Self { u.into_value() }
+}
 
 impl<T> NullOr<T>{
     pub fn as_ref(&self) -> NullOr<&T>{
@@ -67,6 +77,13 @@ impl<T> NullOr<T>{
         match self{
             NullOr::Val(v) => Some(v),
             _ => None,
+        }
+    }
+
+    pub fn from_opt(opt : Option<T>) -> NullOr<T>{
+        match opt{
+            Some(v) => NullOr::Val(v),
+            None => NullOr::Null,
         }
     }
 }
@@ -115,6 +132,13 @@ impl<T> UndefOr<T>{
         match self{
             UndefOr::Val(v) => Some(v),
             _ => None,
+        }
+    }
+
+    pub fn from_opt(opt : Option<T>) -> UndefOr<T>{
+        match opt{
+            Some(v) => UndefOr::Val(v),
+            None => UndefOr::Undefined,
         }
     }
 }

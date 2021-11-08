@@ -15,8 +15,7 @@
       val: 0,
     }],
     {
-      ID: "item1",
-      //<- ID is needed
+      ID: "item1", //<- ID is needed
       val: 10,
     },
     {
@@ -24,9 +23,9 @@
       val: 20,
     },
   ],
-  // In Dochy, every name starts with a capital-letter is reserved by the system. "ID" is one of them.
+  // In Dochy, all names start with capital letters are reserved by the system. "ID" is one of them.
 
-  // Users can use [a-z][A-Za-z0-9]* for the identifier.
+  // Users can use [a-z][A-Za-z0-9]* for identifiers.
 
   // Other collections can refer table items by ID
 
