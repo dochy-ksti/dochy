@@ -66,7 +66,7 @@ pub fn save_history_file_nb_if_vacant<
                                          callback : F) -> bool{
     let peekable = get_peekable_info(history_info).unwrap();
 
-    println!("{}", peekable.queued());
+    println!("peek {}", peekable.queued());
     if peekable.queued() == 0{
         save_history_file_nb(history_info, tag, root, callback);
         true

@@ -11,14 +11,14 @@ pub(crate) struct MutexG<'a>{
 impl<'a> MutexG<'a>{
     pub(crate) fn new<'b>(guard : MutexGuard<'b, SyncedItem>,
                       peekable : &'b PeekableCacheInfo) -> MutexG<'b>{
-        peekable.queued_atomic().fetch_add(1, Ordering::Relaxed);
+        peekable.queued_atomic().fetch_add(1, Ordering::AcqRel);
         MutexG{ guard, peekable }
     }
     pub(crate) fn peekable(&self) -> &PeekableCacheInfo{ &self.peekable }
 }
 impl<'a> Drop for MutexG<'a>{
     fn drop(&mut self) {
-        self.peekable().queued_atomic().fetch_sub(1, Ordering::Relaxed);
+        self.peekable().queued_atomic().fetch_sub(1, Ordering::AcqRel);
     }
 }
 

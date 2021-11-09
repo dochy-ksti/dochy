@@ -40,7 +40,7 @@ impl PeekableCacheInfo{
 
         PeekableCacheInfo{ queued : AtomicUsize::new(0), current_src, hash, history_options, src_root }
     }
-    pub(crate) fn queued_atomic(&self) -> &AtomicUsize{ &self.queued }
+    pub fn queued_atomic(&self) -> &AtomicUsize{ &self.queued }
     pub fn queued(&self) -> usize{ self.queued.load(Ordering::Relaxed) }
     pub fn current_src(&self) -> &CurrentSrc{ &self.current_src }
     pub fn hash(&self) -> u128{ self.hash }

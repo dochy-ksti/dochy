@@ -11,7 +11,7 @@ use once_cell::sync::Lazy;
 /// If you want to customize, you can use builders.
 ///
 /// ```
-/// use dochy_fs::error::FsResult;
+/// use dochy_fs::FsResult;
 /// use dochy_fs::history::{HistoryOptions, HistoryOptionsBuilder, CumulativeOptionsBuilder};
 ///
 /// fn main() -> FsResult<()>{
