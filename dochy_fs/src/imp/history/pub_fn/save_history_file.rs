@@ -45,7 +45,9 @@ pub fn save_history_file_nb<
     let history_info = history_info.clone();
 
     ft.spawn_fifo(move || {
+        println!("spawned");
         let result = save_history_file_impl(&history_info, tag, &clone, id);
+        println!("resulted");
         match result {
             Ok(r) => {
                 callback(Ok(r));
@@ -84,13 +86,18 @@ fn save_history_file_impl(history_info: &HistoryInfo,
     let mut mutex = get_mutex(history_dir)?;
     let p = mutex.peekable();
 
+
     let opt = p.history_options().clone();
     let src = p.current_src().clone();
-
+    println!("p1");
     let (cache, h) = mutex.muts();
+    println!("p2");
     let hash = cache.hash();
+    println!("p3");
     let history_hash_dir = prepare_hash_dir(history_dir, &src, hash)?;
+    println!("p3");
     let current_root_obj = h.clone();
+    println!("p3");
 
     if let Some(info) = current_root_obj {
         if root_id.ptr_eq(info.current_root_id()) {

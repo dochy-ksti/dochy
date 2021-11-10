@@ -54,9 +54,10 @@ impl<T : Send + 'static> Archiver<T>{
 
     pub fn finish(self) -> ArcResult<ArchiveData<T>>{
         let mut btree : BTreeMap<String, ArchiveDataItem<T>> = BTreeMap::new();
-
+        println!("t");
         for item in self.data_receivers {
             let processed = item.processed.recv()?;
+            println!("t");
             let path = item.path;
             let item = ArchiveDataItem::new(processed, item.raw_data);
 

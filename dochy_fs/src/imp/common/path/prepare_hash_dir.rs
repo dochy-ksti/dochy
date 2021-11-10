@@ -9,12 +9,19 @@ use crate::imp::common::path::created_time_file::create_time_dat;
 use std::time::SystemTime;
 
 pub(crate) fn prepare_hash_dir(proj_dir: &Path, src : &CurrentSrc, hash : u128) -> FsResult<PathBuf>{
+    println!("p");
     let hash_dir = get_or_make_hash_dir_path(proj_dir, hash)?;
+    println!("p");
     let archive_path = hash_dir.join(ARCHIVE_DEFAULT_NAME);
+    println!("p");
     if archive_path.exists() == false{
+        println!("p");
         let mut file = File::create(&archive_path)?;
+        println!("p");
         src.create_archive(&mut file)?;
+        println!("p");
     }
+    println!("p");
     Ok(hash_dir)
 }
 

@@ -23,9 +23,12 @@ impl CurrentSrc{
     }
 
     pub fn create_archive<W : Write>(&self, write : &mut W) -> FsResult<()>{
+        println!("q");
         match &self{
             CurrentSrc::SrcDir(src_dir) => {
+                println!("q");
                 dochy_core::archive_src_dir(src_dir, write)?;
+                println!("q");
                 Ok(())
             },
             CurrentSrc::ArchiveFile(path) =>{

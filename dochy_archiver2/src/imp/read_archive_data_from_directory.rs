@@ -10,15 +10,20 @@ pub fn read_archive_data_from_directory<
                         opt : &ArchiveOptions,
                         converter : impl Fn(&str, &[u8]) -> T + Send + Sync + 'static) -> ArcResult<ArchiveData<T>>{
     let mut btree : BTreeSet<String> = BTreeSet::new();
+    println!("s");
     get_paths_from_dir(path, opt, &mut btree)?;
-
+    println!("s");
     let mut archiver = Archiver::new(converter);
-
+    println!("s");
     for path in btree {
         let data = std::fs::read(&path)?;
+        println!("s");
         archiver.archive(path, data);
+        println!("s");
     }
-    archiver.finish()
+    let hoge = archiver.finish();
+    println!("xxxxx");
+    return hoge;
 }
 
 fn get_paths_from_dir<P : AsRef<Path>>(current_path : P, opt : &ArchiveOptions, btree : &mut BTreeSet<String>) -> ArcResult<()>{
