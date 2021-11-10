@@ -29,7 +29,7 @@ fn test_save_history_vacant() -> DpResult<()> {
 
     let root = info.clone_src_root();
     let mut root = RootIntf::new(root);
-    let max = 10;
+    let max = 1;
 
     for i in 0..max{
 
