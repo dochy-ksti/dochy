@@ -10,6 +10,6 @@ pub fn archive_src_dir<P : AsRef<Path>, W : Write>(src_dir : P, writer : &mut W)
         &*JSON_ARC_OPT,
         |_name, _dat| (),
     )?;
-
+    println!("konai");
     Ok(dochy_archiver2::write_archive(&archive_data, writer)?)
 }

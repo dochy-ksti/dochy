@@ -5,7 +5,7 @@ use std::path::{Path};
 use std::time::Duration;
 use once_cell::sync::Lazy;
 
-use dochy::fs::history::{HistoryInfo, list_histories, load_history_file, save_history_file_nb, save_history_file_nb_if_vacant};
+use dochy::fs::history::{HistoryInfo, list_histories, load_history_file, save_history_file_nb_if_vacant};
 
 use std::sync::Mutex as Mutex;
 use crate::fs_test::test_save_history_vacant::test_save_history_vacant_accessor::RootIntf;

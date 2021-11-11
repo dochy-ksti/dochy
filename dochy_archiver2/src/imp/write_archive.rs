@@ -14,7 +14,7 @@ pub fn write_archive<W : Write, T : Send + 'static>(data : &ArchiveData<T>, writ
         let key = key.to_string();
         let raw_data = val.raw_data().clone();
         let sender : Sender<ArcResult<(String, Vec<u8>)>> = sender.clone();
-         rayon::spawn(move||{
+         rayon::spawn_fifo(move||{
              let mut encoder = snap::raw::Encoder::new();
              match encoder.compress_vec(raw_data.as_slice()){
                  Ok(compressed) => {

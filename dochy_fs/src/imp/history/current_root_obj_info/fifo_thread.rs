@@ -1,4 +1,4 @@
-use rayon::{ThreadPool, ThreadPoolBuilder};
+use threadpool::ThreadPool;
 use std::sync::Mutex;
 
 pub(crate) struct FifoThread{
@@ -13,10 +13,10 @@ impl FifoThread{
     pub fn spawn_fifo<F : FnOnce() + Send + 'static>(&self, f : F){
         let mut opt = self.pool.lock().unwrap();
         if opt.is_none(){
-            *opt = Some(ThreadPoolBuilder::new().num_threads(1).build().unwrap())
+            *opt = Some(ThreadPool::new(1))
         }
         if let Some(p) = opt.as_ref(){
-            p.spawn_fifo(f);
+            p.execute(f);
         }
     }
 }

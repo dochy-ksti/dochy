@@ -9,6 +9,8 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 dochy = { path="../../dochy"}
 dochy_diff = { path="../dochy_diff"}
+dochy_core = { path="../dochy_core"}
+dochy_archiver2 = { path="../dochy_archiver2" }
 rand = "0.8.3"
 rayon = "1.5.1"
 once_cell = "1.7.2"

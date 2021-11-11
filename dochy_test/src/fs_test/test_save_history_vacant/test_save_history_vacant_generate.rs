@@ -3,7 +3,7 @@ use dochy::core::structs::RootObject;
 use dochy::core::json_dir_to_root;
 use dochy::intf::generate_interface;
 
-#[test]
+//#[test]
 fn test_save_history_vacant_generate() -> DpResult<()> {
     let mut root_obj : RootObject = json_dir_to_root("src/fs_test/test_save_history_vacant/src_dir", true)?;
 
