@@ -36,7 +36,7 @@ fn test_save_history_vacant() -> DpResult<()> {
         root.set_data0(i);
         if save_history_file_nb_if_vacant(&info,
                                 None,
-                                root.root_obj_ref(), move |r|{
+                                root.root_obj_ref(), move |_r|{
 
                 let mut v = VEC_LAZY.lock().unwrap();
                 v.push(format!("callback {}", i));
@@ -55,7 +55,6 @@ fn test_save_history_vacant() -> DpResult<()> {
     }
 
     let v = VEC_LAZY.lock().unwrap();
-    let hoge : &Vec<String> = &v;
 
     let hiss = list_histories(&info)?;
     for d in hiss.list_files(){
