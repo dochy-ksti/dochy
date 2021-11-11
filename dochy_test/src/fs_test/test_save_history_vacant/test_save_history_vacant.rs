@@ -37,22 +37,18 @@ fn test_save_history_vacant() -> DpResult<()> {
         if save_history_file_nb_if_vacant(&info,
                                 None,
                                 root.root_obj_ref(), move |r|{
-                if r.is_err(){
-                    println!("error! {:?}", r);
-                } else{
-                    println!("ok");
-                }
+
                 let mut v = VEC_LAZY.lock().unwrap();
                 v.push(format!("callback {}", i));
             }) == false{
-            println!("sleep");
+
             std::thread::sleep(Duration::from_millis(100));
         }
     }
 
     loop{
         std::thread::sleep(Duration::from_millis(100));
-        println!("queued {}", info.peekable().queued());
+
         if info.peekable().queued() == 0{
             break;
         }
@@ -60,7 +56,6 @@ fn test_save_history_vacant() -> DpResult<()> {
 
     let v = VEC_LAZY.lock().unwrap();
     let hoge : &Vec<String> = &v;
-    println!("{:?}", hoge);
 
     let hiss = list_histories(&info)?;
     for d in hiss.list_files(){

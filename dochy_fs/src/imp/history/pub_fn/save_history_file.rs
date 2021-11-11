@@ -66,7 +66,6 @@ pub fn save_history_file_nb_if_vacant<
                                          callback : F) -> bool{
     let peekable = get_peekable_info(history_info).unwrap();
 
-    println!("peek {}", peekable.queued());
     if peekable.queued() == 0{
         save_history_file_nb(history_info, tag, root, callback);
         true
@@ -89,9 +88,7 @@ fn save_history_file_impl(history_info: &HistoryInfo,
     let src = p.current_src().clone();
     let (cache, h) = mutex.muts();
     let hash = cache.hash();
-    println!("p3");
     let history_hash_dir = prepare_hash_dir(history_dir, &src, hash)?;
-    println!("konai");
     let current_root_obj = h.clone();
 
     if let Some(info) = current_root_obj {

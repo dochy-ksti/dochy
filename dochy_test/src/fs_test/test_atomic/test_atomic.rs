@@ -34,7 +34,7 @@ fn test_atomic() -> DpResult<()> {
 
 
     std::thread::sleep(Duration::from_millis(100));
-    println!("queued {}", info.peekable().queued());
+    dbg!("queued {}", info.peekable().queued());
     // if info.peekable().queued() == 0 {
     //     break;
     // }

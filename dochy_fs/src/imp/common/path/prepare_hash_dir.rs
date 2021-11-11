@@ -14,7 +14,6 @@ pub(crate) fn prepare_hash_dir(proj_dir: &Path, src : &CurrentSrc, hash : u128) 
     if archive_path.exists() == false{
         let mut file = File::create(&archive_path)?;
         src.create_archive(&mut file)?;
-        println!("konai");
     }
     Ok(hash_dir)
 }

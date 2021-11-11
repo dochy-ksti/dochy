@@ -16,9 +16,7 @@ pub fn read_archive_data_from_directory<
         let data = std::fs::read(&path)?;
         archiver.archive(path, data);
     }
-    println!("archiver finish start");
     let hoge = archiver.finish();
-    println!("konai");
     return hoge;
 }
 

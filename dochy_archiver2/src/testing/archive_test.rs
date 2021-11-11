@@ -24,7 +24,7 @@ fn archive_test() -> ArcResult<()>{
 
     )?;
     for (path, _) in archive_data.btree(){
-        println!("{}", path);
+        dbg!("{}", path);
     }
     let mut buf = Vec::new();
     write_archive(&archive_data, &mut buf)?;

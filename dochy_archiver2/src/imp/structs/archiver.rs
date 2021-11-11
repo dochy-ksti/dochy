@@ -34,26 +34,15 @@ impl<T : Send + 'static> Archiver<T>{
     /// path をアルファベット順にして この fn を何度も呼び出すべし。スレッドに流されて非同期に実行される
     pub fn archive(&mut self, path : String, data : Vec<u8>){
         let data = Arc::new(data);
-        println!("path {}", &path);
         self.hash_thread.calc_hash(path.clone(), data.clone());
-        println!("calchashed");
         let (sender, processed) = mpsc::channel();
-        println!("calchashed2");
         let converter = self.converter.clone();
-        println!("calchashed3");
         let d = data.clone();
-        println!("calchashed4");
         let p = path.clone();
-        println!("calchashed5");
 
-        println!("rayon threads {}", rayon::current_num_threads());
-        println!("rayon threads {}", rayon::current_num_threads());
         rayon::spawn_fifo(move ||{
-            println!("archive spawn");
             let t = converter(&p, d.as_ref());
-            println!("spawn");
             sender.send(t).ok();
-            println!("send");
         });
 
         self.data_receivers.push(ArchiverItem{
@@ -68,15 +57,12 @@ impl<T : Send + 'static> Archiver<T>{
 
         for item in self.data_receivers {
             let processed = item.processed.recv()?;
-            println!("recv");
             let path = item.path;
             let item = ArchiveDataItem::new(processed, item.raw_data);
 
             btree.insert(path, item);
-            println!("insert")
         }
         let hash = self.hash_thread.finish()?;
-        println!("finished");
 
         Ok(ArchiveData::new(btree, hash))
     }

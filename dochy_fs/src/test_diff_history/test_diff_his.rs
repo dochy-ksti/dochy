@@ -74,10 +74,10 @@
 //         histories.remove_old_files(5, proj_dir_path)?;
 //
 //         for (hash, name, size) in show_dir_contents_diff_history(proj_dir_path, &opt)?{
-//             println!("{} {} {}", hash, name, size);
+//             dbg!("{} {} {}", hash, name, size);
 //         }
 //
-//         println!();
+//
 //     }
 //
 //

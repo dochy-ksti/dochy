@@ -9,6 +9,5 @@ fn test_read_archive_data() -> DpResult<()>{
         &*JSON_ARC_OPT,
         |_name, _dat| (),
     )?;
-    println!("oked");
     Ok(())
 }
