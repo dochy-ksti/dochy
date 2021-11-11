@@ -1,8 +1,6 @@
 use dochy::error::DpResult;
 use dochy::fs::common::{CurrentSrc};
-use std::path::{Path, PathBuf};
-use dochy::core::structs::RootObject;
-use rand::Rng;
+use std::path::{Path};
 use dochy::fs::filesys::{SaveDirInfo, save_dochy_file_nb, load_dochy_file, list_dochy_files};
 use crate::fs_test::test_save_async::test_save_async_accessor::RootIntf;
 use std::time::Duration;
@@ -10,7 +8,7 @@ use std::time::Duration;
 use parking_lot::FairMutex;
 use once_cell::sync::Lazy;
 
-static vec_lazy : Lazy<FairMutex<Vec<String>>> = Lazy::new(||{
+static VEC_LAZY: Lazy<FairMutex<Vec<String>>> = Lazy::new(||{
     FairMutex::new(Vec::new())
 });
 
@@ -26,7 +24,7 @@ fn test_save_async() -> DpResult<()> {
     let mut root = RootIntf::new(root);
     let max = 10;
 
-    let mut r : Vec<String> = Vec::new();
+    //let mut r : Vec<String> = Vec::new();
     for i in 0..max{
         let info_copy = info.clone();
         root.set_data0(i);
@@ -34,7 +32,7 @@ fn test_save_async() -> DpResult<()> {
                            &format!("file{}.dochy", i),
                            root.root_obj_ref(), true,
                            move |_r|{
-                                  let mut v = vec_lazy.lock();
+                                  let mut v = VEC_LAZY.lock();
                                   v.push(format!("{} finished num_threads {}",i, info_copy.queued_threads()));
                               });
     }
@@ -46,7 +44,7 @@ fn test_save_async() -> DpResult<()> {
         }
     }
 
-    let v = vec_lazy.lock();
+    let v = VEC_LAZY.lock();
     let hoge : &Vec<String> = &v;
     println!("{:?}", hoge);
 

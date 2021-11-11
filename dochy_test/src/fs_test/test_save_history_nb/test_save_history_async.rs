@@ -37,12 +37,10 @@ fn test_save_history_nb() -> DpResult<()> {
         save_history_file_nb(&info,
                                 None,
                                 root.root_obj_ref(), move |_r|{
-                println!("ii {}", i);
-                //let mut v = VEC_LAZY.lock().unwrap();
-                //v.push(format!("callback {}", i));
+                let mut v = VEC_LAZY.lock().unwrap();
+                v.push(format!("callback {}", i));
             });
 
-        println!("i {}", i);
     }
 
     loop{

@@ -29,7 +29,7 @@ fn test_save_history_vacant() -> DpResult<()> {
 
     let root = info.clone_src_root();
     let mut root = RootIntf::new(root);
-    let max = 1;
+    let max = 10;
 
     for i in 0..max{
 
@@ -41,8 +41,6 @@ fn test_save_history_vacant() -> DpResult<()> {
                 let mut v = VEC_LAZY.lock().unwrap();
                 v.push(format!("callback {}", i));
             }) == false{
-
-            std::thread::sleep(Duration::from_millis(100));
         }
     }
 
@@ -55,6 +53,7 @@ fn test_save_history_vacant() -> DpResult<()> {
     }
 
     let v = VEC_LAZY.lock().unwrap();
+    println!("{:?}", &v);
 
     let hiss = list_histories(&info)?;
     for d in hiss.list_files(){
