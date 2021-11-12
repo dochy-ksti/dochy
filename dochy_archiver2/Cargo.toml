@@ -1,6 +1,6 @@
 [package]
 name = "dochy_archiver2"
-version = "0.8.0"
+version = "0.9.0"
 authors = ["juzy <dochy.ksti@gmail.com>"]
 edition = "2018"
 
@@ -11,7 +11,7 @@ readme = "readme.md"
 keywords = ["archiver", "Snappy", "MetroHash"]
 
 [dependencies]
-dochy_compaction = { path="../dochy_compaction", version="0.8.0" }
+dochy_compaction = { path="../dochy_compaction", version="0.9.0" }
 metrohash = "1.0.6"
 snap = "1.0.1"
 anyhow = "1.0.34"
