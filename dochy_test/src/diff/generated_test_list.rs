@@ -16,6 +16,7 @@
 		}
 	    pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
 	    pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+	    pub fn deconstruct(self) -> RootObject{ *self.root }
 	
 		pub fn refed2(&self) -> CTableConst<Refed2Table>{
 			let t = Refed2Table::new(root::get_table(self.ptr.def(), "refed2").unwrap());
@@ -26,7 +27,7 @@
 			MListConst::new(mil, self)
 		}
 		pub fn list_mut(&mut self) -> MListMut<ListMItem>{
-			let mil = root::get_mlist_mut(self.ptr, "list").unwrap().unwrap();
+			let mil = root::get_mlist_mut(self.ptr, "list").unwrap();
 			MListMut::new(mil, self)
 		}
 		pub fn refed1(&self) -> CTableConst<Refed1Table>{
@@ -141,14 +142,14 @@
 			MListConst::new(mil, self)
 		}
 		pub fn in_list_mut(&mut self) -> MListMut<InListMItem>{
-			let mil = mitem::get_mil_mut(self.ptr, "inList").unwrap().unwrap();
-			MListMut::new(mil, self)
+			let p = mitem::get_mil_mut(self.ptr, "inList").unwrap();
+			MListMut::new(p, self)
 		}
 		pub fn ref_refed1(&self) -> Refed1CItem{
 			let qv = mitem::get_ref(self.ptr, "refed1").unwrap();
 			Refed1CItem::from(qv.into_value().unwrap())
 		}
-		pub fn ref_id_refed1(&self) -> String{
+		pub fn ref_id_refed1(&self) -> &String{
 			let qv = mitem::get_ref_id(self.ptr, "refed1").unwrap();
 			qv.into_value().unwrap()
 		}
@@ -182,14 +183,14 @@
 			MListConst::new(mil, self)
 		}
 		pub fn in_list2_mut(&mut self) -> MListMut<InList2MItem>{
-			let mil = mitem::get_mil_mut(self.ptr, "inList2").unwrap().unwrap();
-			MListMut::new(mil, self)
+			let p = mitem::get_mil_mut(self.ptr, "inList2").unwrap();
+			MListMut::new(p, self)
 		}
 		pub fn ref_refed2(&self) -> Refed2CItem{
 			let qv = mitem::get_ref(self.ptr, "refed2").unwrap();
 			Refed2CItem::from(qv.into_value().unwrap())
 		}
-		pub fn ref_id_refed2(&self) -> String{
+		pub fn ref_id_refed2(&self) -> &String{
 			let qv = mitem::get_ref_id(self.ptr, "refed2").unwrap();
 			qv.into_value().unwrap()
 		}

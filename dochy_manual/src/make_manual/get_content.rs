@@ -2,7 +2,6 @@ use dochy::error::DpResult;
 use std::path::Path;
 
 pub(crate) fn get_content(src : &str) -> DpResult<String>{
-    println!("aaa {}", src);
     let s = std::fs::read_to_string(format!("src/{}", src))?;
     let path = Path::new(src);
     let ext = path.extension()?.to_string_lossy().to_string();

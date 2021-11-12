@@ -16,6 +16,7 @@
 		}
 	    pub fn root_obj_ref(&self) -> &RootObject{ self.root.as_ref() }
 	    pub fn root_obj_ref_mut(&mut self) -> &mut RootObject{ self.root.as_mut() }
+	    pub fn deconstruct(self) -> RootObject{ *self.root }
 	
 		pub fn mem54(&self) -> i64{
 			let qv = root::get_int(self.ptr, "mem54").unwrap();

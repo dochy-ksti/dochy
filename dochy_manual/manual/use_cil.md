@@ -10,7 +10,7 @@ use dochy::core::structs::RootObject;
 use dochy::core::json_dir_to_root;
 use crate::a4_clist::cil_accessor::RootIntf;
 
-//#[test]
+#[test]
 fn cil_test() -> DpResult<()> {
     let root_obj : RootObject = json_dir_to_root("src/a4_clist/cil", false)?;
 

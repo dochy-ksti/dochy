@@ -2,12 +2,12 @@
 
 #[cfg(test)]
 mod tests {
-    use dochy::core::intf::null_or::{NullOr, UndefOr};
-    use dochy::core::structs::Qv;
+
+    use dochy::core::structs::{Qv, UndefOr};
     use crate::diff::generated_test_params::test::RootIntf;
     use dochy::core::json_dir_to_root;
     use dochy::error::DpResult;
-
+    use dochy_core::structs::NullOr;
 
 
     #[test]
