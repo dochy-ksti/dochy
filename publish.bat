@@ -1,4 +1,4 @@
-cd ../dochy_archiver2
+cd ./dochy_archiver2
 cargo publish
 timeout /t 30 > nul
 cd ../dochy_compaction
@@ -7,7 +7,7 @@ timeout /t 30 > nul
 cd ../dochy_core
 cargo publish
 timeout /t 30 > nul
-cd dochy_json5
+cd ../dochy_json5
 cargo publish
 timeout /t 30 > nul
 cd ../dochy_diff
