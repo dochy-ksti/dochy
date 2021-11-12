@@ -1,6 +1,6 @@
 [package]
 name = "dochy"
-version = "0.9.0"
+version = "0.9.1"
 authors = ["juzy <dochy.ksti@gmail.com>"]
 edition = "2018"
 
@@ -10,6 +10,7 @@ repository = "https://github.com/dochy-ksti/dochy"
 readme = "readme.md"
 keywords = ["json5","diff","binary","undo","autosave"]
 categories = ["filesystem","compression","data-structures"]
+documentation = "https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/manual/index.md"
 
 
 [workspace]
