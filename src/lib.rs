@@ -1,4 +1,6 @@
-//! The manual of this library is [here](https://github.com/dochy-ksti/dochy/tree/development/dochy_manual)
+//! [Dochy User's Manual](https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/manual/index.md)
+//!
+//! Dochy is a language, so this API document is not sufficient to explain what it is.
 
 #![feature(try_trait)]
 #![feature(vec_into_raw_parts)]
