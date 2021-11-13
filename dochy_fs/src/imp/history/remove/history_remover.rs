@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use crate::imp::history::file_hist::file_history::FileHistory;
 use crate::imp::history::remove::history_remover_item::{HistoryRemoverItem, RemoveCueItem};
 use crate::imp::history::file_name::file_name_props::FileNameProps;
-use crate::error::FsResult;
 use crate::imp::history::file_hist::file_history_item::FileHistoryItem;
 use crate::imp::history::remove::composite_remover::composite_remover;
 use std::path::{Path, PathBuf};

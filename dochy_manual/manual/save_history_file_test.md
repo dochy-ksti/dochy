@@ -234,8 +234,8 @@ pub(crate) fn modify(root : &mut RootIntf, count : &mut usize){
 pub(crate) fn print_dir<P : AsRef<Path>>(dir : P) -> DpResult<()>{
     for entry in std::fs::read_dir(dir)?{
         let entry = entry?;
-        let name = entry.file_name().to_str()?.to_string();
-        let len = entry.metadata()?.len();
+        let name = entry.file_name().to_str().unwrap().to_string();
+        let len = entry.metadata().unwrap().len();
         println!("{} {} bytes", name, len);
     }
     Ok(())

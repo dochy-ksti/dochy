@@ -1,7 +1,7 @@
 use dochy_core::structs::{RustParam, MetaParam, VarType, QvType, RustIntArray, RustFloatArray, RustBinary};
 use dochy_compaction::kval_enum::KVal;
 use dochy_compaction::basic_compaction::{comp_int, comp_double, comp_str};
-use crate::diff_error::{DiffError, OptToErr};
+use crate::diff_error::{DiffError};
 
 pub(crate) fn write_param(param : &RustParam, meta : &MetaParam, r : &mut Vec<KVal>) -> Result<(), DiffError>{
     match meta.var_type(){

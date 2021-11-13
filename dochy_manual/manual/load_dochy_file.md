@@ -19,7 +19,7 @@ pub(crate) fn load_dochy_file_test() -> DpResult<()> {
     let files = list_dochy_files(save_dir)?;
 
     // Finds the file to load.
-    let file = files.iter().find(|f| f.name() == "next_world.dochy")?;
+    let file = files.iter().find(|f| f.name() == "next_world.dochy").unwrap();
 
     // "file" needs "save_dir" to calculate the file path. (It's not ergonomic, but efficient...
     let file_path = file.calc_path(save_dir);

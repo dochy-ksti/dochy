@@ -34,7 +34,7 @@ pub(crate) fn load_history_file_test() -> DpResult<()>{
     // Gets the list of files from it.
     let files = his.list_files();
     // Finds the file "_0_1_0.his".
-    let file = files.iter().find(|file| file.props().calc_filename() == "_0_1_0.his")?;
+    let file = files.iter().find(|file| file.props().calc_filename() == "_0_1_0.his").unwrap();
     // Loads the file.
     let root = load_history_file(&info,
                                  // FileNameProps is the properties got from the filename.
@@ -100,12 +100,12 @@ pub(crate) fn load_history_file_test() -> DpResult<()>{
             // gets the first file's FileHistory. FileHistory is the file list of hash_dir,
             // so it's the file list of the hash_dir which contains the first file.
             let history = list.first().unwrap().history();
-            let remover = HistoryRemover::from(history)?;
+            let remover = HistoryRemover::from(history);
 
             for item in &list {
                 if item.props().order() == &[1, 0, 1] {
                     // keeps the file with "Phase-0 1 Phase-1 0 Phase-2 1"
-                    remover.keep(item.props())?;
+                    remover.keep(item.props());
                 }
             }
 
@@ -127,12 +127,12 @@ pub(crate) fn load_history_file_test() -> DpResult<()>{
             // gets the first file's FileHistory. FileHistory is the file list of hash_dir,
             // so it's the file list of the hash_dir which contains the first file.
             let history = list.first().unwrap().history();
-            let remover = HistoryRemover::from(history)?;
+            let remover = HistoryRemover::from(history);
 
             for item in &list {
                 if item.props().phase() == 0 {
                     // keeps the phase-0 files
-                    remover.keep(item.props())?;
+                    remover.keep(item.props());
                 }
             }
 

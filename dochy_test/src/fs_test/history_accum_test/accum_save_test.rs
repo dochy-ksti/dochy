@@ -32,7 +32,7 @@ fn accum_save_test() -> DpResult<()> {
         //ロードするとロードしたオブジェクトでセーブしないとHistoryが構成できない
         //ここはインチキして、セーブした時の状態に戻す
         dochy::fs::history::set_current_root_obj_info(
-            &info, Some(CurrentRootObjInfo::new(root.root_obj_ref().id(), saved)))?;
+            &info, Some(CurrentRootObjInfo::new(root.root_obj_ref().id(), saved)));
     }
 
     print_file_data(hash_dir_path(history_dir, info.hash()))?;
@@ -70,7 +70,7 @@ fn mutate_root(r : &mut RootIntf){
 fn print_file_data<P : AsRef<Path>>(path : P) -> DpResult<()>{
     for file in std::fs::read_dir(path)?{
         let file = file?;
-        println!("{} size {}", file.file_name().to_str()?, file.metadata()?.len());
+        println!("{} size {}", file.file_name().to_str().unwrap(), file.metadata().unwrap().len());
     }
     Ok(())
 }
@@ -78,7 +78,7 @@ fn print_file_data<P : AsRef<Path>>(path : P) -> DpResult<()>{
 
 fn load_newest_file(info : &HistoryInfo) -> DpResult<RootObject>{
     let his = list_histories(info)?;
-    let d = his.get_newest_file_data()?;
+    let d = his.get_newest_file_data().unwrap();
 
     Ok(load_history_file(info, d.props(), d.history(),false)?)
 }

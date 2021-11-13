@@ -13,9 +13,9 @@ fn clilst_new_adjust_test() -> DpResult<()> {
     let list = r.list();
     let mut iter = list.iter();
 
-    assert_eq!(iter.next()?.foo(), 3);
-    assert_eq!(iter.next()?.foo(), 4);
-    assert_eq!(iter.next()?.foo(), -1);
-    assert_eq!(iter.next()?.foo(), 5);
+    assert_eq!(iter.next().unwrap().foo(), 3);
+    assert_eq!(iter.next().unwrap().foo(), 4);
+    assert_eq!(iter.next().unwrap().foo(), -1);
+    assert_eq!(iter.next().unwrap().foo(), 5);
     Ok(())
 }

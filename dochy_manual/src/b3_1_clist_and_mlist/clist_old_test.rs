@@ -10,8 +10,8 @@ fn clilst_old_test() -> DpResult<()> {
     let list = r.list();
     let mut iter = list.iter();
 
-    assert_eq!(iter.next()?.foo(), 1);
-    assert_eq!(iter.next()?.foo(), 2);
-    assert_eq!(iter.next()?.foo(), 0);
+    assert_eq!(iter.next().unwrap().foo(), 1);
+    assert_eq!(iter.next().unwrap().foo(), 2);
+    assert_eq!(iter.next().unwrap().foo(), 0);
     Ok(())
 }

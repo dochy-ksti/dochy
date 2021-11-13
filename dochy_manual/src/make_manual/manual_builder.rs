@@ -33,7 +33,7 @@ impl ManualBuilder {
 
         let vec = &self.vec;
         for i in 0..vec.len(){
-            let item = vec.get(i)?;
+            let item = vec.get(i).unwrap();
             if let NullOr::Val(src) = &item.src {
                 let prev = get_src(vec, i.overflowing_sub(1).0);
                 let next = get_src(vec, i + 1);
