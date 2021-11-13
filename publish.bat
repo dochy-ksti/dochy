@@ -4,10 +4,10 @@ timeout /t 30 > nul
 cd ../dochy_compaction
 cargo publish
 timeout /t 30 > nul
-cd ../dochy_core
+cd ../dochy_archiver2
 cargo publish
 timeout /t 30 > nul
-cd ../dochy_archiver2
+cd ../dochy_core
 cargo publish
 timeout /t 30 > nul
 cd ../dochy_diff
