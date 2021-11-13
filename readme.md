@@ -105,7 +105,7 @@ Diff0(10 MB) - Diff00(1 MB) - Diff000(1 MB)
  Diff1(10 MB)
    ... 
 ```
-To load Dochy Diff, we must load files hierarchically from top to bottom, and apply diffs repeatedly.
+To load Dochy's diffs, we must load files hierarchically from top to bottom, and apply diffs repeatedly.
 
 We used the default setting of Dochy, and it takes 13 files to load one data at most.
 
@@ -135,7 +135,7 @@ Dochy's data is cloned on saving, so non-blocking saving can be done.
 Dochy's data consists of Arcs, so the cloning can be done instantly.
 
 Using Arc::make_mut, actual copy of the inner data happens when two different Arcs point to the same object, 
-and the one is modified. When it's modified, two Arcs point to the different objects, so 
+and one of them is modified. When it's modified, two Arcs point to the different objects, so 
 comparing two pointers of Arcs is enough to confirm if it's modified. Comparing actual values is not necessary.
 
 And actual copy happens on the part which is to be actually modified. Copying everything is also unnecessary.
