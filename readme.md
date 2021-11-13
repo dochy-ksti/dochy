@@ -5,11 +5,12 @@ Dochy is a static JSON-like data format.
 It can efficiently store "diff" of the data. 
 
 It's designed to implement auto-save, undo, and 
-applications which want to retain every change of the data. 
+applications which want to retain every change of the data, like cloud apps. 
 
 *[User's Manual]("https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/manual/index.md")
 
-Dochy is a language, so [the API documentation](https://docs.rs/dochy/) is not very good to learn. You may want to read [User's Manual]("https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/manual/index.md").
+Dochy is a language, so [the API documentation](https://docs.rs/dochy/) is not very good to learn. 
+You may want to read [User's Manual]("https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/manual/index.md").
 
 *Demonstration
 
