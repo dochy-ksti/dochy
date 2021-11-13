@@ -63,7 +63,7 @@ impl FileHistories{
                 remove_hash_dirs(&mut self.vec, 0..len - 1, history_dir)?;
             }
             let (_,last) = self.vec.remove(0);
-            last.remove_old_files(keep_latest, hash_dir_path)?;
+            last.remove_old_files(keep_latest, hash_dir_path);
             return Ok(());
         }
         // こっちは最新ハッシュの全てをkeepする場合

@@ -13,7 +13,9 @@ pub fn load_dochy_file<P : AsRef<Path>>(file_path : P,
                                         validation : bool) -> FsResult<RootObject>{
     let path = file_path.as_ref();
     let dir_path = path.parent().ok_or("file_path's file must be in a folder which contains src.archive file.")?;
-    let hash = folder_name_to_hash(dir_path.file_name()?)?;
+    let folder_name = dir_path.file_name().ok_or_else(||format!("the path doesn't have a folder name {:?} ", dir_path))?;
+    let hash = folder_name_to_hash(folder_name).ok_or_else(||format!("folder name doesn't contain hash value {:?}", folder_name))?;
+
 
     let current_src_hash = current_save_dir_info.hash();
     let src_root = current_save_dir_info.clone_src_root();

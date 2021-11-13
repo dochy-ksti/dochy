@@ -1,7 +1,7 @@
 use crate::imp::read::reader::Reader;
 use dochy_core::structs::{MetaTable, MetaValue};
 use crate::imp::structs_read::ListDiffR;
-use crate::diff_error::DiffError;
+use crate::diff_error::{DiffError, OptToErr};
 use crate::imp::read::read_list::read_list;
 
 pub(crate) fn read_lists(reader : &mut Reader, bits : u64, meta : &MetaTable,
@@ -34,7 +34,7 @@ fn read_a_list(r : &mut Reader, index : usize, offset : usize,
                 Ok(ReadAList::Result(Some(read_list(r, tables)?)))
             },
             MetaValue::OptMil(tables) => {
-                if r.read()?.as_bool()?{
+                if r.read()?.ast_bool()?{
                     Ok(ReadAList::Result(Some(read_list(r, tables)?)))
                 } else{
                     Ok(ReadAList::Result(None))

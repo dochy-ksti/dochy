@@ -15,5 +15,5 @@ dochy_compaction = { path="../dochy_compaction", version="0.9.0" }
 metrohash = "1.0.6"
 snap = "1.0.1"
 anyhow = "1.0.34"
-with_capacity_safe = "0.3.0"
+with_capacity_safe = "0.4.0"
 rayon = "1.5.1"

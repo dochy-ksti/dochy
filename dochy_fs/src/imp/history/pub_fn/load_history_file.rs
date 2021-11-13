@@ -18,7 +18,7 @@ pub fn load_history_file(history_info : &HistoryInfo,
                          history : &FileHistory,
                          validation : bool) -> FsResult<RootObject> {
 
-    let mut guard = get_mutex(history_info.history_dir())?;
+    let mut guard = get_mutex(history_info.history_dir()).unwrap();
     let c = guard.peekable();
     let hash = c.hash();
     let op = c.history_options().clone();

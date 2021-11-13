@@ -1,7 +1,6 @@
 use std::fmt::{Display, Formatter, Debug};
 //use std::backtrace::Backtrace;
 use std::error::Error;
-use std::option::NoneError;
 use anyhow::anyhow;
 
 pub(crate) struct TestError {
@@ -64,11 +63,6 @@ impl Debug for TestError {
 // }
 
 
-impl From<NoneError> for TestError{
-    fn from(_: NoneError) -> Self {
-        Self::new(anyhow!("None Error"))
-    }
-}
 
 // impl<T : std::error::Error + 'static> ErrorConvertable for T{
 //     fn into_error(self) -> anyhow::Error {
@@ -76,10 +70,6 @@ impl From<NoneError> for TestError{
 //     }
 // }
 
-fn hoge() -> Result<(), TestError>{
-    opt()?;
-    Ok(())
-}
 
 fn opt() -> Option<()>{
     None
@@ -105,6 +95,6 @@ fn test_inner() -> Result<(), TestError>{
 }
 
 fn test_inner2() -> Result<(), TestError>{
-    opt()?;
+
     Ok(())
 }

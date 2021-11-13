@@ -63,48 +63,47 @@ fn init_dochy_cache_impl(mut map : MutexGuard<HashMap<PathBuf, Box<HistoryCacheI
 }
 
 ///unbound life time だが、Boxのアドレスは固定なので安全なはず
-pub(crate) fn get_map_item<'a>(history_dir : &Path) -> FsResult<&'a HistoryCacheItem>{
+pub(crate) fn get_map_item<'a>(history_dir : &Path) -> Option<&'a HistoryCacheItem>{
     let ptr: *const HistoryCacheItem = {
         let map = MAP.lock().unwrap();
         let b = map.get(history_dir)?;
         b.as_ref()
     };
-    Ok(unsafe{ &*ptr })
+    Some(unsafe{ &*ptr })
 }
 
 
-pub(crate) fn get_mutex<'a>(history_dir : &Path) -> FsResult<MutexG<'a>>{
+pub(crate) fn get_mutex<'a>(history_dir : &Path) -> Option<MutexG<'a>>{
     let item = get_map_item(history_dir)?;
     let peekable_info = item.peekable();
     let guard = item.synced().lock().unwrap();
 
-    Ok(MutexG::new(guard, peekable_info))
+    Some(MutexG::new(guard, peekable_info))
 }
 
 /// You can peek the file to be derived in the next save, but the Mutex is needed for save and load.
 /// If you call save or load while the MutexGuard is alive, deadlock occurs.
-pub fn get_peekable_info<'a>(history_info : &HistoryInfo) -> FsResult<&'a PeekableCacheInfo>{
-    let item = get_map_item(history_info.history_dir())?;
-    Ok(item.peekable())
+pub fn get_peekable_info<'a>(history_info : &HistoryInfo) -> &'a PeekableCacheInfo{
+    let item = get_map_item(history_info.history_dir()).unwrap();
+    item.peekable()
 }
 
-pub(crate) fn get_fifo_thread<'a>(history_info : &HistoryInfo) -> FsResult<&'a FifoThread>{
+pub(crate) fn get_fifo_thread<'a>(history_info : &HistoryInfo) -> Option<&'a FifoThread>{
     let item = get_map_item(history_info.history_dir())?;
-    Ok(item.fifo_thread())
+    Some(item.fifo_thread())
 }
 
 
 /// During save and load, the RootObject's ID and the selected file is recorded. If you use the same RootObject in the next save,
 /// the file to be derived is automatically selected by the system.
 ///
-/// This is the backdoor. You can set the ID and a file info and designate the file to be derived in the next save.
+/// This is the backdoor. You can set the ID and file info and designate the file to be derived in the next save.
 /// Arbitrary deriving is not supported. You must derive from an older state of the RootObject.
 ///
 /// Calling this function before the MutexGuard is dropped results deadlock.
-pub fn set_current_root_obj_info(history_info : &HistoryInfo, current_root_obj_info : Option<CurrentRootObjInfo>) -> FsResult<()>{
-    let m = get_map_item(history_info.history_dir())?;
+pub fn set_current_root_obj_info(history_info : &HistoryInfo, current_root_obj_info : Option<CurrentRootObjInfo>){
+    let m = get_map_item(history_info.history_dir()).unwrap();
     let mut s = m.synced().lock().unwrap();
     let (_,h) = s.muts();
      *h = current_root_obj_info;
-    Ok(())
 }

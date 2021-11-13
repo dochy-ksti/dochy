@@ -48,18 +48,18 @@ fn create_save_dir_info(save_dir : &Path, current_src : CurrentSrc) -> FsResult<
     Ok(info)
 }
 
-fn get_map_item<'a>(save_dir : &Path) -> FsResult<&'a (SaveCacheItem, Mutex<()>)>{
+fn get_map_item<'a>(save_dir : &Path) -> Option<&'a (SaveCacheItem, Mutex<()>)>{
     let map = MAP.lock().unwrap();
     let ptr : *const (SaveCacheItem, Mutex<()>) = map.get(save_dir)?.as_ref();
-    Ok(unsafe{ &*ptr })
+    Some(unsafe{ &*ptr })
 }
 
-pub(crate) fn get_mutex<'a>(save_dir : &Path) -> FsResult<DochyMutex<'a>>{
+pub(crate) fn get_mutex<'a>(save_dir : &Path) -> Option<DochyMutex<'a>>{
     let (cache, mutex) = get_map_item(save_dir)?;
-    Ok(DochyMutex::new(mutex.lock().unwrap(), cache))
+    Some(DochyMutex::new(mutex.lock().unwrap(), cache))
 }
 
-pub(crate) fn get_cache<'a>(save_dir : &Path) -> FsResult<&'a SaveCacheItem>{
+pub(crate) fn get_cache<'a>(save_dir : &Path) -> Option<&'a SaveCacheItem>{
     let (cache, _mutex) = get_map_item(save_dir)?;
-    Ok(cache)
+    Some(cache)
 }

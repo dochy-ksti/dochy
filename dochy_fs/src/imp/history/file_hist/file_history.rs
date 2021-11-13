@@ -38,25 +38,24 @@ impl FileHistory{
     }
 
     ///returns old files which can be removed.
-    pub fn get_removable_old_items(&self, keep_latest : usize) -> FsResult<Vec<&FileNameProps>>{
+    pub fn get_removable_old_items(&self, keep_latest : usize) -> Vec<&FileNameProps>{
         let files = self.list_files();
-        let remover = HistoryRemover::from(self)?;
-        let num_remove = files.len() - keep_latest;
+        let remover = HistoryRemover::from(self);
+        let num_remove = files.len().saturating_sub(keep_latest);
         for item in files.iter().skip(num_remove) {
-            remover.keep(*item)?;
+            remover.keep(*item);
         }
         let props = remover.get_removable_props();
-        Ok(props)
+        props
     }
 
     /// Remove old files. Files will be deleted in this method,
     /// and this history will be inconsistent with saved files, so the history will be consumed.
     ///
     /// Returns file paths which is failed to remove if any.
-    pub fn remove_old_files<P:AsRef<Path>>(self, keep_latest : usize, history_hash_dir: P) -> FsResult<Vec<PathBuf>>{
-        let removables = self.get_removable_old_items(keep_latest)?;
-        let failed = unsafe{ Self::remove_files(removables.iter().map(|a| *a), history_hash_dir) };
-        Ok(failed)
+    pub fn remove_old_files<P:AsRef<Path>>(self, keep_latest : usize, history_hash_dir: P) -> Vec<PathBuf>{
+        let removables = self.get_removable_old_items(keep_latest);
+        unsafe{ Self::remove_files(removables.iter().map(|a| *a), history_hash_dir) }
     }
 
     /// remove files.

@@ -75,7 +75,7 @@ pub(crate) fn create_dependencies<'a,'b>(ancestors : &'b[&'a FileNameProps],
     } else {
         order = order[0..next_phase+1].to_vec();
         *order.last_mut().unwrap() += 1;
-        prev_ctl = ancestors.get(next_phase)?.prev_ctl();
+        prev_ctl = ancestors[next_phase].prev_ctl();
     }
     let props = FileNameProps::new(ctl, prev_ctl, order, tag)?;
 

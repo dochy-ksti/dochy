@@ -1,7 +1,7 @@
 use dochy_core::structs::{RustParam, MetaParam, VarType, QvType, RustIntArray, RustFloatArray, RustBinary};
 use dochy_compaction::kval_enum::KVal;
 use dochy_compaction::basic_compaction::{comp_int, comp_double, comp_str};
-use crate::diff_error::DiffError;
+use crate::diff_error::{DiffError, OptToErr};
 
 pub(crate) fn write_param(param : &RustParam, meta : &MetaParam, r : &mut Vec<KVal>) -> Result<(), DiffError>{
     match meta.var_type(){
@@ -67,13 +67,13 @@ pub(crate) fn write_param(param : &RustParam, meta : &MetaParam, r : &mut Vec<KV
 
 fn write_param2(param : &RustParam, r : &mut Vec<KVal>) -> Result<(), DiffError>{
     match param{
-        RustParam::Bool(i) => r.push(KVal::Bit(*i.value()?)),
-        RustParam::Int(i) => r.push(comp_int(*i.value()?)),
-        RustParam::Float(f) => r.push(comp_double(*f.value()?)),
-        RustParam::String(s) => r.push( comp_str(s.value()?.to_string())),
-        RustParam::IntArray(s) => write_int_array(s.value()?, r),
-        RustParam::FloatArray(s) => write_float_array(s.value()?, r),
-        RustParam::Binary(s) => write_binary(s.value()?, r),
+        RustParam::Bool(i) => r.push(KVal::Bit(*i.value().unwrap())),
+        RustParam::Int(i) => r.push(comp_int(*i.value().unwrap())),
+        RustParam::Float(f) => r.push(comp_double(*f.value().unwrap())),
+        RustParam::String(s) => r.push( comp_str(s.value().unwrap().to_string())),
+        RustParam::IntArray(s) => write_int_array(s.value().unwrap(), r),
+        RustParam::FloatArray(s) => write_float_array(s.value().unwrap(), r),
+        RustParam::Binary(s) => write_binary(s.value().unwrap(), r),
     }
     Ok(())
 }

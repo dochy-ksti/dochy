@@ -13,7 +13,7 @@ pub fn save_dochy_file(info : &SaveDirInfo,
                        file_name : &str,
                        root: &RootObject,
                        overwrite : bool) -> FsResult<PathBuf>{
-    let mutex = get_mutex(info.save_dir())?;
+    let mutex = get_mutex(info.save_dir()).unwrap();
     let info = mutex.cache();
     let save_dir = info.save_dir();
     let hash_dir = prepare_hash_dir(save_dir, info.current_src(), info.hash())?;

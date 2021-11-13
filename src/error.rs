@@ -1,6 +1,5 @@
 use std::fmt::{Display, Formatter, Debug};
 //use std::backtrace::Backtrace;
-use std::option::NoneError;
 use anyhow::{anyhow};
 use std::time::SystemTimeError;
 //use std::time::SystemTimeError;
@@ -32,12 +31,6 @@ impl Debug for DpError {
 impl Into<anyhow::Error> for DpError {
     fn into(self) -> anyhow::Error {
         self.error
-    }
-}
-
-impl From<NoneError> for DpError {
-    fn from(_: NoneError) -> Self {
-        DpError::new(anyhow!("None Error"))
     }
 }
 impl From<anyhow::Error> for DpError {

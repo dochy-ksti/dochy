@@ -24,7 +24,7 @@ impl HistoryInfo{
     }
     pub fn history_dir(&self) -> &Path{ &self.history_dir }
     pub fn peekable(&self) -> &PeekableCacheInfo{
-        get_peekable_info(self).unwrap()
+        get_peekable_info(self)
     }
     pub fn clone_src_root(&self) -> RootObject{
         self.peekable().clone_src_root()

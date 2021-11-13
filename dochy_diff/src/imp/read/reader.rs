@@ -1,5 +1,5 @@
 use dochy_compaction::kval_enum::KVal;
-use crate::diff_error::DiffError;
+use crate::diff_error::{DiffError, OptToErr};
 use with_capacity_safe::vec_with_capacity_safe;
 
 pub(crate) struct Reader{
@@ -19,19 +19,19 @@ impl Reader{
     }
 
     pub(crate) fn read_u64_array(&mut self) -> Result<Vec<u64>, DiffError>{
-        let len = self.read()?.as_i64()? as usize;
+        let len = self.read()?.ast_i64()? as usize;
         let mut vec = vec_with_capacity_safe(len)?;
         for _ in 0..len{
-            vec.push(self.read()?.as_i64()? as u64);
+            vec.push(self.read()?.ast_i64()? as u64);
         }
         Ok(vec)
     }
 
     pub(crate) fn read_usize_array(&mut self) -> Result<Vec<usize>, DiffError>{
-        let len = self.read()?.as_i64()? as usize;
+        let len = self.read()?.ast_i64()? as usize;
         let mut vec = vec_with_capacity_safe(len)?;
         for _ in 0..len{
-            vec.push(self.read()?.as_i64()? as usize);
+            vec.push(self.read()?.ast_i64()? as usize);
         }
         Ok(vec)
     }

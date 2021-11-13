@@ -1,5 +1,5 @@
 use dochy_compaction::kval_enum::KVal;
-use crate::error::FsResult;
+use crate::error::{FsResult, OptToErr};
 use dochy_compaction::basic_compaction;
 use crate::imp::history::algo::phase_data_item::PhaseDataItem;
 use with_capacity_safe::vec_with_capacity_safe;
@@ -58,7 +58,7 @@ impl PhaseData{
         if vals.len() == 0{
             Err("PhaseData decode failed")?;
         }
-        let len = vals[0].as_i64()? as usize;
+        let len = vals[0].ast_i64()? as usize;
 
         let mut items : Vec<PhaseDataItem> = vec_with_capacity_safe(len)?;
         let mut iter = vals[1..].into_iter();

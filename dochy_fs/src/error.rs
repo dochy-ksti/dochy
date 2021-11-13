@@ -1,13 +1,34 @@
+use std::collections::TryReserveError;
 use std::fmt::{Display, Formatter, Debug};
 //use std::backtrace::Backtrace;
-use std::option::NoneError;
 use anyhow::{anyhow};
 use std::time::SystemTimeError;
-use with_capacity_safe::WcsError;
+use dochy_compaction::kval_enum::KVal;
 //use std::time::SystemTimeError;
 
 pub type FsResult<T> = Result<T, FsError>;
 
+pub(crate) trait OptToErr{
+    fn ast_i64(&self) -> Result<i64, &'static str>;
+    fn ast_bool(&self) -> Result<bool, &'static str>;
+    fn ast_f64(&self) -> Result<f64, &'static str>;
+    fn ast_string(&self) -> Result<String, &'static str>;
+}
+
+impl OptToErr for KVal{
+    fn ast_i64(&self) -> Result<i64, &'static str> {
+        self.as_i64().ok_or("The value is not i64")
+    }
+    fn ast_bool(&self) -> Result<bool, &'static str> {
+        self.as_bool().ok_or("The value is not bool")
+    }
+    fn ast_f64(&self) -> Result<f64, &'static str> {
+        self.as_f64().ok_or("The value is not f64")
+    }
+    fn ast_string(&self) -> Result<String, &'static str> {
+        self.as_string().ok_or("The value is not string")
+    }
+}
 
 pub struct FsError {
     error : anyhow::Error,
@@ -35,11 +56,6 @@ impl Into<anyhow::Error> for FsError {
     }
 }
 
-impl From<NoneError> for FsError {
-    fn from(_: NoneError) -> Self {
-        FsError::new(anyhow!("None Error"))
-    }
-}
 impl From<anyhow::Error> for FsError {
     fn from(e: anyhow::Error) -> Self {
         Self::new(e)
@@ -66,8 +82,8 @@ impl From<dochy_diff::DiffError> for FsError{
     fn from(e : dochy_diff::DiffError) -> Self{ Self::new(e) }
 }
 
-impl From<WcsError> for FsError{
-    fn from(e : WcsError) -> Self{ Self::new(e) }
+impl From<TryReserveError> for FsError{
+    fn from(e : TryReserveError) -> Self{ Self::new(e) }
 }
 
 impl From<&str> for FsError{

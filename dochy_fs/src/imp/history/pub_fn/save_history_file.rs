@@ -64,7 +64,7 @@ pub fn save_history_file_nb_if_vacant<
                                          tag : Option<String>,
                                          root : &RootObject,
                                          callback : F) -> bool{
-    let peekable = get_peekable_info(history_info).unwrap();
+    let peekable = get_peekable_info(history_info);
 
     if peekable.queued() == 0{
         save_history_file_nb(history_info, tag, root, callback);
@@ -80,7 +80,7 @@ fn save_history_file_impl(history_info: &HistoryInfo,
                           root : &RootObject,
                           root_id : Weak<()>) -> FsResult<FileNameProps> {
     let history_dir = history_info.history_dir();
-    let mut mutex = get_mutex(history_dir)?;
+    let mut mutex = get_mutex(history_dir).unwrap();
     let p = mutex.peekable();
 
 
@@ -97,7 +97,7 @@ fn save_history_file_impl(history_info: &HistoryInfo,
             if let Some(newest) = history.get_newest_prop() {
                 let from = if info.current_base_file().phase() == opt.max_phase() && info.current_base_file() != newest {
                     //最新ファイルからの派生でない場合、キャッシュに乗っていない可能性がより高いし、最終フェーズの計算が面倒でもあるので、親から派生する
-                    history.get_parent(info.current_base_file())?
+                    history.get_parent(info.current_base_file()).ok_or("no parents found")?
                 } else {
                     info.current_base_file()
                 };

@@ -1,5 +1,5 @@
 use crate::imp::read::reader::Reader;
-use crate::diff_error::DiffError;
+use crate::diff_error::{DiffError, OptToErr};
 use crate::imp::structs_read::{ListItemDiffEnumR, ListItemDiffR, CS, ListDiffR};
 use crate::imp::read::read_params::read_params;
 use dochy_core::structs::{MetaTables, MetaValue};
@@ -14,20 +14,20 @@ use with_capacity_safe::vec_with_capacity_safe;
 pub(crate) fn read_list(r : &mut Reader, meta : &MetaTables)
     -> Result<ListDiffR, DiffError>{
 
-    let len = r.read()?.as_i64()? as usize;
-    let next_id = r.read()?.as_i64()? as u64;
+    let len = r.read()?.ast_i64()? as usize;
+    let next_id = r.read()?.ast_i64()? as u64;
     let mut vec : Vec<(u64, ListItemDiffEnumR)> = vec_with_capacity_safe(len)?;
     for _ in 0..len{
-        let id = r.read()?.as_i64()?;
+        let id = r.read()?.ast_i64()?;
         vec.push((id as u64, read_list_item(r, meta)?));
     }
     Ok(ListDiffR::new(vec, next_id))
 }
 
 fn read_list_item(r : &mut Reader, meta : &MetaTables) -> Result<ListItemDiffEnumR, DiffError>{
-    if r.read()?.as_bool()?{
+    if r.read()?.ast_bool()?{
         Ok(ListItemDiffEnumR::Modify(read_list_item2(r, meta)?))
-    } else if r.read()?.as_bool()?{
+    } else if r.read()?.ast_bool()?{
         Ok(ListItemDiffEnumR::Create(read_cs(r, meta)?))
     } else{
         Ok(ListItemDiffEnumR::Delete)
@@ -36,8 +36,8 @@ fn read_list_item(r : &mut Reader, meta : &MetaTables) -> Result<ListItemDiffEnu
 
 fn read_cs(r : &mut Reader, meta : &MetaTables) -> Result<CS, DiffError>{
     let mut prev_id = None;
-    if r.read()?.as_bool()?{
-        prev_id = Some(r.read()?.as_i64()? as u64);
+    if r.read()?.ast_bool()?{
+        prev_id = Some(r.read()?.ast_i64()? as u64);
     }
     let diff = read_list_item2(r, meta)?;
     Ok(CS{ prev_id, diff })

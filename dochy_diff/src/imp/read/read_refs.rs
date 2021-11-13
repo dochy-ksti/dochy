@@ -1,6 +1,6 @@
 use crate::imp::read::reader::Reader;
 use dochy_core::structs::{MetaTable, MetaValue, VarType, Qv, MetaParam};
-use crate::diff_error::DiffError;
+use crate::diff_error::{DiffError, OptToErr};
 use crate::imp::read::read_store_ids::read_stored_ids;
 use crate::imp::write::store_ids::StoredIDs;
 
@@ -62,23 +62,23 @@ fn read_a_ref(r : &mut Reader, p : &MetaParam) -> Result<Option<Qv<String>>, Dif
             Ok(Some(read_val(r)?))
         },
         VarType::Nullable => {
-            if r.read()?.as_bool()? {
+            if r.read()?.ast_bool()? {
                 Ok(Some(read_val(r)?))
             } else {
                 Ok(Some(Qv::Null))
             }
         },
         VarType::Undefiable => {
-            if r.read()?.as_bool()? {
+            if r.read()?.ast_bool()? {
                 Ok(Some(read_val(r)?))
             } else {
                 Ok(Some(Qv::Undefined))
             }
         },
         VarType::UndefNullable => {
-            if r.read()?.as_bool()? {
+            if r.read()?.ast_bool()? {
                 Ok(Some(read_val(r)?))
-            } else if r.read()?.as_bool()? {
+            } else if r.read()?.ast_bool()? {
                 Ok(Some(Qv::Null))
             } else {
                 Ok(Some(Qv::Undefined))
@@ -88,5 +88,5 @@ fn read_a_ref(r : &mut Reader, p : &MetaParam) -> Result<Option<Qv<String>>, Dif
 }
 
 fn read_val(r : &mut Reader) -> Result<Qv<String>, DiffError>{
-    Ok(Qv::Val(r.read()?.as_string()?))
+    Ok(Qv::Val(r.read()?.ast_string()?))
 }

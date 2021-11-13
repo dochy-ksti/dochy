@@ -1,9 +1,9 @@
+use std::collections::TryReserveError;
 use std::fmt::{Display, Formatter, Debug};
 //use std::backtrace::Backtrace;
-use std::option::NoneError;
+
 use anyhow::{anyhow};
 use std::time::SystemTimeError;
-use with_capacity_safe::WcsError;
 use std::path::StripPrefixError;
 
 /// The error type.
@@ -40,11 +40,6 @@ impl Into<anyhow::Error> for NouArcError{
     }
 }
 
-impl From<NoneError> for NouArcError{
-    fn from(_: NoneError) -> Self {
-        NouArcError::new(anyhow!("None Error"))
-    }
-}
 
 impl From<anyhow::Error> for NouArcError{
     fn from(e: anyhow::Error) -> Self {
@@ -66,9 +61,6 @@ impl From<std::io::Error> for NouArcError{
     fn from(e : std::io::Error) -> Self { Self::new(e) }
 }
 
-impl From<WcsError> for NouArcError{
-    fn from(e : WcsError) -> Self { Self::new(e) }
-}
 
 impl From<std::string::FromUtf8Error> for NouArcError{
     fn from(e : std::string::FromUtf8Error) -> Self { Self::new(e) }
@@ -92,4 +84,8 @@ impl From<String> for NouArcError{
 
 impl From<snap::Error> for NouArcError{
     fn from(e : snap::Error) -> Self { Self::new(e) }
+}
+
+impl From<TryReserveError> for NouArcError{
+    fn from(e : TryReserveError) -> Self { Self::new(e) }
 }

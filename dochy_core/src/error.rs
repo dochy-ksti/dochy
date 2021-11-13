@@ -6,6 +6,7 @@ use dochy_archiver2::NouArcError;
 pub type CoreResult<T> = std::result::Result<T, CoreError>;
 
 
+
 pub struct CoreError {
     e : anyhow::Error,
 }

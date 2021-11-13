@@ -30,5 +30,6 @@ pub(crate) fn write_phase_0<V : DiffValue, S: DiffSrc<V>, C : Cache<V,S>>(
     write_phase_file(&data, &file_path, &vec)?;
     cache.set_cache(file_path, diff_src.clone(), 0)?;
 
-    FileNameProps::from(&file_name)
+    Ok(FileNameProps::from(&file_name)
+        .ok_or_else(||format!("The filename couldn't be converted into FileNameProps {:?}", &file_name))?)
 }

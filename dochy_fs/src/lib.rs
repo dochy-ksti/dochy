@@ -1,4 +1,3 @@
-#![feature(try_trait)]
 #![feature(test)]
 extern crate test;
 

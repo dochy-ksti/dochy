@@ -2,7 +2,7 @@ use crate::imp::read::read_list::read_list;
 use dochy_core::structs::{MetaValue, MetaTable};
 use crate::imp::read::reader::Reader;
 use crate::imp::structs_read::ListDiffR;
-use crate::diff_error::DiffError;
+use crate::diff_error::{DiffError, OptToErr};
 
 pub(crate) fn read_lists_numbers(r: &mut Reader, meta: &MetaTable, n: &Vec<usize>,
                       lists: &mut Vec<(usize, Option<ListDiffR>)>) -> Result<(), DiffError>{
@@ -10,7 +10,7 @@ pub(crate) fn read_lists_numbers(r: &mut Reader, meta: &MetaTable, n: &Vec<usize
         if let Some((_, v)) = meta.get(id) {
             match v {
                 MetaValue::OptMil(tables) => {
-                    if r.read()?.as_bool()? {
+                    if r.read()?.ast_bool()? {
                         lists.push((id, Some(read_list(r, tables)?)));
                     } else {
                         lists.push((id, None));

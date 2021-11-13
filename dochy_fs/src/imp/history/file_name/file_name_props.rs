@@ -22,8 +22,8 @@ impl FileNameProps{
         Ok(FileNameProps{ control, prev_ctl, order, tag })
     }
 
-    pub fn from(filename : &str) -> FsResult<FileNameProps>{
-        Ok(analyze_file_name(filename, None)?)
+    pub fn from(filename : &str) -> Option<FileNameProps>{
+        analyze_file_name(filename, None)
     }
 
     ///how many times "start_new" is called or deriving has happened.

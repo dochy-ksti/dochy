@@ -30,7 +30,7 @@ fn archive_test() -> ArcResult<()>{
     write_archive(&archive_data, &mut buf)?;
     let read : ArchiveData<()> = read_archive(|_name, _slice| (), &mut buf.as_slice())?;
     for (path, dat) in archive_data.btree(){
-        let got = read.btree().get(path)?;
+        let got = read.btree().get(path).ok_or("error")?;
         assert_eq!(got.raw_data(), dat.raw_data());
     }
 

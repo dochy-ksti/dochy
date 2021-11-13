@@ -19,7 +19,7 @@ pub(crate) struct HistoryRemoverCtlItem<'a>{
 impl<'a> HistoryRemover<'a>{
 
     /// Set flags to keep the file and its ancestors
-    pub fn keep(&self, props : &FileNameProps) -> FsResult<()> {
+    pub fn keep(&self, props : &FileNameProps) -> Option<()> {
         let mut cue = RemoveCueItem::from(props);
         loop {
             let ctl_item = self.ctls.get(&cue.ctl())?;
@@ -30,7 +30,7 @@ impl<'a> HistoryRemover<'a>{
                 break;
             }
         }
-        Ok(())
+        Some(())
     }
 
 
@@ -53,24 +53,24 @@ impl<'a> HistoryRemover<'a>{
         }
     }
 
-    pub fn from(history : &'a FileHistory) -> FsResult<HistoryRemover<'a>>{
+    pub fn from(history : &'a FileHistory) -> HistoryRemover<'a>{
         let src_ctls = history.ctls();
         let mut r_ctls : HashMap<u32, HistoryRemoverCtlItem> = HashMap::with_capacity(src_ctls.len());
         for (index, ctl) in src_ctls{
-            r_ctls.insert(*index, HistoryRemoverCtlItem::from(ctl, history.max_phase(), history.cumulative())?);
+            r_ctls.insert(*index, HistoryRemoverCtlItem::from(ctl, history.max_phase(), history.cumulative()));
         }
-        Ok(HistoryRemover{ ctls : r_ctls })
+        HistoryRemover{ ctls : r_ctls }
     }
 }
 
 impl<'a> HistoryRemoverCtlItem<'a>{
-    pub(crate) fn from(ctl : &'a FileHistoryItem, max_phase : usize, cumulative_option : bool) -> FsResult<HistoryRemoverCtlItem<'a>>{
+    pub(crate) fn from(ctl : &'a FileHistoryItem, max_phase : usize, cumulative_option : bool) -> HistoryRemoverCtlItem<'a>{
         let r = composite_remover(ctl.items(),ctl.children(),
                                   0, max_phase, cumulative_option);
-        Ok(HistoryRemoverCtlItem{ items : r })
+        HistoryRemoverCtlItem{ items : r }
     }
 
-    pub(crate) fn get_item_from_cue(&self, cue_order : &[u32], cue_order_last : Option<u32>) -> FsResult<&'a HistoryRemoverItem>{
+    pub(crate) fn get_item_from_cue(&self, cue_order : &[u32], cue_order_last : Option<u32>) -> Option<&'a HistoryRemoverItem>{
         let mut item = self.items.get(cue_order.get(0)?)?;
 
         for ind in &cue_order[1..]{
@@ -80,7 +80,7 @@ impl<'a> HistoryRemoverCtlItem<'a>{
         if let Some(ind) = cue_order_last{
             item = item.children().get(&ind)?;
         }
-        Ok(item)
+        Some(item)
     }
 
     pub(crate) fn get_removable_props(&self, r : &mut Vec<&'a FileNameProps>){

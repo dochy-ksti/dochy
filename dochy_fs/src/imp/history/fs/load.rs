@@ -21,8 +21,8 @@ pub(crate) fn load<
                      opt : Op) -> FsResult<S> {
     let path = diff_file_path.as_ref();
     let opt = opt.as_ref();
-    let dir_path = path.parent()?;
-    let filename = path.file_name()?.to_string_lossy().to_string();
+    let dir_path = path.parent().ok_or_else(|| format!("No parent found {:?}", path))?;
+    let filename = path.file_name().ok_or_else(|| format!("The filename couldn't be found {:?}", path))?.to_string_lossy().to_string();
     let analyzed = analyze_file_name(&filename, Some(opt.max_phase()))
         .ok_or_else(|| format!("invalid file name {}", &filename))?;
 
