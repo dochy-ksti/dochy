@@ -1,6 +1,6 @@
 [package]
 name = "dochy_compaction"
-version = "0.9.0"
+version = "0.10.0"
 authors = ["juzy <dochy.ksti@gmail.com>"]
 edition = "2018"
 
