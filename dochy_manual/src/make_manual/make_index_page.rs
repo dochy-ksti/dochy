@@ -37,7 +37,7 @@ r#"Dochy is a static JSON-like data format.
 
 It can efficiently store "diff" of the data.
 
-It's designed to implement auto-save, undo, and
+It's designed to implement auto-save, unlimited undo, and
 applications which want to retain every change of the data, like cloud apps.
 
 Dochy is a language, so [the API documentation](https://docs.rs/dochy/) is not very good to learn.

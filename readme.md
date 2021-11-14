@@ -4,7 +4,7 @@ Dochy is a static JSON-like data format.
 
 It can efficiently store "diff" of the data. 
 
-It's designed to implement auto-save, undo, and 
+It's designed to implement auto-save, unlimited undo, and 
 applications which want to retain every change of the data, like cloud apps. 
 
 *[User's Manual](https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/manual/index.md)
@@ -127,7 +127,7 @@ The Dochy's total amount of data is 4 times bigger than JSON's, but more than tw
 
 Dochy is a binary data format and efficiently multi-threaded for loading, so it was able to beat Serde, I think.
 
-*How it can be done?
+*How can it be done?
 
 Constructing diff is very costly process in nature, but Rust's Arc(Atomic-Reference-Count-Pointer) makes it very easy.
 
