@@ -1,8 +1,6 @@
-*** I'm Not An English Speaker. Please Correct My English ***
-
 Dochy is a diff-based data management language to implement
-unlimited undo, auto-save for games, and apps which needs to
-retain every change, like cloud-apps. 
+unlimited undo, auto-save for games, and cloud-apps which needs to
+retain every change. 
 
 *[User's Manual](https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/manual/index.md)
 
