@@ -5,7 +5,7 @@ authors = ["juzy <dochy.ksti@gmail.com>"]
 edition = "2018"
 
 license = "MIT OR Apache-2.0"
-description = "Static data format based on JSON5 to create diff binary and implement undo, autosave."
+description = "A diff-based data management language to implement unlimited undo, auto-save for games, and cloud-apps which needs to retain every change."
 repository = "https://github.com/dochy-ksti/dochy"
 readme = "readme.md"
 keywords = ["json5","diff","binary","undo","autosave"]

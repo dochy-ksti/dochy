@@ -1,11 +1,8 @@
 *** I'm Not An English Speaker. Please Correct My English ***
 
-Dochy is a static JSON-like data format.
-
-It can efficiently store "diff" of the data. 
-
-It's designed to implement auto-save, unlimited undo, and 
-applications which want to retain every change of the data, like cloud apps. 
+Dochy is a diff-based data management language to implement
+unlimited undo, auto-save for games, and apps which needs to
+retain every change, like cloud-apps. 
 
 *[User's Manual](https://github.com/dochy-ksti/dochy/blob/master/dochy_manual/manual/index.md)
 
