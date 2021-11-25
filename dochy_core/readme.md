@@ -1,5 +1,1 @@
-A statically typed data language based on JSON5.
-
-This is a core component of Dochy File System.
-
-More explanations to be added...
+"Dochy" has been renamed ["Docchi"](https://github.com/dochy-ksti/docchi) 

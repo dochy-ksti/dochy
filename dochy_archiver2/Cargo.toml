@@ -1,6 +1,6 @@
 [package]
 name = "dochy_archiver2"
-version = "0.10.0"
+version = "0.10.1"
 authors = ["juzy <dochy.ksti@gmail.com>"]
 edition = "2018"
 

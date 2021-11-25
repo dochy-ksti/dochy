@@ -1,3 +1,1 @@
-The Dochy Interface component generates the source code to access Dochy Data. 
-
-More explanations to be added...
+"Dochy" has been renamed ["Docchi"](https://github.com/dochy-ksti/docchi) 
